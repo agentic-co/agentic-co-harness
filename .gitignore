@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+# node state — never committed
+*.jsonl.lock
+heartbeat.json
+runs.jsonl
+tasks.jsonl
+schedules.jsonl
+recurring.jsonl
+PRIME.md
+.DS_Store
+pull-audit.log

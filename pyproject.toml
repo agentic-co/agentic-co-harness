@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentco-harness"
+version = "0.1.0"
+description = "AgentCo Harness — a standalone agent runtime: beads, schedules, headless executors, and agentic SOPs. Works alone; connects to an AgentCo Hub when one is configured."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+dependencies = [
+    "click>=8.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+# DSPy planner/triage layer inherited from v1. Optional: the runtime's default
+# executors are headless agent CLIs, which need no in-process model.
+lm = [
+    "dspy-ai>=3.0,<4.0",
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+]
+
+[project.scripts]
+harness = "agentco_harness.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["agentco_harness"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
