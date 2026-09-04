@@ -997,7 +997,8 @@ def collect(config_path: str) -> DoctorReport:
     try:
         from . import _lm
         from .beads import Beads, TaskStatus
-        from .orchestrator import SPECIAL_EXECUTORS
+        from .backends import executor_names
+        SPECIAL_EXECUTORS = executor_names()
 
         # Through the seam, not `from .agents import AGENTS`: that import
         # raises on a base install, the blanket except below turned it into

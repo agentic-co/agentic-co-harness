@@ -596,25 +596,33 @@ def test_doctor_ignores_terminal_beads_of_undeclared_agent(tmp_path, monkeypatch
 
 
 def test_special_executors_cover_run_task_branches():
-    """SPECIAL_EXECUTORS must stay in lockstep with _execute_cycle_task's dispatch branches.
+    """Dispatch and the dispatchability guard must agree on every name.
 
-    A name that _execute_cycle_task dispatches but SPECIAL_EXECUTORS omits is read as
-    externally-executed by the guard, so its beads are filtered out of every
-    cycle and sit pending forever — the mirror image of the box-scout failure.
+    A name that dispatch executes but the guard omits is read as externally-
+    executed, so its beads are filtered out of every cycle and sit pending
+    forever — the mirror image of the box-scout failure. This used to be
+    kept in lockstep by hand, and this test read the dispatch source for
+    `assigned_agent == "..."` branches to check. The executor backend seam
+    replaced the branches with one registry that both sides read, so the
+    hazard is gone rather than guarded: assert there are no literal branches
+    left to drift, that dispatch resolves through the registry, and that the
+    guard sees everything the registry holds.
     """
     import inspect
     import re
 
+    from agentco_harness import backends
     from agentco_harness.orchestrator import SPECIAL_EXECUTORS, Orchestrator
 
     source = inspect.getsource(Orchestrator._execute_cycle_task)
-    dispatched = set(re.findall(r'task\.assigned_agent == "([\w-]+)"', source))
-
-    assert dispatched, "no dispatch branches found — did _execute_cycle_task move?"
-    assert dispatched <= SPECIAL_EXECUTORS, (
-        f"_execute_cycle_task dispatches {sorted(dispatched - SPECIAL_EXECUTORS)} but "
-        f"SPECIAL_EXECUTORS does not list them"
+    literal_branches = re.findall(r'task\.assigned_agent == "([\w-]+)"', source)
+    assert not literal_branches, (
+        f"_execute_cycle_task dispatches {literal_branches} by literal name again — "
+        f"register them as backends instead, or the guard will drift"
     )
+    assert "backends.resolve(" in source
+    assert backends.executor_names() <= set(SPECIAL_EXECUTORS)
+    assert {"planner", "claude", "zai", "forge"} <= set(SPECIAL_EXECUTORS)
 
 
 def test_doctor_fails_on_pending_bead_with_no_agent(tmp_path, monkeypatch, capsys):
