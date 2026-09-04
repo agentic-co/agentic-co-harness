@@ -35,7 +35,7 @@ def _orch(tmp_path) -> Orchestrator:
 
 
 def _fake_claude_ok(monkeypatch, calls: list | None = None):
-    def fake(prompt, timeout, max_turns, model=None):
+    def fake(prompt, timeout, max_turns, model=None, cwd=None):
         if calls is not None:
             calls.append({"prompt": prompt, "timeout": timeout, "max_turns": max_turns})
         return ExecResult(True, '{"ok": true}', None, 0, 0.1)
@@ -100,7 +100,7 @@ def test_bead_failure_counts_as_error_but_cycle_completes(tmp_path, monkeypatch)
     monkeypatch.setattr(
         orchestrator_mod,
         "run_claude_task",
-        lambda prompt, timeout, max_turns, model=None: ExecResult(False, "", "exited 1", 1, 0.1),
+        lambda prompt, timeout, max_turns, model=None, cwd=None: ExecResult(False, "", "exited 1", 1, 0.1),
     )
     task = orch.beads.create(
         title="will fail", description="x", assigned_agent="claude"
@@ -297,7 +297,7 @@ def test_cycle_appends_structured_run_log(tmp_path, monkeypatch):
     monkeypatch.setattr(
         orchestrator_mod,
         "run_claude_task",
-        lambda prompt, timeout, max_turns, model=None: ExecResult(False, "", "boom exited 1", 1, 0.1),
+        lambda prompt, timeout, max_turns, model=None, cwd=None: ExecResult(False, "", "boom exited 1", 1, 0.1),
     )
     orch.beads.create(title="will fail", description="x", assigned_agent="claude")
 
@@ -567,7 +567,7 @@ def test_chat_pending_gets_an_agent_reply_and_flag_clears(tmp_path, monkeypatch)
     _no_triage_lm(orch, monkeypatch)
     calls: list = []
 
-    def fake(prompt, timeout, max_turns, model=None):
+    def fake(prompt, timeout, max_turns, model=None, cwd=None):
         calls.append(prompt)
         return ExecResult(True, "almost nothing is pending on you", None, 0, 0.1)
 
@@ -661,7 +661,7 @@ def test_chat_reply_failure_is_recorded_and_flag_still_clears(tmp_path, monkeypa
     monkeypatch.setattr(
         orchestrator_mod,
         "run_claude_task",
-        lambda prompt, timeout, max_turns, model=None: ExecResult(False, "", "boom", 1, 0.1),
+        lambda prompt, timeout, max_turns, model=None, cwd=None: ExecResult(False, "", "boom", 1, 0.1),
     )
 
     task = orch.beads.create(
@@ -690,7 +690,7 @@ def test_concurrent_chat_dispatch_does_not_double_answer(tmp_path, monkeypatch):
     monkeypatch.setattr(
         orchestrator_mod,
         "run_claude_task",
-        lambda prompt, timeout, max_turns, model=None: (
+        lambda prompt, timeout, max_turns, model=None, cwd=None: (
             calls.append(1) or ExecResult(True, "answered", None, 0, 0.1)
         ),
     )
@@ -752,7 +752,7 @@ def test_stale_chat_lease_is_reclaimed(tmp_path, monkeypatch):
     monkeypatch.setattr(
         orchestrator_mod,
         "run_claude_task",
-        lambda prompt, timeout, max_turns, model=None: ExecResult(True, "ok", None, 0, 0.1),
+        lambda prompt, timeout, max_turns, model=None, cwd=None: ExecResult(True, "ok", None, 0, 0.1),
     )
 
     orch.cycle(now=NOW)

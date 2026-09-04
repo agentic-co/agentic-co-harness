@@ -867,8 +867,14 @@ class Orchestrator:
             return True
         else:
             prompt = task.metadata.get("prompt") or f"{task.title}\n\n{task.description}"
+            # A bead that names a working directory is executed in it. Only a
+            # bead that asks for one gets one, so nothing that ran in the node
+            # dir before moves; a step pulled from a plane asks, because its
+            # gate is proved in the repository the run named, not here.
+            workdir = task.metadata.get("workdir")
             with self._attribution(task, "cycle", model):
-                exec_result = run_claude_task(prompt, timeout=timeout, max_turns=max_turns, model=model)
+                exec_result = run_claude_task(prompt, timeout=timeout, max_turns=max_turns,
+                                              model=model, cwd=workdir)
             self._record_cost(task, 'claude', exec_result)
             if not exec_result.success:
                 print(f"[cycle] FAIL: claude subagent for {task.id}: {exec_result.error}")

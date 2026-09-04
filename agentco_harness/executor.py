@@ -476,6 +476,7 @@ def _supervise(
     env: dict[str, str],
     idle_timeout_s: int,
     idle_probe: _TranscriptProbe | None = None,
+    cwd: str | None = None,
 ) -> _ProcOutcome:
     """Run `cmd`, feeding `prompt` on stdin, watching for a stall.
 
@@ -513,6 +514,7 @@ def _supervise(
         stderr=subprocess.PIPE,
         text=True,
         env=env,
+        cwd=cwd,
     )
     lock = threading.Lock()
     chunks: dict[str, list[str]] = {"stdout": [], "stderr": []}
@@ -658,6 +660,7 @@ def _run_proc(
     env: dict[str, str] | None = None,
     label: str = "claude",
     idle_timeout_s: int = 0,
+    cwd: str | None = None,
 ) -> ExecResult:
     """The metered subprocess boundary — every claude/z.ai launch passes here.
 
@@ -682,6 +685,7 @@ def _run_proc(
             env=env,
             label=label,
             idle_timeout_s=idle_timeout_s,
+            cwd=cwd,
         ),
         executor=label,
         route=_ROUTE_FOR_LABEL.get(label, label),
@@ -697,6 +701,7 @@ def _run_proc_inner(
     env: dict[str, str] | None = None,
     label: str = "claude",
     idle_timeout_s: int = 0,
+    cwd: str | None = None,
 ) -> ExecResult:
     """Shared subprocess runner — prompt via stdin, never via -p arg.
 
@@ -728,7 +733,7 @@ def _run_proc_inner(
 
     started = time.monotonic()
     try:
-        proc = _supervise(spawn_cmd, prompt, timeout, env, idle_timeout_s, idle_probe)
+        proc = _supervise(spawn_cmd, prompt, timeout, env, idle_timeout_s, idle_probe, cwd=cwd)
     except FileNotFoundError:
         return ExecResult(
             success=False,
@@ -786,6 +791,7 @@ def _run_proc_inner(
                 env=env,
                 label=label,
                 idle_timeout_s=idle_timeout_s,
+                cwd=cwd,
             )
         if api_status is not None and _attempt < len(_API_RETRY_BACKOFFS_S):
             backoff = _API_RETRY_BACKOFFS_S[_attempt]
@@ -804,6 +810,7 @@ def _run_proc_inner(
                 env=env,
                 label=label,
                 idle_timeout_s=idle_timeout_s,
+                cwd=cwd,
             )
         error = _compose_failure(label, proc.returncode, proc.stdout, proc.stderr)
         if api_status is not None:
@@ -1036,13 +1043,19 @@ def run_claude_task(
     max_turns: int = DEFAULT_MAX_TURNS,
     claude_bin: str = "claude",
     model: str | None = None,
+    cwd: str | None = None,
 ) -> ExecResult:
     """Execute one task via a headless Claude subagent.
 
     Prompt delivered via stdin (no ARG_MAX limit). Never raises on execution
     failure — every failure mode comes back as a loud ExecResult.
+
+    `cwd` is the directory the child runs in; None keeps the caller's, which is
+    what every local bead has always had. A bead that names a working directory
+    (a step pulled from a plane names the one its gate runs in) passes it here,
+    so the work and the check that judges it happen in the same place.
     """
-    return _run_proc(_base_cmd(claude_bin, max_turns, model), prompt, timeout, claude_bin)
+    return _run_proc(_base_cmd(claude_bin, max_turns, model), prompt, timeout, claude_bin, cwd=cwd)
 
 
 def _prime_block(config_path: str | Path | None) -> str:

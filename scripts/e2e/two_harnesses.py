@@ -83,8 +83,16 @@ class Plane:
 
 # ----------------------------------------------------------------- fixtures
 
-def write_target_repo(root: Path) -> None:
-    """A real project with a real failing test. The implementer makes it pass."""
+def write_target_repo(root: Path, with_patch: bool = True) -> None:
+    """A real project with a real failing test. The implementer makes it pass.
+
+    `with_patch` writes the prepared answer beside the problem — that patch IS
+    the deterministic implementer's "work", so the run exercises the pipeline
+    without a model. Under `--live` it must NOT be written: the first live run
+    left it there and the model read it (session 53c271ea, 2026-09-04), so the
+    step proved dispatch and proved nothing about solving anything. An answer
+    key in the room is not a test of the room.
+    """
     (root / "pkg").mkdir(parents=True, exist_ok=True)
     (root / "pkg" / "__init__.py").write_text("")
     (root / "pkg" / "slug.py").write_text("def slugify(s: str) -> str:\n    raise NotImplementedError\n")
@@ -98,12 +106,13 @@ def write_target_repo(root: Path) -> None:
             assert slugify("Hi, there!") == "hi-there"
     '''))
     (root / "REQUIREMENT.md").write_text("# Feature: slugify\n\nTurn a title into a URL slug: lowercase, spaces to dashes, punctuation dropped.\n")
-    (root / "IMPLEMENTATION.patch.py").write_text(textwrap.dedent('''
-        import re
-        def slugify(s: str) -> str:
-            s = re.sub(r"[^\\w\\s-]", "", s.lower())
-            return re.sub(r"[\\s_]+", "-", s).strip("-")
-    '''))
+    if with_patch:
+        (root / "IMPLEMENTATION.patch.py").write_text(textwrap.dedent('''
+            import re
+            def slugify(s: str) -> str:
+                s = re.sub(r"[^\\w\\s-]", "", s.lower())
+                return re.sub(r"[\\s_]+", "-", s).strip("-")
+        '''))
 
 
 def feature_dev_body(target: Path, gate5: str) -> dict:
@@ -153,12 +162,16 @@ def runtime_cli(node: Path, hub_repo: Path, args: list[str], env: dict) -> subpr
 def implementer_via_runtime(node: Path, hub_repo: Path, plane_url: str, secret: str, target: Path, live: bool) -> list[str]:
     env = {**os.environ, "AGENTCO_HUB_SECRET": secret}
     node.mkdir(parents=True, exist_ok=True)
+    # `actor` is who this node is ON THE PLANE; `executor` is what runs the
+    # work HERE. Without the second, every pulled bead fails the cycle with
+    # "Unknown agent: harness-bigmac" — which is what --live found.
     (node / "config.yaml").write_text(textwrap.dedent(f'''
         tasks_path: tasks.jsonl
         instance: e2e-node
         hub:
           url: {plane_url}
           actor: harness-bigmac
+          executor: claude
     '''))
     (node / "tasks.jsonl").touch()
     r = runtime_cli(node, hub_repo, ["hub", "status"], env); check("runtime: plane reachable and signature accepted", r.returncode == 0, r.stdout.strip() or r.stderr.strip())
@@ -278,7 +291,7 @@ def main() -> int:
         out = subprocess.run([str(hub_py), "-m", "agentco", "keygen", actor], capture_output=True, text=True, cwd=plane_dir).stdout
         keys.update(json.loads(out[: out.index("}") + 1]))
     (plane_dir / "keys.json").write_text(json.dumps(keys, indent=2))
-    write_target_repo(target)
+    write_target_repo(target, with_patch=not a.live)
 
     # 1. plane up
     env = {**os.environ, "AGENTCO_DB": str(plane_dir / "registry.sqlite3"), "AGENTCO_REGISTRY_KEYS": str(plane_dir / "keys.json"),

@@ -55,7 +55,7 @@ def _fake_claude_ok(monkeypatch):
     monkeypatch.setattr(
         orchestrator_mod,
         "run_claude_task",
-        lambda prompt, timeout, max_turns, model=None: ExecResult(
+        lambda prompt, timeout, max_turns, model=None, cwd=None: ExecResult(
             True, '{"ok": true}', None, 0, 0.1
         ),
     )

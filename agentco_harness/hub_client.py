@@ -80,6 +80,10 @@ class HubClient:
     actor: str
     secret: str
     timeout_s: int = 30
+    #: The LOCAL backend a mirrored bead is stamped for. `actor` is who this
+    #: node is ON THE PLANE; `executor` is what runs the work HERE. They are
+    #: different names for a reason — see `HubConfig.executor`.
+    executor: str | None = None
 
     # ------------------------------------------------------------ transport
 
@@ -159,6 +163,14 @@ class HubClient:
         if existing is not None:
             return existing
         metadata = dict(item.get("metadata") or {})
+        # Where the work happens. The gate declares the directory it is proved
+        # in, so that is the directory the work is done in — an executor left
+        # in the node's own runtime dir would be writing beside the bead store
+        # instead of in the repository the run named. Only mirrored beads get
+        # this: a local bead's cwd is unchanged unless it sets `workdir` itself.
+        workdir = (item.get("verify") or metadata.get("verify") or {}).get("cwd")
+        if workdir and "workdir" not in metadata:
+            metadata["workdir"] = workdir
         # The plane keeps the gate as a top-level field of the work item, not
         # in metadata; this runtime keeps it in metadata.verify. Lift it, or
         # the mirror executes ungated and the plane refuses the report for
@@ -171,11 +183,49 @@ class HubClient:
         }
         return beads.create(
             title=item.get("title") or item["id"],
-            description=item.get("description") or "",
-            assigned_agent=self.actor,
+            description=item.get("description") or self.brief(metadata),
+            # The LOCAL executor, not the plane actor. A bead stamped with the
+            # actor is undispatchable by construction (§7: the actor is an
+            # identity, not a runner); the actor is preserved in metadata.hub.
+            assigned_agent=self.executor or self.actor,
             metadata=metadata,
             natural_key=self.natural_key(item["id"]),
         )
+
+    @staticmethod
+    def brief(metadata: dict) -> str:
+        """The step's own words, as the brief its executor is handed.
+
+        The plane copies the procedure's text onto every step it files
+        (`sop_plan`, ASOP.md §5.2) and states the gate that will judge it.
+        A mirror that dropped them handed the executor a bare step name —
+        "write-tests", no purpose, no definition of done, no repository —
+        which is not a brief anyone could act on. Rendering them here is what
+        makes a pulled step executable by a model rather than only by a script
+        that already knew the answer.
+        """
+        plan = dict(metadata.get("sop_plan") or {})
+        if not plan:
+            return ""
+        lines: list[str] = []
+        if plan.get("title") and plan.get("name"):
+            role = f" (role: {plan['role']})" if plan.get("role") else ""
+            lines.append(f"Procedure: {plan['title']} — step '{plan['name']}'{role}.")
+        for key, label in (("purpose", "Purpose"), ("entry_check", "Entry check"),
+                           ("inputs", "Inputs"), ("definition_of_done", "Definition of done"),
+                           ("validation", "Validation"), ("write_back", "Write back")):
+            value = plan.get(key)
+            if value:
+                lines.append(f"{label}: {value}")
+        for mistake in plan.get("common_mistakes") or []:
+            lines.append(f"Common mistake to avoid: {mistake}")
+        gate = metadata.get("verify") or {}
+        check = gate.get("check") or (gate.get("checks") or [None])[0]
+        if check:
+            lines.append(f"The gate that decides this step is {gate.get('kind', 'deterministic')}: {check}")
+        if metadata.get("workdir"):
+            lines.append(f"Work in {metadata['workdir']} — that is where the gate runs.")
+        return "\n".join(lines)
 
     def pull_and_mirror(self, beads: Beads, *, capabilities: Optional[list[str]] = None,
                         ttl_seconds: Optional[int] = None, limit: int = 20) -> list[Task]:
@@ -268,7 +318,8 @@ def client_from_config(config) -> Optional[HubClient]:
             f"hub.url is set but {hub.secret_env} is not in the environment",
             f"export {hub.secret_env}=<the actor's shared secret>",
         )
-    return HubClient(url=hub.url, actor=hub.actor, secret=secret, timeout_s=hub.timeout_s)
+    return HubClient(url=hub.url, actor=hub.actor, secret=secret, timeout_s=hub.timeout_s,
+                     executor=hub.executor)
 
 
 def completion_hook(orch, task: Task) -> None:

@@ -787,3 +787,63 @@ def test_doctor_names_the_paths_that_are_still_unmetered(tmp_path, monkeypatch, 
     out = capsys.readouterr().out
     assert "known model-invoking path(s) are NOT metered" in out
     assert "transkriptor" in out
+
+
+# --------------------------------------------------- a plane must name a local runner
+
+def _hub_cfg(tmp_path, hub: dict) -> str:
+    cfg = tmp_path / "config.yaml"
+    cfg.write_text(yaml.safe_dump({
+        "tasks_path": "tasks.jsonl",
+        "llm": {"default_provider": "lmstudio", "default_model": "local"},
+        "hub": hub,
+    }))
+    return str(cfg)
+
+
+def test_doctor_fails_when_a_plane_is_configured_with_no_local_executor(
+    tmp_path, monkeypatch, capsys
+):
+    """The actor is an identity on the plane, never a runner here.
+
+    Without hub.executor every pulled bead fails the next cycle with
+    "Unknown agent: <actor>" and spawns an RCA bead — found by the first
+    --live end-to-end run.
+    """
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "company").mkdir()
+    code = run_doctor(_hub_cfg(tmp_path, {"url": "http://127.0.0.1:8791", "actor": "harness-bigmac"}))
+    out = capsys.readouterr().out
+    assert code == 1
+    assert "BROKEN (hub.executor_dispatchable)" in out
+    assert "harness-bigmac" in out
+
+
+def test_doctor_fails_when_the_hub_executor_cannot_dispatch(tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "company").mkdir()
+    code = run_doctor(_hub_cfg(tmp_path, {"url": "http://127.0.0.1:8791",
+                                          "actor": "harness-bigmac", "executor": "nonesuch"}))
+    out = capsys.readouterr().out
+    assert code == 1
+    assert "BROKEN (hub.executor_dispatchable)" in out
+    assert "nonesuch" in out
+
+
+def test_doctor_oks_a_registered_hub_executor(tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "company").mkdir()
+    run_doctor(_hub_cfg(tmp_path, {"url": "http://127.0.0.1:8791",
+                                   "actor": "harness-bigmac", "executor": "claude"}))
+    out = capsys.readouterr().out
+    assert "hub.executor_dispatchable" in out
+    assert "BROKEN (hub.executor_dispatchable)" not in out
+
+
+def test_doctor_stays_silent_about_the_hub_when_no_plane_is_configured(
+    tmp_path, monkeypatch, capsys
+):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "company").mkdir()
+    run_doctor(_hub_cfg(tmp_path, {"actor": "harness-bigmac"}))
+    assert "hub.executor_dispatchable" not in capsys.readouterr().out
