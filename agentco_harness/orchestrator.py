@@ -399,7 +399,9 @@ def _format_thread(thread: list[dict]) -> str:
     return "\n".join(lines) if lines else "(no prior messages)"
 
 
-def answer_pending_chat(beads: Beads, task: Task, tasks_path) -> None:
+def answer_pending_chat(
+    beads: Beads, task: Task, tasks_path, routes_path: str | None = None
+) -> None:
     """Answer an unanswered human comment on `task` — and nothing else.
 
     Shared by both dispatch paths — `webui.api_chat`'s immediate background
@@ -423,7 +425,13 @@ def answer_pending_chat(beads: Beads, task: Task, tasks_path) -> None:
 
     print(f"[chat] answering pending chat on {task.id}")
     try:
-        data_class, route = check_egress("claude", task.metadata, supervised=False)
+        data_class, route = check_egress(
+            "claude",
+            task.metadata,
+            routes_path=routes_path,
+            store_dir=Path(tasks_path).parent,
+            supervised=False,
+        )
     except (EgressDenied, PolicyUnavailable) as e:
         print(f"[chat] reply for {task.id} skipped — egress denied: {e}")
         _append_chat_reply(
@@ -1235,7 +1243,12 @@ class Orchestrator:
         """Answer an unanswered human comment on `task` — thin wrapper over
         the module-level `answer_pending_chat`, which webui's immediate-
         dispatch path also calls. See its docstring for the full contract."""
-        answer_pending_chat(self.beads, task, self.config.tasks_path)
+        answer_pending_chat(
+            self.beads,
+            task,
+            self.config.tasks_path,
+            routes_path=self.config.egress.routes_path,
+        )
 
     def _execute_cycle_task(self, task: Task, now: datetime | None = None) -> bool:
         """Route one cycle task: verify_child and registered handlers → pure in-process code;
@@ -1353,7 +1366,13 @@ class Orchestrator:
         the gate always evaluates against the unsupervised ceiling.
         """
         try:
-            data_class, route = check_egress(agent, task.metadata, supervised=False)
+            data_class, route = check_egress(
+                agent,
+                task.metadata,
+                routes_path=self.config.egress.routes_path,
+                store_dir=self.config.store_dir,
+                supervised=False,
+            )
         except (EgressDenied, PolicyUnavailable) as e:
             reason = f"egress denied: {e}"
             print(f"[cycle] BLOCKED: {task.id} {reason}")

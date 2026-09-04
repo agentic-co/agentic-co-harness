@@ -10,6 +10,7 @@ import json
 
 import pytest
 
+from agentco_harness import egress
 from agentco_harness.egress import (
     AGENT_ROUTE,
     EgressDenied,
@@ -223,3 +224,85 @@ def test_orchestrator_allows_declared_public_bead_to_zai(tmp_path, monkeypatch):
         metadata={"company": "personal", "data_class": "PUBLIC"},
     )
     assert orch._authorize_egress(task, "zai") is True
+
+
+# ------------------------------------------------------- artifact resolution
+#
+# The default used to be a hardcoded path inside one operator's home:
+# ~/.claude/LIFEOS/MEMORY/STATE/inference-routes.json. For anybody who is not
+# that operator that file never exists, so the fail-closed rule denied every
+# non-native route — behaving exactly as designed, for a reason that had
+# nothing to do with them, and reporting it as a policy denial rather than a
+# missing file. These pin the order that replaced it.
+
+
+def test_explicit_path_wins_over_everything(tmp_path, monkeypatch):
+    monkeypatch.setenv("AGENTCO_INFERENCE_ROUTES", str(tmp_path / "from-env.json"))
+    chosen = egress.artifact_path(tmp_path / "explicit.json", store_dir=tmp_path)
+    assert chosen == tmp_path / "explicit.json"
+
+
+def test_env_wins_over_the_store_default(tmp_path, monkeypatch):
+    monkeypatch.setenv("AGENTCO_INFERENCE_ROUTES", str(tmp_path / "from-env.json"))
+    assert egress.artifact_path(store_dir=tmp_path) == tmp_path / "from-env.json"
+
+
+def test_the_legacy_env_name_is_still_read(tmp_path, monkeypatch):
+    """Renaming it would fail CLOSED — the expensive kind of silent."""
+    monkeypatch.delenv("AGENTCO_INFERENCE_ROUTES", raising=False)
+    monkeypatch.setenv("LIFEOS_INFERENCE_ROUTES", str(tmp_path / "legacy.json"))
+    assert egress.artifact_path(store_dir=tmp_path) == tmp_path / "legacy.json"
+
+
+def test_the_new_env_name_wins_over_the_legacy_one(tmp_path, monkeypatch):
+    monkeypatch.setenv("AGENTCO_INFERENCE_ROUTES", str(tmp_path / "new.json"))
+    monkeypatch.setenv("LIFEOS_INFERENCE_ROUTES", str(tmp_path / "old.json"))
+    assert egress.artifact_path(store_dir=tmp_path) == tmp_path / "new.json"
+
+
+def test_the_default_is_beside_the_store_on_a_machine_with_no_legacy(
+    tmp_path, monkeypatch
+):
+    """The whole point: a fresh install resolves a path it owns."""
+    monkeypatch.delenv("AGENTCO_INFERENCE_ROUTES", raising=False)
+    monkeypatch.delenv("LIFEOS_INFERENCE_ROUTES", raising=False)
+    monkeypatch.setattr(egress, "_LEGACY_DEFAULT", tmp_path / "no-such-legacy.json")
+    assert egress.artifact_path(store_dir=tmp_path) == tmp_path / egress.ARTIFACT_NAME
+
+
+def test_an_existing_store_artifact_beats_an_existing_legacy_one(
+    tmp_path, monkeypatch
+):
+    """Both present means the operator put one next to the queue on purpose."""
+    monkeypatch.delenv("AGENTCO_INFERENCE_ROUTES", raising=False)
+    monkeypatch.delenv("LIFEOS_INFERENCE_ROUTES", raising=False)
+    legacy = tmp_path / "legacy.json"
+    legacy.write_text("{}")
+    beside = tmp_path / "store"
+    beside.mkdir()
+    (beside / egress.ARTIFACT_NAME).write_text("{}")
+    monkeypatch.setattr(egress, "_LEGACY_DEFAULT", legacy)
+    assert egress.artifact_path(store_dir=beside) == beside / egress.ARTIFACT_NAME
+
+
+def test_a_lifeos_shaped_install_keeps_its_legacy_export(tmp_path, monkeypatch):
+    """An upgrade must not start denying routes that worked yesterday."""
+    monkeypatch.delenv("AGENTCO_INFERENCE_ROUTES", raising=False)
+    monkeypatch.delenv("LIFEOS_INFERENCE_ROUTES", raising=False)
+    legacy = tmp_path / "legacy.json"
+    legacy.write_text("{}")
+    monkeypatch.setattr(egress, "_LEGACY_DEFAULT", legacy)
+    empty_store = tmp_path / "store"
+    empty_store.mkdir()
+    assert egress.artifact_path(store_dir=empty_store) == legacy
+
+
+def test_the_missing_artifact_message_names_the_config_key(tmp_path, monkeypatch):
+    """A denial an operator can act on without reading this module."""
+    monkeypatch.delenv("AGENTCO_INFERENCE_ROUTES", raising=False)
+    monkeypatch.delenv("LIFEOS_INFERENCE_ROUTES", raising=False)
+    with pytest.raises(egress.PolicyUnavailable) as caught:
+        egress.load_routes(tmp_path / "absent.json")
+    message = str(caught.value)
+    assert "egress.routes_path" in message
+    assert "AGENTCO_INFERENCE_ROUTES" in message
