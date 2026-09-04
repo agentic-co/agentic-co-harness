@@ -32,10 +32,16 @@ import tempfile
 from contextlib import contextmanager
 from dataclasses import replace
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Sequence
 
 from asop import ASOP, Step, SopStatus, validate_asop
 from asop.errors import Refusal
+from asop.revision import (
+    RevisionPolicyError,
+    check_asop_revision,
+    protected_tags_from_env,
+    require_human,
+)
 from asop.sop import SopContractError
 
 from .beads import Beads, DepthLimitError, Task
@@ -50,30 +56,64 @@ def _refuse(code: str, message: str, remediation: str) -> None:
     raise Refusal(code=code, message=message, remediation=remediation)
 
 
-def _human_only(verb: str, by_kind: str) -> None:
-    """`retire` and `activate` are human verbs in this runtime.
+def _declared_kind(verb: str, kind: str) -> str:
+    """The caller's declared trust domain, or a refusal naming the verb.
 
-    The contract lets an agent activate "under policy" (ASOP.md §8.1). The
-    revision policy is not ported to this store yet, and an unpoliced door
-    is the one shape a runtime with production access cannot accept — so
-    until it is, the door is human-only rather than open.
+    Every policed verb funnels through here so an undeclared or misspelled
+    kind is a refusal rather than a `ValueError` from inside the policy — the
+    policy's own type check is a programming-error guard, not a caller-facing
+    one, and a runtime that let `by_kind="huamn"` through to it would turn a
+    typo into a 500 on a path that was refusing correctly.
     """
-    if by_kind != HUMAN:
+    if kind not in AUTHOR_KINDS:
         _refuse(
-            "revision_policy:human_only",
-            f"`{verb}` is a human verb; the caller declared itself {by_kind!r}",
-            "Have the operator run this, or wait for the revision policy that "
-            "would let an agent do it under rules.",
+            "sop_refused",
+            f"`{verb}` needs a declared caller: {kind!r} is not one of {AUTHOR_KINDS}",
+            "Declare who is asking — 'human' or 'agent'. Who is human is the "
+            "operator's declaration (AGENTCO_HUMANS), never the caller's word.",
         )
+    return kind
+
+
+def _policed(exc: RevisionPolicyError) -> None:
+    """The contract's policy error, said in the contract's refusal vocabulary.
+
+    `revision_policy:<rule>` is what ASOP.md §8.1 and §10 promise a caller,
+    and it is what the plane returns for the same refusal from the same
+    function — so a harness and a plane refusing the same revision say the
+    same thing, and a client can branch on the code either way.
+    """
+    _refuse(
+        f"revision_policy:{exc.rule}",
+        str(exc),
+        "Have a person do this, or change the revision so the rule does not "
+        "fire. Who is human is declared by the operator (AGENTCO_HUMANS), "
+        "never inferred — an undeclared registry polices everyone.",
+    )
 
 
 class AsopStore:
-    """The versioned procedure store. One file, one lock, every version kept."""
+    """The versioned procedure store. One file, one lock, every version kept.
 
-    def __init__(self, path: Path | str):
+    `revise`, `activate` and `retire` are policed by the shared revision
+    policy (`asop.revision`, ASOP.md §6.4) — the same four rules, from the
+    same implementation, that the coordination plane enforces. A human passes
+    all of them; an agent is bound by every one.
+    """
+
+    def __init__(self, path: Path | str, protected_tags: Optional[Sequence[str]] = None):
         self.path = Path(path)
         self._lock_path = self.path.with_suffix(self.path.suffix + ".lock")
         self.quarantined: list[str] = []
+        # The defaults (`money`, `irreversible`) plus whatever this
+        # installation adds through `AGENTCO_PROTECTED_TAGS` — the same
+        # variable, with the same name and the same add-only semantics, the
+        # plane reads. Read once here, as the plane reads it once per
+        # library, so a procedure cannot be protected halfway through a run.
+        self.protected_tags = (
+            frozenset(protected_tags) if protected_tags is not None
+            else protected_tags_from_env()
+        )
         self.path.parent.mkdir(parents=True, exist_ok=True)
         if not self.path.exists():
             self.path.touch()
@@ -204,9 +244,12 @@ class AsopStore:
 
         Never edits a version. `steps`, if given, replace the sequence
         wholesale — a step list is one thing, not a set of patches.
+
+        **The revision policy runs here, before anything is written** (§6.4).
+        An agent is bound by all four rules and a refusal leaves the file
+        byte-identical; a human passes unconditionally.
         """
-        if author_kind not in AUTHOR_KINDS:
-            _refuse("sop_refused", f"author_kind must be one of {AUTHOR_KINDS}", "Declare the author.")
+        _declared_kind("sop_revise", author_kind)
         with self._locked():
             records = self._read_all()
             if self.quarantined and any(json.loads(q).get("asop_id") == asop_id for q in self.quarantined if q.startswith("{")):
@@ -230,13 +273,31 @@ class AsopStore:
                 author=author, author_kind=author_kind,
                 steps=[Step(**s) for s in clean.pop("steps")], **clean,
             )
+            # Measured against the LATEST version, not against `from_version`.
+            # Branching from an older version is how an agent would otherwise
+            # undo a human without ever proposing the undo: revise from the
+            # version before the human's edit and the diff never shows it.
+            try:
+                check_asop_revision(
+                    history=versions, baseline=versions[-1], proposed=record,
+                    reviser_kind=author_kind, protected_tags=self.protected_tags,
+                    action="revise",
+                )
+            except RevisionPolicyError as e:
+                _policed(e)
             with open(self.path, "a") as f:
                 f.write(record.to_json() + "\n")
         return record
 
     def activate(self, asop_id: str, version: int, *, by_kind: str) -> ASOP:
-        """DRAFT → ACTIVE; the previously active version → SUPERSEDED."""
-        _human_only("activate", by_kind)
+        """DRAFT → ACTIVE; the previously active version → SUPERSEDED.
+
+        Human, **or agent under policy** (ASOP.md §8.1). Activation is policed
+        exactly as a revision is, or the policy has a door beside it: an agent
+        forbidden from re-adding a step a human removed could otherwise
+        re-activate the version from before the human removed it.
+        """
+        _declared_kind("sop_activate", by_kind)
         with self._locked():
             records = self._read_all()
             target = next((r for r in records if r.asop_id == asop_id and r.version == version), None)
@@ -245,6 +306,22 @@ class AsopStore:
             if target.status is not SopStatus.DRAFT:
                 _refuse("sop_refused", f"ASOP {asop_id!r} v{version} is {target.status.value}, not a draft",
                         "Only a draft activates. Revise to get a new draft.")
+            versions = sorted((r for r in records if r.asop_id == asop_id), key=lambda r: r.version)
+            active = next((r for r in versions if r.status is SopStatus.ACTIVE), None)
+            try:
+                check_asop_revision(
+                    history=versions, baseline=active or versions[-1], proposed=target,
+                    reviser_kind=by_kind, protected_tags=self.protected_tags,
+                    action="activate",
+                    # Nothing has ever been active, so there is no prior
+                    # version to measure this one against and every
+                    # differential rule is vacuous. The policy switches to an
+                    # absolute check: an agent may not put a human step into
+                    # service at all.
+                    first_activation=active is None,
+                )
+            except RevisionPolicyError as e:
+                _policed(e)
             out: list[ASOP] = []
             for r in records:
                 if r.asop_id == asop_id and r.status is SopStatus.ACTIVE:
@@ -257,8 +334,27 @@ class AsopStore:
         return target
 
     def retire(self, asop_id: str, *, by_kind: str) -> ASOP:
-        """ACTIVE → RETIRED. No successor; runs in flight finish; none new."""
-        _human_only("retire", by_kind)
+        """ACTIVE → RETIRED. No successor; runs in flight finish; none new.
+
+        Human-only (rule 4, ASOP.md §8.1). Not a diff — there is no proposed
+        version to compare — so it is refused to an agent whatever it would
+        produce: an agent that learns a procedure is slow and withdraws it is
+        doing exactly what the loop asks of it, and the procedure it withdrew
+        may have been the one that keeps a payment run from sending money
+        that cannot be recalled.
+        """
+        _declared_kind("sop_retire", by_kind)
+        try:
+            require_human(
+                by_kind, "sop_retire",
+                because=(
+                    "Withdrawing a procedure ends it with no successor, and an agent "
+                    "that finds a step expensive would be the party deciding nobody "
+                    "follows it any more."
+                ),
+            )
+        except RevisionPolicyError as e:
+            _policed(e)
         with self._locked():
             records = self._read_all()
             active = next((r for r in records if r.asop_id == asop_id and r.status is SopStatus.ACTIVE), None)

@@ -3045,6 +3045,32 @@ def _refusal(e) -> None:
     raise click.ClickException(f"{e.code}: {e.message}\n  {e.remediation}")
 
 
+def _kind(actor, claimed: str) -> str:
+    """The caller's trust domain: the operator's declaration where there is one.
+
+    `AGENTCO_HUMANS` — the same variable the coordination plane reads, with
+    the same exact-spelling, comma-separated shape — names the people. Where
+    it is declared, the answer comes from it and `--author-kind` / `--by-kind`
+    stop being an assertion the caller makes about itself: an agent that could
+    become human by passing a flag would make the revision policy a
+    suggestion, which is the whole reason the plane resolves the kind at its
+    own edge rather than trusting the body.
+
+    Where it is UNDECLARED the flag stands, because this is a terminal an
+    operator sits at. That is the one place the harness reads the variable
+    more loosely than the plane, which resolves every caller against an empty
+    set and so polices everyone: the plane's callers authenticate with a key
+    and a local `harness sop retire` has no key to check. Declaring the set is
+    what turns the flag into a check — and the store polices the kind it is
+    handed either way, so an in-process agent passing `author_kind="agent"`
+    is bound by all four rules with no environment at all.
+    """
+    from asop.revision import humans_from_env, kind_of
+
+    humans = humans_from_env()
+    return kind_of(actor, humans) if humans else claimed
+
+
 @main.group("sop")
 def sop():
     """ASOPs — agentic standard operating procedures, versioned locally."""
@@ -3060,7 +3086,8 @@ def sop_create(ctx, file, author, author_kind, asop_id):
     """Create a procedure at v1 (draft) from a YAML file."""
     from asop.errors import Refusal
     try:
-        rec = _store(ctx).create(_load_body(file), author=author, author_kind=author_kind, asop_id=asop_id)
+        rec = _store(ctx).create(_load_body(file), author=author,
+                                 author_kind=_kind(author, author_kind), asop_id=asop_id)
     except Refusal as e:
         _refusal(e)
     click.echo(f"Created {rec.asop_id} v{rec.version} ({rec.status.value}) — {len(rec.steps)} step(s)")
@@ -3078,7 +3105,7 @@ def sop_revise(ctx, asop_id, file, from_version, author, author_kind):
     from asop.errors import Refusal
     try:
         rec = _store(ctx).revise(asop_id, _load_body(file), from_version=from_version,
-                                 author=author, author_kind=author_kind)
+                                 author=author, author_kind=_kind(author, author_kind))
     except Refusal as e:
         _refusal(e)
     click.echo(f"Drafted {rec.asop_id} v{rec.version}")
@@ -3087,13 +3114,17 @@ def sop_revise(ctx, asop_id, file, from_version, author, author_kind):
 @sop.command("activate")
 @click.argument("asop_id")
 @click.argument("version", type=int)
+@click.option("--by", default=None, help="Who is activating. Checked against AGENTCO_HUMANS where it is declared.")
 @click.option("--by-kind", type=click.Choice(["human", "agent"]), default="human", show_default=True)
 @click.pass_context
-def sop_activate(ctx, asop_id, version, by_kind):
-    """Activate a draft; the previously active version is superseded."""
+def sop_activate(ctx, asop_id, version, by, by_kind):
+    """Activate a draft; the previously active version is superseded.
+
+    Human, or agent under the revision policy (ASOP.md §6.4, §8.1).
+    """
     from asop.errors import Refusal
     try:
-        rec = _store(ctx).activate(asop_id, version, by_kind=by_kind)
+        rec = _store(ctx).activate(asop_id, version, by_kind=_kind(by, by_kind))
     except Refusal as e:
         _refusal(e)
     click.echo(f"Active: {rec.asop_id} v{rec.version}")
@@ -3101,13 +3132,17 @@ def sop_activate(ctx, asop_id, version, by_kind):
 
 @sop.command("retire")
 @click.argument("asop_id")
+@click.option("--by", default=None, help="Who is retiring it. Checked against AGENTCO_HUMANS where it is declared.")
 @click.option("--by-kind", type=click.Choice(["human", "agent"]), default="human", show_default=True)
 @click.pass_context
-def sop_retire(ctx, asop_id, by_kind):
-    """Withdraw the active version. Runs in flight finish; none new file."""
+def sop_retire(ctx, asop_id, by, by_kind):
+    """Withdraw the active version. Runs in flight finish; none new file.
+
+    Human only (ASOP.md §8.1).
+    """
     from asop.errors import Refusal
     try:
-        rec = _store(ctx).retire(asop_id, by_kind=by_kind)
+        rec = _store(ctx).retire(asop_id, by_kind=_kind(by, by_kind))
     except Refusal as e:
         _refusal(e)
     click.echo(f"Retired: {rec.asop_id} v{rec.version}")
