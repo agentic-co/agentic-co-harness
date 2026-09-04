@@ -80,13 +80,15 @@ def plane():
 
 
 def plane_item(item_id="w-1", gate=None):
+    """Shaped like the plane's WorkItem.to_json(): the gate is a TOP-LEVEL
+    field (`verify`), and metadata carries the pin and the plan copy."""
     return {
         "id": item_id, "title": "3. implement", "description": "make it pass", "status": "in_progress",
         "lease_attempt": 2,
+        "verify": gate or {"kind": "deterministic", "check": "true", "schema_version": 1},
         "metadata": {
             "sop_ref": {"asop_id": "feature-dev", "version": 3, "step": 3},
-            "step": {"name": "implement", "role": "implementer", "purpose": "make it pass"},
-            "verify": gate or {"kind": "deterministic", "check": "true", "schema_version": 1},
+            "sop_plan": {"name": "implement", "role": "implementer", "purpose": "make it pass"},
         },
     }
 
@@ -126,7 +128,7 @@ def test_pull_mirrors_the_item_with_its_pin_gate_and_provenance(plane, tmp_path)
     t = beads.get(mirrored[0].id)
     assert t.assigned_agent == "claude"
     assert t.metadata["sop_ref"] == {"asop_id": "feature-dev", "version": 3, "step": 3}
-    assert t.metadata["verify"]["kind"] == "deterministic"          # the gate came along
+    assert t.metadata["verify"]["kind"] == "deterministic"          # the top-level gate was lifted into metadata
     assert t.metadata[HUB_KEY]["item_id"] == "w-1" and t.metadata[HUB_KEY]["attempt"] == 2
     assert t.status is TaskStatus.PENDING                          # the cycle executes it
 

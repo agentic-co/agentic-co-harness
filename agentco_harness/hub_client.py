@@ -159,6 +159,12 @@ class HubClient:
         if existing is not None:
             return existing
         metadata = dict(item.get("metadata") or {})
+        # The plane keeps the gate as a top-level field of the work item, not
+        # in metadata; this runtime keeps it in metadata.verify. Lift it, or
+        # the mirror executes ungated and the plane refuses the report for
+        # want of an attestation — found by the first end-to-end run.
+        if item.get("verify") and "verify" not in metadata:
+            metadata["verify"] = dict(item["verify"])
         metadata[HUB_KEY] = {
             "url": self.url, "item_id": item["id"], "attempt": leased.get("attempt"),
             "actor": self.actor, "pulled_at": datetime.now(timezone.utc).isoformat(),
