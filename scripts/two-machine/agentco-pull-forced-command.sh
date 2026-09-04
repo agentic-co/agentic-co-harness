@@ -71,7 +71,7 @@ set -uo pipefail
 # (config.py:475-477), but the children registry resolves against CWD (defect,
 # beaded) — the cd below is load-bearing until that is fixed.
 HUB_CONFIG="${AGENTCO_HUB_CONFIG:-$HOME/.agentco/config.yaml}"
-AGENTCO_BIN="${AGENTCO_BIN:-$HOME/.local/bin/harness}"
+AGENTCO_BIN="${AGENTCO_BIN:-$HOME/.local/bin/agentic-co}"
 AUDIT_LOG="${AGENTCO_PULL_AUDIT_LOG:-$(dirname "$0")/pull-audit.log}"
 
 # Value shapes.  Kept as anchored patterns so a flag can never smuggle a second

@@ -952,12 +952,12 @@ def collect(config_path: str) -> DoctorReport:
     # The store polices the kind it is HANDED. In-process that is honest — a
     # caller passing `agent` is bound by all four rules with no configuration.
     # At the CLI the kind is a flag, and where `AGENTCO_HUMANS` is undeclared
-    # the flag stands, on the reasoning that a local `harness sop retire` has
+    # the flag stands, on the reasoning that a local `agentic-co sop retire` has
     # no key to authenticate and there is an operator at the terminal.
     #
     # On THIS runtime that reasoning has a hole, because what sits at the
     # terminal is frequently not a person: the cycle dispatches headless agent
-    # CLIs with shell access, and one of them can run `harness sop revise ...
+    # CLIs with shell access, and one of them can run `agentic-co sop revise ...
     # --author-kind human` (or omit the flag, which defaults to human) and
     # revise a procedure carrying a `money` step. Verified 2026-09-04: with the
     # variable unset that revision is DRAFTED; with `AGENTCO_HUMANS` declared

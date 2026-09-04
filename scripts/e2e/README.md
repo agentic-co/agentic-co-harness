@@ -7,7 +7,7 @@ run to completion while checking every claim the contract makes along the way.
 | role | participant | how |
 |---|---|---|
 | analyst | `claude-code` | a direct participant over signed HTTP (default), or real Claude Code over MCP with `--claude-code mcp` |
-| implementer | `harness-bigmac` | this runtime: `harness hub pull` → execute → `harness hub sync` |
+| implementer | `harness-bigmac` | this runtime: `agentic-co hub pull` → execute → `agentic-co hub sync` |
 | validator | `agy` | a direct participant over signed HTTP (default), or real headless agy over MCP with `--agy mcp` (`agy --print`, agy ≥ 1.1.26; agy is OAuth-only, so the machine must already hold an interactive login) |
 
 ```sh

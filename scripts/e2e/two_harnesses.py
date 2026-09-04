@@ -158,7 +158,7 @@ def feature_dev_body(target: Path, gate5: str) -> dict:
 # ----------------------------------------------------------------- the runtime as implementer
 
 def runtime_cli(node: Path, hub_repo: Path, args: list[str], env: dict) -> subprocess.CompletedProcess:
-    exe = RUNTIME / ".venv" / "bin" / "harness"
+    exe = RUNTIME / ".venv" / "bin" / "agentic-co"
     return subprocess.run([str(exe), "-c", str(node / "config.yaml"), *args], cwd=node, env=env,
                           capture_output=True, text=True)
 

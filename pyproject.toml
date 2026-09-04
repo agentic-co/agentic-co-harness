@@ -37,7 +37,7 @@ dev = [
 ]
 
 [project.scripts]
-harness = "agentco_harness.cli:main"
+agentic-co = "agentco_harness.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["agentco_harness"]
