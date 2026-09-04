@@ -57,21 +57,21 @@ uv pip install -e "."                       # runtime only — no in-process mod
 uv run pytest -q
 ```
 
-Console script: `harness` (v1 and the Hub both claim `agentco`).
+Console script: `agentic-co` (v1 and the Hub both claim `agentco`).
 
 ## The shape
 
 ```
-harness init                 # config.yaml + tasks.jsonl in the current dir
-harness tasks create "..."   # every unit of work is a bead
-harness cycle                # recurring → triage → dispatch → verify, once
-harness daemon               # the same, forever
-harness me                   # the human queue: what depends on you
-harness doctor               # preflight, classified by consequence (exit 0/1/2)
-harness pull / report        # the cross-machine lease protocol (worker side)
-harness sop create f.yaml    # a procedure, versioned — an ASOP (see below)
-harness sop activate ID 1    # only an active version files runs
-harness sop run ID --input k=v --bind role=agent
+agentic-co init                 # config.yaml + tasks.jsonl in the current dir
+agentic-co tasks create "..."   # every unit of work is a bead
+agentic-co cycle                # recurring → triage → dispatch → verify, once
+agentic-co daemon               # the same, forever
+agentic-co me                   # the human queue: what depends on you
+agentic-co doctor               # preflight, classified by consequence (exit 0/1/2)
+agentic-co pull / report        # the cross-machine lease protocol (worker side)
+agentic-co sop create f.yaml    # a procedure, versioned — an ASOP (see below)
+agentic-co sop activate ID 1    # only an active version files runs
+agentic-co sop run ID --input k=v --bind role=agent
 ```
 
 A bead is a JSONL line. The store is append-only and quarantine-preserving: a
@@ -110,7 +110,7 @@ and `forge` must be a registered backend. `claude`, `zai`, `forge` and
 The runtime keeps procedures in `asops.jsonl` beside the queue, versioned,
 and speaks the ASOP v3 contract (`agentco-asop`, the package the Hub also
 imports — nothing here imports the Hub). An ASOP is an ordered sequence of
-steps for one type of task; `harness sop run` files a parent bead pinned to
+steps for one type of task; `agentic-co sop run` files a parent bead pinned to
 the version and one bead per step, each carrying its step's text and gate.
 The full definition, verbs and decisions are in the contract's `ASOP.md`.
 

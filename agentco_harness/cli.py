@@ -38,7 +38,13 @@ from . import usage as usage_mod
 @click.option("--config", "-c", default="config.yaml", help="Config file path")
 @click.pass_context
 def main(ctx, config: str):
-    """AgentCo - Minimal agentic company structure."""
+    """agentic-co — the AgentCo execution runtime.
+
+    Every unit of work is a bead. `cycle` runs one heartbeat; `doctor` says what
+    is broken before a cycle silently does nothing; `sop` holds the versioned,
+    gated procedures this runtime executes. Runs standalone, or as a worker on a
+    coordination plane when `hub.url` is set.
+    """
     ctx.ensure_object(dict)
     ctx.obj["config_path"] = config
 
@@ -3060,7 +3066,7 @@ def _kind(actor, claimed: str) -> str:
     operator sits at. That is the one place the harness reads the variable
     more loosely than the plane, which resolves every caller against an empty
     set and so polices everyone: the plane's callers authenticate with a key
-    and a local `harness sop retire` has no key to check. Declaring the set is
+    and a local `agentic-co sop retire` has no key to check. Declaring the set is
     what turns the flag into a check — and the store polices the kind it is
     handed either way, so an in-process agent passing `author_kind="agent"`
     is bound by all four rules with no environment at all.
