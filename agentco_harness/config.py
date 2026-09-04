@@ -105,6 +105,19 @@ def _strip_env_value(value: str) -> str:
 
 
 @dataclass
+class EgressConfig:
+    """Where the data-classification route table is read from.
+
+    ``routes_path`` is an absolute path to an exported route table. Left
+    unset, `egress.artifact_path` resolves `inference-routes.json` beside the
+    bead store — a file this runtime owns, rather than one inside a
+    particular operator's home directory.
+    """
+
+    routes_path: str | None = None
+
+
+@dataclass
 class SourceConfig:
     enabled: bool = False
     poll_interval: int = 300  # seconds
@@ -117,7 +130,7 @@ class SourceConfig:
 CONSUMED_AGENT_KEYS = {"model", "use_claude_code", "context", "description"}
 
 # Top-level config keys the loader understands.
-KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "sources", "agents", "llm", "triage", "notify", "instance", "feeds", "humans", "tiers", "backoff", "executor", "capabilities"}
+KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "sources", "agents", "llm", "triage", "notify", "instance", "feeds", "humans", "tiers", "backoff", "executor", "capabilities", "egress"}
 
 # The model-tier registry (Delegation Layer, Stage 2). Capable models plan and
 # route; small models execute atoms. A subtask's `metadata.executor_tier` resolves
@@ -398,6 +411,7 @@ class Config:
     triage: TriageConfig = field(default_factory=TriageConfig)
     notify: NotifyConfig = field(default_factory=NotifyConfig)
     feeds: FeedsConfig = field(default_factory=FeedsConfig)
+    egress: EgressConfig = field(default_factory=EgressConfig)
     humans: HumansConfig = field(default_factory=HumansConfig)
     tiers: TiersConfig = field(default_factory=TiersConfig)
     backoff: BackoffConfig = field(default_factory=BackoffConfig)
@@ -442,6 +456,16 @@ class Config:
     def feeds_path(self) -> str:
         """feeds.jsonl (source watermark state) lives beside the task queue."""
         return str(Path(self.tasks_path).parent / "feeds.jsonl")
+
+    @property
+    def store_dir(self) -> str:
+        """The directory holding the bead store.
+
+        Anything the runtime keeps beside its queue resolves from here, so
+        that a second instance in a second directory is a second everything
+        and not two instances sharing one file by accident.
+        """
+        return str(Path(self.tasks_path).parent)
 
     @property
     def instance_name(self) -> str:
@@ -541,6 +565,11 @@ class Config:
                 telegram_token_env=notify.get("telegram_token_env", NotifyConfig.telegram_token_env),
                 cycle_summary=notify.get("cycle_summary", False),
             )
+
+        if "egress" in data:
+            egress = data["egress"] or {}
+            _warn_unknown_nested("egress", egress, {"routes_path"}, path)
+            config.egress = EgressConfig(routes_path=egress.get("routes_path"))
 
         if "feeds" in data:
             feeds = data["feeds"] or {}

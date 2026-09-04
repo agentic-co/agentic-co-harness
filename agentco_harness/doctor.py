@@ -961,7 +961,10 @@ def collect(config_path: str) -> DoctorReport:
         from .egress import AGENT_ROUTE, PolicyUnavailable, load_routes, artifact_path
 
         try:
-            routes = load_routes()
+            routes = load_routes(
+                artifact_path(config.egress.routes_path, store_dir=config.store_dir),
+                store_dir=config.store_dir,
+            )
         except PolicyUnavailable as e:
             _warn(
                 f"egress policy artifact unavailable ({e}). Native (Anthropic) "
@@ -973,7 +976,8 @@ def collect(config_path: str) -> DoctorReport:
             orphans = {a: r for a, r in AGENT_ROUTE.items() if r not in routes}
             if orphans:
                 _fail(
-                    f"agent(s) mapped to routes absent from {artifact_path()}: "
+                    f"agent(s) mapped to routes absent from "
+                    f"{artifact_path(config.egress.routes_path, store_dir=config.store_dir)}: "
                     + ", ".join(f"{a}->{r}" for a, r in sorted(orphans.items()))
                     + " — these beads can never dispatch. Re-export the artifact "
                       "or fix AGENT_ROUTE."
