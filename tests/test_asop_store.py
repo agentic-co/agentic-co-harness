@@ -248,3 +248,68 @@ def test_cli_create_activate_run(tmp_path, monkeypatch):
     r = runner.invoke(main, ["-c", cfg, "sop", "run", "feature-dev", "--input", "repo=/r",
                              "--bind", "analyst=claude", "--bind", "implementer=forge", "--bind", "validator=claude"])
     assert r.exit_code != 0 and "inputs_missing" in r.output
+
+
+# ----------------------------------------------------------------- §5.5 auto-close (decision A, 2026-09-04)
+
+OK = {"kind": "deterministic", "check": "true"}     # a gate the runtime can pass on its own
+
+
+def _kids(beads, parent_id):
+    return sorted((t for t in beads.list() if t.parent_id == parent_id),
+                  key=lambda t: t.metadata["sop_ref"]["step"])
+
+
+def passing_feature_dev():
+    """The running example with every gate passable by the completing process.
+    The runtime runs a deterministic check at complete(); `uv run pytest -q`
+    in a temp dir exits 5, and a judged gate cannot be self-completed at all."""
+    body = feature_dev()
+    for st in body["steps"]:
+        st["gate"] = OK
+    return body
+
+
+def test_the_parent_closes_when_the_last_step_lands_done(store, beads):
+    store.create(passing_feature_dev(), author="m", author_kind="human", asop_id="feature-dev")
+    store.activate("feature-dev", 1, by_kind="human")
+    parent = store.run("feature-dev", inputs=INPUTS, bindings=BIND, beads=beads)
+    kids = _kids(beads, parent.id)
+    for k in kids[:-1]:
+        beads.claim(k.id, k.assigned_agent); beads.complete(k.id, result="ok")
+        assert beads.get(parent.id).status is not TaskStatus.DONE     # not yet
+    beads.claim(kids[-1].id, kids[-1].assigned_agent); beads.complete(kids[-1].id, result="ok")
+    closed = beads.get(parent.id)
+    assert closed.status is TaskStatus.DONE
+    assert closed.metadata["run_closed_at"]
+    assert [r["step"] for r in closed.metadata["run_review"]["steps"]] == [1, 2, 3, 4, 5]
+
+
+def test_a_verify_failed_sibling_holds_the_parent_open(store, beads):
+    body = passing_feature_dev(); body["steps"][3]["gate"] = {"kind": "deterministic", "check": "false"}
+    rec = store.create(body, author="m", author_kind="human", asop_id="feature-dev")
+    store.activate("feature-dev", 1, by_kind="human")
+    parent = store.run("feature-dev", inputs=INPUTS, bindings=BIND, beads=beads)
+    kids = _kids(beads, parent.id)
+    for k in kids:
+        beads.claim(k.id, k.assigned_agent); beads.complete(k.id, result="ok")
+    assert beads.get(kids[3].id).status is TaskStatus.VERIFY_FAILED     # `false` exits 1
+    assert beads.get(parent.id).status is not TaskStatus.DONE
+
+
+def test_a_nested_container_closes_and_propagates_upward(store, beads):
+    inner = {"title": "Release", "roles": {"releaser": {"kind": "agent"}},
+             "steps": [{"name": "tag", "role": "releaser", "purpose": "p", "gate": OK},
+                       {"name": "publish", "role": "releaser", "purpose": "p", "gate": OK}]}
+    store.create(inner, author="m", author_kind="human", asop_id="release"); store.activate("release", 1, by_kind="human")
+    outer = {"title": "Ship", "roles": {"dev": {"kind": "agent"}},
+             "steps": [{"name": "build", "role": "dev", "purpose": "p", "gate": OK},
+                       {"name": "release", "uses": {"asop_id": "release", "version": 1}}]}
+    store.create(outer, author="m", author_kind="human", asop_id="ship"); store.activate("ship", 1, by_kind="human")
+    parent = store.run("ship", inputs={}, bindings={"dev": "claude", "releaser": "claude"}, beads=beads)
+    build, container = _kids(beads, parent.id)
+    beads.claim(build.id, "claude"); beads.complete(build.id, result="ok")
+    for k in _kids(beads, container.id):
+        beads.claim(k.id, "claude"); beads.complete(k.id, result="ok")
+    assert beads.get(container.id).status is TaskStatus.DONE      # inner steps done → container done
+    assert beads.get(parent.id).status is TaskStatus.DONE         # → and the run

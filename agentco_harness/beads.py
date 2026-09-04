@@ -1748,8 +1748,53 @@ class Beads:
                     self._write_all(tasks)
                     if task.status == TaskStatus.DONE and not was_done:
                         self._on_goal_closed(task, tasks)
+                        self._on_step_closed(task, tasks)
                     return task
         return None
+
+    def _on_step_closed(self, task: Task, tasks: list[Task]) -> None:
+        """ASOP.md §5.5: a run's parent closes when every step bead is done.
+
+        Hooked on the DONE transition, inside the same lock as the write that
+        landed it, so "at that moment" is literal: the parent closes in the
+        same read-modify-write cycle as its last step, and a reader never
+        sees a run whose steps are all done and whose parent is not. Only a
+        bead that is a STEP of a run (`metadata.sop_ref.step` and a parent)
+        triggers this — a planner-decomposed goal keeps its own semantics.
+
+        A sibling in `verify_failed` or `awaiting_verify` holds the parent
+        open (§5.2: those release nothing). A nested container (a step whose
+        body is another ASOP) closes the same way when its inner steps are
+        done, and then counts as done for ITS parent — recursion up the tree,
+        bounded by the depth the tree was filed under. Without this,
+        outcomes counted a finished run as in flight until somebody closed
+        the parent by hand.
+        """
+        ref = (task.metadata or {}).get("sop_ref") or {}
+        if "step" not in ref or not task.parent_id:
+            return
+        by_id = {t.id: t for t in tasks}
+        parent = by_id.get(task.parent_id)
+        if parent is None or parent.status == TaskStatus.DONE:
+            return
+        siblings = [t for t in tasks if t.parent_id == parent.id]
+        if any(t.status != TaskStatus.DONE for t in siblings):
+            return
+        parent.status = TaskStatus.DONE
+        parent.result = parent.result or f"run complete: {len(siblings)} step(s) done"
+        parent.updated_at = datetime.now(timezone.utc).isoformat()
+        parent.metadata = dict(parent.metadata or {})
+        parent.metadata["run_closed_at"] = parent.updated_at
+        parent.metadata["run_review"] = {
+            "steps": [
+                {"step": (t.metadata or {}).get("sop_ref", {}).get("step"),
+                 "id": t.id, "result": t.result}
+                for t in sorted(siblings, key=lambda t: (t.metadata or {}).get("sop_ref", {}).get("step") or 0)
+            ]
+        }
+        self._write_all(tasks)
+        self._on_goal_closed(parent, tasks)
+        self._on_step_closed(parent, tasks)
 
     def _on_goal_closed(self, task: Task, tasks: list[Task]) -> None:
         """Write the System Review when a GOAL bead reaches DONE. Best-effort.
