@@ -9,6 +9,7 @@ from pathlib import Path
 import click
 
 from .beads import gate_kind, verify_check_text
+from .asop_store import AsopStore
 from .beads import (
     DEFAULT_LEASE_TTL_S,
     SOP_TEXT_KEYS,
@@ -3010,3 +3011,158 @@ def approve_reject_all(ctx):
 
 if __name__ == "__main__":
     main()
+
+
+# --------------------------------------------------------------------------- #
+# sop — the ASOP verbs (ASOP.md §8), against the local store
+# --------------------------------------------------------------------------- #
+
+
+def _store(ctx) -> AsopStore:
+    return AsopStore(Config.load(ctx.obj["config_path"]).asops_path)
+
+
+def _load_body(path: str) -> dict:
+    import yaml
+    with open(path) as f:
+        body = yaml.safe_load(f) or {}
+    if not isinstance(body, dict):
+        raise click.ClickException(f"{path} must contain one ASOP mapping")
+    return body
+
+
+def _kv(pairs: tuple[str, ...], what: str) -> dict:
+    out = {}
+    for pair in pairs:
+        if "=" not in pair:
+            raise click.ClickException(f"--{what} expects NAME=VALUE, got {pair!r}")
+        k, v = pair.split("=", 1)
+        out[k.strip()] = v.strip()
+    return out
+
+
+def _refusal(e) -> None:
+    raise click.ClickException(f"{e.code}: {e.message}\n  {e.remediation}")
+
+
+@main.group("sop")
+def sop():
+    """ASOPs — agentic standard operating procedures, versioned locally."""
+
+
+@sop.command("create")
+@click.argument("file", type=click.Path(exists=True, dir_okay=False))
+@click.option("--author", required=True, help="Who is writing this version.")
+@click.option("--author-kind", type=click.Choice(["human", "agent"]), default="human", show_default=True)
+@click.option("--id", "asop_id", default=None, help="Explicit asop_id (default: generated).")
+@click.pass_context
+def sop_create(ctx, file, author, author_kind, asop_id):
+    """Create a procedure at v1 (draft) from a YAML file."""
+    from asop.errors import Refusal
+    try:
+        rec = _store(ctx).create(_load_body(file), author=author, author_kind=author_kind, asop_id=asop_id)
+    except Refusal as e:
+        _refusal(e)
+    click.echo(f"Created {rec.asop_id} v{rec.version} ({rec.status.value}) — {len(rec.steps)} step(s)")
+
+
+@sop.command("revise")
+@click.argument("asop_id")
+@click.argument("file", type=click.Path(exists=True, dir_okay=False))
+@click.option("--from-version", type=int, default=None)
+@click.option("--author", required=True)
+@click.option("--author-kind", type=click.Choice(["human", "agent"]), default="human", show_default=True)
+@click.pass_context
+def sop_revise(ctx, asop_id, file, from_version, author, author_kind):
+    """A new draft version from an existing one plus the changes in FILE."""
+    from asop.errors import Refusal
+    try:
+        rec = _store(ctx).revise(asop_id, _load_body(file), from_version=from_version,
+                                 author=author, author_kind=author_kind)
+    except Refusal as e:
+        _refusal(e)
+    click.echo(f"Drafted {rec.asop_id} v{rec.version}")
+
+
+@sop.command("activate")
+@click.argument("asop_id")
+@click.argument("version", type=int)
+@click.option("--by-kind", type=click.Choice(["human", "agent"]), default="human", show_default=True)
+@click.pass_context
+def sop_activate(ctx, asop_id, version, by_kind):
+    """Activate a draft; the previously active version is superseded."""
+    from asop.errors import Refusal
+    try:
+        rec = _store(ctx).activate(asop_id, version, by_kind=by_kind)
+    except Refusal as e:
+        _refusal(e)
+    click.echo(f"Active: {rec.asop_id} v{rec.version}")
+
+
+@sop.command("retire")
+@click.argument("asop_id")
+@click.option("--by-kind", type=click.Choice(["human", "agent"]), default="human", show_default=True)
+@click.pass_context
+def sop_retire(ctx, asop_id, by_kind):
+    """Withdraw the active version. Runs in flight finish; none new file."""
+    from asop.errors import Refusal
+    try:
+        rec = _store(ctx).retire(asop_id, by_kind=by_kind)
+    except Refusal as e:
+        _refusal(e)
+    click.echo(f"Retired: {rec.asop_id} v{rec.version}")
+
+
+@sop.command("list")
+@click.pass_context
+def sop_list(ctx):
+    rows = _store(ctx).list()
+    if not rows:
+        click.echo("(no procedures)")
+        return
+    for r in rows:
+        active = f"v{r['active_version']}" if r["active_version"] else "—"
+        click.echo(f"{r['asop_id']:<20} active {active:<5} latest v{r['latest_version']} {r['latest_status']:<10} {r['title']}")
+
+
+@sop.command("history")
+@click.argument("asop_id")
+@click.pass_context
+def sop_history(ctx, asop_id):
+    for r in _store(ctx).history(asop_id):
+        click.echo(f"v{r.version:<3} {r.status.value:<11} by {r.author or '?'} ({r.author_kind or '?'})  {r.created_at}")
+
+
+@sop.command("get")
+@click.argument("asop_id")
+@click.option("--version", type=int, default=None)
+@click.pass_context
+def sop_get(ctx, asop_id, version):
+    rec = _store(ctx).get(asop_id, version)
+    if rec is None:
+        raise click.ClickException(f"no {'active ' if version is None else ''}version of {asop_id}")
+    click.echo(json.dumps(json.loads(rec.to_json()), indent=2))
+
+
+@sop.command("run")
+@click.argument("asop_id")
+@click.option("--input", "inputs", multiple=True, help="NAME=VALUE, one per declared input.")
+@click.option("--bind", "binds", multiple=True, help="ROLE=ACTOR, one per declared role.")
+@click.option("--version", type=int, default=None)
+@click.option("--title", default=None)
+@click.pass_context
+def sop_run(ctx, asop_id, inputs, binds, version, title):
+    """File a run: a parent bead and one bead per step, pinned to the version."""
+    from asop.errors import Refusal
+    from .beads import Beads
+    config = Config.load(ctx.obj["config_path"])
+    beads = Beads(config.tasks_path)
+    try:
+        parent = _store(ctx).run(asop_id, inputs=_kv(inputs, "input"), bindings=_kv(binds, "bind"),
+                                 beads=beads, version=version, title=title)
+    except Refusal as e:
+        _refusal(e)
+    children = [t for t in beads.list() if t.parent_id == parent.id]
+    click.echo(f"Filed run {parent.id}: {len(children)} step bead(s) pinned to {parent.metadata['sop_ref']}")
+    for t in sorted(children, key=lambda t: t.title):
+        click.echo(f"  {t.id}  {t.title}  ← {t.assigned_agent or t.assigned_to}")

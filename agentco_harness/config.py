@@ -421,6 +421,11 @@ class Config:
         return str(Path(self.tasks_path).parent / "runs.jsonl")
 
     @property
+    def asops_path(self) -> str:
+        """asops.jsonl (the local ASOP store) lives beside the task queue."""
+        return str(Path(self.tasks_path).parent / "asops.jsonl")
+
+    @property
     def store_dir(self) -> str:
         """The directory holding the bead store.
 
