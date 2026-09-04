@@ -604,8 +604,11 @@ def test_orchestrator_runs_a_bead_its_manifest_covers(tmp_path, monkeypatch):
     orch = Orchestrator(config)
     # Stop at the claim — executing the agent needs an LM, and the claim is the
     # only thing under test here.
+    # Patched on `agents`, not `orchestrator`: the dispatch reaches it through
+    # `_lm.agents()`, which resolves the attribute off the module at call time
+    # so that the DSPy layer stays optional. Same boundary, one hop out.
     monkeypatch.setattr(
-        "agentco_harness.orchestrator.get_agent",
+        "agentco_harness.agents.get_agent",
         lambda *a, **k: (_ for _ in ()).throw(RuntimeError("reached dispatch")),
     )
     with pytest.raises(RuntimeError, match="reached dispatch"):
