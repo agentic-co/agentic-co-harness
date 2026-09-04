@@ -52,8 +52,8 @@ green ([details](scripts/e2e/README.md)):
 ## Install
 
 ```sh
-uv venv && uv pip install -e ".[dev]"      # runtime + tests
-uv pip install -e ".[lm]"                   # DSPy triage/planner layer (optional)
+uv venv && uv pip install -e ".[dev]"      # runtime + tests (pulls the DSPy test double)
+uv pip install -e "."                       # runtime only — no in-process model needed
 uv run pytest -q
 ```
 
@@ -113,6 +113,19 @@ imports — nothing here imports the Hub). An ASOP is an ordered sequence of
 steps for one type of task; `harness sop run` files a parent bead pinned to
 the version and one bead per step, each carrying its step's text and gate.
 The full definition, verbs and decisions are in the contract's `ASOP.md`.
+
+**Revising and activating are policed** by the contract's revision policy
+(`asop.revision`, ASOP.md §6.4) — the same four rules, from the same
+implementation, the Hub enforces. A human passes all four. An agent may not
+touch a procedure carrying a `money` or `irreversible` step, may not demote a
+human step to an agent one (deleting it included), may not undo a change a
+person made, and may not `retire` at all. Activation follows §8.1: human, or
+agent under that policy, and a version nobody has ever activated is judged
+absolutely rather than by diff. Two operator declarations tune it, with the
+same names and semantics the Hub reads: `AGENTCO_PROTECTED_TAGS` ADDS to
+`money`/`irreversible` and can never remove them, and `AGENTCO_HUMANS` names
+the people — where it is declared, `--by`/`--author` decide the kind and the
+`--by-kind` flag stops being the caller's own word.
 
 Automated escalations (an RCA loop that exhausts its cycles) land on
 `humans.escalate_to` in `config.yaml` (`human:<name>`; default `human:operator`).

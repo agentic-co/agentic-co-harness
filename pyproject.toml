@@ -27,6 +27,13 @@ lm = [
 dev = [
     "pytest>=8.0",
     "pytest-asyncio>=0.23",
+    # DSPy is optional AT RUNTIME and required AT TEST TIME: `tests/conftest.py`
+    # builds the fake LM the whole suite runs against out of `dspy.utils.dummies`,
+    # so without it pytest cannot even load its own conftest. Leaving it out of
+    # `dev` meant the documented install produced a suite that could not start —
+    # found by installing the public repo from a clean clone, which is the only
+    # place a developer's already-populated venv cannot hide it.
+    "agentco-harness[lm]",
 ]
 
 [project.scripts]
