@@ -30,6 +30,7 @@ and re-pointed) is green with a fake LM; no network, no keys in CI.
 | P2 | ASOP runtime inside the Harness (create, apply, maintain SOPs locally) + a real executor backend interface; config loses its v1-only blocks |
 | P3 | Optional Hub client — L3 participant, publishing off by default, human-prompted |
 | P4 | v1 hub migrates onto Harness + a LifeOS extension pack that re-registers what P0 removed |
+| Later | The ASOP contract (`agentco-asop`) moves to its own repository with its own releases, and both products pin a version. Until the first version is finalised it stays in the Hub repo's `packages/asop/` and this runtime depends on it by git subdirectory — decided 2026-09-04 |
 
 ## Install
 
