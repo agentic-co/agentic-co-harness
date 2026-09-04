@@ -51,6 +51,9 @@ harness daemon               # the same, forever
 harness me                   # the human queue: what depends on you
 harness doctor               # preflight, classified by consequence (exit 0/1/2)
 harness pull / report        # the cross-machine lease protocol (worker side)
+harness sop create f.yaml    # a procedure, versioned — an ASOP (see below)
+harness sop activate ID 1    # only an active version files runs
+harness sop run ID --input k=v --bind role=agent
 ```
 
 A bead is a JSONL line. The store is append-only and quarantine-preserving: a
@@ -68,6 +71,9 @@ from agentco_harness.orchestrator import (
     register_completion_hook,    # hook(orch, task) after a bead goes DONE; isolated
     register_source_factory,     # factory(config) -> [source]; source.poll() -> events
 )
+from agentco_harness.backends import (
+    register_executor_backend,   # name + egress route + execute(orch, task) -> bool
+)
 ```
 
 A handler owns its task type end to end (claim, complete or fail). An
@@ -75,6 +81,20 @@ unregistered type is *not* skipped — it takes the ordinary executor path. Hook
 are isolated: one bad extension prints a warning and the cycle continues. With
 no source factories registered, `observe()` is a heartbeat-only no-op.
 `tests/test_extension_seams.py` pins this contract.
+
+A backend is what an ASOP role binding names: bind `implementer` to `forge`
+and `forge` must be a registered backend. `claude`, `zai`, `forge` and
+`planner` are built in; registering another makes it dispatchable, known to
+`doctor`, and gated by egress under the route it declared.
+
+## ASOPs
+
+The runtime keeps procedures in `asops.jsonl` beside the queue, versioned,
+and speaks the ASOP v3 contract (`agentco-asop`, the package the Hub also
+imports — nothing here imports the Hub). An ASOP is an ordered sequence of
+steps for one type of task; `harness sop run` files a parent bead pinned to
+the version and one bead per step, each carrying its step's text and gate.
+The full definition, verbs and decisions are in the contract's `ASOP.md`.
 
 Automated escalations (an RCA loop that exhausts its cycles) land on
 `humans.escalate_to` in `config.yaml` (`human:<name>`; default `human:operator`).

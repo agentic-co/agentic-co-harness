@@ -7,6 +7,8 @@ import time
 from datetime import datetime, timedelta, timezone
 
 from . import _lm
+from . import backends
+from collections import abc as _abc
 
 from pathlib import Path
 from typing import Callable
@@ -96,7 +98,31 @@ def register_source_factory(factory: Callable) -> None:
 # set. Keep it in lockstep with the `task.assigned_agent == ...` branches in
 # _execute_cycle_task: a name that dispatches but is missing here gets misread
 # as externally-executed and its beads sit pending forever.
-SPECIAL_EXECUTORS = frozenset({"planner", "claude", "zai", "forge"})
+# The built-in backends register themselves at the bottom of this module;
+# `backends.executor_names()` is the live set. This name is kept for readers
+# that still spell it the old way and resolves to the same thing.
+def _special_executors() -> frozenset[str]:
+    return backends.executor_names()
+
+
+class _LiveExecutorSet(_abc.Set):
+    """`SPECIAL_EXECUTORS` used to be a frozenset literal; several guards do
+    `name in SPECIAL_EXECUTORS`. This keeps that spelling working against
+    the registry as it is NOW, not as it was at import. Not a frozenset
+    subclass: `set(x)` on one takes the C fast path and never calls
+    `__iter__`, so a subclass reads as empty exactly when it matters."""
+
+    def __contains__(self, name) -> bool:
+        return name in backends.executor_names()
+
+    def __iter__(self):
+        return iter(backends.executor_names())
+
+    def __len__(self) -> int:
+        return len(backends.executor_names())
+
+
+SPECIAL_EXECUTORS = _LiveExecutorSet()
 
 
 # The planner writes its decision as a JSON STRING inside TaskResult.output — the
@@ -1298,20 +1324,11 @@ class Orchestrator:
         handler = CYCLE_HANDLERS.get(task.metadata.get("type") or "")
         if handler is not None:
             return handler(self, task, now)
-        if task.assigned_agent == "planner" or task.metadata.get("executor") == "planner":
-            return self._execute_planner_task(task)
-        if task.assigned_agent == "claude" or task.metadata.get("executor") == "claude":
-            if not self._authorize_egress(task, "claude"):
+        backend = backends.resolve(task.assigned_agent) or backends.resolve(task.metadata.get("executor"))
+        if backend is not None:
+            if backend.egress_checked and not self._authorize_egress(task, backend.name):
                 return False
-            return self._execute_claude_task(task)
-        if task.assigned_agent == "zai" or task.metadata.get("executor") == "zai":
-            if not self._authorize_egress(task, "zai"):
-                return False
-            return self._execute_zai_task(task)
-        if task.assigned_agent == "forge" or task.metadata.get("executor") == "forge":
-            if not self._authorize_egress(task, "forge"):
-                return False
-            return self._execute_forge_task(task)
+            return backend.execute(self, task)
         return self._execute_task(task)
 
     def _execute_forge_task(self, task: Task) -> bool:
@@ -2162,3 +2179,18 @@ class Orchestrator:
             "last_observe_at": heartbeat.get("last_observe_at"),
             "last_work_at": heartbeat.get("last_work_at"),
         }
+
+
+# --------------------------------------------------------------------------- #
+# The built-in executor backends. Registered here, after `Orchestrator`
+# exists, so `backends.resolve(name)` answers for the four names v1 dispatched
+# by hand. `planner` sends nothing anywhere and skips the egress gate, as it
+# always did; the other three are gated under the routes v1 gave them.
+# --------------------------------------------------------------------------- #
+
+backends.register_executor_backend(
+    "planner", lambda orch, task: orch._execute_planner_task(task), route="NATIVE", egress_checked=False
+)
+backends.register_executor_backend("claude", lambda orch, task: orch._execute_claude_task(task), route="NATIVE")
+backends.register_executor_backend("zai", lambda orch, task: orch._execute_zai_task(task), route="TEMPER")
+backends.register_executor_backend("forge", lambda orch, task: orch._execute_forge_task(task), route="FORGE")
