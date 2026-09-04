@@ -40,10 +40,9 @@ def test_checks_list_is_accepted_and_normalized():
     spec = validate_verify(
         {"class": "deterministic", "checks": ["ruff check .", "uv run pytest -q"]}
     )
-    assert spec == {
-        "class": "deterministic",
-        "checks": ["ruff check .", "uv run pytest -q"],
-    }
+    assert spec["kind"] == "deterministic"
+    assert spec["checks"] == ["ruff check .", "uv run pytest -q"]
+    assert spec["check"] is None
 
 
 def test_check_and_checks_together_are_refused():
@@ -52,22 +51,22 @@ def test_check_and_checks_together_are_refused():
 
 
 def test_neither_check_nor_checks_is_refused():
-    with pytest.raises(VerifyContractError, match="either 'check'"):
+    with pytest.raises(VerifyContractError, match="neither 'check'"):
         validate_verify({"class": "deterministic"})
 
 
 def test_empty_checks_list_is_refused():
-    with pytest.raises(VerifyContractError, match="not a gate"):
+    with pytest.raises(VerifyContractError, match="non-empty list"):
         validate_verify({"class": "deterministic", "checks": []})
 
 
 def test_blank_stage_is_refused_by_index():
-    with pytest.raises(VerifyContractError, match=r"\['checks'\]\[1\]"):
+    with pytest.raises(VerifyContractError, match=r"'checks'\[1\]"):
         validate_verify({"class": "deterministic", "checks": ["true", "  "]})
 
 
 def test_non_string_stage_is_refused():
-    with pytest.raises(VerifyContractError, match=r"\['checks'\]\[0\]"):
+    with pytest.raises(VerifyContractError, match=r"'checks'\[0\]"):
         validate_verify({"class": "deterministic", "checks": [7]})
 
 

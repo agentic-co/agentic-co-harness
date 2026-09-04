@@ -42,12 +42,13 @@ def test_validate_verify_normalizes_a_good_payload():
     spec = validate_verify(
         {"class": "deterministic", "check": "true", "cwd": "/tmp", "timeout_s": 5}
     )
-    assert spec == {
-        "class": "deterministic",
-        "check": "true",
-        "cwd": "/tmp",
-        "timeout_s": 5,
-    }
+    # The contract's normalised gate: every known field present, `None`
+    # where absent, the class under `kind`, and the schema it speaks.
+    assert spec["kind"] == "deterministic"
+    assert spec["check"] == "true" and spec["checks"] is None
+    assert spec["cwd"] == "/tmp" and spec["timeout_s"] == 5
+    assert spec["schema_version"] == 1
+    assert "class" not in spec          # the read-alias is not written back
 
 
 @pytest.mark.parametrize(
@@ -675,10 +676,9 @@ def test_cli_verify_check_is_shorthand_for_deterministic_json(tmp_path, monkeypa
     assert result.exit_code == 0, result.output
     tasks = beads.list()
     assert len(tasks) == 1
-    assert tasks[0].metadata["verify"] == {
-        "class": "deterministic",
-        "check": "uv run pytest -q",
-    }
+    stored = tasks[0].metadata["verify"]
+    assert stored["kind"] == "deterministic"
+    assert stored["check"] == "uv run pytest -q" and stored["checks"] is None
 
 
 def test_cli_verify_and_verify_check_are_mutually_exclusive(tmp_path, monkeypatch):

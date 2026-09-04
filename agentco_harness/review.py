@@ -28,7 +28,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .beads import Task, TaskStatus, verify_check_text
+from .beads import Task, TaskStatus, gate_kind, verify_check_text
 
 REVIEWS_DIRNAME = "reviews"
 
@@ -105,7 +105,7 @@ def _duration(created: str | None, closed: str | None) -> str:
 
 def _verify_class(task: Task) -> str:
     spec = (task.metadata or {}).get("verify") or {}
-    return str(spec.get("class") or "—")
+    return str(gate_kind(spec) or "—")
 
 
 def _verify_outcome(task: Task) -> str:

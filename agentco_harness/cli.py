@@ -8,6 +8,7 @@ from pathlib import Path
 
 import click
 
+from .beads import gate_kind, verify_check_text
 from .beads import (
     DEFAULT_LEASE_TTL_S,
     SOP_TEXT_KEYS,
@@ -2350,7 +2351,7 @@ def tasks_create(
         click.echo(f"   blocked by: {', '.join(task.blocked_by)}")
     if verify_json is not None:
         spec = metadata["verify"]
-        click.echo(f"   verify: {spec['class']} — {spec['check']}")
+        click.echo(f"   verify: {gate_kind(spec)} — {verify_check_text(spec)}")
     if task.requires:
         # Echo what was STORED (deduplicated), same reason as blocked_by above.
         click.echo(f"   requires: {', '.join(task.requires)}")
@@ -2539,7 +2540,7 @@ def tasks_show(ctx, task_id: str, as_json: bool):
     record = (task.metadata or {}).get("verify_result") or {}
     click.echo("")
     click.echo("── Verify gate ──────────────────────────────────────────")
-    click.echo(f"class:  {spec.get('class')}")
+    click.echo(f"class:  {gate_kind(spec)}")
     if spec.get("checks"):
         # Staged: the ladder is shown with per-stage verdicts, because "which
         # stage" is the whole reason to stage a gate. A stage after the failure
