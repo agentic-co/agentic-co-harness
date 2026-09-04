@@ -7,13 +7,13 @@ first cycle silently no-ops.
 
 It is the second product of the AgentCo split:
 
-| | **AgentCo Hub** (`agentco`, public) | **AgentCo Harness** (this repo) |
+| | **AgentCo Hub** (`agentic-co-hub`, public) | **AgentCo Harness** (`agentic-co-harness`, this repo) |
 |---|---|---|
 | What it is | The coordination plane: scope claims, snapshot pointers, fenced leases, ASOP storage, gate routing, the human decision router | The execution runtime: beads, cycles, executors, RCA, schedules, doctor |
 | Runs alone? | Yes — any harness (Codex, Claude Code, your own) connects directly | Yes — solo operators run it with no server at all |
 | Together | The Harness is one Hub participant (reference L3 client, publishing off by default) | The Harness applies the Hub's ASOPs and reports outcomes |
 
-The Harness descends from the private v1 hub (`agentco-hub`) with the
+The Harness descends from the private v1 monolith (`mabidoli/agentco-v1`) with the
 personal pipelines removed and replaced by extension seams. Nothing in this
 package knows about a particular company, calendar, mailbox, ticket system or
 assistant.
