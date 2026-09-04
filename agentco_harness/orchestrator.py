@@ -6,13 +6,12 @@ import tempfile
 import time
 from datetime import datetime, timedelta, timezone
 
-import dspy
+from . import _lm
 
 from pathlib import Path
 from typing import Callable
 
 from . import __version__
-from .agents import AGENTS, Classifier, get_agent
 from .beads import (
     Beads,
     CapabilityError,
@@ -44,7 +43,6 @@ from .executor import (
     run_zai_store_backed_task,
 )
 from .notify import notify_event
-from .optimize import load_optimized, list_optimized
 from .usage import attributed as _attributed
 from .recurring import (
     Recurring,
@@ -54,7 +52,6 @@ from .recurring import (
     supersede_resolved_rcas,
     supersede_stale_failures,
 )
-from .triage import triage_order
 
 # ---------------------------------------------------------------------------
 # Extension seams. The Harness runs beads; what ELSE a cycle knows how to do
@@ -501,7 +498,7 @@ class Orchestrator:
             from . import rca as _rca
             _rca.DEFAULT_ESCALATION_ASSIGNEE = config.humans.escalate_to
         self.beads = Beads(config.tasks_path)
-        self.classifier = Classifier(self.beads)
+        self.classifier = _lm.agents("The event classifier").Classifier(self.beads)
         self.recurring = Recurring(config.recurring_path)
         self.children = ChildRegistry(config.children_registry_path)
         self._state_path = Path(config.tasks_path).parent / ".agentco-heartbeat.json"
@@ -523,6 +520,7 @@ class Orchestrator:
 
     def _make_lm(self, provider: str, model: str):
         """Build a dspy.LM for a provider/model pair."""
+        dspy = _lm.dspy("The DSPy planner")
         if provider == "openai":
             api_key = self.config.llm.api_key or os.environ.get("OPENAI_API_KEY")
             return dspy.LM(f"openai/{model}", api_key=api_key)
@@ -551,6 +549,7 @@ class Orchestrator:
         """Configure DSPy with the default LLM and per-agent overrides."""
         provider = self.config.llm.default_provider
         model = self.config.llm.default_model
+        dspy = _lm.dspy("The DSPy planner")
         dspy.configure(lm=self._make_lm(provider, model))
 
         # Per-agent model overrides — applied via dspy.context at execution
@@ -565,12 +564,13 @@ class Orchestrator:
         """Load any available optimized DSPy programs."""
         from .signatures import ClassifyEvent
 
-        optimized = list_optimized()
+        optimize = _lm.optimize("Optimized signatures")
+        optimized = optimize.list_optimized()
         if optimized:
             print(f"[orchestrator] Found optimized signatures: {optimized}")
 
         # Load optimized classifier if available
-        opt_classify = load_optimized("classify", ClassifyEvent)
+        opt_classify = optimize.load_optimized("classify", ClassifyEvent)
         if opt_classify:
             self.classifier.classify = opt_classify
             print("[orchestrator] Using optimized classifier")
@@ -607,7 +607,7 @@ class Orchestrator:
             kwargs["api_key"] = t.api_key or "lm-studio"
         elif t.api_key:
             kwargs["api_key"] = t.api_key
-        return dspy.LM(t.model, **kwargs)
+        return _lm.dspy("The DSPy planner").LM(t.model, **kwargs)
 
     def _triage(self, ready: list[Task]) -> list[Task]:
         """Advisory triage with a loud fallback.
@@ -623,7 +623,7 @@ class Orchestrator:
         if not self.config.triage.model or self.config.triage.model.lower() in ("none", "off", "disabled"):
             return ready
         try:
-            return triage_order(ready, self._make_triage_lm())
+            return _lm.triage("LM triage").triage_order(ready, self._make_triage_lm())
         except Exception as e:
             print(
                 f"[cycle] WARNING: triage failed ({e}) — falling back to "
@@ -645,7 +645,7 @@ class Orchestrator:
         """
         if name is None:
             return False
-        if name in AGENTS or name in SPECIAL_EXECUTORS:
+        if name in _lm.agent_names() or name in SPECIAL_EXECUTORS:
             return False
         return name in self.config.agents
 
@@ -1635,7 +1635,7 @@ class Orchestrator:
         undispatchable_counts: dict[str, int] = {}
         for t in all_ready:
             name = t.assigned_agent
-            if name and name not in AGENTS and name not in SPECIAL_EXECUTORS:
+            if name and name not in _lm.agent_names() and name not in SPECIAL_EXECUTORS:
                 undispatchable_counts[name] = undispatchable_counts.get(name, 0) + 1
         config_shaped = {n for n, c in undispatchable_counts.items() if c >= 2}
         undispatchable = [t for t in all_ready if t.assigned_agent in config_shaped]
@@ -1896,10 +1896,12 @@ class Orchestrator:
 
         # Get and run the agent, honoring its model override if one exists
         agent_config = self.config.agents.get(task.assigned_agent)
-        agent = get_agent(task.assigned_agent, self.beads, agent_config=agent_config)
+        agent = _lm.agents("Built-in LM agents").get_agent(
+            task.assigned_agent, self.beads, agent_config=agent_config
+        )
         agent_lm = self._agent_lms.get(task.assigned_agent)
         if agent_lm is not None:
-            with dspy.context(lm=agent_lm):
+            with _lm.dspy("Per-agent model overrides").context(lm=agent_lm):
                 result = agent.execute(task)
         else:
             result = agent.execute(task)
