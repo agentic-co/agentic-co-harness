@@ -2194,3 +2194,9 @@ backends.register_executor_backend(
 backends.register_executor_backend("claude", lambda orch, task: orch._execute_claude_task(task), route="NATIVE")
 backends.register_executor_backend("zai", lambda orch, task: orch._execute_zai_task(task), route="TEMPER")
 backends.register_executor_backend("forge", lambda orch, task: orch._execute_forge_task(task), route="FORGE")
+
+# The plane's report-back hook. A no-op for every bead that is not a mirror
+# of a plane item, and a deferred report (the sweep retries) when the plane
+# is unreachable — the plane is advisory and never blocks a harness.
+from . import hub_client as _hub_client  # noqa: E402
+register_completion_hook(_hub_client.completion_hook)
