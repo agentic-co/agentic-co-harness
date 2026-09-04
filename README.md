@@ -20,17 +20,34 @@ assistant.
 
 ## Status
 
-Phase 0 of 4 — mechanical extraction. The suite (1,039 tests, carried from v1
-and re-pointed) is green with a fake LM; no network, no keys in CI.
+Phases 0–3 of 4 are done: the runtime is extracted, it speaks the ASOP contract,
+it runs procedures locally with no server, and it participates in a coordination
+plane as a level-three client. The suite is green with a fake LM — no network, no
+keys in CI.
 
 | Phase | Outcome |
 |---|---|
 | **P0 (done)** | v1 core extracted into `agentco_harness`; retro / feeds / sources replaced by registries; RCA escalation target configurable |
-| P1 | Shared ASOP contract package (`agentco/packages/asop`) — gate schema, attestation shapes, refusal vocabulary. Both products validate against it |
-| P2 | ASOP runtime inside the Harness (create, apply, maintain SOPs locally) + a real executor backend interface; config loses its v1-only blocks |
-| P3 | Optional Hub client — L3 participant, publishing off by default, human-prompted |
-| P4 | v1 hub migrates onto Harness + a LifeOS extension pack that re-registers what P0 removed |
+| **P1 (done)** | Shared ASOP contract package (`packages/asop` in the Hub repo) — gate schema, attestation shapes, refusal vocabulary. Both products validate against it |
+| **P2 (done)** | ASOP runtime inside the Harness (create, apply, maintain procedures locally) + the executor backend seam; config lost its v1-only blocks |
+| **P3 (done)** | Optional Hub client — level-three participant, publishing off by default. Proven end to end: one plane, one procedure, three participants from three vendors |
+| P4 | v1 hub migrates onto the Harness + a LifeOS extension pack that re-registers what P0 removed |
 | Later | The ASOP contract (`agentco-asop`) moves to its own repository with its own releases, and both products pin a version. Until the first version is finalised it stays in the Hub repo's `packages/asop/` and this runtime depends on it by git subdirectory — decided 2026-09-04 |
+
+### Proven, not asserted
+
+`scripts/e2e/two_harnesses.py` stands up a plane, authors the `feature-dev`
+procedure on it, files one run bound to three different participants, and drives
+it to completion while checking every claim the contract makes. All five modes are
+green ([details](scripts/e2e/README.md)):
+
+| mode | what it adds | checkpoints |
+|---|---|---|
+| deterministic | the pipeline, no model in the loop | 22/22 |
+| `--claude-code mcp --agy mcp` | two other vendors' CLIs as real participants | 22/22 |
+| `--live` | this runtime dispatches a real model for its own steps | 22/22 |
+| `--gate judged` | a declared verifier answers, and three usurpations are refused | 25/25 |
+| all of the above at once | | 25/25 |
 
 ## Install
 
