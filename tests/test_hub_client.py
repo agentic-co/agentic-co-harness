@@ -251,3 +251,59 @@ def test_cli_status_pull_sync(plane, tmp_path, monkeypatch):
     beads = Beads(tmp_path / "tasks.jsonl"); t = beads.list()[0]
     beads.claim(t.id, "claude"); beads.complete(t.id, result="ok")
     r = runner.invoke(main, ["-c", cfg, "hub", "sync"]); assert r.exit_code == 0 and "Reported 1" in r.output, r.output
+
+
+# ------------------------------------------------- the local executor vs the plane actor
+
+def test_a_mirror_is_stamped_for_the_local_executor_not_the_plane_actor(plane, tmp_path):
+    """`actor` is who this node is on the plane; `executor` is what runs here.
+
+    Stamping the actor is undispatchable by construction — the first --live
+    end-to-end run failed every pulled bead with "Unknown agent: harness-bigmac"
+    and spawned an RCA bead apiece.
+    """
+    FakePlane.items = [plane_item()]
+    beads = Beads(tmp_path / "tasks.jsonl")
+    client = HubClient(url=plane, actor="harness-bigmac", secret=SECRET, executor="claude")
+    t = beads.get(client.pull_and_mirror(beads)[0].id)
+    assert t.assigned_agent == "claude"                     # what runs it here
+    assert t.metadata[HUB_KEY]["actor"] == "harness-bigmac"  # who we are there
+
+
+def test_without_a_configured_executor_the_actor_is_still_used(plane, tmp_path):
+    """Unchanged for a node that never set one — doctor is what refuses it."""
+    FakePlane.items = [plane_item()]
+    beads = Beads(tmp_path / "tasks.jsonl")
+    client = HubClient(url=plane, actor="claude", secret=SECRET)
+    assert beads.get(client.pull_and_mirror(beads)[0].id).assigned_agent == "claude"
+
+
+def test_the_mirror_hands_its_executor_the_steps_own_words_and_workdir(plane, tmp_path):
+    """A bare step name is not a brief. The plan copy and the gate become one."""
+    item = plane_item(gate={"kind": "deterministic", "check": "pytest -q",
+                            "cwd": "/repo", "schema_version": 1})
+    item["description"] = ""          # what the plane actually files per step
+    item["metadata"]["sop_plan"] = {
+        "title": "Develop a feature", "name": "implement", "role": "implementer",
+        "purpose": "Make the tests pass.", "definition_of_done": "pytest passes.",
+        "common_mistakes": ["editing the tests instead of the code"],
+    }
+    FakePlane.items = [item]
+    beads = Beads(tmp_path / "tasks.jsonl")
+    client = HubClient(url=plane, actor="harness-bigmac", secret=SECRET, executor="claude")
+    t = beads.get(client.pull_and_mirror(beads)[0].id)
+    assert t.metadata["workdir"] == "/repo"
+    for fragment in ("Develop a feature", "implement", "Make the tests pass.",
+                     "pytest passes.", "editing the tests instead of the code",
+                     "pytest -q", "/repo"):
+        assert fragment in t.description, fragment
+
+
+def test_a_plane_item_with_its_own_description_keeps_it(plane, tmp_path):
+    """The plane's words win; the brief only fills a silence."""
+    item = plane_item()
+    item["description"] = "the plane said this"
+    FakePlane.items = [item]
+    beads = Beads(tmp_path / "tasks.jsonl")
+    client = HubClient(url=plane, actor="a", secret=SECRET, executor="claude")
+    assert beads.get(client.pull_and_mirror(beads)[0].id).description == "the plane said this"

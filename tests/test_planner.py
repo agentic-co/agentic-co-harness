@@ -388,7 +388,7 @@ def test_planner_execute_directly_records_recommendation_only(tmp_path, monkeypa
 
 
 def _fake_claude_capture(monkeypatch, captured: dict):
-    def fake(prompt, timeout, max_turns, model=None):
+    def fake(prompt, timeout, max_turns, model=None, cwd=None):
         captured["model"] = model
         return ExecResult(True, '{"ok": true}', None, 0, 0.1)
 

@@ -410,3 +410,27 @@ def test_retryable_status_classifier():
     assert executor._retryable_api_status('{"result": "fine"}') is None
     assert executor._retryable_api_status("not json at all") is None
     assert executor._retryable_api_status('{"api_error_status": "boom"}') is None
+
+
+# ------------------------------------------------------ where the child runs
+
+def test_a_task_with_a_working_directory_runs_in_it(tmp_path):
+    """The child runs where the bead says, so the work and the gate that
+    proves it happen in the same place (a step pulled from a plane names the
+    directory its gate runs in)."""
+    workdir = tmp_path / "repo"
+    workdir.mkdir()
+    claude = _fake_claude(tmp_path, 'printf \'{"result": "%s"}\' "$(pwd -P)"\n')
+    result = run_claude_task("do the thing", claude_bin=claude, cwd=str(workdir))
+    assert result.success is True
+    assert str(workdir.resolve()) in result.output
+
+
+def test_without_a_working_directory_the_callers_is_kept(tmp_path, monkeypatch):
+    """Unchanged for every bead that never asked for one."""
+    here = tmp_path / "node"
+    here.mkdir()
+    monkeypatch.chdir(here)
+    claude = _fake_claude(tmp_path, 'printf \'{"result": "%s"}\' "$(pwd -P)"\n')
+    result = run_claude_task("do the thing", claude_bin=claude)
+    assert str(here.resolve()) in result.output

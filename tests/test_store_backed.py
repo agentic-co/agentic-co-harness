@@ -168,7 +168,7 @@ def test_non_store_backed_still_uses_stdout_path(tmp_path, monkeypatch):
 
     monkeypatch.setattr(
         orchestrator_mod, "run_claude_task",
-        lambda prompt, timeout, max_turns, model=None: ExecResult(True, '{"ok": true}', None, 0, 0.1),
+        lambda prompt, timeout, max_turns, model=None, cwd=None: ExecResult(True, '{"ok": true}', None, 0, 0.1),
     )
     assert orch._execute_claude_task(task) is True
     assert '{"ok": true}' in orch.beads.get(task.id).result

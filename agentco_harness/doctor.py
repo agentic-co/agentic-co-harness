@@ -912,6 +912,40 @@ def collect(config_path: str) -> DoctorReport:
                 f"failing here. Install agy and put it on PATH."
             )
 
+    # (o2) A configured plane must name a local executor that can actually run
+    # what it pulls. `hub.actor` is an identity ON THE PLANE — the label a run's
+    # binding names when it means this node — and it is almost never a local
+    # backend name ('harness-bigmac' is not 'claude'). A mirror stamped with it
+    # is undispatchable by construction: every pulled bead fails the next cycle
+    # with "Unknown agent" and spawns an RCA bead apiece, which is the
+    # box-scout shape again, arriving over the network. The first --live
+    # end-to-end run found it that way. Checked here, before a pull, because
+    # the damage lands one cycle after the pull and the fix is in config.
+    _sec("hub.executor_dispatchable")
+    hub = getattr(config, "hub", None)
+    if hub is not None and getattr(hub, "url", None):
+        from .backends import executor_names
+
+        name = getattr(hub, "executor", None)
+        if not name:
+            _fail(
+                f"hub.url is set but hub.executor is not — pulled work would be "
+                f"mirrored under the plane actor '{hub.actor}', which is an "
+                f"identity on the plane, not a runner here. Every pulled bead "
+                f"would fail with \"Unknown agent: {hub.actor}\" and spawn an RCA "
+                f"bead. Set hub.executor to a registered backend "
+                f"({', '.join(sorted(executor_names()))})."
+            )
+        elif name not in executor_names() and name not in config.agents:
+            _fail(
+                f"hub.executor is '{name}', which is neither a registered backend "
+                f"({', '.join(sorted(executor_names()))}) nor declared under "
+                f"agents: — every bead pulled from the plane would fail with "
+                f"\"Unknown agent: {name}\"."
+            )
+        else:
+            _ok(f"hub.executor '{name}' is dispatchable (plane actor: '{hub.actor}')")
+
     # (p) codex CLI authentication, gated on config routing to codex and the
     # binary being present. Check (n) ensures `codex exec` can start, but a
     # fresh, expired, or machine-local session without auth.json still makes a

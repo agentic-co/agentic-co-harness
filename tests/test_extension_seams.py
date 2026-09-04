@@ -77,7 +77,7 @@ def test_unregistered_type_falls_through_to_the_executor(tmp_path, monkeypatch):
     orch = _orch(tmp_path)
     calls = []
 
-    def fake(prompt, timeout, max_turns, model=None):
+    def fake(prompt, timeout, max_turns, model=None, cwd=None):
         calls.append(prompt)
         return ExecResult(True, json.dumps({"ok": True}), None, 0, 0.1)
 

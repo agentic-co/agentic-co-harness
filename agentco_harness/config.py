@@ -118,6 +118,15 @@ class HubConfig:
     secret_env: str = "AGENTCO_HUB_SECRET"
     timeout_s: int = 30
     lease_ttl_s: int = 3600
+    #: Which LOCAL backend executes the work this node pulls. The actor is an
+    #: identity on the plane — the label a run's binding names when it means
+    #: this node — and nothing local can dispatch a name that is neither a
+    #: registered backend nor a declared agent. Left unset, a pulled bead is
+    #: mirrored under the actor and every cycle fails it with "Unknown agent",
+    #: spawning an RCA bead apiece: the first `--live` end-to-end run found
+    #: exactly that. Set it to a registered backend (`claude`, `zai`, `forge`)
+    #: and the mirror stamps that instead; `doctor` refuses an unknown one.
+    executor: str | None = None
 
     @property
     def enabled(self) -> bool:
@@ -555,11 +564,12 @@ class Config:
 
         if "hub" in data:
             hub = data["hub"] or {}
-            _warn_unknown_nested("hub", hub, {"url", "actor", "secret_env", "timeout_s", "lease_ttl_s"}, path)
+            _warn_unknown_nested("hub", hub, {"url", "actor", "secret_env", "timeout_s", "lease_ttl_s", "executor"}, path)
             config.hub = HubConfig(
                 url=hub.get("url"), actor=hub.get("actor", "harness"),
                 secret_env=hub.get("secret_env", "AGENTCO_HUB_SECRET"),
                 timeout_s=int(hub.get("timeout_s", 30)), lease_ttl_s=int(hub.get("lease_ttl_s", 3600)),
+                executor=hub.get("executor"),
             )
 
         if "egress" in data:
