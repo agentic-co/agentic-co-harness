@@ -7,6 +7,7 @@ worse than no gate, because it reads as protection.
 """
 
 import json
+import pathlib
 
 import pytest
 
@@ -260,41 +261,56 @@ def test_the_new_env_name_wins_over_the_legacy_one(tmp_path, monkeypatch):
     assert egress.artifact_path(store_dir=tmp_path) == tmp_path / "new.json"
 
 
-def test_the_default_is_beside_the_store_on_a_machine_with_no_legacy(
-    tmp_path, monkeypatch
-):
+def test_the_default_is_beside_the_store(tmp_path, monkeypatch):
     """The whole point: a fresh install resolves a path it owns."""
     monkeypatch.delenv("AGENTCO_INFERENCE_ROUTES", raising=False)
     monkeypatch.delenv("LIFEOS_INFERENCE_ROUTES", raising=False)
-    monkeypatch.setattr(egress, "_LEGACY_DEFAULT", tmp_path / "no-such-legacy.json")
     assert egress.artifact_path(store_dir=tmp_path) == tmp_path / egress.ARTIFACT_NAME
 
 
-def test_an_existing_store_artifact_beats_an_existing_legacy_one(
+def test_a_fresh_project_never_inherits_a_global_table(tmp_path, monkeypatch):
+    """Bellows review, 2026-09-04: the first version fell back to
+    ~/.claude/LIFEOS/.../inference-routes.json when the store had none and
+    that file existed. On any machine carrying an old global table, a brand
+    new project inherited it without anyone choosing — a fresh install and
+    an upgraded one were indistinguishable to a security gate. There is no
+    path fallback now; only an explicit signal reaches an old table."""
+    monkeypatch.delenv("AGENTCO_INFERENCE_ROUTES", raising=False)
+    monkeypatch.delenv("LIFEOS_INFERENCE_ROUTES", raising=False)
+    global_table = tmp_path / "global" / "inference-routes.json"
+    global_table.parent.mkdir()
+    global_table.write_text("{}")
+    monkeypatch.setattr(egress.Path, "home", lambda: tmp_path / "global" / "..")
+    fresh = tmp_path / "fresh"
+    fresh.mkdir()
+    chosen = egress.artifact_path(store_dir=fresh)
+    assert chosen == fresh / egress.ARTIFACT_NAME
+    assert not chosen.exists()          # and therefore fails closed
+    with pytest.raises(egress.PolicyUnavailable):
+        egress.load_routes(chosen)
+
+
+def test_an_upgraded_install_says_so_through_the_legacy_env_var(
     tmp_path, monkeypatch
 ):
-    """Both present means the operator put one next to the queue on purpose."""
+    """The upgrade signal is explicit: the deployment that exports to the old
+    location also sets the old variable. That keeps routes allowed yesterday
+    allowed today, for the install that asked."""
     monkeypatch.delenv("AGENTCO_INFERENCE_ROUTES", raising=False)
-    monkeypatch.delenv("LIFEOS_INFERENCE_ROUTES", raising=False)
     legacy = tmp_path / "legacy.json"
     legacy.write_text("{}")
-    beside = tmp_path / "store"
-    beside.mkdir()
-    (beside / egress.ARTIFACT_NAME).write_text("{}")
-    monkeypatch.setattr(egress, "_LEGACY_DEFAULT", legacy)
-    assert egress.artifact_path(store_dir=beside) == beside / egress.ARTIFACT_NAME
-
-
-def test_a_lifeos_shaped_install_keeps_its_legacy_export(tmp_path, monkeypatch):
-    """An upgrade must not start denying routes that worked yesterday."""
-    monkeypatch.delenv("AGENTCO_INFERENCE_ROUTES", raising=False)
-    monkeypatch.delenv("LIFEOS_INFERENCE_ROUTES", raising=False)
-    legacy = tmp_path / "legacy.json"
-    legacy.write_text("{}")
-    monkeypatch.setattr(egress, "_LEGACY_DEFAULT", legacy)
+    monkeypatch.setenv("LIFEOS_INFERENCE_ROUTES", str(legacy))
     empty_store = tmp_path / "store"
     empty_store.mkdir()
     assert egress.artifact_path(store_dir=empty_store) == legacy
+
+
+def test_no_store_dir_resolves_relative_and_names_it(tmp_path, monkeypatch):
+    """A caller with no store has no better answer than the working directory,
+    and the name it resolves is at least the one the error will print."""
+    monkeypatch.delenv("AGENTCO_INFERENCE_ROUTES", raising=False)
+    monkeypatch.delenv("LIFEOS_INFERENCE_ROUTES", raising=False)
+    assert egress.artifact_path() == pathlib.Path(".") / egress.ARTIFACT_NAME
 
 
 def test_the_missing_artifact_message_names_the_config_key(tmp_path, monkeypatch):

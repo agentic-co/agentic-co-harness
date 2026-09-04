@@ -419,7 +419,6 @@ def scaffold_agentco_runtime(base_path: Path) -> Path:
             "# AgentCo Runtime Configuration\n"
             "# See documentation for available options.\n\n"
             "tasks_path: tasks.jsonl\n\n"
-            "sources: {}\n\n"
             "agents: {}\n\n"
             "llm:\n"
             "  default_provider: openai\n"

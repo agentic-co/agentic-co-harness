@@ -995,9 +995,15 @@ def collect(config_path: str) -> DoctorReport:
     # damage, so it fires before the cycle rather than after.
     _sec("queue.dispatchability")
     try:
-        from .agents import AGENTS
+        from . import _lm
         from .beads import Beads, TaskStatus
         from .orchestrator import SPECIAL_EXECUTORS
+
+        # Through the seam, not `from .agents import AGENTS`: that import
+        # raises on a base install, the blanket except below turned it into
+        # a warning, and the one check built to catch a vanished agent before
+        # a cycle burned beads on it was skipped on every run — silently.
+        AGENTS = _lm.agent_names()
 
         live_statuses = {
             TaskStatus.PENDING,
