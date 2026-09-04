@@ -869,12 +869,6 @@ def collect(config_path: str) -> DoctorReport:
         candidates = [agent.model, *(str(v) for v in agent.settings.values())]
         if any(c and "codex" in str(c).lower() for c in candidates):
             codex_refs.append(f"agent '{name}'")
-    for role, agent_name in (
-        ("ingest", config.feeds.ingest_agent),
-        ("curate", config.feeds.curate_agent),
-    ):
-        if agent_name and "codex" in str(agent_name).lower():
-            codex_refs.append(f"feeds.{role}_agent")
     if codex_refs:
         if shutil.which("codex"):
             _ok(
@@ -904,15 +898,6 @@ def collect(config_path: str) -> DoctorReport:
             for c in candidates
         ):
             agy_refs.append(f"agent '{name}'")
-    for role, agent_name in (
-        ("ingest", config.feeds.ingest_agent),
-        ("curate", config.feeds.curate_agent),
-    ):
-        if agent_name and (
-            "agy" in str(agent_name).lower()
-            or "antigravity" in str(agent_name).lower()
-        ):
-            agy_refs.append(f"feeds.{role}_agent")
     if agy_refs:
         if shutil.which("agy"):
             _ok(
@@ -1238,13 +1223,13 @@ def collect(config_path: str) -> DoctorReport:
                     f"{health.distinct_models} models, outcomes vary — comparable"
                 )
 
-            # The disagreement check. Only meaningful where a task type is
-            # actually populated: an "(unset)" group cannot be mapped back to a
-            # config field, so advising on it would be advising about nothing.
-            configured = {
-                "feeds_ingest": config.feeds.ingest_model,
-                "feeds_curate": config.feeds.curate_model,
-            }
+            # The disagreement check. Only meaningful where a task type maps
+            # back to a configured model — the two entries here were the feeds
+            # ingest and curate stages, which this runtime no longer ships. A
+            # task type an extension introduces has no config field to compare
+            # against, so the check reports evidence and advises on nothing
+            # until something registers a mapping.
+            configured: dict[str, str | None] = {}
             disagreements = 0
             for key, model in recs.items():
                 if key == "(unset)":

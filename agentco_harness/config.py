@@ -117,20 +117,34 @@ class EgressConfig:
     routes_path: str | None = None
 
 
-@dataclass
-class SourceConfig:
-    enabled: bool = False
-    poll_interval: int = 300  # seconds
-    # Source-specific settings
-    settings: dict[str, Any] = field(default_factory=dict)
-
-
 # Agent settings keys that are actually consumed by the codebase.
 # Anything else in an agent's config block triggers a loud warning at load.
 CONSUMED_AGENT_KEYS = {"model", "use_claude_code", "context", "description"}
 
 # Top-level config keys the loader understands.
-KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "sources", "agents", "llm", "triage", "notify", "instance", "feeds", "humans", "tiers", "backoff", "executor", "capabilities", "egress"}
+KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress"}
+
+#: Blocks the v1 hub consumed that this runtime deliberately does not. They
+#: configured pipelines that belonged to one operator — a feeds ingester
+#: pointed at an Obsidian vault, a fixed set of polled inboxes. The Harness
+#: replaces both with `register_source_factory`, so an integration brings its
+#: own configuration rather than negotiating for a field in this file.
+#:
+#: Named rather than merely unknown, because "unknown top-level key 'feeds'"
+#: reads as a typo when it is actually a removal, and the operator who sees
+#: it is holding a config file that used to work.
+RETIRED_TOP_LEVEL_KEYS = {
+    "feeds": (
+        "the feeds ingester was a personal pipeline; register a source "
+        "factory instead (see agentco_harness.orchestrator."
+        "register_source_factory)"
+    ),
+    "sources": (
+        "polled sources are supplied by extensions now; register a source "
+        "factory instead (see agentco_harness.orchestrator."
+        "register_source_factory)"
+    ),
+}
 
 # The model-tier registry (Delegation Layer, Stage 2). Capable models plan and
 # route; small models execute atoms. A subtask's `metadata.executor_tier` resolves
@@ -153,12 +167,6 @@ KNOWN_TIER_KEYS = frozenset(DEFAULT_TIERS)
 CONSUMED_LLM_KEYS = {"default_provider", "default_model", "api_key", "base_url", "zai_api_key"}
 CONSUMED_TRIAGE_KEYS = {"model", "api_base", "api_key"}
 CONSUMED_NOTIFY_KEYS = {"enabled", "url", "telegram_chat_id", "telegram_token_env", "cycle_summary"}
-CONSUMED_FEEDS_KEYS = {
-    "enabled", "sources_md", "vault_feeds_dir", "model",
-    "ingest_model", "curate_model", "ingest_budget", "curate_budget",
-    "ingest_escalation_model", "ingest_escalation_budget",
-    "ingest_agent", "curate_agent",
-}
 CONSUMED_HUMANS_KEYS = {"enabled", "escalate_to"}
 CONSUMED_BACKOFF_KEYS = {"enabled", "base", "factor", "max"}
 CONSUMED_EXECUTOR_KEYS = {"idle_timeout_s"}
@@ -252,38 +260,6 @@ class TiersConfig:
         if not tier:
             return None
         return self.models.get(tier)
-
-
-@dataclass
-class FeedsConfig:
-    """Sources-ingestion pipeline (the 'channels research cron').
-
-    `sources_md` is the human-curated source list inside the Obsidian vault
-    (`3 - Resources/Feeds/_SOURCES.md`); `vault_feeds_dir` is the vault-relative
-    folder where ingest writes per-item wisdom notes. Watermark state lives in
-    `feeds.jsonl` beside the task queue (see Config.feeds_path), never here.
-    """
-
-    enabled: bool = False
-    sources_md: str | None = None       # absolute path to _SOURCES.md in the vault
-    vault_feeds_dir: str = "3 - Resources/Feeds"  # vault-relative ingest target
-    model: str | None = None            # fallback pin for both stages if ingest_model/curate_model unset; None = claude CLI default
-    ingest_model: str | None = None     # per-item mechanical extraction — cheap model is the right default (see Plans/ModelRoutingEval.md)
-    curate_model: str | None = None     # cross-note synthesis/MOC judgment — keep on a frontier model
-    # Which subagent path runs each stage. "claude" = Anthropic OAuth; "zai" = z.ai GLM
-    # Coding Plan (offloads Anthropic quota — good for the high-volume ingest bead).
-    # Curate stays "claude" by default: cross-note MOC judgment is where GLM/local lose.
-    ingest_agent: str = "claude"
-    curate_agent: str = "claude"
-    ingest_budget: dict[str, Any] = field(default_factory=lambda: {"timeout": 1200, "max_turns": 80})
-    curate_budget: dict[str, Any] = field(default_factory=lambda: {"timeout": 1200, "max_turns": 80})
-    # Escalate-and-retry: when a source's previous ingest bead FAILED (timeout,
-    # crash — not partial), the next bead for that source runs on this stronger
-    # model. If the escalated run then returns a proper result, the model is
-    # pinned per-source in feeds.jsonl (SourceState.model) so it becomes that
-    # source's default going forward. None disables escalation entirely.
-    ingest_escalation_model: str | None = None
-    ingest_escalation_budget: dict[str, Any] | None = None  # optional larger budget for the escalated retry
 
 
 @dataclass
@@ -392,13 +368,6 @@ class Config:
 
     tasks_path: str = "tasks.jsonl"
     
-    sources: dict[str, SourceConfig] = field(default_factory=lambda: {
-        "gmail": SourceConfig(),
-        "logs": SourceConfig(),
-        "feedback": SourceConfig(),
-        "webhook": SourceConfig(),
-    })
-    
     agents: dict[str, AgentConfig] = field(default_factory=lambda: {
         "cs": AgentConfig(model="gpt-4o-mini"),
         "pm": AgentConfig(model="gpt-4o"),
@@ -410,7 +379,6 @@ class Config:
     llm: LLMConfig = field(default_factory=LLMConfig)
     triage: TriageConfig = field(default_factory=TriageConfig)
     notify: NotifyConfig = field(default_factory=NotifyConfig)
-    feeds: FeedsConfig = field(default_factory=FeedsConfig)
     egress: EgressConfig = field(default_factory=EgressConfig)
     humans: HumansConfig = field(default_factory=HumansConfig)
     tiers: TiersConfig = field(default_factory=TiersConfig)
@@ -453,11 +421,6 @@ class Config:
         return str(Path(self.tasks_path).parent / "runs.jsonl")
 
     @property
-    def feeds_path(self) -> str:
-        """feeds.jsonl (source watermark state) lives beside the task queue."""
-        return str(Path(self.tasks_path).parent / "feeds.jsonl")
-
-    @property
     def store_dir(self) -> str:
         """The directory holding the bead store.
 
@@ -496,7 +459,13 @@ class Config:
         config.config_path = str(path.resolve())
 
         for key in data:
-            if key not in KNOWN_TOP_LEVEL_KEYS:
+            if key in RETIRED_TOP_LEVEL_KEYS:
+                print(
+                    f"[config] WARNING: '{key}' in {path} is no longer read — "
+                    f"{RETIRED_TOP_LEVEL_KEYS[key]}. The block is ignored; "
+                    f"delete it once the extension is in place."
+                )
+            elif key not in KNOWN_TOP_LEVEL_KEYS:
                 print(
                     f"[config] WARNING: unknown top-level key '{key}' in {path} "
                     f"— it is ignored (known keys: {', '.join(sorted(KNOWN_TOP_LEVEL_KEYS))})"
@@ -509,14 +478,6 @@ class Config:
         if not tasks_path.is_absolute():
             config.tasks_path = str(path.resolve().parent / tasks_path)
 
-        if "sources" in data:
-            for name, settings in data["sources"].items():
-                config.sources[name] = SourceConfig(
-                    enabled=settings.get("enabled", False),
-                    poll_interval=settings.get("poll_interval", 300),
-                    settings={k: v for k, v in settings.items() if k not in ("enabled", "poll_interval")},
-                )
-        
         if "agents" in data:
             for name, settings in data["agents"].items():
                 unconsumed = set(settings) - CONSUMED_AGENT_KEYS
@@ -570,24 +531,6 @@ class Config:
             egress = data["egress"] or {}
             _warn_unknown_nested("egress", egress, {"routes_path"}, path)
             config.egress = EgressConfig(routes_path=egress.get("routes_path"))
-
-        if "feeds" in data:
-            feeds = data["feeds"] or {}
-            _warn_unknown_nested("feeds", feeds, CONSUMED_FEEDS_KEYS, path)
-            config.feeds = FeedsConfig(
-                enabled=feeds.get("enabled", False),
-                sources_md=feeds.get("sources_md"),
-                vault_feeds_dir=feeds.get("vault_feeds_dir", FeedsConfig.vault_feeds_dir),
-                model=feeds.get("model"),
-                ingest_model=feeds.get("ingest_model"),
-                curate_model=feeds.get("curate_model"),
-                ingest_agent=feeds.get("ingest_agent", "claude"),
-                curate_agent=feeds.get("curate_agent", "claude"),
-                ingest_budget=feeds.get("ingest_budget") or FeedsConfig().ingest_budget,
-                curate_budget=feeds.get("curate_budget") or FeedsConfig().curate_budget,
-                ingest_escalation_model=feeds.get("ingest_escalation_model"),
-                ingest_escalation_budget=feeds.get("ingest_escalation_budget"),
-            )
 
         if "humans" in data:
             humans = data["humans"] or {}
@@ -668,14 +611,6 @@ class Config:
         """Save config to YAML file."""
         data = {
             "tasks_path": self.tasks_path,
-            "sources": {
-                name: {
-                    "enabled": src.enabled,
-                    "poll_interval": src.poll_interval,
-                    **src.settings,
-                }
-                for name, src in self.sources.items()
-            },
             "agents": {
                 name: {
                     "model": agent.model,
