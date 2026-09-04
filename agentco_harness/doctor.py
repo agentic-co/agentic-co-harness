@@ -946,6 +946,47 @@ def collect(config_path: str) -> DoctorReport:
         else:
             _ok(f"hub.executor '{name}' is dispatchable (plane actor: '{hub.actor}')")
 
+    # (o3) A node holding procedures must declare who its humans are, or the
+    # revision policy binds nobody who says otherwise.
+    #
+    # The store polices the kind it is HANDED. In-process that is honest — a
+    # caller passing `agent` is bound by all four rules with no configuration.
+    # At the CLI the kind is a flag, and where `AGENTCO_HUMANS` is undeclared
+    # the flag stands, on the reasoning that a local `harness sop retire` has
+    # no key to authenticate and there is an operator at the terminal.
+    #
+    # On THIS runtime that reasoning has a hole, because what sits at the
+    # terminal is frequently not a person: the cycle dispatches headless agent
+    # CLIs with shell access, and one of them can run `harness sop revise ...
+    # --author-kind human` (or omit the flag, which defaults to human) and
+    # revise a procedure carrying a `money` step. Verified 2026-09-04: with the
+    # variable unset that revision is DRAFTED; with `AGENTCO_HUMANS` declared
+    # the identical command is refused `revision_policy:protected`.
+    #
+    # Declaring the set is what turns the flag into a check, so a node with
+    # procedures and no declaration is reported here rather than discovered
+    # by a `money` step changing under somebody.
+    _sec("asop.humans_declared")
+    try:
+        from .asop_store import AsopStore
+
+        asops_path = Path(config.asops_path)
+        has_procedures = asops_path.exists() and asops_path.stat().st_size > 0
+    except Exception:  # noqa: BLE001 — a store we cannot read is check (q)'s business
+        has_procedures = False
+    if has_procedures:
+        if os.environ.get("AGENTCO_HUMANS", "").strip():
+            _ok("AGENTCO_HUMANS is declared, so the revision policy binds a caller's claimed kind")
+        else:
+            _fail(
+                "this node holds ASOPs but AGENTCO_HUMANS is not declared — the "
+                "revision policy cannot bind anyone who claims to be human, and "
+                "`--author-kind` defaults to human. Any dispatched agent with a "
+                "shell can revise or activate a procedure holding a protected "
+                "(`money` / `irreversible`) step. Declare the people: "
+                "AGENTCO_HUMANS=<comma-separated actors>."
+            )
+
     # (p) codex CLI authentication, gated on config routing to codex and the
     # binary being present. Check (n) ensures `codex exec` can start, but a
     # fresh, expired, or machine-local session without auth.json still makes a

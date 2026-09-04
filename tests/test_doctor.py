@@ -847,3 +847,63 @@ def test_doctor_stays_silent_about_the_hub_when_no_plane_is_configured(
     (tmp_path / "company").mkdir()
     run_doctor(_hub_cfg(tmp_path, {"actor": "harness-bigmac"}))
     assert "hub.executor_dispatchable" not in capsys.readouterr().out
+
+
+# ------------------------------------------- a node with procedures must name its humans
+
+def _node_with_a_procedure(tmp_path) -> str:
+    """A node whose ASOP store is non-empty. Content does not matter to the check."""
+    cfg = tmp_path / "config.yaml"
+    cfg.write_text(yaml.safe_dump({
+        "tasks_path": "tasks.jsonl",
+        "llm": {"default_provider": "lmstudio", "default_model": "local"},
+    }))
+    from pathlib import Path as _Path
+
+    from agentco_harness.config import Config
+
+    _Path(Config.load(cfg).asops_path).write_text('{"asop_id": "a", "version": 1}\n')
+    return str(cfg)
+
+
+def test_doctor_fails_when_a_node_holds_procedures_and_declares_no_humans(
+    tmp_path, monkeypatch, capsys
+):
+    """`--author-kind` defaults to human and stands where AGENTCO_HUMANS is unset,
+    so on a runtime that dispatches shell-capable agents the revision policy binds
+    nobody. Verified against the real CLI 2026-09-04: unset, an agent claiming
+    human revised a procedure carrying a `money` step; declared, it was refused."""
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "company").mkdir()
+    monkeypatch.delenv("AGENTCO_HUMANS", raising=False)
+    code = run_doctor(_node_with_a_procedure(tmp_path))
+    out = capsys.readouterr().out
+    assert code == 1
+    assert "BROKEN (asop.humans_declared)" in out
+    assert "AGENTCO_HUMANS" in out
+
+
+def test_doctor_oks_a_node_that_declares_its_humans(tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "company").mkdir()
+    monkeypatch.setenv("AGENTCO_HUMANS", "mabidoli")
+    run_doctor(_node_with_a_procedure(tmp_path))
+    out = capsys.readouterr().out
+    assert "BROKEN (asop.humans_declared)" not in out
+    assert "asop.humans_declared" in out
+
+
+def test_doctor_says_nothing_about_humans_on_a_node_with_no_procedures(
+    tmp_path, monkeypatch, capsys
+):
+    """The check is about procedures at risk, not about configuration taste."""
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "company").mkdir()
+    monkeypatch.delenv("AGENTCO_HUMANS", raising=False)
+    cfg = tmp_path / "config.yaml"
+    cfg.write_text(yaml.safe_dump({
+        "tasks_path": "tasks.jsonl",
+        "llm": {"default_provider": "lmstudio", "default_model": "local"},
+    }))
+    run_doctor(str(cfg))
+    assert "asop.humans_declared" not in capsys.readouterr().out
