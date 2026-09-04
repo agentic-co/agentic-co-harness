@@ -12,6 +12,10 @@ license = { text = "Apache-2.0" }
 dependencies = [
     "click>=8.0",
     "pyyaml>=6.0",
+    # The ASOP contract — gate schema, record shapes, refusal vocabulary —
+    # shared with the Hub. Resolved from the Hub repo's packages/asop until
+    # it is published on its own; a harness never imports the plane itself.
+    "agentco-asop",
 ]
 
 [project.optional-dependencies]
@@ -33,3 +37,6 @@ packages = ["agentco_harness"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.uv.sources]
+agentco-asop = { git = "https://github.com/agentic-co/agentic-co-hub.git", subdirectory = "packages/asop" }

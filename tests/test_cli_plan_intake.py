@@ -50,10 +50,9 @@ def test_create_roundtrips_parent_blocked_by_and_verify(tmp_path, monkeypatch):
     created = [t for t in beads.list() if t.title == "do the second part"][0]
     assert created.parent_id == goal.id
     assert created.blocked_by == [sibling.id]
-    assert created.metadata["verify"] == {
-        "class": "deterministic",
-        "check": "uv run pytest -q",
-    }
+    stored = created.metadata["verify"]
+    assert stored["kind"] == "deterministic"
+    assert stored["check"] == "uv run pytest -q" and stored["checks"] is None
     assert "verify: deterministic" in result.output
 
 
@@ -89,12 +88,10 @@ def test_create_normalizes_the_verify_payload_it_stores(tmp_path, monkeypatch):
     )
     assert result.exit_code == 0, result.output
     spec = beads.list()[0].metadata["verify"]
-    assert spec == {
-        "class": "human",
-        "check": "confirm sent",
-        "cwd": "/tmp",
-        "timeout_s": 30,
-    }
+    assert spec["kind"] == "human"
+    assert spec["check"] == "confirm sent"
+    assert spec["cwd"] == "/tmp" and spec["timeout_s"] == 30
+    assert spec["schema_version"] == 1
 
 
 def test_create_refuses_malformed_verify_json_and_writes_nothing(tmp_path, monkeypatch):

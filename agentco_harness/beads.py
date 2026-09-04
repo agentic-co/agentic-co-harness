@@ -6,6 +6,8 @@ Git provides history, branching, and collaboration.
 
 from __future__ import annotations
 
+from asop import gates as _asop_gates
+
 import fcntl
 import hashlib
 import json
@@ -216,20 +218,13 @@ class CapabilityError(LeaseError):
 # The verify payload's accepted classes. `deterministic` re-runs a command,
 # `human` parks the bead for approval, `judged` is declared-but-unimplemented
 # in v1 (see VerifyGateError).
-VERIFY_CLASSES = frozenset({"deterministic", "judged", "human"})
-
-# Keys a verify payload may carry. Unknown keys are rejected loudly: a typo'd
-# `timeout` (instead of `timeout_s`) that silently defaults is a gate that
-# behaves differently from what the author wrote down.
 #
-# `checks` is the STAGED form of `check` — an ordered list run stop-at-first-
-# failure (lint → types → unit → integration). One opaque `&&`-chained command
-# passes or fails as a unit and tells you nothing about WHERE it broke; staged
-# checks name the stage, which is the difference between "verify failed" and
-# "verify failed at stage 2 of 4: mypy". Exactly one of the two must be present.
-VERIFY_KEYS = frozenset(
-    {"class", "check", "checks", "cwd", "timeout_s", "rubric", "judge_route"}
-)
+# The gate schema is the ASOP contract's (`asop.gates`), shared with the Hub
+# since P1 unified the two: this runtime's `class`/`cwd`/`timeout_s`/`checks`
+# and the plane's `kind`/park-clock fields are one normalised shape. The
+# names below are kept for importers; they are views onto the contract.
+VERIFY_CLASSES = frozenset(_asop_gates.GATE_KINDS)
+VERIFY_KEYS = frozenset(_asop_gates.GATE_FIELDS)
 
 DEFAULT_VERIFY_TIMEOUT_S = 120
 
@@ -289,83 +284,22 @@ SELF_REPORTING_EXECUTORS = frozenset({"claude", "zai", "forge"})
 def validate_verify(payload: object) -> dict:
     """Validate + normalize a ``metadata.verify`` payload. Raise on garbage.
 
-    Shape: ``{"class": "deterministic"|"judged"|"human", "check": str, ...}``
-    or, for a staged gate, ``{"class": ..., "checks": [str, ...], ...}`` — plus
-    optional ``cwd``/``timeout_s`` (which apply to EVERY stage) and
-    `rubric`/`judge_route`, reserved for the judged class. Returns a normalized
-    copy — callers store THAT, so what is on disk is what the gate will run.
+    A thin shim over the ASOP contract's `asop.gates.validate_gate`. What
+    comes back is the contract's normalised gate — every known field present,
+    `None` where absent, `kind` as the class — and callers store THAT, so
+    what is on disk is what the gate will run.
 
-    ``check`` and ``checks`` are mutually exclusive. Carrying both is refused
-    rather than resolved by precedence: a bead that looks gated on four stages
-    while only one runs is the self-grading this contract exists to stop.
+    This runtime relaxes the clock group (`require=()`): a deterministic gate
+    cannot park, so it need not say how long. A plane that files human gates
+    requires it, and does so on its side of the same contract.
+
+    ``class`` is accepted as the read-alias the contract keeps for records
+    written before the schema was unified; it is stored as ``kind``.
     """
-    if not isinstance(payload, dict):
-        raise VerifyContractError(
-            f"metadata.verify must be a JSON object, got {type(payload).__name__}"
-        )
-    unknown = set(payload) - VERIFY_KEYS
-    if unknown:
-        raise VerifyContractError(
-            f"metadata.verify has unknown key(s): {', '.join(sorted(unknown))} "
-            f"(allowed: {', '.join(sorted(VERIFY_KEYS))})"
-        )
-    cls = payload.get("class")
-    if cls not in VERIFY_CLASSES:
-        raise VerifyContractError(
-            f"metadata.verify['class'] must be one of "
-            f"{sorted(VERIFY_CLASSES)}, got {cls!r}"
-        )
-    has_check = "check" in payload
-    has_checks = "checks" in payload
-    if has_check and has_checks:
-        raise VerifyContractError(
-            "metadata.verify carries BOTH 'check' and 'checks' — they are "
-            "mutually exclusive. Use 'check' for one command, 'checks' for an "
-            "ordered list of stages."
-        )
-    if not has_check and not has_checks:
-        raise VerifyContractError(
-            "metadata.verify needs either 'check' (one command) or 'checks' "
-            "(an ordered list of stage commands)"
-        )
-    if has_checks:
-        stages = payload["checks"]
-        if isinstance(stages, str):
-            # A bare string is iterable, so it would otherwise validate
-            # character-by-character into a gate of one-letter commands.
-            raise VerifyContractError(
-                f"metadata.verify['checks'] must be a LIST of command strings, "
-                f"got the string {stages!r} — pass [{stages!r}] for one stage, "
-                f"or use 'check'."
-            )
-        if not isinstance(stages, (list, tuple)):
-            raise VerifyContractError(
-                f"metadata.verify['checks'] must be a list of command strings, "
-                f"got {type(stages).__name__}"
-            )
-        if not stages:
-            raise VerifyContractError(
-                "metadata.verify['checks'] is empty — a gate with no stages "
-                "passes everything, which is not a gate"
-            )
-        for i, stage in enumerate(stages):
-            if not isinstance(stage, str) or not stage.strip():
-                raise VerifyContractError(
-                    f"metadata.verify['checks'][{i}] must be a non-empty "
-                    f"string (the command to run), got {stage!r}"
-                )
-        return _finish_verify_normalization(
-            {"class": cls, "checks": [str(s) for s in stages]}, payload
-        )
-    check = payload.get("check")
-    if not isinstance(check, str) or not check.strip():
-        raise VerifyContractError(
-            "metadata.verify['check'] must be a non-empty string "
-            "(the command to re-run, or — for the human class — what the "
-            "approver must confirm)"
-        )
-    normalized: dict = {"class": cls, "check": check}
-    return _finish_verify_normalization(normalized, payload)
+    try:
+        return _asop_gates.validate_gate(payload, require=())
+    except _asop_gates.Refusal as e:
+        raise VerifyContractError(f"metadata.verify: {e.message}") from e
 
 
 def _finish_verify_normalization(normalized: dict, payload: dict) -> dict:
@@ -390,6 +324,12 @@ def _finish_verify_normalization(normalized: dict, payload: dict) -> dict:
         if optional in payload:
             normalized[optional] = payload[optional]
     return normalized
+
+
+def gate_kind(spec: dict) -> str | None:
+    """The gate's class. `kind` on anything normalised through the contract;
+    `class` on a bead v1 wrote to disk before the schema was unified."""
+    return spec.get("kind") or spec.get("class")
 
 
 def verify_check_text(spec: dict | None) -> str:
@@ -1458,7 +1398,7 @@ class Beads:
         command, or the arrow-joined ladder on a pass) for the same reason.
         """
         cwd = spec.get("cwd") or str(self.path.parent)
-        timeout = int(spec.get("timeout_s", DEFAULT_VERIFY_TIMEOUT_S))
+        timeout = int(spec.get("timeout_s") or DEFAULT_VERIFY_TIMEOUT_S)
         record: dict = {
             "class": "deterministic",
             "cwd": cwd,
@@ -1466,7 +1406,9 @@ class Beads:
             "checked_at": datetime.now(timezone.utc).isoformat(),
         }
 
-        if "checks" not in spec:
+        # `checks` is always present on a normalised gate — `None` when the
+        # gate is a single command — so presence is not the question.
+        if not spec.get("checks"):
             record["check"] = spec["check"]
             record.update(self._run_one_stage(spec["check"], cwd, timeout))
             return record
@@ -1616,7 +1558,7 @@ class Beads:
         every other reader/writer of the node — and deadlock any check that
         itself shells out to `agentco`.
         """
-        cls = spec["class"]
+        cls = gate_kind(spec)
         if cls == "judged":
             raise VerifyGateError(
                 f"refusing to complete {task.id}: judged gates are not "

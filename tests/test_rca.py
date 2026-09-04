@@ -452,7 +452,7 @@ def test_analyze_bead_carries_the_terminal_action_gate(tmp_path):
     root = create_rca_task(beads, failed, "timed out after 900s")
 
     verify = root.metadata["verify"]
-    assert verify["class"] == "deterministic"
+    assert verify["kind"] == "deterministic"
     assert "rca-check" in verify["check"]
     assert root.id in verify["check"]
     assert str(beads.path) in verify["check"]
