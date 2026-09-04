@@ -11,7 +11,7 @@ It is the second product of the AgentCo split:
 |---|---|---|
 | What it is | The coordination plane: scope claims, snapshot pointers, fenced leases, ASOP storage, gate routing, the human decision router | The execution runtime: beads, cycles, executors, RCA, schedules, doctor |
 | Runs alone? | Yes — any harness (Codex, Claude Code, your own) connects directly | Yes — solo operators run it with no server at all |
-| Together | The Harness is one Hub participant (reference L3 client, publishing off by default) | The Harness applies the Hub's ASOPs and reports outcomes |
+| Together | The Harness is one Hub participant (reference **L2 worker** — pull, report, attest; publishing off by default) | The Harness applies the Hub's ASOPs and reports outcomes |
 
 The Harness descends from the private v1 monolith (`mabidoli/agentco-v1`) with the
 personal pipelines removed and replaced by extension seams. Nothing in this
@@ -30,7 +30,7 @@ keys in CI.
 | **P0 (done)** | v1 core extracted into `agentco_harness`; retro / feeds / sources replaced by registries; RCA escalation target configurable |
 | **P1 (done)** | Shared ASOP contract package (`packages/asop` in the Hub repo) — gate schema, attestation shapes, refusal vocabulary. Both products validate against it |
 | **P2 (done)** | ASOP runtime inside the Harness (create, apply, maintain procedures locally) + the executor backend seam; config lost its v1-only blocks |
-| **P3 (done)** | Optional Hub client — level-three participant, publishing off by default. Proven end to end: one plane, one procedure, three participants from three vendors |
+| **P3 (done)** | Optional Hub client — an L2 worker on the plane (pull, report, attest), publishing off by default. Proven end to end: one plane, one procedure, three participants from three vendors |
 | P4 | v1 hub migrates onto the Harness + a LifeOS extension pack that re-registers what P0 removed |
 | Later | The ASOP contract (`agentco-asop`) moves to its own repository with its own releases, and both products pin a version. Until the first version is finalised it stays in the Hub repo's `packages/asop/` and this runtime depends on it by git subdirectory — decided 2026-09-04 |
 
