@@ -17,6 +17,7 @@ scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --live            
 scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --claude-code mcp  # real headless Claude Code as the analyst
 scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --claude-code mcp --agy mcp --auto-approve  # both real agents
 scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --gate judged --auto-approve   # a judged gate + its rails
+scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --claude-code mcp --agy mcp --live --gate judged --auto-approve   # all of it
 ```
 
 **Proven 2026-09-04**, all four modes green:
@@ -27,6 +28,7 @@ scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --gate judged --au
 | `--claude-code mcp --agy mcp` | 22/22 |
 | `--live` | 22/22 |
 | `--gate judged` | 25/25 |
+| everything at once: `--claude-code mcp --agy mcp --live --gate judged` | 25/25 |
 
 In the MCP mode both agents found the plane through the Hub's `serve-mcp`
 surface, pulled only their own step, and reported it. Claude Code's
