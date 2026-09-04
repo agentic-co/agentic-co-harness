@@ -16,11 +16,20 @@ scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub                   
 scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --live             # the runtime runs its real backend for `implement`
 scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --claude-code mcp  # real headless Claude Code as the analyst
 scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --claude-code mcp --agy mcp --auto-approve  # both real agents
+scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --gate judged --auto-approve   # a judged gate + its rails
 ```
 
-**Proven 2026-09-04:** 22/22 deterministic, 22/22 with `--claude-code mcp
---agy mcp`, 22/22 with `--live`, and 25/25 with `--gate judged`. Both agents found the plane through the Hub's
-`serve-mcp` surface, pulled only their own step, and reported it. Claude Code's
+**Proven 2026-09-04**, all four modes green:
+
+| mode | checkpoints |
+|---|---|
+| deterministic (default) | 22/22 |
+| `--claude-code mcp --agy mcp` | 22/22 |
+| `--live` | 22/22 |
+| `--gate judged` | 25/25 |
+
+In the MCP mode both agents found the plane through the Hub's `serve-mcp`
+surface, pulled only their own step, and reported it. Claude Code's
 first `work_report` carried an extra `cwd` inside the attestation; the plane
 refused it (`attestation_invalid`, §5.3 names exactly five fields) and the
 agent moved the detail into `result` and retried — the contract's error text
