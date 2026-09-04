@@ -44,7 +44,12 @@ def _module_scope_imports(path: pathlib.Path) -> set[str]:
     for node in tree.body:
         if isinstance(node, ast.Import):
             names.update(a.name.split(".")[0] for a in node.names)
-        elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            # `level` is the number of leading dots. A relative import of a
+            # sibling — `from .agents import AGENTS` — is exactly how the
+            # regression got in, so it counts the same as the absolute form.
+            # The first version of this helper filtered `level == 0` and would
+            # have passed the pre-fix orchestrator (Bellows review, 2026-09-04).
             names.add(node.module.split(".")[0])
     return names
 

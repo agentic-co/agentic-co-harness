@@ -20,15 +20,26 @@ WHERE THE ARTIFACT LIVES
 Resolved in this order, first hit wins:
 
 1. an explicit path passed by the caller (``config.egress.routes_path``),
-2. the ``AGENTCO_INFERENCE_ROUTES`` environment variable,
+2. the ``AGENTCO_INFERENCE_ROUTES`` environment variable, or its pre-extraction
+   name ``LIFEOS_INFERENCE_ROUTES``,
 3. ``inference-routes.json`` beside the bead store.
 
-(3) is the point of the ordering: the default is a file the runtime owns,
-next to the queue it guards, rather than a path inside one particular
-operator's home directory. That default was ``~/.claude/LIFEOS/MEMORY/STATE``
-— which, for anybody who is not that operator, is a file that never exists,
-so every non-native route was denied by a fail-closed rule doing exactly
-what it promised for a reason that had nothing to do with them.
+Nothing else. (3) is the point: the default is a file the runtime owns, next
+to the queue it guards, rather than a path inside one operator's home. That
+default used to be ``~/.claude/LIFEOS/MEMORY/STATE`` — for anybody who is not
+that operator, a file that never exists, so every non-native route was denied
+by a fail-closed rule doing exactly what it promised for a reason that had
+nothing to do with them.
+
+The first replacement kept that legacy path as a silent fourth fallback, so
+an upgraded install would not start denying routes it allowed yesterday. A
+cross-vendor review (2026-09-04) pointed out what that costs: a brand-new
+project on a machine that still carries an old global table inherits that
+table without anyone choosing it — a fresh install and an upgraded one are
+indistinguishable to a security gate. So the upgrade signal is explicit now:
+an upgraded deployment sets the environment variable, or ``egress.routes_path``,
+and says so. A fresh project with neither fails closed, which is the answer
+a route table it never had should give.
 
 FAIL-CLOSED
 -----------
@@ -91,11 +102,6 @@ _ARTIFACT_ENV = "AGENTCO_INFERENCE_ROUTES"
 #: as a correctly-working guard and therefore the expensive kind of silent.
 _ARTIFACT_ENV_LEGACY = "LIFEOS_INFERENCE_ROUTES"
 
-#: Kept readable so a LifeOS-shaped deployment that still exports to the old
-#: location keeps working without a config edit. Consulted only when nothing
-#: else resolves and the file is actually there.
-_LEGACY_DEFAULT = Path.home() / ".claude/LIFEOS/MEMORY/STATE/inference-routes.json"
-
 #: The artifact's basename, resolved beside the bead store by default.
 ARTIFACT_NAME = "inference-routes.json"
 _SUPPORTED_SCHEMA = 1
@@ -128,9 +134,9 @@ def artifact_path(
 
     ``explicit`` is the configured path (``config.egress.routes_path``);
     ``store_dir`` is the directory holding the bead store, which is where the
-    default lives. With neither, and no environment override, a legacy LifeOS
-    export is honoured if it happens to exist — an upgrade should not silently
-    start denying routes that were allowed yesterday.
+    default lives. With no store directory either, the default is the artifact
+    name relative to the working directory — the caller that has no store has
+    no better answer, and a relative name at least says so in the error.
     """
     if explicit:
         return Path(explicit).expanduser()
@@ -139,12 +145,8 @@ def artifact_path(
     if override:
         return Path(override).expanduser()
 
-    if store_dir is not None:
-        beside_the_store = Path(store_dir).expanduser() / ARTIFACT_NAME
-        if beside_the_store.exists() or not _LEGACY_DEFAULT.exists():
-            return beside_the_store
-
-    return _LEGACY_DEFAULT
+    base = Path(store_dir).expanduser() if store_dir is not None else Path(".")
+    return base / ARTIFACT_NAME
 
 
 def load_routes(
