@@ -19,7 +19,7 @@ scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --claude-code mcp 
 ```
 
 **Proven 2026-09-04:** 22/22 deterministic, 22/22 with `--claude-code mcp
---agy mcp`, and 22/22 with `--live`. Both agents found the plane through the Hub's
+--agy mcp`, 22/22 with `--live`, and 25/25 with `--gate judged`. Both agents found the plane through the Hub's
 `serve-mcp` surface, pulled only their own step, and reported it. Claude Code's
 first `work_report` carried an extra `cwd` inside the attestation; the plane
 refused it (`attestation_invalid`, §5.3 names exactly five fields) and the
@@ -41,8 +41,13 @@ outcomes 1/1/0 · good adjudication · self-adjudication refused · `propose`
 drafted v2 with the proposal on step 3 · v2 active · v1 pin resolves · new run
 pins v2 · outcomes has two rows · retire refuses new runs.
 
-`--gate judged` is not wired yet: it needs a declared adjudicator route on the
-plane (decision 6). The first run uses the human gate.
+`--gate judged` runs the same procedure with a judged gate on step 5, answered by
+a declared verifier (`AGENTCO_VERIFIERS`) rather than a named human. It checks the
+rails before the verdict, so the run is 25 checkpoints rather than 22: an
+undeclared actor claiming `verify` is refused, the party that executed the step is
+refused, and a declared verifier that does not claim the capability is refused too.
+Both halves are required — the operator's declaration is the authority, and
+claiming the capability is not.
 
 `--live` found a real defect and now guards it. The mirror stamped a pulled
 bead with the plane ACTOR (`harness-bigmac`), which is an identity on the
