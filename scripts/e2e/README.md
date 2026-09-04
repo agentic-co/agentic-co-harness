@@ -8,14 +8,25 @@ run to completion while checking every claim the contract makes along the way.
 |---|---|---|
 | analyst | `claude-code` | a direct participant over signed HTTP (default), or real Claude Code over MCP with `--claude-code mcp` |
 | implementer | `harness-bigmac` | this runtime: `harness hub pull` → execute → `harness hub sync` |
-| validator | `agy` | a direct participant; agy is OAuth-only, so the script pauses at a checkpoint for an interactive session, or plays it over HTTP with `--auto-approve` |
+| validator | `agy` | a direct participant over signed HTTP (default), or real headless agy over MCP with `--agy mcp` (`agy --print`, agy ≥ 1.1.26; agy is OAuth-only, so the machine must already hold an interactive login) |
 
 ```sh
 scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --auto-approve     # fully automated
 scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub                    # pauses for agy and for the human gate
 scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --live             # the runtime runs its real backend for `implement`
 scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --claude-code mcp  # real headless Claude Code as the analyst
+scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --claude-code mcp --agy mcp --auto-approve  # both real agents
 ```
+
+**Proven 2026-09-04:** 22/22 in the deterministic mode and 22/22 with
+`--claude-code mcp --agy mcp`. Both agents found the plane through the Hub's
+`serve-mcp` surface, pulled only their own step, and reported it. Claude Code's
+first `work_report` carried an extra `cwd` inside the attestation; the plane
+refused it (`attestation_invalid`, §5.3 names exactly five fields) and the
+agent moved the detail into `result` and retried — the contract's error text
+was enough for an unbriefed agent to self-correct. agy answered in the
+principal's DA voice because `~/.gemini/config/AGENTS.md` carries the LifeOS
+identity; that file is written by LifeOS setup, so this is expected.
 
 Deterministic by default: the implementer's work is a prepared patch to a tiny
 target repo, and the deterministic gate (`pytest`) is what proves it — the
