@@ -3166,3 +3166,85 @@ def sop_run(ctx, asop_id, inputs, binds, version, title):
     click.echo(f"Filed run {parent.id}: {len(children)} step bead(s) pinned to {parent.metadata['sop_ref']}")
     for t in sorted(children, key=lambda t: t.title):
         click.echo(f"  {t.id}  {t.title}  ← {t.assigned_agent or t.assigned_to}")
+
+
+# --------------------------------------------------------------------------- #
+# hub — this runtime as a participant of a coordination plane (decision 8)
+# --------------------------------------------------------------------------- #
+
+
+@main.group("hub")
+def hub():
+    """The coordination plane this node participates in. Pull, execute, report."""
+
+
+def _hub_client(ctx):
+    from .hub_client import HubRefusal, client_from_config
+    config = Config.load(ctx.obj["config_path"])
+    try:
+        client = client_from_config(config)
+    except HubRefusal as e:
+        raise click.ClickException(f"{e.code}: {e.message}\n  {e.remediation}")
+    if client is None:
+        raise click.ClickException("no plane configured — set hub.url in config.yaml")
+    return config, client
+
+
+@hub.command("status")
+@click.pass_context
+def hub_status(ctx):
+    """Is the plane there, and does it accept this actor's signature?"""
+    from .hub_client import HubRefusal, HubUnreachable
+    config, client = _hub_client(ctx)
+    try:
+        client.probe()
+    except HubUnreachable as e:
+        raise click.ClickException(f"unreachable: {e}")
+    except HubRefusal as e:
+        raise click.ClickException(f"{e.code}: {e.message}")
+    click.echo(f"OK  {config.hub.url}  as {client.actor}")
+
+
+@hub.command("pull")
+@click.option("--limit", type=int, default=20, show_default=True)
+@click.option("--capability", "capabilities", multiple=True, help="Declare a capability this node has.")
+@click.pass_context
+def hub_pull(ctx, limit, capabilities):
+    """Claim ready plane items this actor may run and mirror them locally."""
+    from .beads import Beads
+    from .hub_client import HubRefusal, HubUnreachable
+    config, client = _hub_client(ctx)
+    beads = Beads(config.tasks_path)
+    try:
+        mirrored = client.pull_and_mirror(beads, capabilities=list(capabilities) or None,
+                                          ttl_seconds=config.hub.lease_ttl_s, limit=limit)
+    except HubUnreachable as e:
+        raise click.ClickException(f"unreachable: {e}")
+    except HubRefusal as e:
+        raise click.ClickException(f"{e.code}: {e.message}\n  {e.remediation}")
+    if not mirrored:
+        click.echo("nothing ready for this actor")
+        return
+    for t in mirrored:
+        ref = (t.metadata or {}).get("sop_ref") or {}
+        click.echo(f"  {t.id}  {t.title}  ← plane {t.metadata['hub']['item_id']}  {ref}")
+    click.echo(f"Mirrored {len(mirrored)} item(s); the next cycle executes them.")
+
+
+@hub.command("sync")
+@click.pass_context
+def hub_sync(ctx):
+    """Report every mirrored bead whose outcome the plane has not heard."""
+    from .beads import Beads
+    from .hub_client import HubRefusal, HubUnreachable
+    config, client = _hub_client(ctx)
+    beads = Beads(config.tasks_path)
+    try:
+        receipts = client.sync(beads)
+    except HubUnreachable as e:
+        raise click.ClickException(f"unreachable: {e}")
+    except HubRefusal as e:
+        raise click.ClickException(f"{e.code}: {e.message}\n  {e.remediation}")
+    for r in receipts:
+        click.echo(f"  {r['bead']} → plane {r['item']}: {r['status']} ({r['receipt'].get('state')})")
+    click.echo(f"Reported {len(receipts)} outcome(s).")

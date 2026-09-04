@@ -105,6 +105,26 @@ def _strip_env_value(value: str) -> str:
 
 
 @dataclass
+class HubConfig:
+    """A coordination plane this runtime participates in (ASOP.md §7, decision 8).
+
+    Off when `url` is unset. `actor` is the name this runtime pulls and
+    reports as — the binding label a plane run names when it means this
+    node. The secret is read from the environment, never from this file.
+    """
+
+    url: str | None = None
+    actor: str = "harness"
+    secret_env: str = "AGENTCO_HUB_SECRET"
+    timeout_s: int = 30
+    lease_ttl_s: int = 3600
+
+    @property
+    def enabled(self) -> bool:
+        return bool(self.url)
+
+
+@dataclass
 class EgressConfig:
     """Where the data-classification route table is read from.
 
@@ -122,7 +142,7 @@ class EgressConfig:
 CONSUMED_AGENT_KEYS = {"model", "use_claude_code", "context", "description"}
 
 # Top-level config keys the loader understands.
-KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress"}
+KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress", "hub"}
 
 #: Blocks the v1 hub consumed that this runtime deliberately does not. They
 #: configured pipelines that belonged to one operator — a feeds ingester
@@ -380,6 +400,7 @@ class Config:
     triage: TriageConfig = field(default_factory=TriageConfig)
     notify: NotifyConfig = field(default_factory=NotifyConfig)
     egress: EgressConfig = field(default_factory=EgressConfig)
+    hub: HubConfig = field(default_factory=HubConfig)
     humans: HumansConfig = field(default_factory=HumansConfig)
     tiers: TiersConfig = field(default_factory=TiersConfig)
     backoff: BackoffConfig = field(default_factory=BackoffConfig)
@@ -530,6 +551,15 @@ class Config:
                 ),
                 telegram_token_env=notify.get("telegram_token_env", NotifyConfig.telegram_token_env),
                 cycle_summary=notify.get("cycle_summary", False),
+            )
+
+        if "hub" in data:
+            hub = data["hub"] or {}
+            _warn_unknown_nested("hub", hub, {"url", "actor", "secret_env", "timeout_s", "lease_ttl_s"}, path)
+            config.hub = HubConfig(
+                url=hub.get("url"), actor=hub.get("actor", "harness"),
+                secret_env=hub.get("secret_env", "AGENTCO_HUB_SECRET"),
+                timeout_s=int(hub.get("timeout_s", 30)), lease_ttl_s=int(hub.get("lease_ttl_s", 3600)),
             )
 
         if "egress" in data:
