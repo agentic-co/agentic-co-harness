@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 
+import pytest
 import yaml
 
 from agentco_harness.config import Config, load_env_file
@@ -91,23 +92,47 @@ def test_unconsumed_agent_key_warns(tmp_path, capsys):
     assert "temprature" in out
 
 
-def test_unknown_nested_key_in_feeds_warns(tmp_path, capsys):
+@pytest.mark.parametrize("block", ["feeds", "sources"])
+def test_a_retired_block_says_so_and_says_what_replaced_it(block, tmp_path, capsys):
+    """`feeds:` and `sources:` configured one operator's own pipelines.
+
+    They are gone, and an operator upgrading is holding a config file that
+    used to work. "unknown top-level key 'feeds'" reads as a typo when it is
+    actually a removal, so the warning names the replacement seam instead.
+    """
+    cfg_file = tmp_path / "config.yaml"
+    cfg_file.write_text(
+        yaml.safe_dump({"tasks_path": "tasks.jsonl", block: {"enabled": True}})
+    )
+
+    config = Config.load(cfg_file)
+
+    out = capsys.readouterr().out
+    assert block in out
+    assert "no longer read" in out
+    assert "register_source_factory" in out
+    assert "unknown top-level key" not in out   # a removal, not a typo
+    assert not hasattr(config, block)
+
+
+def test_a_retired_block_does_not_stop_the_rest_of_the_file_loading(
+    tmp_path, capsys
+):
+    """The block is ignored; everything around it still applies."""
     cfg_file = tmp_path / "config.yaml"
     cfg_file.write_text(
         yaml.safe_dump(
             {
                 "tasks_path": "tasks.jsonl",
-                "feeds": {"enabled": True, "sources_md": "/tmp/_SOURCES.md", "mdoel": "x"},
+                "feeds": {"enabled": True, "sources_md": "/tmp/_SOURCES.md"},
+                "instance": "still-here",
             }
         )
     )
 
-    Config.load(cfg_file)
+    config = Config.load(cfg_file)
 
-    out = capsys.readouterr().out
-    assert "nothing consumes" in out
-    assert "mdoel" in out
-    assert "feeds" in out
+    assert config.instance == "still-here"
 
 
 def test_unknown_nested_key_in_llm_warns(tmp_path, capsys):
