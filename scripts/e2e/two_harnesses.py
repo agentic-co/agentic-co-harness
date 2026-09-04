@@ -47,8 +47,12 @@ RUNTIME = HERE.parent.parent
 sys.path.insert(0, str(RUNTIME))
 from agentco_harness.hub_client import sign  # noqa: E402  (byte-identical to the plane's)
 
-ACTORS = ["harness-bigmac", "claude-code", "agy", "mabidoli"]
+ACTORS = ["harness-bigmac", "claude-code", "agy", "mabidoli", "judge"]
 HUMAN = "mabidoli"
+#: A judged gate is answered by a DECLARED verifier holding the `verify`
+#: capability, and never by the party that executed the step. Declaring the
+#: capability is not the authority — `AGENTCO_VERIFIERS` is.
+JUDGE = "judge"
 RESULTS: list[tuple[str, bool, str]] = []
 
 
@@ -274,10 +278,6 @@ def main() -> int:
     ap.add_argument("--agy", choices=["http", "mcp"], default="http", help="mcp: real headless agy as the validator")
     ap.add_argument("--auto-approve", action="store_true", help="answer the human gate as mabidoli without prompting")
     a = ap.parse_args()
-    if a.gate == "judged":
-        print("--gate judged is not wired yet: it needs a declared adjudicator route on the plane (decision 6). Use human for the first run.")
-        return 2
-
     work = a.work_dir or Path(tempfile.mkdtemp(prefix="asop-e2e-"))
     work.mkdir(parents=True, exist_ok=True)
     plane_dir, target, node = work / "plane", work / "target", work / "node"
@@ -295,7 +295,11 @@ def main() -> int:
 
     # 1. plane up
     env = {**os.environ, "AGENTCO_DB": str(plane_dir / "registry.sqlite3"), "AGENTCO_REGISTRY_KEYS": str(plane_dir / "keys.json"),
-           "AGENTCO_HUMANS": HUMAN, "AGENTCO_ADJUDICATORS": ""}
+           "AGENTCO_HUMANS": HUMAN, "AGENTCO_ADJUDICATORS": "",
+           # Declared verifiers. Undeclared, `verify` counts for nobody and a
+           # judged gate can never be answered; declared, it counts only for
+           # these actors, whatever anyone else claims in a payload.
+           "AGENTCO_VERIFIERS": JUDGE}
     server = subprocess.Popen([str(hub_py), "-m", "agentco", "serve", "--port", str(a.port)], cwd=plane_dir, env=env,
                               stdout=open(plane_dir / "server.log", "w"), stderr=subprocess.STDOUT)
     url = f"http://127.0.0.1:{a.port}"
@@ -358,16 +362,37 @@ def main() -> int:
             check("validator: real agy over MCP pulled step 5 and reported", ok)
         else:
             r = participant_step(plane, "agy", lambda gate: 0, 5)
-            check("validator: agy reported step 5 without attesting (human gate)", bool(r) and plane.refused(r) is None, json.dumps(r)[:120])
+            check(f"validator: agy reported step 5 without attesting ({a.gate} gate)", bool(r) and plane.refused(r) is None, json.dumps(r)[:120])
         item5 = by_step[5]["itemId"]
         parked = plane.call(HUMAN, "GET", f"/runs/{run_id}").get("run") or {}
         st5 = {s["step"]: s for s in parked.get("steps", [])}[5].get("status")
-        check("gate: the human gate parked step 5 awaiting the verifier", (st5 or "").lower() == "awaiting_verify", str(st5))
-        if not a.auto_approve:
-            input("  >>> mabidoli: press Enter to answer the human gate (approve) ")
-        ans = plane.call(HUMAN, "POST", f"/work/{item5}/attest", {"attestation": {"check": "acceptance criteria traced to passing tests", "exit_status": 0,
-                                                                                   "environment": "e2e human verdict", "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "submitted_by": HUMAN}})
-        check("gate: the named verifier answered it", plane.refused(ans) is None, json.dumps(ans)[:160])
+        check(f"gate: the {a.gate} gate parked step 5 awaiting the verifier", (st5 or "").lower() == "awaiting_verify", str(st5))
+
+        verdict = {"check": "acceptance criteria traced to passing tests", "exit_status": 0,
+                   "environment": f"e2e {a.gate} verdict", "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+        if a.gate == "human":
+            if not a.auto_approve:
+                input("  >>> mabidoli: press Enter to answer the human gate (approve) ")
+            ans = plane.call(HUMAN, "POST", f"/work/{item5}/attest", {"attestation": {**verdict, "submitted_by": HUMAN}})
+            check("gate: the named verifier answered it", plane.refused(ans) is None, json.dumps(ans)[:160])
+        else:
+            # The rails, before the verdict. Both are the same rule seen twice:
+            # authority to judge is declared by the operator, never claimed in a
+            # payload, and never held by the party whose work is being judged.
+            usurp = plane.call("claude-code", "POST", f"/work/{item5}/attest",
+                               {"attestation": {**verdict, "submitted_by": "claude-code"}, "capabilities": ["verify"]})
+            check("judged: an undeclared actor claiming `verify` is refused",
+                  plane.refused(usurp) == "attestation_invalid", str(plane.refused(usurp)))
+            selfjudge = plane.call("agy", "POST", f"/work/{item5}/attest",
+                                   {"attestation": {**verdict, "submitted_by": "agy"}, "capabilities": ["verify"]})
+            check("judged: the executor may not judge its own step",
+                  plane.refused(selfjudge) == "attestation_invalid", str(plane.refused(selfjudge)))
+            naked = plane.call(JUDGE, "POST", f"/work/{item5}/attest", {"attestation": {**verdict, "submitted_by": JUDGE}})
+            check("judged: even a declared verifier must claim the capability",
+                  plane.refused(naked) == "attestation_invalid", str(plane.refused(naked)))
+            ans = plane.call(JUDGE, "POST", f"/work/{item5}/attest",
+                             {"attestation": {**verdict, "submitted_by": JUDGE}, "capabilities": ["verify"]})
+            check("gate: the declared verifier answered the judged gate", plane.refused(ans) is None, json.dumps(ans)[:200])
 
         # 3 (§5.5). auto-close + outcomes
         final = plane.call(HUMAN, "GET", f"/runs/{run_id}").get("run") or {}
