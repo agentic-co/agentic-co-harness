@@ -83,14 +83,16 @@ def test_retire_keeps_the_record_and_refuses_new_runs(store, beads):
     assert e.value.code == "sop_refused"
 
 
-@pytest.mark.parametrize("verb", ["activate", "retire"])
-def test_activate_and_retire_are_human_verbs(store, verb):
-    """Decision 3 for retire; activation is human until the policy is ported."""
-    rec = store.create(feature_dev(), author="m", author_kind="human", asop_id="feature-dev")
-    if verb == "retire":
-        store.activate("feature-dev", 1, by_kind="human")
+def test_retire_is_a_human_verb(store):
+    """Decision 3, rule 4: `retire` is refused to an agent whatever it would do.
+
+    Activation is NOT here any more — §8.1 makes it "human, or agent under
+    policy", and the policy is what `test_revision_policy.py` covers.
+    """
+    store.create(feature_dev(), author="m", author_kind="human", asop_id="feature-dev")
+    store.activate("feature-dev", 1, by_kind="human")
     with pytest.raises(Refusal) as e:
-        getattr(store, verb)("feature-dev", *([1] if verb == "activate" else []), by_kind="agent")
+        store.retire("feature-dev", by_kind="agent")
     assert e.value.code == "revision_policy:human_only"
 
 
