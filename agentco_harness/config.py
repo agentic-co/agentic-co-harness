@@ -151,7 +151,7 @@ class EgressConfig:
 CONSUMED_AGENT_KEYS = {"model", "use_claude_code", "context", "description"}
 
 # Top-level config keys the loader understands.
-KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress", "hub"}
+KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress", "hub", "completion"}
 
 #: Blocks the v1 hub consumed that this runtime deliberately does not. They
 #: configured pipelines that belonged to one operator — a feeds ingester
@@ -410,6 +410,11 @@ class Config:
     notify: NotifyConfig = field(default_factory=NotifyConfig)
     egress: EgressConfig = field(default_factory=EgressConfig)
     hub: HubConfig = field(default_factory=HubConfig)
+    #: Chat-completion providers, by backend name. Only what the operator
+    #: changes — `agentco_harness.completion.DEFAULT_PROVIDERS` supplies the
+    #: rest, so `lmstudio` works against a local server with no config at all.
+    #: Shape: {name: {base_url, model, api_key_env, requires_key}}.
+    completion: dict = field(default_factory=dict)
     humans: HumansConfig = field(default_factory=HumansConfig)
     tiers: TiersConfig = field(default_factory=TiersConfig)
     backoff: BackoffConfig = field(default_factory=BackoffConfig)
@@ -571,6 +576,15 @@ class Config:
                 timeout_s=int(hub.get("timeout_s", 30)), lease_ttl_s=int(hub.get("lease_ttl_s", 3600)),
                 executor=hub.get("executor"),
             )
+
+        if "completion" in data:
+            block = data["completion"] or {}
+            if not isinstance(block, dict):
+                raise ValueError("`completion:` must be a mapping of provider name to settings")
+            for name, settings in block.items():
+                _warn_unknown_nested(f"completion.{name}", settings or {},
+                                     {"base_url", "model", "api_key_env", "requires_key"}, path)
+            config.completion = {k: dict(v or {}) for k, v in block.items()}
 
         if "egress" in data:
             egress = data["egress"] or {}

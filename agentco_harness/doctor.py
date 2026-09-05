@@ -1033,7 +1033,12 @@ def collect(config_path: str) -> DoctorReport:
                 f"`bun ~/.claude/LIFEOS/TOOLS/ExportInferenceRoutes.ts`."
             )
         else:
-            orphans = {a: r for a, r in AGENT_ROUTE.items() if r not in routes}
+            from .egress import NON_EGRESS_ROUTES
+
+            orphans = {
+                a: r for a, r in AGENT_ROUTE.items()
+                if r not in routes and r not in NON_EGRESS_ROUTES
+            }
             if orphans:
                 _fail(
                     f"agent(s) mapped to routes absent from "

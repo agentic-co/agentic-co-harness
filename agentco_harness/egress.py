@@ -78,6 +78,13 @@ CLASS_RANK: dict[str, int] = {
 #:       2026-07-24). Interactive sessions only.
 #:   anvil (Moonshot/Kimi) — no MOONSHOT_API_KEY in ~/.claude/.env.
 #: Add either the moment its auth story supports an unattended run.
+#: Routes that never consult the policy artifact, because nothing crosses a
+#: boundary for a ceiling to bound. A route table lists VENDORS; requiring a
+#: local model to appear in one is a category error, and it would also mean a
+#: node with no artifact could not use its own hardware. Both the doctor's
+#: orphan check and its test read this rather than keeping a second copy.
+NON_EGRESS_ROUTES: frozenset[str] = frozenset({"LOCAL"})
+
 AGENT_ROUTE: dict[str, str] = {
     "claude": "NATIVE",
     "zai": "TEMPER",
@@ -239,6 +246,15 @@ def check_egress(
     """
     data_class = resolve_data_class(task_metadata)
     route_name = AGENT_ROUTE.get(agent)
+
+    # LOCAL is the one route with no egress at all: the model runs on this
+    # machine and the bytes never leave it. A ceiling exists to bound what
+    # crosses a boundary, and there is no boundary here — so consulting the
+    # policy artifact would only manufacture a refusal for a request nobody
+    # can intercept. Checked before the artifact loads, because a node with
+    # no artifact must still be able to use its own hardware.
+    if route_name in NON_EGRESS_ROUTES:
+        return data_class, None
 
     if route_name is None:
         raise EgressDenied(

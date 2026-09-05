@@ -38,13 +38,21 @@ class Backend:
     route: str          # a key in the egress route table: NATIVE, TEMPER, FORGE, ...
     execute: Execute
     egress_checked: bool = True   # False only for in-process work that sends nothing anywhere
+    #: What this backend can actually DO. A subprocess agent CLI provides
+    #: text, tools, shell and files; a chat-completions endpoint provides text
+    #: and nothing else. A bead's `requires` is matched against this at
+    #: dispatch, so "implement the feature" cannot be routed to a model that
+    #: can only talk. Empty means undeclared, which is treated as agentic —
+    #: every backend that existed before this field was one.
+    capabilities: frozenset[str] = frozenset()
 
 
 EXECUTOR_BACKENDS: dict[str, Backend] = {}
 
 
 def register_executor_backend(
-    name: str, execute: Execute, *, route: str, egress_checked: bool = True
+    name: str, execute: Execute, *, route: str, egress_checked: bool = True,
+    capabilities: "frozenset[str] | set[str] | tuple[str, ...] | None" = None,
 ) -> Backend:
     """Make `name` a dispatchable executor with `route` as its egress ceiling.
 
@@ -56,7 +64,11 @@ def register_executor_backend(
         raise ValueError("a backend needs a name")
     if not isinstance(route, str) or not route.strip():
         raise ValueError(f"backend {name!r} needs an egress route")
-    backend = Backend(name=name.strip(), route=route.strip(), execute=execute, egress_checked=egress_checked)
+    backend = Backend(
+        name=name.strip(), route=route.strip(), execute=execute,
+        egress_checked=egress_checked,
+        capabilities=frozenset(capabilities) if capabilities else frozenset(),
+    )
     EXECUTOR_BACKENDS[backend.name] = backend
     # The egress gate resolves a route by agent name; a backend that is
     # dispatchable but unknown to the gate would be refused at dispatch with

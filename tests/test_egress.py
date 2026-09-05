@@ -162,10 +162,18 @@ def test_unverified_ceiling_degrades_when_unsupervised(tmp_path, monkeypatch):
 
 
 def test_every_declared_agent_route_is_reachable(tmp_path, monkeypatch):
-    """AGENT_ROUTE must not name a route the artifact doesn't define."""
+    """AGENT_ROUTE must not name a route the artifact doesn't define.
+
+    Except a NON_EGRESS route, which never reaches the table at all: a route
+    table lists vendors, and a model running on this machine has none.
+    """
+    from agentco_harness.egress import NON_EGRESS_ROUTES
+
     write_routes(tmp_path, monkeypatch)
     table = load_routes()
     for agent, route_name in AGENT_ROUTE.items():
+        if route_name in NON_EGRESS_ROUTES:
+            continue
         assert route_name in table, f"agent {agent!r} maps to unknown route {route_name!r}"
 
 

@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 
 from . import _lm
 from . import backends
+from . import completion as _completion
 from collections import abc as _abc
 
 from pathlib import Path
@@ -884,6 +885,48 @@ class Orchestrator:
             print(f"[cycle] Completed {task.id} via claude ({exec_result.duration_seconds:.0f}s)")
             return True
 
+    def _execute_completion_task(self, task: Task, provider_name: str) -> bool:
+        """Execute a bead as ONE chat completion — text in, text out.
+
+        No tools, no shell, no working tree. `_capability_gap` has already
+        refused any bead that needs those, so by the time we are here the work
+        genuinely is text-shaped.
+        """
+        from .completion import ProviderUnconfigured, complete, providers_from_config
+
+        timeout, _ = self._resolve_budget(task)
+        providers = providers_from_config(self.config)
+        provider = providers.get(provider_name)
+        if provider is None:
+            self.beads.update(task.id, status=TaskStatus.BLOCKED,
+                              result=f"no completion provider named {provider_name!r} in config")
+            return False
+
+        model = self._resolve_model(task) or provider.model
+        self.beads.claim(task.id, provider_name, capabilities=self.node_capabilities)
+        print(f"[cycle] Executing {task.id} via {provider_name} completion "
+              f"(model={model}, endpoint={provider.base_url}, timeout={timeout}s)")
+
+        prompt = task.metadata.get("prompt") or f"{task.title}\n\n{task.description}"
+        try:
+            with self._attribution(task, "cycle", model):
+                exec_result = complete(prompt, provider, model=model, timeout=timeout)
+        except ProviderUnconfigured as e:
+            # Not a failure of the work — a failure of the routing, so BLOCKED,
+            # the same call the egress gate makes for the same reason.
+            print(f"[cycle] BLOCKED: {task.id} {e}")
+            self.beads.update(task.id, status=TaskStatus.BLOCKED, result=str(e))
+            return False
+
+        self._record_cost(task, provider_name, exec_result)
+        if not exec_result.success:
+            print(f"[cycle] FAIL: {provider_name} for {task.id}: {exec_result.error}")
+            self._fail_with_rca(task, exec_result.error)
+            return False
+        self.beads.complete(task.id, result=exec_result.output)
+        print(f"[cycle] Completed {task.id} via {provider_name} ({exec_result.duration_seconds:.0f}s)")
+        return True
+
     def _execute_zai_task(self, task: Task) -> bool:
         """Execute a bead via z.ai's Coding Plan (Anthropic-compatible endpoint).
 
@@ -1332,6 +1375,8 @@ class Orchestrator:
             return handler(self, task, now)
         backend = backends.resolve(task.assigned_agent) or backends.resolve(task.metadata.get("executor"))
         if backend is not None:
+            if not self._capability_gap_ok(task, backend):
+                return False
             if backend.egress_checked and not self._authorize_egress(task, backend.name):
                 return False
             return backend.execute(self, task)
@@ -1376,6 +1421,37 @@ class Orchestrator:
         over the module-level `_attribution_for`. Every model-invoking call in
         this class runs inside one; the executor refuses to spawn without it."""
         return _attribution_for(self.config.tasks_path, task, lane, model)
+
+    def _capability_gap_ok(self, task: Task, backend) -> bool:
+        """Refuse a bead whose `requires` the backend cannot satisfy.
+
+        `requires` already said what the executing MACHINE must be able to do,
+        enforced at claim time. This is the same question asked of the MODEL:
+        a chat-completions endpoint provides text and nothing else, so a bead
+        that needs a shell or a working tree cannot run there however well it
+        is written.
+
+        BLOCKED, not FAILED, and for the identical reason the egress gate
+        blocks: the work is fine, the routing is not, and a human re-routes it.
+        A backend that declares no capabilities is treated as agentic — every
+        backend that existed before the field was one, and a silent downgrade
+        of the four shipped executors would be a worse bug than the one this
+        prevents.
+        """
+        declared = getattr(backend, "capabilities", frozenset())
+        if not declared:
+            return True
+        missing = sorted(set(task.requires or []) - set(declared) - set(self.node_capabilities or []))
+        if not missing:
+            return True
+        reason = (
+            f"backend {backend.name!r} cannot satisfy this bead's requires "
+            f"{missing} — it provides {sorted(declared)}. Route it to a backend "
+            f"that does, or drop the requirement if it is wrong."
+        )
+        print(f"[cycle] BLOCKED: {task.id} {reason}")
+        self.beads.update(task.id, status=TaskStatus.BLOCKED, result=reason)
+        return False
 
     def _authorize_egress(self, task: Task, agent: str) -> bool:
         """Gate a cross-vendor dispatch on the bead's data classification.
@@ -2200,6 +2276,18 @@ backends.register_executor_backend(
 backends.register_executor_backend("claude", lambda orch, task: orch._execute_claude_task(task), route="NATIVE")
 backends.register_executor_backend("zai", lambda orch, task: orch._execute_zai_task(task), route="TEMPER")
 backends.register_executor_backend("forge", lambda orch, task: orch._execute_forge_task(task), route="FORGE")
+
+# The completion backends. Separately registered rather than one API backend
+# with a swappable URL, because the egress gate keys on the NAME: lmstudio runs
+# on this machine and nothing leaves it, while z.ai is a third-party vendor with
+# a PUBLIC-only ceiling. One backend serving both would have to carry the looser
+# of the two routes, which is the wrong answer in both directions.
+backends.register_executor_backend(
+    "lmstudio", lambda orch, task: orch._execute_completion_task(task, "lmstudio"),
+    route="LOCAL", capabilities=_completion.COMPLETION_ONLY)
+backends.register_executor_backend(
+    "zai-api", lambda orch, task: orch._execute_completion_task(task, "zai-api"),
+    route="TEMPER", capabilities=_completion.COMPLETION_ONLY)
 
 # The plane's report-back hook. A no-op for every bead that is not a mirror
 # of a plane item, and a deferred report (the sweep retries) when the plane
