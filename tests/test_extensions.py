@@ -102,3 +102,60 @@ def test_config_refuses_a_malformed_declaration(tmp_path):
     cfg.write_text(yaml.safe_dump({"tasks_path": "t.jsonl", "extensions": {"not": "a list"}}))
     with pytest.raises(ValueError, match="list of module names"):
         Config.load(str(cfg))
+
+
+# ------------------------------------------- reaching a handler from the CLI
+
+def test_a_recurring_definition_can_name_a_handler(tmp_path):
+    """A definition's payload becomes the generated bead's metadata verbatim,
+    which is how a SCHEDULE reaches an extension. Until `--type` existed nothing
+    an operator could write could set one, so handlers were registrable and
+    unreachable."""
+    from click.testing import CliRunner
+
+    from agentco_harness.cli import main
+    from agentco_harness.recurring import Recurring
+
+    (tmp_path / "config.yaml").write_text(yaml.safe_dump({"tasks_path": "tasks.jsonl"}))
+    r = CliRunner().invoke(
+        main,
+        ["-c", str(tmp_path / "config.yaml"), "recurring", "add", "feeds ingest",
+         "--every", "1d", "--type", "feeds-ingest"],
+    )
+    assert r.exit_code == 0, r.output
+    from agentco_harness.config import Config
+
+    defs = Recurring(Config.load(str(tmp_path / "config.yaml")).recurring_path).list()
+    assert defs[0].payload["type"] == "feeds-ingest"
+
+
+def test_a_bead_can_be_handed_to_a_handler_by_hand(tmp_path):
+    """The same door, opened manually — how you fire an extension once."""
+    from click.testing import CliRunner
+
+    from agentco_harness.beads import Beads
+    from agentco_harness.cli import main
+    from agentco_harness.config import Config
+
+    (tmp_path / "config.yaml").write_text(yaml.safe_dump({"tasks_path": "tasks.jsonl"}))
+    r = CliRunner().invoke(
+        main,
+        ["-c", str(tmp_path / "config.yaml"), "tasks", "create", "fire it",
+         "-d", "x", "--type", "feeds-ingest"],
+    )
+    assert r.exit_code == 0, r.output
+    tasks = Beads(Config.load(str(tmp_path / "config.yaml")).tasks_path).list()
+    assert tasks[0].metadata["type"] == "feeds-ingest"
+
+
+def test_extension_settings_are_carried_but_never_interpreted(tmp_path):
+    """The runtime holds an extension's config without knowing what it means —
+    which is why `feeds:` no longer needs to be a key on the runtime's Config."""
+    cfg = tmp_path / "config.yaml"
+    cfg.write_text(yaml.safe_dump({
+        "tasks_path": "t.jsonl",
+        "extension_settings": {"feeds": {"enabled": True, "anything": [1, 2]}},
+    }))
+    loaded = Config.load(str(cfg))
+    assert loaded.extension_settings["feeds"]["enabled"] is True
+    assert loaded.extension_settings["feeds"]["anything"] == [1, 2]

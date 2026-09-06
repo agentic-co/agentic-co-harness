@@ -1728,8 +1728,14 @@ def recurring_list(ctx, as_json: bool):
 @click.option("--catch-up", type=click.Choice(["latest", "all"]), default="latest")
 @click.option("--timeout", type=int, default=None, help="Claude budget: seconds")
 @click.option("--max-turns", type=int, default=None, help="Claude budget: max turns")
+@click.option(
+    "--type", "task_type", default=None,
+    help="Hand the generated bead to a registered cycle handler (metadata.type). "
+         "The handler owns it end to end; an unregistered type takes the ordinary "
+         "executor path instead of being skipped.",
+)
 @click.pass_context
-def recurring_add(ctx, title, def_id, every, agent, prompt, catch_up, timeout, max_turns):
+def recurring_add(ctx, title, def_id, every, agent, prompt, catch_up, timeout, max_turns, task_type):
     """Add a recurring task definition."""
     from .recurring import Recurring, RecurringDef
 
@@ -1738,6 +1744,12 @@ def recurring_add(ctx, title, def_id, every, agent, prompt, catch_up, timeout, m
 
     def_id = def_id or "rec-" + "-".join(title.lower().split())[:40]
     payload = {}
+    # A definition's payload becomes the generated bead's metadata verbatim, so
+    # this is how a schedule reaches an extension: the seam dispatches on
+    # `metadata.type`, and until this flag existed nothing an operator could
+    # write could set one. The handlers were registrable and unreachable.
+    if task_type:
+        payload["type"] = task_type
     if prompt:
         payload["prompt"] = prompt
     budget = {}
@@ -2129,6 +2141,12 @@ def tasks_ready(ctx, agent: str | None):
     "flag. This is the field that makes a handoff survive first contact; the "
     "cap of 3 forces the ones that actually bite.",
 )
+@click.option(
+    "--type", "task_type", default=None,
+    help="Hand this bead to a registered cycle handler (metadata.type) rather "
+         "than to an executor. Use it to fire an extension's work by hand; the "
+         "recurring definition is how it fires on a schedule.",
+)
 @click.pass_context
 def tasks_create(
     ctx,
@@ -2154,6 +2172,7 @@ def tasks_create(
     sop_inputs: str | None,
     definition_of_done: str | None,
     mistakes: tuple[str, ...],
+    task_type: str | None,
 ):
     """Create a task manually.
 
@@ -2239,6 +2258,8 @@ def tasks_create(
         task_class = "agent"
 
     metadata = {}
+    if task_type:
+        metadata["type"] = task_type
     if task_class is not None:
         metadata["task_class"] = task_class
 

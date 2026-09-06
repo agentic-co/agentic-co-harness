@@ -154,7 +154,7 @@ class EgressConfig:
 CONSUMED_AGENT_KEYS = {"model", "use_claude_code", "context", "description"}
 
 # Top-level config keys the loader understands.
-KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress", "hub", "completion", "extensions"}
+KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress", "hub", "completion", "extensions", "extension_settings"}
 
 #: Blocks the v1 hub consumed that this runtime deliberately does not. They
 #: configured pipelines that belonged to one operator — a feeds ingester
@@ -425,6 +425,12 @@ class Config:
     #: exist by the time the cycle looks for them. A declared module that will
     #: not import stops the command — see `agentco_harness.extensions`.
     extensions: list[str] = field(default_factory=list)
+    #: Free-form settings an extension reads, namespaced by its own name. The
+    #: runtime never interprets the contents — it only carries them, so an
+    #: extension can be configured per node without every new pipeline having
+    #: to add a key to this file (which is how `feeds:` ended up here in v1
+    #: and had to be retired again).
+    extension_settings: dict = field(default_factory=dict)
     humans: HumansConfig = field(default_factory=HumansConfig)
     tiers: TiersConfig = field(default_factory=TiersConfig)
     backoff: BackoffConfig = field(default_factory=BackoffConfig)
@@ -598,6 +604,12 @@ class Config:
             if not isinstance(ext, list) or not all(isinstance(m, str) for m in ext):
                 raise ValueError("`extensions:` must be a list of module names")
             config.extensions = [m.strip() for m in ext if m and m.strip()]
+
+        if "extension_settings" in data:
+            es = data["extension_settings"] or {}
+            if not isinstance(es, dict):
+                raise ValueError("`extension_settings:` must be a mapping keyed by extension name")
+            config.extension_settings = dict(es)
 
         if "completion" in data:
             block = data["completion"] or {}
