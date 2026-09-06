@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -62,7 +63,7 @@ def load_env_file(path: Path | str | None = None) -> list[str]:
     try:
         text = env_path.read_text()
     except OSError as e:
-        print(f"[config] WARNING: cannot read env file {env_path} ({e}) — skipping")
+        print(f"[config] WARNING: cannot read env file {env_path} ({e}) — skipping", file=sys.stderr)
         return []
 
     loaded: list[str] = []
@@ -76,12 +77,14 @@ def load_env_file(path: Path | str | None = None) -> list[str]:
             print(
                 f"[config] WARNING: skipping malformed line {env_path}:{lineno} "
                 f"(no '=' — expected KEY=VALUE)"
+            ,
+                file=sys.stderr,
             )
             continue
         key, _, value = line.partition("=")
         key = key.strip()
         if not key:
-            print(f"[config] WARNING: skipping line {env_path}:{lineno} (empty key)")
+            print(f"[config] WARNING: skipping line {env_path}:{lineno} (empty key)", file=sys.stderr)
             continue
         value = _strip_env_value(value.strip())
         if key in os.environ:
@@ -217,6 +220,8 @@ def _warn_unknown_nested(block_name: str, block: Any, consumed: set[str], path: 
             f"[config] WARNING: block '{block_name}' has key(s) nothing consumes: "
             f"{', '.join(sorted(unknown))} in {path} "
             f"— they are ignored (consumed keys: {', '.join(sorted(consumed))})"
+        ,
+            file=sys.stderr,
         )
 
 
@@ -504,11 +509,15 @@ class Config:
                     f"[config] WARNING: '{key}' in {path} is no longer read — "
                     f"{RETIRED_TOP_LEVEL_KEYS[key]}. The block is ignored; "
                     f"delete it once the extension is in place."
+                ,
+                    file=sys.stderr,
                 )
             elif key not in KNOWN_TOP_LEVEL_KEYS:
                 print(
                     f"[config] WARNING: unknown top-level key '{key}' in {path} "
                     f"— it is ignored (known keys: {', '.join(sorted(KNOWN_TOP_LEVEL_KEYS))})"
+                ,
+                    file=sys.stderr,
                 )
 
         if "tasks_path" in data:
@@ -526,6 +535,8 @@ class Config:
                         f"[config] WARNING: agent '{name}' has settings nothing consumes: "
                         f"{', '.join(sorted(unconsumed))} "
                         f"(consumed keys: {', '.join(sorted(CONSUMED_AGENT_KEYS))})"
+                    ,
+                        file=sys.stderr,
                     )
                 config.agents[name] = AgentConfig(
                     model=settings.get("model", "gpt-4o-mini"),
@@ -629,6 +640,8 @@ class Config:
                     f"[config] WARNING: backoff block in {path} is malformed: "
                     f"{'; '.join(errs)} — backoff will be treated as DISABLED "
                     f"(every wake runs at baseline). Fix it or run `agentco doctor`."
+                ,
+                    file=sys.stderr,
                 )
 
         if "executor" in data:
@@ -643,6 +656,8 @@ class Config:
                     f"[config] WARNING: executor.idle_timeout_s={idle!r} in {path} "
                     f"is not a non-negative integer (seconds) — falling back to "
                     f"{DEFAULT_IDLE_TIMEOUT_S}s (0 disables the watchdog)"
+                ,
+                    file=sys.stderr,
                 )
                 idle = DEFAULT_IDLE_TIMEOUT_S
             config.executor = ExecutorConfig(idle_timeout_s=idle)

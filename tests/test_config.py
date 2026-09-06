@@ -31,7 +31,7 @@ def test_unknown_top_level_key_warns(tmp_path, capsys):
 
     Config.load(cfg_file)
 
-    out = capsys.readouterr().out
+    out = capsys.readouterr().err
     assert "unknown top-level key" in out
     assert "mystery" in out
 
@@ -87,7 +87,7 @@ def test_unconsumed_agent_key_warns(tmp_path, capsys):
 
     Config.load(cfg_file)
 
-    out = capsys.readouterr().out
+    out = capsys.readouterr().err
     assert "nothing consumes" in out
     assert "temprature" in out
 
@@ -107,7 +107,7 @@ def test_a_retired_block_says_so_and_says_what_replaced_it(block, tmp_path, caps
 
     config = Config.load(cfg_file)
 
-    out = capsys.readouterr().out
+    out = capsys.readouterr().err
     assert block in out
     assert "no longer read" in out
     assert "register_source_factory" in out
@@ -148,7 +148,7 @@ def test_unknown_nested_key_in_llm_warns(tmp_path, capsys):
 
     Config.load(cfg_file)
 
-    out = capsys.readouterr().out
+    out = capsys.readouterr().err
     assert "nothing consumes" in out
     assert "typpo" in out
     assert "llm" in out
@@ -190,7 +190,7 @@ def test_tiers_unknown_tier_key_warns_and_is_dropped(tmp_path, capsys):
 
     config = Config.load(cfg_file)
 
-    out = capsys.readouterr().out
+    out = capsys.readouterr().err
     assert "nothing consumes" in out
     assert "local" in out
     assert "tiers" in out
@@ -314,7 +314,7 @@ def test_malformed_line_warns_and_does_not_abort(tmp_path, monkeypatch, capsys):
     loaded = load_env_file()
 
     assert loaded == ["GOOD_KEY"]
-    assert "WARNING" in capsys.readouterr().out
+    assert "WARNING" in capsys.readouterr().err
 
 
 def test_missing_env_file_is_a_silent_noop(tmp_path, monkeypatch, capsys):
@@ -360,3 +360,25 @@ def test_humans_escalate_to_round_trips(tmp_path):
     cfg.save(str(path))
     assert Config.load(str(path)).humans.escalate_to == "human:alice"
     assert Config().humans.escalate_to is None
+
+
+def test_config_diagnostics_never_land_on_stdout(tmp_path, capsys):
+    """Machine-readable output must stay machine-readable.
+
+    A node whose scheduler pipes `doctor --json` into a gate script — aborting
+    the cycle on BROKEN — cannot parse that JSON if a config warning is printed
+    to stdout, because the warning lands inside it. The gate then reads an
+    unparseable envelope as BROKEN and the node stops cycling, so a warning
+    about an ignored config block takes a working deployment offline.
+    """
+    cfg = tmp_path / "config.yaml"
+    cfg.write_text(yaml.safe_dump({
+        "tasks_path": "tasks.jsonl",
+        "sources": {"github": {"enabled": True}},   # retired block -> warns
+        "nonsense_key": 1,                          # unknown block -> warns
+        "llm": {"default_provider": "lmstudio", "default_model": "m", "bogus": 1},
+    }))
+    Config.load(str(cfg))
+    captured = capsys.readouterr()
+    assert "[config]" not in captured.out, f"config diagnostics leaked to stdout: {captured.out!r}"
+    assert "[config] WARNING" in captured.err     # still said, just on the right channel

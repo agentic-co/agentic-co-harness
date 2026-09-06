@@ -356,7 +356,7 @@ def test_humans_unknown_key_warns(tmp_path, capsys):
     cfg = tmp_path / "config.yaml"
     cfg.write_text("humans:\n  enabled: true\n  mystery: 1\n")
     Config.load(cfg)
-    out = capsys.readouterr().out
+    out = capsys.readouterr().err
     assert "humans" in out and "mystery" in out
 
 

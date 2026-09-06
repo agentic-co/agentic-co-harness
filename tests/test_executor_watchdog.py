@@ -226,14 +226,14 @@ def test_malformed_idle_timeout_warns_and_keeps_the_watchdog_armed(tmp_path, cap
     cfg.write_text("tasks_path: tasks.jsonl\nexecutor:\n  idle_timeout_s: soon\n")
     config = Config.load(cfg)
     assert config.executor.idle_timeout_s == DEFAULT_IDLE_TIMEOUT_S
-    assert "idle_timeout_s" in capsys.readouterr().out
+    assert "idle_timeout_s" in capsys.readouterr().err
 
 
 def test_unknown_executor_key_is_warned_about(tmp_path, capsys):
     cfg = tmp_path / "config.yaml"
     cfg.write_text("tasks_path: tasks.jsonl\nexecutor:\n  idle_timeout: 60\n")
     Config.load(cfg)
-    assert "nothing consumes" in capsys.readouterr().out
+    assert "nothing consumes" in capsys.readouterr().err
 
 
 # --- completion marker ------------------------------------------------------

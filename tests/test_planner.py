@@ -97,7 +97,7 @@ def test_tiers_unknown_key_warns_and_is_dropped(tmp_path, capsys):
         )
     )
     config = Config.load(cfg_file)
-    out = capsys.readouterr().out
+    out = capsys.readouterr().err
     assert "nothing consumes" in out
     assert "local" in out
     assert "tiers" in out
