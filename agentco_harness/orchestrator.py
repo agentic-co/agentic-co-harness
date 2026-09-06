@@ -533,13 +533,28 @@ class Orchestrator:
             from . import rca as _rca
             _rca.DEFAULT_ESCALATION_ASSIGNEE = config.humans.escalate_to
         self.beads = Beads(config.tasks_path)
-        self.classifier = _lm.agents("The event classifier").Classifier(self.beads)
+        # NOT built here. Constructing it eagerly made every command that builds
+        # an Orchestrator — `status`, which only reads counts — raise
+        # LmUnavailable on an install without the optional `lm` extra. The
+        # exception's own text says "the runtime does not need it to run
+        # headless agent CLIs", and then the constructor demanded it. Found
+        # 2026-09-06 by pointing a clean install at a live node.
+        #
+        # The classifier is reached from exactly one place: classifying events
+        # a polled source produced. A node with no sources never touches it.
+        self._classifier = None
         self.recurring = Recurring(config.recurring_path)
         self.children = ChildRegistry(config.children_registry_path)
         self._state_path = Path(config.tasks_path).parent / ".agentco-heartbeat.json"
         self._cycle_heartbeat_path = Path(config.heartbeat_path)
         self._agent_lms: dict[str, object] = {}
-        self._setup_dspy()
+        # Same reason the classifier is lazy: configuring DSPy is only needed by
+        # the in-process planner, triage and classifier paths, and doing it in
+        # the constructor made every command that builds an Orchestrator require
+        # an extra the package calls optional. A node that dispatches to headless
+        # CLIs never reaches it.
+        if _lm.available():
+            self._setup_dspy()
 
     @property
     def node_capabilities(self) -> list[str]:
@@ -606,9 +621,23 @@ class Orchestrator:
 
         # Load optimized classifier if available
         opt_classify = optimize.load_optimized("classify", ClassifyEvent)
-        if opt_classify:
+        if opt_classify and _lm.available():
+            # Touching `.classifier` builds it; guard so loading an optimized
+            # signature cannot be what drags the LM layer into a node that
+            # never classifies anything.
             self.classifier.classify = opt_classify
             print("[orchestrator] Using optimized classifier")
+
+    @property
+    def classifier(self):
+        """The event classifier, built on first use.
+
+        Raises `LmUnavailable` only for a caller that genuinely needs it —
+        which, in practice, means a node that polls sources.
+        """
+        if self._classifier is None:
+            self._classifier = _lm.agents("The event classifier").Classifier(self.beads)
+        return self._classifier
 
     def _heartbeat(self, **fields) -> None:
         """Persist cycle timestamps so silence is detectable from status."""
