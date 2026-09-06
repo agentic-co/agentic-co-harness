@@ -154,7 +154,7 @@ class EgressConfig:
 CONSUMED_AGENT_KEYS = {"model", "use_claude_code", "context", "description"}
 
 # Top-level config keys the loader understands.
-KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress", "hub", "completion"}
+KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress", "hub", "completion", "extensions"}
 
 #: Blocks the v1 hub consumed that this runtime deliberately does not. They
 #: configured pipelines that belonged to one operator — a feeds ingester
@@ -420,6 +420,11 @@ class Config:
     #: rest, so `lmstudio` works against a local server with no config at all.
     #: Shape: {name: {base_url, model, api_key_env, requires_key}}.
     completion: dict = field(default_factory=dict)
+    #: Modules imported before anything dispatches, so their registrations
+    #: (cycle handlers, completion hooks, source factories, executor backends)
+    #: exist by the time the cycle looks for them. A declared module that will
+    #: not import stops the command — see `agentco_harness.extensions`.
+    extensions: list[str] = field(default_factory=list)
     humans: HumansConfig = field(default_factory=HumansConfig)
     tiers: TiersConfig = field(default_factory=TiersConfig)
     backoff: BackoffConfig = field(default_factory=BackoffConfig)
@@ -587,6 +592,12 @@ class Config:
                 timeout_s=int(hub.get("timeout_s", 30)), lease_ttl_s=int(hub.get("lease_ttl_s", 3600)),
                 executor=hub.get("executor"),
             )
+
+        if "extensions" in data:
+            ext = data["extensions"] or []
+            if not isinstance(ext, list) or not all(isinstance(m, str) for m in ext):
+                raise ValueError("`extensions:` must be a list of module names")
+            config.extensions = [m.strip() for m in ext if m and m.strip()]
 
         if "completion" in data:
             block = data["completion"] or {}

@@ -48,6 +48,21 @@ def main(ctx, config: str):
     ctx.ensure_object(dict)
     ctx.obj["config_path"] = config
 
+    # Extensions load HERE, before any command body, because a registration is
+    # only useful if it happened before the thing that looks it up. A missing
+    # config is not an error at this point — `init` has to be able to run in an
+    # empty directory — but a config that DECLARES an extension which will not
+    # import stops the command rather than running it half-wired.
+    try:
+        cfg = Config.load(config)
+    except Exception:      # noqa: BLE001 — every command re-loads and reports properly
+        return
+    if cfg.extensions:
+        from .extensions import load as _load_extensions
+
+        for name in _load_extensions(cfg.extensions):
+            click.echo(f"[extensions] loaded {name}", err=True)
+
 
 @main.command()
 @click.option("--company", is_flag=True, help="Create full company structure")
