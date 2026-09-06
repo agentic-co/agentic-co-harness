@@ -907,3 +907,48 @@ def test_doctor_says_nothing_about_humans_on_a_node_with_no_procedures(
     }))
     run_doctor(str(cfg))
     assert "asop.humans_declared" not in capsys.readouterr().out
+
+
+# ------------------------------------------- the LM layer is optional, and says so
+
+def _cfg(tmp_path, triage_model):
+    cfg = tmp_path / "config.yaml"
+    body = {"tasks_path": "tasks.jsonl",
+            "llm": {"default_provider": "lmstudio", "default_model": "local"}}
+    if triage_model is not None:
+        body["triage"] = {"model": triage_model}
+    cfg.write_text(yaml.safe_dump(body))
+    return str(cfg)
+
+
+def test_a_node_with_triage_off_does_not_need_the_lm_layer(tmp_path, monkeypatch, capsys):
+    """A clean `uv tool install` ships without the lm extra. It used to fail its
+    own doctor on a dependency the README calls optional — found 2026-09-06 by
+    installing the runtime for real rather than running it from the dev tree."""
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "company").mkdir()
+    monkeypatch.setattr("agentco_harness._lm.available", lambda: False)
+    run_doctor(_cfg(tmp_path, "none"))
+    out = capsys.readouterr().out
+    assert "BROKEN (lm.layer)" not in out
+    assert "BROKEN (imports.required)" not in out
+    assert "nothing needs it" in out
+
+
+def test_a_node_that_points_triage_at_a_model_does_need_it(tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "company").mkdir()
+    monkeypatch.setattr("agentco_harness._lm.available", lambda: False)
+    code = run_doctor(_cfg(tmp_path, "google/gemma-4-e4b"))
+    out = capsys.readouterr().out
+    assert code == 1
+    assert "BROKEN (lm.layer)" in out
+    assert "google/gemma-4-e4b" in out
+    assert "triage.model" in out          # names the way out, not just the problem
+
+
+def test_dspy_is_no_longer_a_hard_required_import():
+    from agentco_harness.doctor import REQUIRED_IMPORTS
+
+    assert "dspy" not in REQUIRED_IMPORTS
+    assert {"yaml", "click"} <= set(REQUIRED_IMPORTS)

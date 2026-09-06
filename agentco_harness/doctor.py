@@ -170,7 +170,21 @@ class DoctorReport:
 
 # Required third-party imports. Missing one of these is a hard FAIL — the
 # system cannot function without them.
-REQUIRED_IMPORTS = ("dspy", "yaml", "click")
+#
+# `dspy` is deliberately NOT here. An entire module (`_lm.py`) exists to make
+# the LM layer optional — availability probe, a refusal that names the missing
+# extra, on-demand imports — and the package ships it as the `lm` extra. This
+# list said the opposite, so a clean `uv tool install` of the runtime failed
+# its own doctor on a dependency the docs call optional. Found 2026-09-06 by
+# installing it for real instead of running it from the dev tree.
+#
+# What replaces it is the pattern this file already uses for `codex` and `agy`:
+# require it only where config actually routes to it. See `lm.layer` below.
+REQUIRED_IMPORTS = ("yaml", "click")
+
+#: Triage model values that mean "no LM layer wanted". Kept in step with
+#: `Orchestrator._triage`, which reads the same words.
+LM_DISABLED_VALUES = ("none", "off", "disabled")
 
 # Map of LLM provider -> environment variable holding its API key. Providers
 # not listed (ollama, lmstudio) run locally and need no key.
@@ -986,6 +1000,33 @@ def collect(config_path: str) -> DoctorReport:
                 "(`money` / `irreversible`) step. Declare the people: "
                 "AGENTCO_HUMANS=<comma-separated actors>."
             )
+
+    # (o4) The optional LM layer, required only where config asks for it.
+    # Triage is the one path the cycle takes on its own; a node that has turned
+    # triage off runs every bead through its executors and never imports dspy.
+    _sec("lm.layer")
+    from . import _lm
+
+    triage_model = (getattr(config.triage, "model", "") or "").strip()
+    wants_lm = bool(triage_model) and triage_model.lower() not in LM_DISABLED_VALUES
+    if _lm.available():
+        _ok(
+            f"LM layer available"
+            + (f" (triage -> {triage_model})" if wants_lm else " (triage disabled; nothing needs it)")
+        )
+    elif wants_lm:
+        _fail(
+            f"config points triage at {triage_model!r} but the LM layer is not "
+            f"installed — every cycle would fall back to queue order with a "
+            f"warning. Install it ({_lm.INSTALL_HINT}) or set `triage.model: none` "
+            f"to say the fallback is intended."
+        )
+    else:
+        _info(
+            "LM layer not installed and nothing needs it — triage is disabled, "
+            "and executors dispatch without it. The planner and `optimize` "
+            f"remain unavailable until {_lm.INSTALL_HINT}."
+        )
 
     # (p) codex CLI authentication, gated on config routing to codex and the
     # binary being present. Check (n) ensures `codex exec` can start, but a
