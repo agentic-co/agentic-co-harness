@@ -39,6 +39,10 @@ def write_routes(tmp_path, monkeypatch, routes=None, schema=1):
                 "vendor": "anthropic", "model": "claude", "ceiling": "RESTRICTED",
                 "ceilingUnsupervised": "RESTRICTED", "ceilingVerified": True,
             },
+            "BELLOWS": {
+                "vendor": "google", "model": "gemini", "ceiling": "CONFIDENTIAL",
+                "ceilingUnsupervised": "INTERNAL", "ceilingVerified": True,
+            },
             "TEMPER": {
                 "vendor": "z.ai", "model": "glm-4.7", "ceiling": "PUBLIC",
                 "ceilingUnsupervised": "PUBLIC", "ceilingVerified": True,

@@ -871,6 +871,73 @@ def _resolve_codex_bin(codex_bin: str) -> str:
     )
 
 
+def run_agy_task(
+    prompt: str,
+    timeout: int = DEFAULT_TIMEOUT,
+    model: str | None = None,
+    agy_bin: str = "agy",
+    cwd: str | None = None,
+) -> ExecResult:
+    """Execute a bead via Google's Antigravity CLI (the Bellows persona).
+
+    Verified headless on 2026-09-05: `agy --print` runs with no TTY under a
+    stripped launchd-style env and authenticates from the persisted login.
+    That contradicts a standing note in this codebase — written 2026-07-24 —
+    claiming agy was OAuth-only with no headless path and therefore could
+    never be dispatched unattended. It was true then and is not now, and the
+    note cost this route more than a year of being unusable.
+
+    `--dangerously-skip-permissions` is required rather than optional: in
+    print mode agy cannot prompt, so any tool needing permission is
+    auto-DENIED and the run returns nothing. Failing that way looks identical
+    to a model that had no answer, which is the worst shape a failure can take.
+
+    Prompt goes as an argument, not stdin — agy's print mode takes it
+    positionally.
+    """
+    exe = shutil.which(agy_bin) or agy_bin
+    cmd = [exe, "--print", prompt, "--dangerously-skip-permissions",
+           "--print-timeout", f"{max(30, timeout)}s"]
+    if model:
+        cmd += ["--model", model]
+
+    start = time.time()
+    try:
+        proc = subprocess.run(
+            cmd, capture_output=True, text=True, timeout=timeout,
+            env=_clean_env(), cwd=cwd,
+        )
+    except FileNotFoundError:
+        return ExecResult(
+            success=False, output="", exit_code=None, duration_seconds=time.time() - start,
+            error=(
+                f"agy binary {agy_bin!r} not found on PATH — cannot execute task. "
+                f"Install the Antigravity CLI and log in once interactively."
+            ),
+        )
+    except subprocess.TimeoutExpired:
+        return ExecResult(
+            success=False, output="", exit_code=None, duration_seconds=time.time() - start,
+            error=f"agy subagent exceeded {timeout}s timeout",
+        )
+
+    duration = time.time() - start
+    out = (proc.stdout or "").strip()
+    if proc.returncode != 0:
+        return ExecResult(
+            success=False, output=out, exit_code=proc.returncode, duration_seconds=duration,
+            error=f"agy subagent exited {proc.returncode}: {(proc.stderr or '').strip()[:400]}",
+        )
+    # agy reports an auto-denied permission on stdout with a zero exit, so the
+    # exit code alone does not distinguish "did the work" from "was not allowed to".
+    if "cannot prompt for" in out or "auto-denied" in out:
+        return ExecResult(
+            success=False, output=out, exit_code=0, duration_seconds=duration,
+            error="agy auto-denied a tool it needed; the run produced nothing usable",
+        )
+    return ExecResult(success=True, output=out, error=None, exit_code=0, duration_seconds=duration)
+
+
 def run_forge_task(
     prompt: str,
     timeout: int = DEFAULT_TIMEOUT,

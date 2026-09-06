@@ -885,6 +885,31 @@ class Orchestrator:
             print(f"[cycle] Completed {task.id} via claude ({exec_result.duration_seconds:.0f}s)")
             return True
 
+    def _execute_agy_task(self, task: Task) -> bool:
+        """Execute a bead via the Antigravity CLI. Prompt mode, result on stdout."""
+        from .executor import run_agy_task
+
+        timeout, _ = self._resolve_budget(task)
+        model = task.metadata.get("model")
+        workdir = task.metadata.get("workdir")
+
+        self.beads.claim(task.id, "agy", capabilities=self.node_capabilities)
+        print(
+            f"[cycle] Executing {task.id} via agy subagent "
+            f"(model={model or 'agy-default'}, timeout={timeout}s)"
+        )
+        prompt = task.metadata.get("prompt") or f"{task.title}\n\n{task.description}"
+        with self._attribution(task, "cycle", model):
+            exec_result = run_agy_task(prompt, timeout=timeout, model=model, cwd=workdir)
+        self._record_cost(task, "agy", exec_result)
+        if not exec_result.success:
+            print(f"[cycle] FAIL: agy subagent for {task.id}: {exec_result.error}")
+            self._fail_with_rca(task, exec_result.error)
+            return False
+        self.beads.complete(task.id, result=exec_result.output)
+        print(f"[cycle] Completed {task.id} via agy ({exec_result.duration_seconds:.0f}s)")
+        return True
+
     def _execute_completion_task(self, task: Task, provider_name: str) -> bool:
         """Execute a bead as ONE chat completion — text in, text out.
 
@@ -2276,6 +2301,11 @@ backends.register_executor_backend(
 backends.register_executor_backend("claude", lambda orch, task: orch._execute_claude_task(task), route="NATIVE")
 backends.register_executor_backend("zai", lambda orch, task: orch._execute_zai_task(task), route="TEMPER")
 backends.register_executor_backend("forge", lambda orch, task: orch._execute_forge_task(task), route="FORGE")
+# Google's Antigravity CLI. The BELLOWS route was already declared and verified
+# — CONFIDENTIAL supervised, INTERNAL unattended — so this backend inherits a
+# real ceiling rather than needing a new data-class decision. Agentic: it holds
+# a shell and a working tree, so it declares nothing and is treated as such.
+backends.register_executor_backend("agy", lambda orch, task: orch._execute_agy_task(task), route="BELLOWS")
 
 # The completion backends. Separately registered rather than one API backend
 # with a swappable URL, because the egress gate keys on the NAME: lmstudio runs
