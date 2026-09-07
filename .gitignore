@@ -15,3 +15,10 @@ recurring.jsonl
 PRIME.md
 .DS_Store
 pull-audit.log
+
+# Procedures are CONTENT, not runtime. An operator's ASOPs describe their
+# companies, their rituals and their incidents, so they live in that operator's
+# own private repo — never here. Generic example procedures may ship with the
+# runtime one day; when they do they will be written for that purpose, not
+# lifted from somebody's deployment.
+procedures/
