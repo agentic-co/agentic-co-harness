@@ -3,16 +3,23 @@ revision = 3
 requires-python = ">=3.11"
 
 [[package]]
+name = "agentco-asop"
+version = "0.1.0"
+source = { git = "https://github.com/agentic-co/agentic-co-hub.git?subdirectory=packages%2Fasop#f866e625f51908a092c8865b6c24c7a384b35ec0" }
+
+[[package]]
 name = "agentco-harness"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "agentco-asop" },
     { name = "click" },
     { name = "pyyaml" },
 ]
 
 [package.optional-dependencies]
 dev = [
+    { name = "dspy-ai" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
 ]
@@ -22,6 +29,8 @@ lm = [
 
 [package.metadata]
 requires-dist = [
+    { name = "agentco-asop", git = "https://github.com/agentic-co/agentic-co-hub.git?subdirectory=packages%2Fasop" },
+    { name = "agentco-harness", extras = ["lm"], marker = "extra == 'dev'" },
     { name = "click", specifier = ">=8.0" },
     { name = "dspy-ai", marker = "extra == 'lm'", specifier = ">=3.0,<4.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
