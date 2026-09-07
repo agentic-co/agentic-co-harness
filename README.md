@@ -146,6 +146,10 @@ that is the evidence; nothing executes against them.
 
 Agent-authored commits carry the bead id (`(ac-xxxxxxxx)`) that produced them.
 
-## License
+## Licence
 
-Apache-2.0.
+[Apache License 2.0](LICENSE). Apache rather than MIT for the explicit patent grant,
+which matters when the thing being adopted is infrastructure inside a company — the
+same reasoning the Hub and the ASOP contract are licensed under.
+
+Copyright 2026 The AgentCo Authors.
