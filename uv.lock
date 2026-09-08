@@ -3,16 +3,11 @@ revision = 3
 requires-python = ">=3.11"
 
 [[package]]
-name = "agentco-asop"
-version = "0.1.0"
-source = { git = "https://github.com/agentic-co/agentic-co-hub.git?subdirectory=packages%2Fasop#f866e625f51908a092c8865b6c24c7a384b35ec0" }
-
-[[package]]
 name = "agentco-harness"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "agentco-asop" },
+    { name = "asop-spec" },
     { name = "click" },
     { name = "pyyaml" },
 ]
@@ -29,8 +24,8 @@ lm = [
 
 [package.metadata]
 requires-dist = [
-    { name = "agentco-asop", git = "https://github.com/agentic-co/agentic-co-hub.git?subdirectory=packages%2Fasop" },
     { name = "agentco-harness", extras = ["lm"], marker = "extra == 'dev'" },
+    { name = "asop-spec", specifier = ">=0.1.0" },
     { name = "click", specifier = ">=8.0" },
     { name = "dspy-ai", marker = "extra == 'lm'", specifier = ">=3.0,<4.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
@@ -199,6 +194,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ea/9a/c15a60547004a3f3cea20296c934f827ddd7bdba225a2e7e9fcb5ec48c80/anyio-4.15.0.tar.gz", hash = "sha256:b5c620ed540725e2579c31b17bb995b3bf02c9281c9cace04c7d186380bab85e", size = 276504, upload-time = "2026-09-02T21:46:36.957Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/21/a6/2b21ce5ebe4d8938a247c9b0dbb7271566ae559b01795c83ea4bb2660ed7/anyio-4.15.0-py3-none-any.whl", hash = "sha256:7ecd9937369ffce8bba0b5ccb9b3a9507b101b0ed50256aecfbab27e6c2acb99", size = 131908, upload-time = "2026-09-02T21:46:35.485Z" },
+]
+
+[[package]]
+name = "asop-spec"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cd/8a/13cacdd542c20a37ca7f1cf4f5edd1716226a6559007f2691db285fef39e/asop_spec-0.1.0.tar.gz", hash = "sha256:222ee17b91371d225d194deb27d5aab790d13aaf418479188614732f2b11c1e8", size = 79857, upload-time = "2026-09-08T01:42:33.463Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/da/4d/dae39ce9a629d2a1559c15862a6270a6df14e42a744089dc97e83f49483c/asop_spec-0.1.0-py3-none-any.whl", hash = "sha256:68e9054d3e6d4f1ef3ae1b3c40b0135cc4905bac9f7bb4986a0358160a0f911e", size = 76565, upload-time = "2026-09-08T01:42:32.039Z" },
 ]
 
 [[package]]
