@@ -287,6 +287,75 @@ def test_approve_verify_refuses_a_bead_that_never_reached_the_gate(tmp_path):
         beads.approve_verify(task.id, approver="mabidoli")
 
 
+# --- the pinned gate is not the executor's to rewrite (ASOP.md §3.3) --------
+
+
+def test_completion_cannot_bring_its_own_gate(tmp_path):
+    """The bypass: swap a judged gate for a passing deterministic one, in the
+    same call that asks for DONE. Enforcing the INCOMING gate let this through
+    the ordinary path, no special flag needed."""
+    beads = _store(tmp_path)
+    task = beads.create(
+        "x", "d", metadata={"verify": {"class": "judged", "check": "is it good?"}}
+    )
+    with pytest.raises(VerifyContractError, match="pinned to the bead"):
+        beads.update(
+            task.id,
+            status=TaskStatus.DONE,
+            metadata={"verify": {"class": "deterministic", "check": "true"}},
+        )
+    after = beads.get(task.id)
+    assert after.status != TaskStatus.DONE
+    assert after.metadata["verify"]["kind"] == "judged"
+
+
+def test_a_supplied_check_never_executes(tmp_path):
+    """The refusal happens inside the lock; the gate runs before it. So the
+    refusal alone is not enough — a swapped-in check must never be handed to a
+    shell at all, or an attacker gets arbitrary execution on the way to being
+    told no."""
+    beads = _store(tmp_path)
+    sentinel = tmp_path / "attacker-ran"
+    task = beads.create(
+        "x", "d", metadata={"verify": {"class": "deterministic", "check": "exit 1"}}
+    )
+    with pytest.raises(VerifyContractError):
+        beads.update(
+            task.id,
+            status=TaskStatus.DONE,
+            metadata={
+                "verify": {
+                    "class": "deterministic",
+                    "check": f"touch {sentinel}",
+                }
+            },
+        )
+    assert not sentinel.exists(), "the supplied check was executed before refusal"
+
+
+def test_dropping_the_gate_is_also_refused(tmp_path):
+    beads = _store(tmp_path)
+    task = beads.create(
+        "x", "d", metadata={"verify": {"class": "human", "check": "confirm"}}
+    )
+    with pytest.raises(VerifyContractError, match="pinned to the bead"):
+        beads.update(task.id, metadata={"unrelated": True})
+    assert beads.get(task.id).metadata["verify"]["kind"] == "human"
+
+
+def test_allow_gate_change_is_the_deliberate_door(tmp_path):
+    beads = _store(tmp_path)
+    task = beads.create(
+        "x", "d", metadata={"verify": {"class": "human", "check": "confirm"}}
+    )
+    changed = beads.update(
+        task.id,
+        metadata={"verify": {"class": "deterministic", "check": "true"}},
+        allow_gate_change=True,
+    )
+    assert changed.metadata["verify"]["kind"] == "deterministic"
+
+
 # --- judged -----------------------------------------------------------------
 
 

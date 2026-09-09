@@ -1612,6 +1612,7 @@ class Beads:
         task_id: str,
         allow_human_reassign: bool = False,
         verify_gate: bool = True,
+        allow_gate_change: bool = False,
         precheck=None,
         **kwargs,
     ) -> Task | None:
@@ -1675,7 +1676,17 @@ class Beads:
             current = self.get(task_id)
             if current is not None:
                 metadata_for_check = kwargs.get("metadata", current.metadata) or {}
-                spec = metadata_for_check.get("verify")
+                # The gate that runs is the one PINNED ON THE BEAD, never one
+                # arriving alongside the completion. Reading it from the
+                # incoming metadata let a caller hand over its own gate in the
+                # same call that asked for DONE — swap a `judged` gate for
+                # `deterministic: true` and the bypass needed no special flag,
+                # it went straight through this choke point. ASOP.md §3.3: a
+                # harness that lets a filer or executor override a step's gate
+                # is not conforming. `metadata_for_check` still comes from the
+                # incoming payload for everything else, because classification
+                # (task_class and friends) legitimately travels with an update.
+                spec = (current.metadata or {}).get("verify")
                 if spec is not None:
                     kwargs = self._apply_verify_gate(current, spec, dict(kwargs))
                 else:
@@ -1746,6 +1757,18 @@ class Beads:
                                 f"could ever become ready. Break the chain by "
                                 f"removing one of those edges."
                             )
+                    if "metadata" in kwargs and not allow_gate_change:
+                        pinned = (task.metadata or {}).get("verify")
+                        if pinned is not None:
+                            incoming = (kwargs["metadata"] or {}).get("verify")
+                            if incoming != pinned:
+                                raise VerifyContractError(
+                                    f"refusing to change the verify gate on {task_id}: "
+                                    f"the gate is pinned to the bead and is not the "
+                                    f"executor's to rewrite (ASOP.md §3.3). Pass "
+                                    f"allow_gate_change=True only where changing it is "
+                                    f"the deliberate point of the call."
+                                )
                     for key, value in kwargs.items():
                         if hasattr(task, key):
                             setattr(task, key, value)
