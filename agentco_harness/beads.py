@@ -1619,8 +1619,8 @@ class Beads:
 
         Verify gate: any update that would set status DONE on a bead carrying
         ``metadata.verify`` is routed through that payload first — deterministic
-        checks re-run here, human gates divert to AWAITING_VERIFY, judged gates
-        refuse. This is THE choke point on purpose: `complete()`, the CLI, the
+        checks re-run here, human and judged gates both divert to
+        AWAITING_VERIFY. This is THE choke point on purpose: `complete()`, the CLI, the
         orchestrator and the worked agent itself all reach DONE through here,
         so no executor can grade its own work. A bead with NO verify payload
         keeps legacy semantics UNLESS it is owned by a ``SELF_REPORTING_EXECUTORS``
