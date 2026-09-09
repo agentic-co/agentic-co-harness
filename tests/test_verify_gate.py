@@ -17,7 +17,6 @@ from agentco_harness.beads import (
     Beads,
     TaskStatus,
     VerifyContractError,
-    VerifyGateError,
     validate_verify,
 )
 from agentco_harness.cli import main
@@ -291,14 +290,42 @@ def test_approve_verify_refuses_a_bead_that_never_reached_the_gate(tmp_path):
 # --- judged -----------------------------------------------------------------
 
 
-def test_judged_class_refuses_loudly(tmp_path):
+def test_judged_class_never_reaches_done_on_complete(tmp_path):
     beads = _store(tmp_path)
     task = beads.create(
         "x", "d", metadata={"verify": {"class": "judged", "check": "is it good?"}}
     )
-    with pytest.raises(VerifyGateError, match="not implemented in v1"):
-        beads.complete(task.id)
-    assert beads.get(task.id).status == TaskStatus.PENDING
+    out = beads.complete(task.id)
+    assert out.status == TaskStatus.AWAITING_VERIFY
+    assert out.metadata["verify_result"]["class"] == "judged"
+    assert out.metadata["verify_result"]["passed"] is None
+
+
+def test_judged_gate_approver_cannot_be_the_executor(tmp_path):
+    beads = _store(tmp_path)
+    task = beads.create(
+        "x", "d", metadata={"verify": {"class": "judged", "check": "is it good?"}}
+    )
+    beads.claim(task.id, "forge")
+    beads.complete(task.id)
+    with pytest.raises(ValueError, match="distinct route"):
+        beads.approve_verify(task.id, approver="forge")
+    approved = beads.approve_verify(task.id, approver="mabidoli")
+    assert approved.status == TaskStatus.DONE
+    assert approved.metadata["verify_approval"]["approver"] == "mabidoli"
+
+
+def test_human_gate_approver_cannot_be_the_executor_either(tmp_path):
+    beads = _store(tmp_path)
+    task = beads.create(
+        "x", "d", metadata={"verify": {"class": "human", "check": "confirm"}}
+    )
+    beads.claim(task.id, "claude")
+    beads.complete(task.id)
+    with pytest.raises(ValueError, match="distinct route"):
+        beads.approve_verify(task.id, approver="claude")
+    approved = beads.approve_verify(task.id, approver="mabidoli")
+    assert approved.status == TaskStatus.DONE
 
 
 # --- scope: legacy beads are untouched --------------------------------------

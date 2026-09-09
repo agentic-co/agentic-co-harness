@@ -169,9 +169,12 @@ class SopContractError(ValueError):
 class VerifyGateError(Exception):
     """Raised when a completion cannot be gated at all.
 
-    v1 ships deterministic and human classes. A `judged` payload is refused
-    here rather than passed through: silently treating an un-runnable gate as
-    a pass is precisely the self-grading the gate exists to prevent.
+    Not currently raised by any built-in gate class — `deterministic` runs a
+    check, `human` and `judged` both park at AWAITING_VERIFY for
+    `approve_verify`/`reject_verify` — but kept as the type a future gate
+    class (or a caller composing its own) raises when a gate genuinely
+    cannot be run: silently treating an un-runnable gate as a pass is
+    precisely the self-grading the gate exists to prevent.
     """
 
 
@@ -215,9 +218,10 @@ class CapabilityError(LeaseError):
     """
 
 
-# The verify payload's accepted classes. `deterministic` re-runs a command,
-# `human` parks the bead for approval, `judged` is declared-but-unimplemented
-# in v1 (see VerifyGateError).
+# The verify payload's accepted classes. `deterministic` re-runs a command;
+# `human` and `judged` both park the bead for `approve_verify`/`reject_verify`
+# — v1 does not dispatch `judge_route` to an automated judge, so a judged
+# gate's "distinct route" is whichever approver is not the bead's executor.
 #
 # The gate schema is the ASOP contract's (`asop.gates`), shared with the Hub
 # since P1 unified the two: this runtime's `class`/`cwd`/`timeout_s`/`checks`
@@ -1559,24 +1563,27 @@ class Beads:
         itself shells out to `agentco`.
         """
         cls = gate_kind(spec)
-        if cls == "judged":
-            raise VerifyGateError(
-                f"refusing to complete {task.id}: judged gates are not "
-                f"implemented in v1 (only 'deterministic' and 'human'). Change "
-                f"metadata.verify['class'], or approve it as a human gate."
-            )
-
         metadata = dict(kwargs.get("metadata", task.metadata) or {})
-        if cls == "human":
-            # A human gate never transitions to DONE from here — only
-            # `approve_verify` can, and only a person can call that.
+        if cls in ("human", "judged"):
+            # Neither gate transitions to DONE from here — only
+            # `approve_verify` can, and `approve_verify` now refuses an
+            # approver that matches the bead's own executor (see there).
+            # v1 does not dispatch `judge_route` to an automated judge; a
+            # judged gate parks exactly like a human one, and whoever calls
+            # `approve_verify` IS the judge. That refusal is what makes this
+            # a distinct route rather than a rubber stamp — without it,
+            # parking a judged gate would just be a human gate wearing a
+            # different label.
             kwargs["status"] = TaskStatus.AWAITING_VERIFY
             metadata["verify_result"] = {
-                "class": "human",
+                "class": cls,
                 "check": verify_check_text(spec),
                 "passed": None,
                 "checked_at": datetime.now(timezone.utc).isoformat(),
-                "output_tail": "awaiting human approval",
+                "output_tail": (
+                    "awaiting human approval" if cls == "human"
+                    else "awaiting judged-gate approval"
+                ),
             }
             kwargs["metadata"] = metadata
             return kwargs
@@ -2162,12 +2169,18 @@ class Beads:
         return self.update(task_id, status=TaskStatus.DONE, result=result)
 
     def approve_verify(self, task_id: str, approver: str) -> Task | None:
-        """Human approval of an AWAITING_VERIFY bead → DONE.
+        """Human (or judged-gate) approval of an AWAITING_VERIFY bead → DONE.
 
-        The ONE sanctioned bypass of the gate, because here the human IS the
-        gate. Refuses any other status loudly: approving a bead that never
-        reached the gate would launder an ungated completion through the one
-        door that skips the check.
+        The ONE sanctioned bypass of the gate, because here the approver IS
+        the gate. Refuses any other status loudly: approving a bead that
+        never reached the gate would launder an ungated completion through
+        the one door that skips the check. Also refuses an approver that
+        matches the bead's own executor (`assigned_agent`, or the bare name
+        under an `assigned_to` `human:` lineage) — a self-approval is not a
+        distinct route, it is the self-grading the gate exists to prevent
+        (ASOP.md 6.1: "a harness where the only possible adjudicator is the
+        executor's own route has no self-improvement loop"). A bead with no
+        recorded executor has nothing to compare against and is unaffected.
         """
         task = self.get(task_id)
         if task is None:
@@ -2176,6 +2189,17 @@ class Beads:
             raise ValueError(
                 f"task {task_id} is not awaiting_verify "
                 f"(status={task.status.value}) — nothing to approve"
+            )
+        executor = task.assigned_agent or (
+            task.assigned_to[len("human:"):]
+            if task.assigned_to and task.assigned_to.startswith("human:")
+            else task.assigned_to
+        )
+        if executor and approver == executor:
+            raise ValueError(
+                f"task {task_id} cannot be approved by {approver!r} — that is "
+                f"the same actor the gate exists to check (executor: "
+                f"{executor!r}). Approval must come from a distinct route."
             )
         metadata = dict(task.metadata)
         metadata["verify_approval"] = {

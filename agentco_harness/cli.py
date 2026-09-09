@@ -2778,9 +2778,10 @@ def tasks_complete(ctx, task_id: str, result: str | None, actual: float | None):
 )
 @click.pass_context
 def tasks_approve_verify(ctx, task_id: str, approver: str | None):
-    """Approve a human-class verify gate: awaiting_verify → done.
+    """Approve a human- or judged-class verify gate: awaiting_verify → done.
 
-    The only path that skips the gate, because here the person IS the gate.
+    The only path that skips the gate, because here the approver IS the
+    gate — refused when --approver matches the bead's own executor.
     """
     config = Config.load(ctx.obj["config_path"])
     beads = Beads(config.tasks_path)
@@ -2803,7 +2804,7 @@ def tasks_approve_verify(ctx, task_id: str, approver: str | None):
 @click.option("--approver", default=None, help="Who rejected (defaults to $USER)")
 @click.pass_context
 def tasks_reject_verify(ctx, task_id: str, reason: str | None, approver: str | None):
-    """Reject a human-class verify gate: awaiting_verify → verify_failed."""
+    """Reject a human- or judged-class verify gate: awaiting_verify → verify_failed."""
     config = Config.load(ctx.obj["config_path"])
     beads = Beads(config.tasks_path)
 
