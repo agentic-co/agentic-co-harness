@@ -19,7 +19,14 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .beads import DISPATCH_REFUSAL_KEY, Beads, Task, TaskResult, TaskStatus
+from .beads import (
+    DISPATCH_REFUSAL_KEY,
+    SUPERSEDED_KEY,
+    Beads,
+    Task,
+    TaskResult,
+    TaskStatus,
+)
 from .children import ChildRegistry, verify_child
 from .config import Config
 from .tempo import Schedule, explain, is_pin, schedule, temporal_score
@@ -283,6 +290,13 @@ def _collect_instance(
         if t.status == TaskStatus.PENDING_APPROVAL:
             add("approval", t, "agent-proposed, waiting for approval", "approve task")
         elif t.status == TaskStatus.FAILED:
+            # A superseded failure stays FAILED — it did fail — but it is no
+            # longer news: the next health check cleared it, or the RCA's
+            # subject resolved. Before, these were rewritten to DONE to get
+            # them out of this queue, which bought a quiet queue with a false
+            # record. The record is now true and the filter lives here.
+            if SUPERSEDED_KEY in t.metadata:
+                continue
             err = str(t.metadata.get("error", ""))[:120] or "failed, no error recorded"
             add("failed", t, err, "tasks retry")
         elif t.status == TaskStatus.BLOCKED:

@@ -45,7 +45,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from . import schedules
-from .beads import Beads, Task, TaskStatus
+from .beads import SUPERSEDED_KEY, Beads, Task, TaskStatus
 
 _DURATION_RE = re.compile(r"^(\d+)\s*([smhd])$")
 _UNIT_SECONDS = {"s": 1, "m": 60, "h": 3600, "d": 86400}
@@ -414,6 +414,12 @@ def supersede_resolved_rcas(beads: Beads) -> list[Task]:
     for t in tasks:
         if t.status != TaskStatus.FAILED or t.source != "rca":
             continue
+        # Idempotence used to come free: the rewrite moved the bead to DONE, so
+        # the status guard above skipped it next pass. The outcome now stays
+        # FAILED, so the record has to be what stops a second pass — otherwise
+        # every sweep re-supersedes and re-reports the same beads forever.
+        if SUPERSEDED_KEY in (t.metadata or {}):
+            continue
         subject_id = (t.metadata or {}).get("rca_for")
         subject = by_id.get(subject_id) if subject_id else None
         if subject is None or subject.status == TaskStatus.FAILED:
@@ -425,20 +431,19 @@ def supersede_resolved_rcas(beads: Beads) -> list[Task]:
         # exists would strand every superseded RCA in verify_failed forever.
         # This is code deciding on store-visible evidence, not an executor
         # grading its own work.
-        done = beads.update(
+        done = beads.annotate(
             t.id,
-            status=TaskStatus.DONE,
-            result=json.dumps(
-                {
-                    "status": "complete",
-                    "output": (
-                        f"Superseded: the failure this RCA diagnoses ({subject_id}) is "
-                        f"now {subject.status.value}. Original error: "
-                        f"{(t.metadata or {}).get('rca_error', 'not recorded')}"
+            {
+                SUPERSEDED_KEY: {
+                    "by": subject_id,
+                    "why": (
+                        f"the failure this RCA diagnoses ({subject_id}) is now "
+                        f"{subject.status.value}"
                     ),
+                    "original_error": (t.metadata or {}).get("rca_error", "not recorded"),
+                    "at": datetime.now(timezone.utc).isoformat(),
                 }
-            ),
-            verify_gate=False,
+            },
         )
         if done is not None:
             closed.append(done)
@@ -498,18 +503,21 @@ def supersede_stale_failures(beads: Beads) -> list[Task]:
         for t in tasks:
             if t.status != TaskStatus.FAILED or t.created_at >= newest_ok:
                 continue
-            closed = beads.complete(
+            if SUPERSEDED_KEY in (t.metadata or {}):
+                continue  # already recorded; see supersede_resolved_rcas
+            closed = beads.annotate(
                 t.id,
-                result=json.dumps(
-                    {
-                        "status": "complete",
-                        "output": (
-                            f"Superseded: {def_id} passed at {newest_ok}, after this "
-                            f"sample failed at {t.created_at}. A health-check failure "
-                            f"is news only until the next check clears it."
+                {
+                    SUPERSEDED_KEY: {
+                        "by": def_id,
+                        "why": (
+                            f"{def_id} passed at {newest_ok}, after this sample failed "
+                            f"at {t.created_at}. A health-check failure is news only "
+                            f"until the next check clears it."
                         ),
+                        "at": datetime.now(timezone.utc).isoformat(),
                     }
-                ),
+                },
             )
             if closed is not None:
                 superseded.append(closed)

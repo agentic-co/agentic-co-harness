@@ -254,6 +254,14 @@ DEFAULT_LEASE_TTL_S = 2 * 60 * 60
 # move to. See `ai-tasks/embedded-plane/PLAN.md`.
 DISPATCH_REFUSAL_KEY = "dispatch_refusal"
 
+# Where a superseded outcome is recorded. A failure that a later event made
+# moot — a health-check sample cleared by the next run, an RCA whose subject is
+# resolved — stops being ACTIONABLE without stopping being TRUE. It used to be
+# rewritten FAILED -> DONE, which is the store contradicting its own record:
+# the 14:00 check did fail. The outcome stays; this key says it is no longer
+# news, and the human queues filter on it. See `recurring.supersede_*`.
+SUPERSEDED_KEY = "superseded"
+
 
 def _parse_iso(value: str | None) -> datetime | None:
     """Parse an ISO-8601 timestamp to an aware UTC datetime, or None.

@@ -10,7 +10,7 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from agentco_harness.beads import Beads, TaskStatus
+from agentco_harness.beads import SUPERSEDED_KEY, Beads, TaskStatus
 from agentco_harness.recurring import (
     Recurring,
     RecurringDef,
@@ -269,7 +269,11 @@ def test_failure_older_than_a_later_success_is_superseded(tmp_path):
     closed = supersede_stale_failures(beads)
 
     assert [c.id for c in closed] == [bad.id]
-    assert beads.get(bad.id).status is TaskStatus.DONE
+    # The sample DID fail; superseding says it stopped being news, not that it
+    # stopped having happened. The outcome stands and the record carries why.
+    after = beads.get(bad.id)
+    assert after.status is TaskStatus.FAILED
+    assert after.metadata[SUPERSEDED_KEY]["by"] == "recurring:verify-x"
 
 
 def test_the_most_recent_failure_is_never_superseded(tmp_path):
@@ -319,7 +323,9 @@ def test_superseded_result_records_why(tmp_path):
 
     supersede_stale_failures(beads)
 
-    assert "Superseded" in (beads.get(bad.id).result or "")
+    record = beads.get(bad.id).metadata[SUPERSEDED_KEY]
+    assert "news only until the next check clears it" in record["why"]
+    assert record["at"]
 
 
 def test_superseding_is_idempotent(tmp_path):
@@ -388,7 +394,9 @@ def test_rca_closes_when_its_subject_is_no_longer_failing(tmp_path):
     rca = _rca(beads, subject.id)
 
     assert [c.id for c in supersede_resolved_rcas(beads)] == [rca.id]
-    assert beads.get(rca.id).status is TaskStatus.DONE
+    after = beads.get(rca.id)
+    assert after.status is TaskStatus.FAILED
+    assert after.metadata[SUPERSEDED_KEY]["by"] == subject.id
 
 
 def test_rca_stays_open_while_its_subject_is_still_failing(tmp_path):
@@ -418,7 +426,8 @@ def test_rca_result_preserves_the_original_error(tmp_path):
 
     supersede_resolved_rcas(beads)
 
-    assert "ZAI_API_KEY not found" in (beads.get(rca.id).result or "")
+    record = beads.get(rca.id).metadata[SUPERSEDED_KEY]
+    assert record["original_error"] == "ZAI_API_KEY not found"
 
 
 def test_a_non_rca_failure_is_never_closed_by_this_sweep(tmp_path):

@@ -171,3 +171,42 @@ def test_a_refused_bead_still_reaches_the_human_queue(tmp_path):
     assert mine, "a refused bead vanished from the human queue"
     assert mine[0].kind == "blocked"
     assert "no assigned_agent" in mine[0].detail
+
+
+def test_a_superseded_failure_leaves_the_queue_without_leaving_the_record(tmp_path):
+    """Noise suppression must not be achieved by falsifying the outcome.
+
+    A health-check sample that failed at 14:00 and was cleared at 15:00 stopped
+    being ACTIONABLE; it did not stop being TRUE. It used to be rewritten
+    FAILED -> DONE to get it out of `me`, which bought a quiet queue at the
+    price of a store that contradicts its own record — and needed
+    `verify_gate=False` to force the write, one more use of finding 23's
+    bypass.
+
+    Both halves are asserted here because either alone is satisfiable by doing
+    the wrong thing: the record survives, AND the queue is quiet.
+    """
+    from datetime import datetime, timezone
+
+    from agentco_harness.beads import SUPERSEDED_KEY
+    from agentco_harness.config import Config
+    from agentco_harness.me import _collect_instance
+
+    config = Config()
+    config.tasks_path = str(tmp_path / "tasks.jsonl")
+    beads = Beads(config.tasks_path)
+    task = beads.create("verify-x sample", "d")
+    beads.fail(task.id, result="check failed")
+
+    def queue():
+        items = _collect_instance(
+            config, str(tmp_path / "config.yaml"), "test", 2, datetime.now(timezone.utc)
+        )
+        return [i for i in items if i.task_id == task.id]
+
+    assert queue(), "a live failure must be in the human queue"
+
+    beads.annotate(task.id, {SUPERSEDED_KEY: {"by": "recurring:verify-x", "why": "cleared"}})
+
+    assert not queue(), "a superseded failure is no longer news"
+    assert beads.get(task.id).status is TaskStatus.FAILED, "and it still failed"

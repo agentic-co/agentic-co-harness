@@ -15,6 +15,7 @@ from .beads import (
     DEFAULT_LEASE_TTL_S,
     DISPATCH_REFUSAL_KEY,
     SOP_TEXT_KEYS,
+    SUPERSEDED_KEY,
     Beads,
     LeaseError,
     TaskPriority,
@@ -1490,7 +1491,11 @@ def attention(ctx, as_json: bool):
     config = Config.load(ctx.obj["config_path"])
     beads = open_lifecycle(config.tasks_path)
 
-    failed = beads.list(status=TaskStatus.FAILED)
+    # A superseded failure is still a failure; it is just no longer news.
+    failed = [
+        t for t in beads.list(status=TaskStatus.FAILED)
+        if SUPERSEDED_KEY not in t.metadata
+    ]
     pending = beads.list(status=TaskStatus.PENDING)
     # Undispatchable beads stay PENDING and carry a refusal record rather than
     # a status (see `Beads.refuse_dispatch`), so "blocked" here is the union:
