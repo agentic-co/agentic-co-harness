@@ -305,7 +305,11 @@ def _route_env(kind: str, work_dir: Path) -> dict:
         return {}
     isolated = work_dir / f".claude-{kind}"
     isolated.mkdir(exist_ok=True)
-    env = {"CLAUDE_CONFIG_DIR": str(isolated)}
+    # The CLI enforces a context-window check against models it knows. Pointed
+    # at a third-party or local endpoint the model is by definition unknown,
+    # and the run dies telling you which variable restores the old behaviour.
+    env = {"CLAUDE_CONFIG_DIR": str(isolated),
+           "CLAUDE_CODE_DISABLE_UNKNOWN_MODEL_WINDOW_ENFORCEMENT": "1"}
     if kind == "zai":
         token = os.environ.get("ZAI_API_KEY", "")
         env |= {"ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic",
@@ -344,7 +348,20 @@ def analyst_via_cli(kind: str, plane_url: str, secret: str, target: Path, hub_re
             # the line after it. stdin is closed anyway so an inherited pipe
             # cannot stall the turn.
             r = subprocess.run(["codex", "exec", "-m", os.environ.get("CODEX_MODEL", "gpt-5.6-luna"),
-                                "-s", "workspace-write", "--skip-git-repo-check", ANALYST_PROMPT],
+                                # No -s here: --approve-for-me IMPLIES the
+                                # workspace-write sandbox and refuses to be
+                                # given one explicitly.
+                                "--skip-git-repo-check",
+                                # Without this the turn ends on "tool call
+                                # requires approval, but approval policy is
+                                # never" — exec defaults to refusing, so the
+                                # MCP call never fires and the step is never
+                                # pulled. --approve-for-me routes approvals
+                                # through automatic review inside the
+                                # workspace-write sandbox, which is the
+                                # sanctioned path; the bypass flag is not
+                                # needed and should not be reached for here.
+                                "--approve-for-me", ANALYST_PROMPT],
                                cwd=target, capture_output=True, text=True, timeout=900,
                                stdin=subprocess.DEVNULL)
         finally:
@@ -352,12 +369,25 @@ def analyst_via_cli(kind: str, plane_url: str, secret: str, target: Path, hub_re
     else:
         mcp = {"mcpServers": {"agentco": {"command": hub_py, "args": ["-m", "agentco", "serve-mcp"], "env": mcp_env}}}
         (target / ".mcp.json").write_text(json.dumps(mcp, indent=2))
-        r = subprocess.run(["claude", "-p", ANALYST_PROMPT, "--mcp-config", str(target / ".mcp.json")],
+        # An isolated route needs permissions passed on the command line, and
+        # the reason is an interaction between two requirements rather than a
+        # quirk: CLAUDE_CONFIG_DIR isolation is what keeps the operator's
+        # CLAUDE.md and identity imports from travelling to a third-party
+        # endpoint — and it also strips the saved permission grants that the
+        # default route silently relies on. Without this the model reads the
+        # requirement, then stops and asks for file-write and MCP access.
+        # Scoped to a scratch directory, which is the whole target here.
+        perms = [] if kind == "claude-code" else ["--dangerously-skip-permissions"]
+        r = subprocess.run(["claude", "-p", ANALYST_PROMPT, "--mcp-config", str(target / ".mcp.json"), *perms],
                            cwd=target, capture_output=True, text=True, timeout=900,
                            env={**os.environ, **_route_env(kind, target)})
 
     said = ((r.stdout or "") + (r.stderr or "")).strip()
-    print(f"     analyst[{kind}]:", said[-200:] or f"(rc={r.returncode})")
+    # The whole transcript to disk, a wider tail to the console. A 200-char
+    # tail hid a trusted-directory refusal behind an informational line and
+    # then truncated an env-var name mid-word; twice is enough.
+    (target / f"analyst-{kind}.log").write_text(said or f"(rc={r.returncode})")
+    print(f"     analyst[{kind}] rc={r.returncode}:", (said[-400:] or "(no output)"))
     # The artefact, not the exit code — the lesson from agy exiting 0 on its
     # own timeout while nothing had landed.
     return (target / "REQUIREMENTS.md").exists()
