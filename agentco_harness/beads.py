@@ -1810,6 +1810,21 @@ class Beads:
         siblings = [t for t in tasks if t.parent_id == parent.id]
         if any(t.status != TaskStatus.DONE for t in siblings):
             return
+        if (parent.metadata or {}).get("verify"):
+            # A parent carrying its OWN gate is not closed by its children
+            # finishing. This assignment writes DONE directly and never passes
+            # through `update()`, so a gate here would simply never run — the
+            # cascade was a second road to DONE with no toll on it (found by
+            # both reviewers, 2026-09-09). Running the gate from inside this
+            # write would mean a second copy of the enforcement logic, which
+            # is what produced the hole in the first place; instead the steps
+            # are marked finished and the parent waits to be completed through
+            # the one path that enforces gates. Recorded rather than silent:
+            # a parent that stalls invisibly is the other way this goes wrong.
+            parent.metadata = dict(parent.metadata or {})
+            parent.metadata["run_steps_done_at"] = datetime.now(timezone.utc).isoformat()
+            self._write_all(tasks)
+            return
         parent.status = TaskStatus.DONE
         parent.result = parent.result or f"run complete: {len(siblings)} step(s) done"
         parent.updated_at = datetime.now(timezone.utc).isoformat()

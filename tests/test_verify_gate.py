@@ -850,3 +850,38 @@ def test_cli_verify_and_verify_check_are_mutually_exclusive(tmp_path, monkeypatc
     assert result.exit_code == 1
     assert "mutually exclusive" in result.output
     assert beads.list() == []
+
+
+def _run_child(beads, parent_id, step=1):
+    """A child shaped like a filed ASOP step — the cascade only fires for these."""
+    return beads.create(
+        f"step {step}", "d", parent_id=parent_id,
+        metadata={"sop_ref": {"asop_id": "feature-dev", "version": 1, "step": step}},
+    )
+
+
+def test_a_gated_parent_is_not_closed_by_its_children(tmp_path):
+    """Both reviewers: _on_step_closed writes DONE directly, never through
+    update(), so a gate on the parent would never run. The cascade was a
+    second road to DONE with no toll on it."""
+    beads = _store(tmp_path)
+    parent = beads.create(
+        "the run", "d",
+        metadata={"verify": {"class": "human", "check": "sign off the run"}},
+    )
+    child = _run_child(beads, parent.id)
+    beads.claim(child.id, "worker-a")
+    beads.complete(child.id)
+
+    after = beads.get(parent.id)
+    assert after.status != TaskStatus.DONE, "closed without its own gate running"
+    assert after.metadata["run_steps_done_at"], "stalled without saying so"
+
+
+def test_an_ungated_parent_still_closes_normally(tmp_path):
+    beads = _store(tmp_path)
+    parent = beads.create("the run", "d")
+    child = _run_child(beads, parent.id)
+    beads.claim(child.id, "worker-a")
+    beads.complete(child.id)
+    assert beads.get(parent.id).status == TaskStatus.DONE
