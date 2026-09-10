@@ -2780,11 +2780,33 @@ def tasks_complete(ctx, task_id: str, result: str | None, actual: float | None):
         )
         sys.exit(1)
 
-    from .beads import VerifyGateError
+    from .beads import LeaseError, VerifyGateError, _recorded_executor
+
+    current = beads.get(task_id)
+    if current is None:
+        click.echo(f"Task not found: {task_id}", err=True)
+        sys.exit(1)
+
+    # An operator running `tasks complete` is asserting "I did this", which
+    # makes them the executor. Recording it matters beyond bookkeeping: a gated
+    # bead completed by nobody parks awaiting a verifier that can never be
+    # accepted, because the separation check has no executor to keep the
+    # approver distinct from. Only filled when the bead names nobody — an
+    # assignment already on the bead is not overwritten by whoever typed the
+    # command.
+    if _recorded_executor(current) is None:
+        who = os.environ.get("USER") or "unknown"
+        beads.update(task_id, assigned_to=f"human:{who}")
+        current = beads.get(task_id)
 
     try:
-        task = beads.complete(task_id, result=result)
+        task = beads.report_result(
+            task_id, current.lease_attempt, TaskStatus.DONE, result=result
+        )
     except VerifyGateError as e:
+        click.echo(f"❌ {e}", err=True)
+        sys.exit(1)
+    except LeaseError as e:
         click.echo(f"❌ {e}", err=True)
         sys.exit(1)
     if task is None:

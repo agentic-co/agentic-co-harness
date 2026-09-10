@@ -210,3 +210,60 @@ def test_a_superseded_failure_leaves_the_queue_without_leaving_the_record(tmp_pa
 
     assert not queue(), "a superseded failure is no longer news"
     assert beads.get(task.id).status is TaskStatus.FAILED, "and it still failed"
+
+
+def test_completing_by_hand_records_who_said_so(tmp_path, monkeypatch):
+    """`tasks complete` is an operator asserting "I did this", which makes them
+    the executor — and a gated bead completed by nobody parks awaiting a
+    verifier that can never be accepted.
+
+    NOT airtight, and should not be read as such: `$USER` is an unauthenticated
+    name (finding 17), so this records a claim rather than proves one. It buys
+    the separation check something to compare against; it does not establish
+    who that was. The authenticated registry is the tracked fix.
+    """
+    from click.testing import CliRunner
+
+    from agentco_harness.cli import main
+
+    monkeypatch.setenv("USER", "mabidoli")
+    store = tmp_path / "tasks.jsonl"
+    config = tmp_path / "config.yaml"
+    config.write_text(f"instance: t\ntasks_path: {store}\n")
+    beads = Beads(store)
+    task = beads.create("did it myself", "d")
+
+    result = CliRunner().invoke(
+        main, ["--config", str(config), "tasks", "complete", task.id]
+    )
+
+    assert result.exit_code == 0, result.output
+    after = beads.get(task.id)
+    assert after.status is TaskStatus.DONE
+    assert after.assigned_to == "human:mabidoli"
+
+
+def test_completing_by_hand_does_not_overwrite_an_existing_assignee(tmp_path, monkeypatch):
+    """Whoever typed the command is not automatically who did the work. A bead
+    already naming an executor keeps it — otherwise the operator closing out
+    somebody else's finished bead silently rewrites its history, and the
+    separation check then compares against the wrong person."""
+    from click.testing import CliRunner
+
+    from agentco_harness.cli import main
+
+    monkeypatch.setenv("USER", "someone-else")
+    store = tmp_path / "tasks.jsonl"
+    config = tmp_path / "config.yaml"
+    config.write_text(f"instance: t\ntasks_path: {store}\n")
+    beads = Beads(store)
+    task = beads.create("agent work", "d", assigned_agent="claude")
+
+    result = CliRunner().invoke(
+        main, ["--config", str(config), "tasks", "complete", task.id]
+    )
+
+    assert result.exit_code == 0, result.output
+    after = beads.get(task.id)
+    assert after.assigned_agent == "claude"
+    assert after.assigned_to is None
