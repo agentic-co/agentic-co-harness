@@ -23,6 +23,26 @@ from agentco_harness.cli import main
 from agentco_harness.me import ranked
 
 
+@pytest.fixture(autouse=True)
+def _declared_verifiers(monkeypatch):
+    """Declare a verifier registry for every test in this file.
+
+    These tests are about the GATE — parking, distinctness, the verdict shape,
+    what stays blocked downstream. Authentication is a separate rail and is
+    tested on its own in `test_declarations.py`, including the case this
+    fixture deliberately hides: with nothing declared, nobody is authenticated
+    (ASOP §5.3, §9), so every approval here would be refused before reaching
+    the behaviour under test.
+
+    Declared rather than autouse-patched into the store, so the tests still run
+    through the real authentication path instead of around it.
+    """
+    monkeypatch.setenv(
+        "ASOP_VERIFIERS", "alex,whoever,forge,claude,reviewer,dana"
+    )
+
+
+
 def _store(tmp_path: Path) -> Beads:
     return Beads(tmp_path / "tasks.jsonl")
 
@@ -756,6 +776,9 @@ def test_cli_complete_exits_nonzero_on_a_failed_gate(tmp_path, monkeypatch):
 
 
 def test_cli_approve_and_reject_verify_roundtrip(tmp_path, monkeypatch):
+    # The CLI takes its approver from $USER, so the declared registry has to
+    # name whoever that is — the same rail, reached through a different door.
+    monkeypatch.setenv("USER", "dana")
     runner = CliRunner()
     root = tmp_path / "node"
     _config(root)

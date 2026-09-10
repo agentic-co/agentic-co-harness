@@ -307,7 +307,9 @@ def test_a_human_executor_reports_without_a_lease(tmp_path):
     assert done.status is TaskStatus.DONE
 
 
-def test_the_completion_guard_and_the_separation_check_read_one_executor(tmp_path):
+def test_the_completion_guard_and_the_separation_check_read_one_executor(
+    tmp_path, monkeypatch
+):
     """A guard that refuses "a completion the separation check cannot see" is
     only true while both read the executor the same way.
 
@@ -319,6 +321,12 @@ def test_the_completion_guard_and_the_separation_check_read_one_executor(tmp_pat
     """
     from agentco_harness.beads import _recorded_executor
 
+    # Authentication runs BEFORE the distinctness check, so the executors have
+    # to be declared for this test to reach the thing it is about. That order
+    # is deliberate: "differs from the executor" is a mistake detector, and
+    # running it first would wave an unauthenticated stranger through whenever
+    # they happened to pick a different name.
+    monkeypatch.setenv("ASOP_VERIFIERS", "alex,claude")
     beads = _beads(tmp_path)
     gated = {"verify": {"class": "judged", "check": "is it right?"}}
 

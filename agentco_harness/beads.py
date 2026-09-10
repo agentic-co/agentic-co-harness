@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from asop import gates as _asop_gates
 
+from . import declarations
+
 import fcntl
 import hashlib
 import json
@@ -2440,6 +2442,13 @@ class Beads:
                 f"working it — an approval that cannot be checked against an "
                 f"executor is not evidence of a second pair of eyes."
             )
+        # §9 puts this at the choke point that flips the status, not in the
+        # caller. Ordered BEFORE the distinctness check on purpose: "differs
+        # from the executor" is a mistake detector, and running it first would
+        # let an unauthenticated stranger past whenever they happened to pick a
+        # different name — which is the check three implementations shipped and
+        # called verification (§5.3).
+        declarations.authenticate(approver, declarations.verifiers(), role="verifier")
         if approver == executor:
             raise ValueError(
                 f"task {task_id} cannot be approved by {approver!r} — that is "
@@ -2487,6 +2496,11 @@ class Beads:
                 f"task {task_id} is not awaiting_verify "
                 f"(status={task.status.value}) — nothing to reject"
             )
+        # A rejection is an attestation with a false verdict, so it is
+        # authenticated on the same terms as an approval. Leaving this side
+        # open would mean anyone could fail a gate they were never permitted to
+        # answer — denial of a claim is a verdict about the work too.
+        declarations.authenticate(approver, declarations.verifiers(), role="verifier")
         metadata = dict(task.metadata)
         metadata["verify_rejection"] = {
             "approver": approver,

@@ -155,6 +155,8 @@ def test_show_renders_the_gate_for_a_pending_bead(tmp_path, monkeypatch):
 
 
 def test_show_renders_awaiting_and_failed_states(tmp_path, monkeypatch):
+    # A rejection is an attestation; the rejecter must be declared.
+    monkeypatch.setenv("ASOP_VERIFIERS", "alex")
     runner = CliRunner()
     beads = _node(tmp_path, monkeypatch)
     gated = beads.create(
