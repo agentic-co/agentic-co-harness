@@ -26,6 +26,7 @@ from .beads import (
     MAX_SUBTASKS_PER_TASK,
     full_thread,
 )
+from .lifecycle import open_lifecycle
 from .children import (
     DEFAULT_DUE_GRACE,
     OUTAGE_EVIDENCE_WINDOW_INTERVALS,
@@ -532,7 +533,7 @@ class Orchestrator:
         if config.humans.escalate_to:
             from . import rca as _rca
             _rca.DEFAULT_ESCALATION_ASSIGNEE = config.humans.escalate_to
-        self.beads = Beads(config.tasks_path)
+        self.beads = open_lifecycle(config.tasks_path)
         # NOT built here. Constructing it eagerly made every command that builds
         # an Orchestrator — `status`, which only reads counts — raise
         # LmUnavailable on an install without the optional `lm` extra. The

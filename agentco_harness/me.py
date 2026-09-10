@@ -23,6 +23,7 @@ from .beads import Beads, Task, TaskResult, TaskStatus
 from .children import ChildRegistry, verify_child
 from .config import Config
 from .tempo import Schedule, explain, is_pin, schedule, temporal_score
+from .lifecycle import open_lifecycle
 
 # Lower company priority number = more important (mirrors TaskPriority).
 _COMPANY_WEIGHT = {0: 4.0, 1: 3.0, 2: 2.0, 3: 1.0}
@@ -174,7 +175,7 @@ def _collect_instance(
     config: Config, config_path: str, company: str, priority: int, now: datetime
 ) -> list[MeItem]:
     """Everything human-gated in ONE instance's own queue. Read-only."""
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
     all_tasks = beads.list()
     done_ids = {t.id for t in all_tasks if t.status == TaskStatus.DONE}
     open_tasks = [
@@ -353,7 +354,7 @@ def collect(
             stuck = 0
             if child_config and child_config.is_file():
                 try:
-                    child_beads = Beads(Config.load(str(child_config)).tasks_path)
+                    child_beads = open_lifecycle(Config.load(str(child_config)).tasks_path)
                     stuck = len(child_beads.ready()) + len(
                         child_beads.list(status=TaskStatus.IN_PROGRESS)
                     )
@@ -435,7 +436,7 @@ def portfolio_tasks(
 
     try:
         config = Config.load(config_path)
-        tasks = list(Beads(config.tasks_path).list())
+        tasks = list(open_lifecycle(config.tasks_path).list())
     except Exception as e:  # noqa: BLE001 — one broken node must not hide the rest
         print(
             f"[tempo] WARNING: could not read {config_path} ({e}) — its beads "

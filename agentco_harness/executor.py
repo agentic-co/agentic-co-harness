@@ -30,6 +30,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from . import usage
+from .lifecycle import open_lifecycle
 
 DEFAULT_TIMEOUT = 600  # seconds — 10 minutes
 DEFAULT_MAX_TURNS = 50
@@ -1192,7 +1193,7 @@ def _context_refs_block(task_id: str, config_path: str | Path | None) -> str:
 
         config = Config.load(config_path) if config_path else Config()
         base_dir = Path(config.tasks_path).parent
-        task = Beads(config.tasks_path).get(task_id)
+        task = open_lifecycle(config.tasks_path).get(task_id)
         refs = ((task.metadata if task else None) or {}).get("context_refs") or []
         if not refs:
             return ""

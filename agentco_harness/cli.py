@@ -9,6 +9,7 @@ from pathlib import Path
 import click
 
 from .beads import gate_kind, verify_check_text
+from .lifecycle import open_lifecycle
 from .asop_store import AsopStore
 from .beads import (
     DEFAULT_LEASE_TTL_S,
@@ -95,7 +96,7 @@ def init(ctx, company: bool, portfolio: bool, force: bool):
         config.save(config_path)
         click.echo(f"Created {config_path}")
     click.echo(f"Created {config.tasks_path}")
-    Beads(config.tasks_path)  # Create empty tasks file
+    open_lifecycle(config.tasks_path)  # Create empty tasks file
 
     if portfolio:
         from .children import ChildRegistry
@@ -385,7 +386,7 @@ def pull(
     from .children import ChildRegistry, PullLedger, pull_ledger_path
 
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     if node is None:
         capabilities = list(config.capabilities)
@@ -577,7 +578,7 @@ def report(
         sys.exit(1)
 
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     try:
         task = beads.report_result(
@@ -629,7 +630,7 @@ def rca(ctx, task_id: str, error: str | None):
     from .rca import create_rca_task
 
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
     failed_task = beads.get(task_id)
     if failed_task is None:
         click.echo(f"No such task: {task_id}", err=True)
@@ -667,10 +668,10 @@ def rca_check(ctx, bead_id: str, store: str | None):
     from .rca import has_terminal_action
 
     if store:
-        beads = Beads(store)
+        beads = open_lifecycle(store)
     else:
         config = Config.load(ctx.obj["config_path"])
-        beads = Beads(config.tasks_path)
+        beads = open_lifecycle(config.tasks_path)
     bead = beads.get(bead_id)
     if bead is None:
         click.echo(f"No such task: {bead_id}", err=True)
@@ -1028,7 +1029,7 @@ def _configure_instance(
     queue_dir = Path(child_config.tasks_path).parent
     queue_path = Path(child_config.tasks_path)
     if not queue_path.exists():
-        Beads(queue_path)
+        open_lifecycle(queue_path)
         created.append(str(queue_path))
     recurring_path = Path(child_config.recurring_path)
     if not recurring_path.exists():
@@ -1329,7 +1330,7 @@ def sweep_stale(ctx, dry_run: bool):
     )
 
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     if dry_run:
         # MUST use the same family helper the real sweep uses. An earlier version
@@ -1486,7 +1487,7 @@ def runs(ctx, count: int, as_json: bool):
 def attention(ctx, as_json: bool):
     """Show what needs a human: failed tasks, blocked tasks, unhealthy children."""
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     failed = beads.list(status=TaskStatus.FAILED)
     blocked = beads.list(status=TaskStatus.BLOCKED)
@@ -1628,7 +1629,7 @@ def tempo_cmd(
         tasks = portfolio_tasks(ctx.obj["config_path"])
     else:
         config = Config.load(ctx.obj["config_path"])
-        tasks = Beads(config.tasks_path).list()
+        tasks = open_lifecycle(config.tasks_path).list()
     result = feasibility(
         tasks, hours_per_day=hours_per_day, horizon_days=horizon_days
     )
@@ -1887,7 +1888,7 @@ def tasks():
 def tasks_list(ctx, status: str | None, agent: str | None, as_json: bool):
     """List tasks."""
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     status_enum = TaskStatus(status) if status else None
     tasks = beads.list(status=status_enum, assigned_agent=agent)
@@ -1983,7 +1984,7 @@ def tasks_backfill_natural_keys(ctx, store_paths, do_apply: bool, as_json: bool)
 def tasks_ready(ctx, agent: str | None):
     """Show ready tasks (pending with no blockers)."""
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     tasks = beads.ready(assigned_agent=agent)
     for t in tasks:
@@ -2189,7 +2190,7 @@ def tasks_create(
     another person, so the executor is not reconstructing intent from a title.
     """
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     if assign is not None:
         # Config honesty: a disabled humans section must refuse loudly, not
@@ -2456,7 +2457,7 @@ def tasks_update(
     from .beads import DependencyCycleError, TaskReferenceError
 
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     kwargs: dict = {}
     for key, stamp in (("due_at", due), ("starts_at", starts_at)):
@@ -2522,7 +2523,7 @@ def tasks_update(
 def tasks_show(ctx, task_id: str, as_json: bool):
     """Show task details, and — when the bead is gated — what `done` requires."""
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     task = beads.get(task_id)
     if not task:
@@ -2664,7 +2665,7 @@ def tasks_show(ctx, task_id: str, as_json: bool):
 def tasks_retry(ctx, task_id: str | None, all_failed: bool):
     """Reset a failed task to pending so the next cycle retries it."""
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     if not task_id and not all_failed:
         click.echo("Provide a TASK_ID or --all-failed.", err=True)
@@ -2702,7 +2703,7 @@ def tasks_retry(ctx, task_id: str | None, all_failed: bool):
 def tasks_complete(ctx, task_id: str, result: str | None, actual: float | None):
     """Mark a task as done."""
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     # Validation at the write boundary: if a result is supplied it MUST be a
     # valid TaskResult JSON (parseable, with a recognized `status`). A garbage
@@ -2791,7 +2792,7 @@ def tasks_approve_verify(ctx, task_id: str, approver: str | None, reason: str | 
     gate — refused when --approver matches the bead's own executor.
     """
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     who = approver or os.environ.get("USER") or "unknown"
     try:
@@ -2813,7 +2814,7 @@ def tasks_approve_verify(ctx, task_id: str, approver: str | None, reason: str | 
 def tasks_reject_verify(ctx, task_id: str, reason: str | None, approver: str | None):
     """Reject a human- or judged-class verify gate: awaiting_verify → verify_failed."""
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     who = approver or os.environ.get("USER") or "unknown"
     try:
@@ -2840,7 +2841,7 @@ def tasks_decline(ctx, task_id: str, reason: str | None):
     incentivizes a false 'done'.
     """
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     from .humans import decline_task, TaskStateError
 
@@ -2862,7 +2863,7 @@ def tasks_decline(ctx, task_id: str, reason: str | None):
 def tasks_snooze(ctx, task_id: str, interval: str):
     """Snooze a task — hide it from `agentco me` until the interval elapses."""
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
 
     from .humans import snooze_task, TaskStateError
 
@@ -2974,7 +2975,7 @@ def approve(ctx):
     if ctx.invoked_subcommand is None:
         # Default: show the pending_approval list
         config = Config.load(ctx.obj["config_path"])
-        beads = Beads(config.tasks_path)
+        beads = open_lifecycle(config.tasks_path)
         waiting = beads.pending_approval()
         if not waiting:
             click.echo("No tasks awaiting approval. ✅")
@@ -2997,7 +2998,7 @@ def approve(ctx):
 def approve_task(ctx, task_id: str):
     """Approve a single pending_approval task."""
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
     try:
         task = beads.approve(task_id)
     except ValueError as e:
@@ -3014,7 +3015,7 @@ def approve_task(ctx, task_id: str):
 def approve_all(ctx):
     """Approve ALL pending_approval tasks."""
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
     waiting = beads.pending_approval()
     if not waiting:
         click.echo("No tasks awaiting approval.")
@@ -3031,7 +3032,7 @@ def approve_all(ctx):
 def approve_reject(ctx, task_id: str):
     """Reject (skip) a pending_approval task — marks it skipped, never runs."""
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
     task = beads.get(task_id)
     if not task:
         click.echo(f"Task not found: {task_id}", err=True)
@@ -3048,7 +3049,7 @@ def approve_reject(ctx, task_id: str):
 def approve_reject_all(ctx):
     """Reject ALL pending_approval tasks — marks them skipped."""
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
     waiting = beads.pending_approval()
     if not waiting:
         click.echo("No tasks awaiting approval.")
@@ -3241,7 +3242,7 @@ def sop_run(ctx, asop_id, inputs, binds, version, title):
     from asop.errors import Refusal
     from .beads import Beads
     config = Config.load(ctx.obj["config_path"])
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
     try:
         parent = _store(ctx).run(asop_id, inputs=_kv(inputs, "input"), bindings=_kv(binds, "bind"),
                                  beads=beads, version=version, title=title)
@@ -3299,7 +3300,7 @@ def hub_pull(ctx, limit, capabilities):
     from .beads import Beads
     from .hub_client import HubRefusal, HubUnreachable
     config, client = _hub_client(ctx)
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
     try:
         mirrored = client.pull_and_mirror(beads, capabilities=list(capabilities) or None,
                                           ttl_seconds=config.hub.lease_ttl_s, limit=limit)
@@ -3323,7 +3324,7 @@ def hub_sync(ctx):
     from .beads import Beads
     from .hub_client import HubRefusal, HubUnreachable
     config, client = _hub_client(ctx)
-    beads = Beads(config.tasks_path)
+    beads = open_lifecycle(config.tasks_path)
     try:
         receipts = client.sync(beads)
     except HubUnreachable as e:

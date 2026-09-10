@@ -65,6 +65,7 @@ from pathlib import Path
 from typing import Iterable, Optional
 
 from .natural_key import generated_key
+from .lifecycle import open_lifecycle
 
 LEDGER_NAME = "schedules.jsonl"
 
@@ -417,7 +418,7 @@ def derived_observations(tasks_path: str | Path) -> list[dict]:
     if not path.exists():
         return []
     rows: list[dict] = []
-    for task in Beads(path)._read_all():
+    for task in open_lifecycle(path)._read_all():
         if task.source != "recurring":
             continue
         sid = (task.metadata or {}).get("spawned_by")

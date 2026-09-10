@@ -41,6 +41,7 @@ import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from .lifecycle import open_lifecycle
 
 # --- consequence classes ----------------------------------------------------
 #: A check that is healthy. Not a finding; printed so the operator can see the
@@ -525,7 +526,7 @@ def collect(config_path: str) -> DoctorReport:
         try:
             live = [
                 t
-                for t in Beads(tasks_path).list()
+                for t in open_lifecycle(tasks_path).list()
                 if t.status
                 not in (TaskStatus.DONE, TaskStatus.FAILED, TaskStatus.SKIPPED)
             ]
@@ -1149,7 +1150,7 @@ def collect(config_path: str) -> DoctorReport:
         dispatchable_statuses = {TaskStatus.PENDING, TaskStatus.IN_PROGRESS}
         queued: dict[str, int] = {}
         unassigned: list[str] = []
-        for task in Beads(config.tasks_path).list():
+        for task in open_lifecycle(config.tasks_path).list():
             if task.status not in live_statuses:
                 continue
             if not task.assigned_agent:
@@ -1214,7 +1215,7 @@ def collect(config_path: str) -> DoctorReport:
 
         from datetime import datetime as _dt, timezone as _tz
 
-        live_tasks = Beads(config.tasks_path).list()
+        live_tasks = open_lifecycle(config.tasks_path).list()
         path = lease_pathologies(live_tasks, _dt.now(_tz.utc))
         leased_live = [t for t in live_tasks if t.leased_by]
 
@@ -1417,7 +1418,7 @@ def collect(config_path: str) -> DoctorReport:
             executed_any = any(
                 task.assigned_agent not in (None, "", "human")
                 and task.status in (TaskStatus.DONE, TaskStatus.FAILED)
-                for task in Beads(config.tasks_path).list()
+                for task in open_lifecycle(config.tasks_path).list()
             )
             msg = (
                 "usage telemetry: no rows in "
@@ -1458,7 +1459,7 @@ def collect(config_path: str) -> DoctorReport:
             # existed and warning about it would be noise, not signal.
             since = min(str(r.get("at") or "") for r in rows if r.get("at"))
             executed = []
-            for task in Beads(config.tasks_path).list():
+            for task in open_lifecycle(config.tasks_path).list():
                 if task.assigned_agent in (None, "", "human"):
                     continue
                 if task.status not in (TaskStatus.DONE, TaskStatus.FAILED):
