@@ -263,6 +263,28 @@ DISPATCH_REFUSAL_KEY = "dispatch_refusal"
 SUPERSEDED_KEY = "superseded"
 
 
+def _recorded_executor(task: "Task") -> str | None:
+    """Who this runtime considers to have executed a bead, or None.
+
+    ONE derivation, used by both the completion guard and the separation check
+    in ``approve_verify``. They must never disagree: the guard's whole purpose
+    is to refuse a completion the separation check could not see, so if the two
+    read the executor differently, the guard stops guarding the thing it names
+    — the exact three-implementations-three-answers shape this work exists to
+    remove.
+
+    A ``human:`` assignee is an executor recorded at ASSIGNMENT rather than at
+    claim. That is a concept the plane does not have, and it is why this
+    runtime's completion guard is stated as "no executor" where the plane's is
+    "no lease".
+    """
+    if task.assigned_agent:
+        return task.assigned_agent
+    if task.assigned_to and task.assigned_to.startswith("human:"):
+        return task.assigned_to[len("human:"):]
+    return task.assigned_to
+
+
 def _parse_iso(value: str | None) -> datetime | None:
     """Parse an ISO-8601 timestamp to an aware UTC datetime, or None.
 
@@ -2235,8 +2257,26 @@ class Beads:
         an absent executor since `29aa43d`. What it leaves instead is a bead
         parked awaiting a verifier that can never be accepted — stranded, by a
         refusal whose own message says "claim the bead before working it". This
-        enforces that sentence where it can still be acted on, which is the
-        rule the plane states as: no lease, no report.
+        enforces that sentence where it can still be acted on.
+
+        **The guard is "no executor", not "no lease" — deliberately narrower
+        than the plane's.** The plane says no lease, no report, because a lease
+        is the only way it learns who executed. This runtime has a second way:
+        a bead assigned to ``human:<name>`` records its executor at ASSIGNMENT,
+        and `approve_verify` reads it from there. Human beads never enter
+        dispatch (``ready()`` excludes anything with ``assigned_to``), so no
+        node ever claims them and there is no lease to require.
+
+        Copying the mechanism instead of the reason would have broken live
+        work, which is how this was found rather than reasoned: three
+        Acme beads assigned to ``human:mabidoli`` carry
+        ``requires: ['acme-code']``, two still pending. Making them claim
+        is not available either — ``claim()`` compares ``requires`` against the
+        NODE's manifest, that node declares no capabilities, and a person is
+        not a node. They would have become uncompletable.
+
+        So the rule enforced here is the one the plane's rule exists to
+        produce: a completion the separation check can see.
         """
         if status not in (TaskStatus.DONE, TaskStatus.FAILED):
             raise ValueError(
@@ -2261,14 +2301,13 @@ class Beads:
                     f"lease this result came from is no longer current — the "
                     f"work was superseded, not lost."
                 )
-            if task.leased_by is None:
+            if task.leased_by is None and _recorded_executor(task) is None:
                 raise LeaseError(
-                    f"refusing result for {task_id}: nobody holds it. A report "
-                    f"ends the lease it was issued under, and there is none — a "
-                    f"bead that was never claimed (or was reaped) has no "
-                    f"executor, and a completion with no executor is one the "
-                    f"separation check on a judged gate can never see. Claim it "
-                    f"first."
+                    f"refusing result for {task_id}: nobody holds it and nobody "
+                    f"is recorded on it. A completion with no executor is one "
+                    f"the separation check on a judged gate can never see — it "
+                    f"would park awaiting a verifier that can never be "
+                    f"accepted. Claim it first, or assign it."
                 )
             return {}
 
@@ -2385,11 +2424,7 @@ class Beads:
                 f"task {task_id} is not awaiting_verify "
                 f"(status={task.status.value}) — nothing to approve"
             )
-        executor = task.assigned_agent or (
-            task.assigned_to[len("human:"):]
-            if task.assigned_to and task.assigned_to.startswith("human:")
-            else task.assigned_to
-        )
+        executor = _recorded_executor(task)
         if executor is None:
             # Found by a headless agy review. The old check was
             # `if executor and approver == executor`, so a bead with nobody

@@ -280,6 +280,68 @@ def test_a_report_needs_a_lease_to_end(tmp_path):
     assert beads.get(gated.id).status == TaskStatus.PENDING
 
 
+def test_a_human_executor_reports_without_a_lease(tmp_path):
+    """The guard is "no executor", not "no lease", and this is why.
+
+    A `human:` bead records its executor at ASSIGNMENT. It never enters
+    dispatch (`ready()` excludes anything with `assigned_to`), so no node ever
+    claims it and there is no lease to require. `approve_verify` already reads
+    the executor from there, so the separation check the guard exists to
+    protect can see this completion perfectly well.
+
+    Copying the plane's mechanism rather than its reason would have broken live
+    work: three Acme beads assigned to `human:mabidoli` carry
+    `requires: ['acme-code']`, two of them still pending. Claiming is not
+    an escape hatch for them either — `claim()` matches `requires` against the
+    NODE's manifest and that node declares none, so they would have become
+    uncompletable.
+    """
+    beads = _beads(tmp_path)
+    task = beads.create(title="human work", description="d", requires=["acme-code"])
+    beads.update(task.id, assigned_to="human:mabidoli")
+
+    done = beads.report_result(
+        task.id, attempt=0, status=TaskStatus.DONE, result="did it"
+    )
+
+    assert done.status is TaskStatus.DONE
+
+
+def test_the_completion_guard_and_the_separation_check_read_one_executor(tmp_path):
+    """A guard that refuses "a completion the separation check cannot see" is
+    only true while both read the executor the same way.
+
+    Two derivations that agree today and drift tomorrow is the exact shape this
+    whole front exists to remove, and it would fail silently in the worst
+    direction: the guard would wave through precisely the completions that
+    strand. So they share one function, and this asserts they cannot diverge
+    without a test going red.
+    """
+    from agentco_harness.beads import _recorded_executor
+
+    beads = _beads(tmp_path)
+    gated = {"verify": {"class": "judged", "check": "is it right?"}}
+
+    for assign in ({"assigned_to": "human:mabidoli"}, {"assigned_agent": "claude"}):
+        task = beads.create(title="t", description="d", metadata=dict(gated))
+        beads.update(task.id, **assign)
+        current = beads.get(task.id)
+
+        # The guard admits it: an executor is recorded.
+        assert _recorded_executor(current) is not None
+        beads.report_result(task.id, attempt=0, status=TaskStatus.DONE, result="out")
+        assert beads.get(task.id).status is TaskStatus.AWAITING_VERIFY
+
+        # And the separation check sees the same one, so it can refuse a
+        # self-approval rather than compare against nothing.
+        with pytest.raises(ValueError, match="same actor the gate exists to check"):
+            beads.approve_verify(
+                task.id,
+                approver=_recorded_executor(current),
+                reason="the check passed",
+            )
+
+
 def test_report_failed_records_the_failure(tmp_path):
     beads = _beads(tmp_path)
     task = beads.create(title="t", description="d")

@@ -193,7 +193,11 @@ def handle_telegram_command(
                 f"done: {task_id} is {task.status.value}, not open ({allowed}) "
                 f"— refusing (would bypass approval or resurrect finished work)"
             )
-        beads.complete(task_id, result=None)
+        # The human executor reports their own work through the same verb every
+        # other executor uses. No claim: a human bead never enters dispatch, so
+        # no node holds it — the executor is recorded at assignment, which is
+        # what `report_result`'s guard actually asks for.
+        beads.report_result(task_id, task.lease_attempt, TaskStatus.DONE, result=None)
         print(f"[telegram] DONE: {task_id} ({task.title}) marked complete")
         return f"done: {task_id} marked complete"
 
