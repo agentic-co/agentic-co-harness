@@ -16,6 +16,7 @@ from typing import Callable
 
 from . import __version__
 from .beads import (
+    DISPATCH_REFUSAL_KEY,
     Beads,
     CapabilityError,
     Task,
@@ -953,8 +954,12 @@ class Orchestrator:
         providers = providers_from_config(self.config)
         provider = providers.get(provider_name)
         if provider is None:
-            self.beads.update(task.id, status=TaskStatus.BLOCKED,
-                              result=f"no completion provider named {provider_name!r} in config")
+            self.beads.refuse_dispatch(
+                task.id,
+                code="no_provider",
+                message=f"no completion provider named {provider_name!r} in config",
+                remediation="Add the provider to config, then clear the refusal.",
+            )
             return False
 
         model = self._resolve_model(task) or provider.model
@@ -967,10 +972,17 @@ class Orchestrator:
             with self._attribution(task, "cycle", model):
                 exec_result = complete(prompt, provider, model=model, timeout=timeout)
         except ProviderUnconfigured as e:
-            # Not a failure of the work — a failure of the routing, so BLOCKED,
-            # the same call the egress gate makes for the same reason.
-            print(f"[cycle] BLOCKED: {task.id} {e}")
-            self.beads.update(task.id, status=TaskStatus.BLOCKED, result=str(e))
+            # Not a failure of the work — a failure of the routing, so a
+            # recorded refusal, the same call the egress gate makes for the
+            # same reason. Reporting FAILED here would count a missing
+            # credential as work that was tried and found wanting.
+            print(f"[cycle] REFUSED: {task.id} {e}")
+            self.beads.refuse_dispatch(
+                task.id,
+                code="provider_unconfigured",
+                message=str(e),
+                remediation="Configure the provider's credentials, then clear the refusal.",
+            )
             return False
 
         self._record_cost(task, provider_name, exec_result)
@@ -1386,7 +1398,7 @@ class Orchestrator:
 
         Defense-in-depth: a task with ``assigned_to`` set must never reach an
         LLM. ready() already excludes it, so arriving here at all is an anomaly
-        — quarantine it loudly (mark BLOCKED with the reason) instead of
+        — quarantine it loudly (record a dispatch refusal) instead of
         falling through to any agent path. An unrecognized (non-``human:``)
         assignee scheme gets the same treatment so an unknown token is never
         silently routed to a model.
@@ -1405,10 +1417,15 @@ class Orchestrator:
                     f"not understand"
                 )
             print(
-                f"[cycle] BLOCKED: {task.id} reached dispatch but {reason}; "
-                f"marking BLOCKED, not executing"
+                f"[cycle] REFUSED: {task.id} reached dispatch but {reason}; "
+                f"recording a refusal, not executing"
             )
-            self.beads.update(task.id, status=TaskStatus.BLOCKED, result=reason)
+            self.beads.refuse_dispatch(
+                task.id,
+                code="unroutable_assignee",
+                message=reason,
+                remediation="Reassign the bead to an assignee scheme this runtime understands.",
+            )
             return False
         # Defense-in-depth for the approval gate: a subtask that requires approval
         # is born PENDING_APPROVAL and ready() excludes it, so a PENDING task still
@@ -1420,8 +1437,13 @@ class Orchestrator:
                 "reached dispatch without passing the approval gate (approve() clears "
                 "the flag on promotion); refusing to execute"
             )
-            print(f"[cycle] BLOCKED: {task.id} {reason}; marking BLOCKED, not executing")
-            self.beads.update(task.id, status=TaskStatus.BLOCKED, result=reason)
+            print(f"[cycle] REFUSED: {task.id} {reason}; recording a refusal, not executing")
+            self.beads.refuse_dispatch(
+                task.id,
+                code="approval_gate_bypassed",
+                message=reason,
+                remediation="Send it back through approve(), which clears the flag on promotion.",
+            )
             return False
         if task.metadata.get("type") == "verify_child":
             return self._execute_verify_child(task, now=now)
@@ -1486,8 +1508,8 @@ class Orchestrator:
         that needs a shell or a working tree cannot run there however well it
         is written.
 
-        BLOCKED, not FAILED, and for the identical reason the egress gate
-        blocks: the work is fine, the routing is not, and a human re-routes it.
+        A refusal, not FAILED, and for the identical reason the egress gate
+        refuses: the work is fine, the routing is not, and a human re-routes it.
         A backend that declares no capabilities is treated as agentic — every
         backend that existed before the field was one, and a silent downgrade
         of the four shipped executors would be a worse bug than the one this
@@ -1504,8 +1526,13 @@ class Orchestrator:
             f"{missing} — it provides {sorted(declared)}. Route it to a backend "
             f"that does, or drop the requirement if it is wrong."
         )
-        print(f"[cycle] BLOCKED: {task.id} {reason}")
-        self.beads.update(task.id, status=TaskStatus.BLOCKED, result=reason)
+        print(f"[cycle] REFUSED: {task.id} {reason}")
+        self.beads.refuse_dispatch(
+            task.id,
+            code="requires_unsatisfied",
+            message=reason,
+            remediation="Route it to a backend that provides them, or correct the requirement.",
+        )
         return False
 
     def _authorize_egress(self, task: Task, agent: str) -> bool:
@@ -1513,8 +1540,8 @@ class Orchestrator:
 
         The dispatch decision is where "this data may not go to that vendor"
         becomes true, so that is where it fails — loudly, per the ISA's
-        fail-at-the-layer principle. A refusal is BLOCKED, not FAILED: the work
-        is fine, the routing is not, and a human has to re-route it.
+        fail-at-the-layer principle. It is recorded as a refusal, not FAILED:
+        the work is fine, the routing is not, and a human has to re-route it.
 
         AgentCo is unsupervised by construction (launchd, nobody watching), so
         the gate always evaluates against the unsupervised ceiling.
@@ -1529,8 +1556,13 @@ class Orchestrator:
             )
         except (EgressDenied, PolicyUnavailable) as e:
             reason = f"egress denied: {e}"
-            print(f"[cycle] BLOCKED: {task.id} {reason}")
-            self.beads.update(task.id, status=TaskStatus.BLOCKED, result=reason)
+            print(f"[cycle] REFUSED: {task.id} {reason}")
+            self.beads.refuse_dispatch(
+                task.id,
+                code="egress_denied",
+                message=reason,
+                remediation="Correct the bead's data class or its egress route.",
+            )
             return False
         where = f"{route.vendor}/{route.model}" if route else "anthropic (native)"
         print(f"[cycle] egress OK: {task.id} [{data_class}] -> {where}")
@@ -1550,14 +1582,25 @@ class Orchestrator:
     def _actionable_bead_count(self, tasks: list[Task] | None = None) -> int:
         """Count beads the cycle could actually act on (pending/in-progress).
 
-        Blocked beads are excluded on purpose: the cycle can do nothing with
-        them, so they must not hold the adaptive interval at baseline. When a
-        blocked bead unblocks it becomes pending, which resets the cadence
-        naturally. They remain visible via `beads_open` in the heartbeat.
+        Undispatchable beads are excluded on purpose: the cycle can do nothing
+        with them, so they must not hold the adaptive interval at baseline.
+        Clearing the refusal returns the bead to plain PENDING, which resets the
+        cadence naturally. They remain visible via `beads_open` in the heartbeat.
+
+        The exclusion used to be `status != BLOCKED`. It is now the refusal
+        record, because a bead that cannot be dispatched stays PENDING (see
+        `Beads.refuse_dispatch`). Same set, read from a different field — and
+        worth stating, because getting it wrong is silent: the cycle would sit
+        at baseline forever, woken by beads nothing can run.
         """
         tasks = self.beads._read_all() if tasks is None else tasks
         return len(
-            [t for t in tasks if t.status in (TaskStatus.PENDING, TaskStatus.IN_PROGRESS)]
+            [
+                t
+                for t in tasks
+                if t.status in (TaskStatus.PENDING, TaskStatus.IN_PROGRESS)
+                and DISPATCH_REFUSAL_KEY not in t.metadata
+            ]
         )
 
     def _write_cycle_heartbeat(
@@ -2017,8 +2060,13 @@ class Orchestrator:
                 "executor) and reopen it; leaving it PENDING would re-fail it "
                 "every cycle with no error recorded."
             )
-            print(f"[work] BLOCKED: {task.id} {reason}")
-            self.beads.update(task.id, status=TaskStatus.BLOCKED, result=reason)
+            print(f"[work] REFUSED: {task.id} {reason}")
+            self.beads.refuse_dispatch(
+                task.id,
+                code="no_executor",
+                message=reason,
+                remediation="Assign an agent (or a human:<name> executor), then clear the refusal.",
+            )
             return False
 
         if self._external_agent(task.assigned_agent):
@@ -2044,9 +2092,11 @@ class Orchestrator:
         # lives on the MacBook and nowhere else). Retrying it every cycle would
         # burn a dispatch slot forever and record nothing, which is the same
         # silent-repetition failure the unassigned branch above was fixed for.
-        # BLOCKED is terminal AND visible: it surfaces in `agentco me` with the
-        # missing capability named, so the fix (move the bead to the right lane,
-        # or correct its requires) is one read away.
+        # A recorded refusal is both: `ready()` stops offering the bead, and it
+        # surfaces in `agentco me` with the missing capability named, so the fix
+        # (move the bead to the right lane, or correct its requires) is one read
+        # away. It stays PENDING — the plane has no stored status for "could not
+        # be dispatched", so the record carries that fact instead.
         try:
             claimed = self.beads.claim(
                 task.id, task.assigned_agent, capabilities=self.node_capabilities
@@ -2056,8 +2106,13 @@ class Orchestrator:
                 f"{e} This node ({self.config.instance_name}) cannot execute it; "
                 f"reassign it to a node that declares those capabilities."
             )
-            print(f"[work] BLOCKED: {task.id} {reason}")
-            self.beads.update(task.id, status=TaskStatus.BLOCKED, result=reason)
+            print(f"[work] REFUSED: {task.id} {reason}")
+            self.beads.refuse_dispatch(
+                task.id,
+                code="capability_missing",
+                message=reason,
+                remediation="Move the bead to a node declaring those capabilities, or correct its requires.",
+            )
             return False
 
         if claimed is None:

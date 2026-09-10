@@ -246,6 +246,14 @@ _UNREAD = object()
 # which is exactly the condition reaping exists to recover.
 DEFAULT_LEASE_TTL_S = 2 * 60 * 60
 
+# Where a dispatch refusal is recorded. Its presence means the last cycle could
+# not hand this bead to anything — a routing or configuration answer, never a
+# judgement about the work — and `ready()` stops offering it until an operator
+# clears it. It replaces `status=BLOCKED` for that purpose: the plane derives
+# BLOCKED from unmet dependencies and never stores it, so there is no status to
+# move to. See `ai-tasks/embedded-plane/PLAN.md`.
+DISPATCH_REFUSAL_KEY = "dispatch_refusal"
+
 
 def _parse_iso(value: str | None) -> datetime | None:
     """Parse an ISO-8601 timestamp to an aware UTC datetime, or None.
@@ -1932,6 +1940,17 @@ class Beads:
         parked mid-protocol) is genuinely somebody's. Once the lease expires it
         reappears here with no further action: the ready set is the recovery
         path, which is why expiry does not need to fail the bead.
+
+        Also excludes any bead carrying an unresolved ``dispatch_refusal``. That
+        record means the last cycle could not dispatch this bead at all — no
+        provider configured, egress denied, no assignee — and nothing about
+        offering it again would change the answer. It is the same exclusion the
+        BLOCKED status used to buy, moved to metadata because the plane derives
+        BLOCKED from unmet dependencies and does not store it
+        (`ai-tasks/embedded-plane/PLAN.md`). Clearing it is deliberate and
+        operator-driven (`clear_dispatch_refusal`), exactly as moving a BLOCKED
+        bead back to PENDING was: fixing the config cannot tell this store that
+        THIS bead's refusal was the one addressed.
         """
         tasks = self.list(status=TaskStatus.PENDING, assigned_agent=assigned_agent)
         done_ids = {t.id for t in self.list(status=TaskStatus.DONE)}
@@ -1941,8 +1960,83 @@ class Beads:
             for t in tasks
             if t.assigned_to is None
             and not t.lease_active_at(now)
+            and DISPATCH_REFUSAL_KEY not in t.metadata
             and all(b in done_ids for b in t.blocked_by)
         ]
+
+    def annotate(self, task_id: str, metadata: dict) -> Task | None:
+        """Merge keys into a bead's metadata. Never touches status.
+
+        The plane's verb, adopted here so the call sites speak one vocabulary
+        before the implementation is swapped underneath them (P2a of
+        `ai-tasks/embedded-plane/PLAN.md`).
+
+        **It does not accept `blocked_by`.** On the plane, `annotate` takes that
+        key, writes it into metadata, leaves the real dependency list untouched
+        and returns the item looking updated — measured, and the only divergence
+        of the six that does not announce itself. A caller reaching for it here
+        gets a refusal instead of a plausible no-op, because a silent one is how
+        that trap gets carried across the substitution rather than caught by it.
+        """
+        if "blocked_by" in metadata:
+            raise ValueError(
+                "annotate() does not edit dependencies: 'blocked_by' here would "
+                "become a metadata key of that name while the real dependency "
+                "list stayed as it was. Edit the field itself."
+            )
+        task = self.get(task_id)
+        if task is None:
+            return None
+        merged = {**task.metadata, **metadata}
+        return self.update(task_id, metadata=merged)
+
+    def refuse_dispatch(
+        self, task_id: str, code: str, message: str, remediation: str | None = None
+    ) -> Task | None:
+        """Record that this bead could not be dispatched, and leave it PENDING.
+
+        Not a failure of the work — a failure of the routing, which is what
+        every call site said in prose before there was a verb for it. The
+        distinction is load-bearing now that outcomes feed an ASOP's
+        `outcomes_by_version`: a missing provider counted as a failed attempt
+        would be the runtime marking work bad because it could not find a way
+        to try it.
+
+        Status stays PENDING deliberately. The plane stores six states and
+        derives BLOCKED from unmet dependencies rather than storing it, so there
+        is no status here to move to; `ready()` excludes the bead on the record
+        instead. What the operator loses is legibility — "why is this not
+        running" is answered by metadata rather than by status — and that cost
+        was accepted knowingly (mabidoli, 2026-09-10) as the price of not
+        widening a protocol that reasons about each of its states.
+        """
+        return self.annotate(
+            task_id,
+            {
+                DISPATCH_REFUSAL_KEY: {
+                    "code": code,
+                    "message": message,
+                    "remediation": remediation,
+                    "at": datetime.now(timezone.utc).isoformat(),
+                }
+            },
+        )
+
+    def clear_dispatch_refusal(self, task_id: str) -> Task | None:
+        """Drop the refusal record, returning the bead to the ready set.
+
+        The counterpart to moving a BLOCKED bead back to PENDING by hand, and
+        deliberately as manual: the store cannot know that a config change
+        addressed this bead's refusal rather than some other bead's.
+        """
+        task = self.get(task_id)
+        if task is None:
+            return None
+        if DISPATCH_REFUSAL_KEY not in task.metadata:
+            return task
+        metadata = dict(task.metadata)
+        metadata.pop(DISPATCH_REFUSAL_KEY)
+        return self.update(task_id, metadata=metadata)
 
     def approve(self, task_id: str) -> Task | None:
         """Approve a pending_approval task — promotes it to pending so the daemon picks it up.

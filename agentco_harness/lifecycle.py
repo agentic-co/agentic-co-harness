@@ -65,6 +65,21 @@ class Lifecycle(Protocol):
 
     def awaiting_verify(self) -> list[Task]: ...
 
+    # --- the plane's vocabulary, adopted ahead of the swap (P2a) ------------
+    # These are not additions to the runtime's own shape; they are the verbs
+    # the plane already speaks, moved in first so that P2c substitutes an
+    # implementation rather than a language. `update` and `complete` above are
+    # on their way out — P2b deletes them, which is what keeps this option 3
+    # rather than an adapter with two vocabularies kept alive side by side.
+
+    def annotate(self, task_id: str, metadata: dict) -> Optional[Task]: ...
+
+    def refuse_dispatch(
+        self, task_id: str, code: str, message: str, remediation: Optional[str] = ...
+    ) -> Optional[Task]: ...
+
+    def clear_dispatch_refusal(self, task_id: str) -> Optional[Task]: ...
+
 
 def open_lifecycle(path: Path | str, **kwargs: Any) -> Lifecycle:
     """Open the lifecycle store for this node.

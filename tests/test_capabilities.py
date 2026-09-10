@@ -24,6 +24,7 @@ import pytest
 from click.testing import CliRunner
 
 from agentco_harness.beads import (
+    DISPATCH_REFUSAL_KEY,
     Beads,
     CapabilityError,
     LeaseError,
@@ -586,8 +587,14 @@ def test_orchestrator_blocks_a_bead_this_node_cannot_satisfy(tmp_path):
     assert orch._execute_task(beads.get(task.id)) is False
 
     after = beads.get(task.id)
-    assert after.status == TaskStatus.BLOCKED
-    assert "ado-write" in (after.result or "")
+    # The bead stays PENDING and carries the refusal: the plane stores no
+    # status for "could not be dispatched". What BLOCKED actually bought was
+    # not being offered again, so that is what is asserted.
+    assert after.status == TaskStatus.PENDING
+    refusal = after.metadata[DISPATCH_REFUSAL_KEY]
+    assert refusal["code"] == "capability_missing"
+    assert "ado-write" in refusal["message"]
+    assert task.id not in [t.id for t in beads.ready()]
     assert after.lease_attempt == 0
 
 

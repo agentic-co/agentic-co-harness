@@ -10,7 +10,7 @@ from __future__ import annotations
 import pytest
 
 from agentco_harness import backends
-from agentco_harness.beads import Beads, TaskStatus
+from agentco_harness.beads import DISPATCH_REFUSAL_KEY, Beads, TaskStatus
 from agentco_harness.completion import COMPLETION_ONLY
 from agentco_harness.config import Config
 from agentco_harness.orchestrator import Orchestrator
@@ -41,9 +41,12 @@ def test_a_bead_that_needs_a_shell_is_refused_by_a_completion_backend(orch):
                           requires=["shell", "files"])
     assert _dispatch(orch, t) is False
     after = orch.beads.get(t.id)
-    assert after.status is TaskStatus.BLOCKED
-    assert "shell" in after.result and "files" in after.result
-    assert "provides ['text']" in after.result
+    assert after.status is TaskStatus.PENDING
+    refusal = after.metadata[DISPATCH_REFUSAL_KEY]
+    assert refusal["code"] == "requires_unsatisfied"
+    assert "shell" in refusal["message"] and "files" in refusal["message"]
+    assert "provides ['text']" in refusal["message"]
+    assert t.id not in [r.id for r in orch.beads.ready()]
 
 
 def test_it_is_blocked_not_failed(orch):
@@ -82,7 +85,7 @@ def test_the_gate_names_only_what_is_actually_missing(orch):
     t = orch.beads.create("do it", "", assigned_agent="lmstudio",
                           requires=["text", "ado-write", "shell"])
     _dispatch(orch, t)
-    result = orch.beads.get(t.id).result
+    result = orch.beads.get(t.id).metadata[DISPATCH_REFUSAL_KEY]["message"]
     assert "['shell']" in result
     assert "ado-write" not in result.split("provides")[0].split("requires")[1]
 

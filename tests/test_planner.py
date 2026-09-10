@@ -22,7 +22,13 @@ import yaml
 from dspy.utils.dummies import DummyLM
 
 import agentco_harness.orchestrator as orchestrator_mod
-from agentco_harness.beads import MAX_SUBTASK_DEPTH, MAX_SUBTASKS_PER_TASK, TaskResult, TaskStatus
+from agentco_harness.beads import (
+    DISPATCH_REFUSAL_KEY,
+    MAX_SUBTASK_DEPTH,
+    MAX_SUBTASKS_PER_TASK,
+    TaskResult,
+    TaskStatus,
+)
 from agentco_harness.config import AgentConfig, Config, LLMConfig, TiersConfig
 from agentco_harness.executor import ExecResult
 from agentco_harness.orchestrator import Orchestrator
@@ -620,12 +626,14 @@ def test_planner_decompose_skips_unknown_tier_subtask(tmp_path, monkeypatch, cap
 def test_dispatch_quarantines_pending_task_with_requires_approval(tmp_path):
     orch = _orch(tmp_path)
     # Anomaly: a PENDING task still flagged requires_approval reached dispatch
-    # without passing the approval gate — quarantine BLOCKED, never execute.
+    # without passing the approval gate — refuse it, never execute.
     t = orch.beads.create(
         "leaked", "x", assigned_agent="claude", metadata={"requires_approval": True}
     )
     assert orch._execute_cycle_task(t) is False
-    assert orch.beads.get(t.id).status == TaskStatus.BLOCKED
+    after = orch.beads.get(t.id)
+    assert after.metadata[DISPATCH_REFUSAL_KEY]["code"] == "approval_gate_bypassed"
+    assert t.id not in [r.id for r in orch.beads.ready()]
 
 
 def test_approved_subtask_dispatches_after_approval(tmp_path, monkeypatch):

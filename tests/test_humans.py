@@ -14,7 +14,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from click.testing import CliRunner
 
-from agentco_harness.beads import Beads, HumanLineageError, Task, TaskStatus
+from agentco_harness.beads import DISPATCH_REFUSAL_KEY, Beads, HumanLineageError, Task, TaskStatus
 from agentco_harness.cli import main
 from agentco_harness.config import AgentConfig, Config, LLMConfig
 from agentco_harness.humans import decline_task, snooze_task, TaskStateError
@@ -139,10 +139,12 @@ def test_dispatch_guard_blocks_human_task(tmp_path, monkeypatch, capsys):
     # Even if it somehow reaches dispatch, it must NOT execute with any LLM.
     ok = orch._execute_cycle_task(orch.beads.get(t.id), now=NOW)
     assert ok is False
-    blocked = orch.beads.get(t.id)
-    assert blocked.status == TaskStatus.BLOCKED
+    refused = orch.beads.get(t.id)
+    assert refused.status == TaskStatus.PENDING
+    assert refused.metadata[DISPATCH_REFUSAL_KEY]["code"] == "unroutable_assignee"
+    assert t.id not in [r.id for r in orch.beads.ready()]
     out = capsys.readouterr().out
-    assert "BLOCKED" in out
+    assert "REFUSED" in out
     assert "human executor" in out
 
 
@@ -154,7 +156,9 @@ def test_dispatch_guard_blocks_unknown_scheme(tmp_path, monkeypatch, capsys):
 
     ok = orch._execute_cycle_task(orch.beads.get(t.id), now=NOW)
     assert ok is False
-    assert orch.beads.get(t.id).status == TaskStatus.BLOCKED
+    refused = orch.beads.get(t.id)
+    assert refused.status == TaskStatus.PENDING
+    assert refused.metadata[DISPATCH_REFUSAL_KEY]["code"] == "unroutable_assignee"
     assert "unrecognized assignee token" in capsys.readouterr().out
 
 

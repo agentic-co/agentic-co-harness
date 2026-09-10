@@ -13,6 +13,7 @@ from .lifecycle import open_lifecycle
 from .asop_store import AsopStore
 from .beads import (
     DEFAULT_LEASE_TTL_S,
+    DISPATCH_REFUSAL_KEY,
     SOP_TEXT_KEYS,
     Beads,
     LeaseError,
@@ -1490,8 +1491,13 @@ def attention(ctx, as_json: bool):
     beads = open_lifecycle(config.tasks_path)
 
     failed = beads.list(status=TaskStatus.FAILED)
-    blocked = beads.list(status=TaskStatus.BLOCKED)
     pending = beads.list(status=TaskStatus.PENDING)
+    # Undispatchable beads stay PENDING and carry a refusal record rather than
+    # a status (see `Beads.refuse_dispatch`), so "blocked" here is the union:
+    # the legacy status, plus anything the cycle refused to hand out.
+    blocked = beads.list(status=TaskStatus.BLOCKED) + [
+        t for t in pending if DISPATCH_REFUSAL_KEY in t.metadata
+    ]
     done_ids = {t.id for t in beads.list(status=TaskStatus.DONE)}
     waiting = [t for t in pending if any(b not in done_ids for b in t.blocked_by)]
 
@@ -2686,6 +2692,43 @@ def tasks_retry(ctx, task_id: str | None, all_failed: bool):
             continue
         beads.update(t.id, status=TaskStatus.PENDING, result=None)
         click.echo(f"Retrying: {t.id} — {t.title}")
+
+
+@tasks.command("unrefuse")
+@click.argument("task_id", required=False)
+@click.option("--all", "all_refused", is_flag=True, help="Clear every dispatch refusal")
+@click.pass_context
+def tasks_unrefuse(ctx, task_id: str | None, all_refused: bool):
+    """Clear a dispatch refusal so the next cycle offers the bead again.
+
+    The counterpart to `tasks retry`, for beads the cycle could not hand out at
+    all rather than ones that ran and failed. Deliberately manual: fixing the
+    config cannot tell this store which bead's refusal it addressed, so somebody
+    who knows says so.
+    """
+    config = Config.load(ctx.obj["config_path"])
+    beads = open_lifecycle(config.tasks_path)
+
+    if not task_id and not all_refused:
+        click.echo("Provide a TASK_ID or --all.", err=True)
+        sys.exit(1)
+
+    targets = (
+        [t for t in beads.list() if DISPATCH_REFUSAL_KEY in t.metadata]
+        if all_refused
+        else [t for t in [beads.get(task_id)] if t]
+    )
+    if not targets:
+        click.echo("No bead is carrying a dispatch refusal.", err=True)
+        sys.exit(1)
+
+    for t in targets:
+        refusal = t.metadata.get(DISPATCH_REFUSAL_KEY)
+        if not refusal:
+            click.echo(f"Skipping {t.id}: it is not refused.")
+            continue
+        beads.clear_dispatch_refusal(t.id)
+        click.echo(f"Cleared [{refusal.get('code')}]: {t.id} — {t.title}")
 
 
 @tasks.command("complete")

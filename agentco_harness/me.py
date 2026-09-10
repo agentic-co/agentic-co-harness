@@ -19,7 +19,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .beads import Beads, Task, TaskResult, TaskStatus
+from .beads import DISPATCH_REFUSAL_KEY, Beads, Task, TaskResult, TaskStatus
 from .children import ChildRegistry, verify_child
 from .config import Config
 from .tempo import Schedule, explain, is_pin, schedule, temporal_score
@@ -287,6 +287,15 @@ def _collect_instance(
             add("failed", t, err, "tasks retry")
         elif t.status == TaskStatus.BLOCKED:
             add("blocked", t, "explicitly blocked", "tasks show")
+        elif DISPATCH_REFUSAL_KEY in t.metadata:
+            # Undispatchable, and PENDING — the plane stores no status for it,
+            # so this queue reads the record instead. Without this branch the
+            # bead is invisible here AND excluded from `ready()`, which is the
+            # worst of both: silently parked. Surfacing it is the whole premise
+            # on which the metadata route was chosen over a stored status.
+            refusal = t.metadata[DISPATCH_REFUSAL_KEY]
+            why = str(refusal.get("message", ""))[:120] or refusal.get("code", "refused")
+            add("blocked", t, f"cannot dispatch: {why}", "tasks unrefuse")
         elif t.status == TaskStatus.PENDING and any(
             b not in done_ids for b in t.blocked_by
         ):

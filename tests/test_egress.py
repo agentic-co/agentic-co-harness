@@ -20,7 +20,7 @@ from agentco_harness.egress import (
     load_routes,
     resolve_data_class,
 )
-from agentco_harness.beads import Beads, TaskStatus
+from agentco_harness.beads import DISPATCH_REFUSAL_KEY, Beads, TaskStatus
 from agentco_harness.config import Config
 from agentco_harness.orchestrator import Orchestrator
 
@@ -220,10 +220,13 @@ def test_orchestrator_blocks_company_bead_routed_to_zai(tmp_path, monkeypatch, c
     )
     assert orch._execute_cycle_task(task) is False
     refreshed = beads.get(task.id)
-    assert refreshed.status == TaskStatus.BLOCKED
-    assert "egress denied" in (refreshed.result or "")
-    assert "PUBLIC ceiling" in (refreshed.result or "")
-    assert "BLOCKED" in capsys.readouterr().out
+    assert refreshed.status == TaskStatus.PENDING
+    refusal = refreshed.metadata[DISPATCH_REFUSAL_KEY]
+    assert refusal["code"] == "egress_denied"
+    assert "egress denied" in refusal["message"]
+    assert "PUBLIC ceiling" in refusal["message"]
+    assert task.id not in [t.id for t in beads.ready()]
+    assert "REFUSED" in capsys.readouterr().out
 
 
 def test_orchestrator_allows_declared_public_bead_to_zai(tmp_path, monkeypatch):

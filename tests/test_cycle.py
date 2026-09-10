@@ -11,7 +11,7 @@ from dspy.utils.dummies import DummyLM
 
 import agentco_harness as agentco
 import agentco_harness.orchestrator as orchestrator_mod
-from agentco_harness.beads import TaskStatus
+from agentco_harness.beads import DISPATCH_REFUSAL_KEY, TaskStatus
 from agentco_harness.children import ChildRef
 from agentco_harness.config import AgentConfig, Config, LLMConfig
 from agentco_harness.executor import ExecResult
@@ -548,10 +548,13 @@ def test_unassigned_bead_is_blocked_not_looped(tmp_path):
     assert orch._execute_task(task) is False
 
     refreshed = orch.beads.get(task.id)
-    assert refreshed.status == TaskStatus.BLOCKED
-    assert refreshed.result and "no assigned_agent" in refreshed.result
+    assert refreshed.status == TaskStatus.PENDING
+    refusal = refreshed.metadata[DISPATCH_REFUSAL_KEY]
+    assert refusal["code"] == "no_executor"
+    assert "no assigned_agent" in refusal["message"]
 
-    # Terminal means terminal: it is not handed back to the next cycle.
+    # The property the old BLOCKED status was there for, and the one this
+    # regression is actually about: it is not handed back to the next cycle.
     assert task.id not in {t.id for t in Beads(config.tasks_path).ready()}
 
 
