@@ -543,9 +543,9 @@ def test_a_corrupt_ledger_reads_empty_and_does_not_break_pull(tmp_path, monkeypa
 def _remote(interval: str = "1h") -> ChildRef:
     return ChildRef(
         name=NODE,
-        path="/Users/somebody/Portfolio/acme",
+        path="/Users/somebody/Portfolio/acme",  # leakguard: allow — fabricated path, not an account
         expected_interval=interval,
-        host="macbook-pro.local",
+        host="worker-node.example",
     )
 
 

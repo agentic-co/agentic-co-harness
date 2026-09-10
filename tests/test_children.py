@@ -174,7 +174,7 @@ def test_registry_rejects_duplicate_names(tmp_path):
 # registry lines.
 
 VAULT_ONLY = json.dumps({
-    "name": "globex", "path": "/Users/x/Code/globexapp", "type": "vault-only",
+    "name": "globex", "path": "/Users/x/Code/globexapp", "type": "vault-only",  # leakguard: allow — fabricated path, not an account
     "vault_path": "1 - Projects/GlobexCo", "expected_interval": "manual", "notify": False,
 })
 ADO_BACKED = json.dumps({
@@ -182,7 +182,7 @@ ADO_BACKED = json.dumps({
     "vault_path": "1 - Projects/Acme", "notify": False,
 })
 MANUAL_BEADS = json.dumps({
-    "name": "personal", "path": "/Users/x/Portfolio/personal", "type": "beads",
+    "name": "personal", "path": "/Users/x/Portfolio/personal", "type": "beads",  # leakguard: allow — fabricated path, not an account
     "vault_path": "2 - Areas/Personal", "expected_interval": "manual", "notify": False,
 })
 

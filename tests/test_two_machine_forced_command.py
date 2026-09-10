@@ -61,7 +61,7 @@ def run(command: str | None, hub, dry_run: bool = True, **env_extra):
             "AGENTCO_HUB_CONFIG": str(hub["config"]),
             "AGENTCO_PULL_AUDIT_LOG": str(hub["audit"]),
             "AGENTCO_BIN": str(hub["bin"]),
-            "SSH_CONNECTION": "10.0.0.9 51000 10.0.0.2 22",
+            "SSH_CONNECTION": "192.0.2.9 51000 192.0.2.2 22",
         }
     )
     if dry_run:
@@ -180,7 +180,7 @@ def test_single_token_quoted_result(hub):
         ("agentco tasks list", "a real agentco command that is not on the lane"),
         ("agentco cycle", "hub orchestration is not the worker's to trigger"),
         ("agentco doctor", "read-only, still not on the lane"),
-        ("cat /Users/x/.claude/.env", "credential exfiltration"),
+        ("cat /Users/x/.claude/.env", "credential exfiltration"),  # leakguard: allow — fabricated path, not an account
         ("/usr/bin/agentco pull --agent w", "absolute path for argv[0]"),
         ("./agentco pull --agent w", "relative path for argv[0]"),
         ("AGENTCO_BIN=/tmp/evil agentco pull --agent w", "env prefix"),
@@ -307,7 +307,7 @@ def test_allowed_invocation_is_logged(hub):
     lines = audit_lines(hub)
     assert len(lines) == 1
     assert " ALLOW " in lines[0]
-    assert "from=10.0.0.9" in lines[0]
+    assert "from=192.0.2.9" in lines[0]
     assert PULL_OK in lines[0]
 
 

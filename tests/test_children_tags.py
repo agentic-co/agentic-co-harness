@@ -54,13 +54,13 @@ def test_set_tags_writes_host_and_capabilities_and_round_trips(tmp_path):
 
     result = _run(
         cfg, "set-tags", "acme",
-        "--host", "macbook-pro.local",
+        "--host", "worker-node.example",
         "--capability", "ado-write",
     )
     assert result.exit_code == 0, result.output
 
     child = _registry(tmp_path).get("acme")
-    assert child.host == "macbook-pro.local"
+    assert child.host == "worker-node.example"
     assert child.capabilities == ["ado-write"]
     assert child.is_remote is True
     assert child.verifiable is False  # a remote path is not ours to poll
@@ -117,7 +117,7 @@ def test_clear_host_makes_the_child_locally_verifiable_again(tmp_path):
     it must not require deleting and re-linking the row."""
     cfg = _hub(tmp_path)
     (tmp_path / "acme").mkdir()
-    _run(cfg, "set-tags", "acme", "--host", "macbook-pro.local")
+    _run(cfg, "set-tags", "acme", "--host", "worker-node.example")
 
     result = _run(cfg, "set-tags", "acme", "--clear-host")
     assert result.exit_code == 0, result.output
@@ -132,17 +132,17 @@ def test_setting_only_the_host_leaves_capabilities_intact(tmp_path):
     cfg = _hub(tmp_path)
     _run(cfg, "set-tags", "acme", "--capability", "ado-write")
 
-    _run(cfg, "set-tags", "acme", "--host", "macbook-pro.local")
+    _run(cfg, "set-tags", "acme", "--host", "worker-node.example")
     child = _registry(tmp_path).get("acme")
     assert child.capabilities == ["ado-write"]
-    assert child.host == "macbook-pro.local"
+    assert child.host == "worker-node.example"
 
 
 def test_set_tags_preserves_every_other_registry_field(tmp_path):
     cfg = _hub(tmp_path)
     before = _registry(tmp_path).get("acme")
 
-    _run(cfg, "set-tags", "acme", "--host", "macbook-pro.local")
+    _run(cfg, "set-tags", "acme", "--host", "worker-node.example")
     after = _registry(tmp_path).get("acme")
 
     assert after.path == before.path
@@ -155,7 +155,7 @@ def test_set_tags_preserves_every_other_registry_field(tmp_path):
 def test_host_and_clear_host_together_is_refused(tmp_path):
     cfg = _hub(tmp_path)
     result = _run(
-        cfg, "set-tags", "acme", "--host", "macbook-pro.local", "--clear-host"
+        cfg, "set-tags", "acme", "--host", "worker-node.example", "--clear-host"
     )
     assert result.exit_code == 1
     assert _registry(tmp_path).get("acme").host is None
@@ -191,7 +191,7 @@ def test_unknown_child_names_the_registry_and_exits_nonzero(tmp_path):
     registry is a lane nothing staffs, and `link-child` is where rows are born
     (it writes the verify def in the same breath)."""
     cfg = _hub(tmp_path)
-    result = _run(cfg, "set-tags", "globex", "--host", "macbook-pro.local")
+    result = _run(cfg, "set-tags", "globex", "--host", "worker-node.example")
 
     assert result.exit_code == 1
     assert "globex" in result.output
@@ -202,21 +202,21 @@ def test_unknown_child_names_the_registry_and_exits_nonzero(tmp_path):
 def test_set_tags_reports_the_outcome_as_json(tmp_path):
     cfg = _hub(tmp_path)
     result = _run(
-        cfg, "set-tags", "acme", "--host", "macbook-pro.local",
+        cfg, "set-tags", "acme", "--host", "worker-node.example",
         "--capability", "ado-write", "--json",
     )
     assert result.exit_code == 0, result.output
     payload = json.loads(result.output)
     assert payload["child"] == "acme"
-    assert payload["host"] == "macbook-pro.local"
+    assert payload["host"] == "worker-node.example"
     assert payload["capabilities"] == ["ado-write"]
     assert payload["outcome"] in {"created", "updated", "unchanged"}
 
 
 def test_re_running_the_same_tags_is_unchanged(tmp_path):
     cfg = _hub(tmp_path)
-    _run(cfg, "set-tags", "acme", "--host", "macbook-pro.local")
-    result = _run(cfg, "set-tags", "acme", "--host", "macbook-pro.local", "--json")
+    _run(cfg, "set-tags", "acme", "--host", "worker-node.example")
+    result = _run(cfg, "set-tags", "acme", "--host", "worker-node.example", "--json")
     assert json.loads(result.output)["outcome"] == "unchanged"
 
 
@@ -227,13 +227,13 @@ def test_children_list_renders_host_and_capabilities(tmp_path):
     cfg = _hub(tmp_path)
     _run(
         cfg, "set-tags", "acme",
-        "--host", "macbook-pro.local", "--capability", "ado-write",
+        "--host", "worker-node.example", "--capability", "ado-write",
     )
 
     result = _run(cfg, "list")
     assert result.exit_code == 0, result.output
     assert "acme" in result.output
-    assert "macbook-pro.local" in result.output
+    assert "worker-node.example" in result.output
     assert "ado-write" in result.output
 
 
@@ -251,14 +251,14 @@ def test_children_list_json_carries_the_tags(tmp_path):
     cfg = _hub(tmp_path)
     _run(
         cfg, "set-tags", "acme",
-        "--host", "macbook-pro.local", "--capability", "ado-write",
+        "--host", "worker-node.example", "--capability", "ado-write",
     )
 
     result = _run(cfg, "list", "--json")
     assert result.exit_code == 0, result.output
     rows = json.loads(result.output)
     assert [r["name"] for r in rows] == ["acme"]
-    assert rows[0]["host"] == "macbook-pro.local"
+    assert rows[0]["host"] == "worker-node.example"
     assert rows[0]["capabilities"] == ["ado-write"]
 
 
@@ -279,7 +279,7 @@ def test_tags_written_by_the_cli_are_the_ones_the_claim_gate_reads(tmp_path):
     cfg = _hub(tmp_path, "capabilities: [venture-keys]\n")
     _run(
         cfg, "set-tags", "acme",
-        "--host", "macbook-pro.local", "--capability", "ado-write",
+        "--host", "worker-node.example", "--capability", "ado-write",
     )
 
     beads = Beads(tmp_path / "tasks.jsonl")

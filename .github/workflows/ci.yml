@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  leakguard:
+    # Runs FIRST and independently of the tests. A commit that carries identity
+    # into a public repo is a different class of failure from a failing test,
+    # and it must not be reported as one line in a test summary.
+    #
+    # Ported from agentic-co-hub, which has had this since the public
+    # extraction. This repo went public without it, and the cost showed:
+    # personal names, company names and one operator's live work state are
+    # spread across its tests and docs. The guard is what stops the next one.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan for identity leakage
+        # No leakguard.toml in the tree on purpose — a denylist of real names is
+        # itself a list of real names. CI runs base rules; a fork or a private
+        # mirror can supply its own via --config.
+        #
+        # Base rules catch SHAPES (emails, tenant GUIDs, home paths, internal
+        # hosts). They do NOT catch a bare first name or a company name; those
+        # need a denylist, which cannot live here. Contributors get that half
+        # locally via tools/leakguard/pre-commit and their own leakguard.toml.
+        run: python3 tools/leakguard/leakguard.py --root .

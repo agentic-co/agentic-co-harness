@@ -22,3 +22,7 @@ pull-audit.log
 # runtime one day; when they do they will be written for that purpose, not
 # lifted from somebody's deployment.
 procedures/
+
+# leakguard denylist — a list of real names is itself a list of real names.
+# Local only; CI runs base rules, or supplies its own via --config.
+tools/leakguard/leakguard.toml

@@ -283,12 +283,12 @@ def test_save_omits_capabilities_when_a_node_declares_none(tmp_path):
 def test_childref_carries_host_and_capabilities(tmp_path):
     ref = ChildRef(
         name="acme",
-        path="/Users/x/Portfolio/acme",
-        host="macbook-pro.local",
+        path="/Users/x/Portfolio/acme",  # leakguard: allow — fabricated path, not an account
+        host="worker-node.example",
         capabilities=["ado-write", "acme-code"],
     )
     reloaded = ChildRef.from_json(ref.to_json())
-    assert reloaded.host == "macbook-pro.local"
+    assert reloaded.host == "worker-node.example"
     assert reloaded.capabilities == ["ado-write", "acme-code"]
     assert reloaded.is_remote
 
@@ -310,7 +310,7 @@ def test_remote_child_reports_remote_not_fail(tmp_path):
     ref = ChildRef(
         name="acme",
         path="/not/mounted/here",
-        host="macbook-pro.local",
+        host="worker-node.example",
         expected_interval="1h",
     )
     assert not ref.verifiable
@@ -318,7 +318,7 @@ def test_remote_child_reports_remote_not_fail(tmp_path):
     assert result["level"] == "remote"
     assert result["ok"] is True
     assert "mirror" in result["detail"]
-    assert "macbook-pro.local" in result["detail"]
+    assert "worker-node.example" in result["detail"]
 
 
 def test_remote_child_with_a_stale_local_heartbeat_is_still_remote(tmp_path):
@@ -327,7 +327,7 @@ def test_remote_child_with_a_stale_local_heartbeat_is_still_remote(tmp_path):
     (tmp_path / "heartbeat.json").write_text(
         json.dumps({"cycle_completed_at": "2020-01-01T00:00:00+00:00"})
     )
-    ref = ChildRef(name="acme", path=str(tmp_path), host="macbook-pro.local")
+    ref = ChildRef(name="acme", path=str(tmp_path), host="worker-node.example")
     assert verify_child(ref)["level"] == "remote"
 
 
@@ -370,7 +370,7 @@ def test_me_does_not_crash_or_alarm_on_a_remote_child(tmp_path, capsys):
         {
             "name": "acme",
             "path": "/Volumes/never-mounted/acme",
-            "host": "macbook-pro.local",
+            "host": "worker-node.example",
             "expected_interval": "1h",
             "notify": False,
             "capabilities": ["ado-write"],
@@ -414,7 +414,7 @@ def test_status_counts_a_remote_child_as_remote_not_verified(tmp_path):
         {
             "name": "acme",
             "path": "/Volumes/never-mounted/acme",
-            "host": "macbook-pro.local",
+            "host": "worker-node.example",
             "notify": False,
         },
     )
@@ -528,7 +528,7 @@ def test_pull_node_uses_the_registered_child_manifest_not_the_hubs(tmp_path):
         {
             "name": "acme",
             "path": "/Volumes/never-mounted/acme",
-            "host": "macbook-pro.local",
+            "host": "worker-node.example",
             "notify": False,
             "capabilities": ["ado-write"],
         },
