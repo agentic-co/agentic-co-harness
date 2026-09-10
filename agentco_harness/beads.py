@@ -2191,7 +2191,9 @@ class Beads:
         """
         return self.update(task_id, status=TaskStatus.DONE, result=result)
 
-    def approve_verify(self, task_id: str, approver: str) -> Task | None:
+    def approve_verify(
+        self, task_id: str, approver: str, reason: str | None = None
+    ) -> Task | None:
         """Human (or judged-gate) approval of an AWAITING_VERIFY bead → DONE.
 
         The ONE sanctioned bypass of the gate, because here the approver IS
@@ -2203,7 +2205,11 @@ class Beads:
         distinct route, it is the self-grading the gate exists to prevent
         (ASOP.md 6.1: "a harness where the only possible adjudicator is the
         executor's own route has no self-improvement loop"). A bead with no
-        recorded executor has nothing to compare against and is unaffected.
+        recorded executor is refused outright: separation that cannot be
+        checked is not separation.
+
+        `reason` is the verdict (§5.3) — what the approver actually found. An
+        approval without one is refused.
         """
         task = self.get(task_id)
         if task is None:
@@ -2218,16 +2224,43 @@ class Beads:
             if task.assigned_to and task.assigned_to.startswith("human:")
             else task.assigned_to
         )
-        if executor and approver == executor:
+        if executor is None:
+            # Found by a headless agy review. The old check was
+            # `if executor and approver == executor`, so a bead with nobody
+            # recorded made the comparison vacuous and ANY approver passed —
+            # including the actor that just did the work, simply by never
+            # being assigned. Separation of duties cannot be checked against
+            # an unknown, and an uncheckable separation must refuse rather
+            # than wave through. The plane already refuses this case; the two
+            # sides disagreeing about it was itself the bug.
+            raise ValueError(
+                f"task {task_id} has no recorded executor, so there is nobody "
+                f"to keep {approver!r} separate from. Claim the bead before "
+                f"working it — an approval that cannot be checked against an "
+                f"executor is not evidence of a second pair of eyes."
+            )
+        if approver == executor:
             raise ValueError(
                 f"task {task_id} cannot be approved by {approver!r} — that is "
                 f"the same actor the gate exists to check (executor: "
                 f"{executor!r}). Approval must come from a distinct route."
             )
+        if not (reason or "").strip():
+            # ASOP.md §5.3: a judged/human attestation carries a verdict saying
+            # WHAT was found, not just who looked. A name and a timestamp show
+            # a party was named; they do not show a party looked.
+            raise ValueError(
+                f"approving {task_id} needs a reason: which part of "
+                f"{verify_check_text(task.metadata.get('verify'))!r} did you "
+                f"find true? A name and a timestamp are not a verdict."
+            )
         metadata = dict(task.metadata)
         metadata["verify_approval"] = {
             "approver": approver,
             "approved_at": datetime.now(timezone.utc).isoformat(),
+            # The contract's shape (schema/v1/attestation.yaml), emitted here
+            # so the record is already the one a plane will accept.
+            "verdict": {"passed": True, "reason": reason.strip()},
         }
         result = dict(metadata.get("verify_result") or {})
         if result:

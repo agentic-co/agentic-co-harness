@@ -2776,8 +2776,15 @@ def tasks_complete(ctx, task_id: str, result: str | None, actual: float | None):
     default=None,
     help="Who approved (defaults to $USER) — recorded in metadata.verify_approval",
 )
+@click.option(
+    "-m",
+    "--reason",
+    default=None,
+    help="The verdict: what you found true. Required — an approval without one "
+         "records that a party was named, not that a party looked (ASOP.md §5.3).",
+)
 @click.pass_context
-def tasks_approve_verify(ctx, task_id: str, approver: str | None):
+def tasks_approve_verify(ctx, task_id: str, approver: str | None, reason: str | None):
     """Approve a human- or judged-class verify gate: awaiting_verify → done.
 
     The only path that skips the gate, because here the approver IS the
@@ -2788,7 +2795,7 @@ def tasks_approve_verify(ctx, task_id: str, approver: str | None):
 
     who = approver or os.environ.get("USER") or "unknown"
     try:
-        task = beads.approve_verify(task_id, approver=who)
+        task = beads.approve_verify(task_id, approver=who, reason=reason)
     except ValueError as e:
         click.echo(f"Cannot approve: {e}", err=True)
         sys.exit(1)
