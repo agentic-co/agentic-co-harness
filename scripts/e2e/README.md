@@ -22,6 +22,28 @@ scripts/e2e/two_harnesses.py --hub-repo ~/Code/agentic-co-hub --claude-code mcp 
 
 **Proven 2026-09-04**, all four modes green:
 
+### Analyst seats (`--analyst`, with `--claude-code mcp`)
+
+Same ASOP version, same gates, a different vendor in one role — ASOP.md §7's
+portability claim, actually exercised. **Proven 2026-09-10, judged gate:**
+
+| seat | how | result |
+|---|---|---|
+| `claude-code` | headless Claude Code over MCP | 25/25 |
+| `codex` | `codex exec` over MCP | 25/25 |
+| `zai` | the same `claude` CLI, z.ai endpoint, isolated `CLAUDE_CONFIG_DIR` | 25/25 |
+| `lmstudio` | the same CLI, local endpoint | built, not chased |
+
+Every failure on the way there was CLI plumbing, never the contract. Each vendor
+needed its own accommodation: codex wants `--skip-git-repo-check` and
+`--approve-for-me` (its `exec` default of approval-policy `never` means a headless
+Codex cannot call MCP tools at all); LM Studio wants a model that is *loaded*, not
+merely listed, plus `ANTHROPIC_MODEL`; the isolated routes want
+`CLAUDE_CODE_DISABLE_UNKNOWN_MODEL_WINDOW_ENFORCEMENT` and explicit permissions —
+because `CLAUDE_CONFIG_DIR` isolation, which is what stops the operator's CLAUDE.md
+and identity imports reaching a third-party endpoint, also strips the saved
+permission grants the default route relies on.
+
 | mode | checkpoints |
 |---|---|
 | deterministic (default) | 22/22 |
