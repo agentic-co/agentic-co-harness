@@ -245,7 +245,7 @@ def test_priority_is_read_from_the_bead(tmp_path):
 
     beads = Beads(tmp_path / "tasks.jsonl")
     t = beads.create(title="urgent", description="d", priority=TaskPriority.CRITICAL)
-    beads.update(t.id, assigned_to="human:mabidoli")
+    beads.update(t.id, assigned_to="human:alex")
     cfg = tmp_path / "config.yaml"
     cfg.write_text("instance: t\ntasks_path: tasks.jsonl\n")
     items = [i for i in collect(str(cfg)) if i.task_id == t.id]

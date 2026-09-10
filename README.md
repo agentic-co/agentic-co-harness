@@ -13,7 +13,7 @@ It is the second product of the AgentCo split:
 | Runs alone? | Yes — any harness (Codex, Claude Code, your own) connects directly | Yes — solo operators run it with no server at all |
 | Together | The Harness is one Hub participant (reference **L2 worker** — pull, report, attest; publishing off by default) | The Harness applies the Hub's ASOPs and reports outcomes |
 
-The Harness descends from the private v1 monolith (`mabidoli/agentco-v1`) with the
+The Harness descends from the private v1 monolith (`alex/agentco-v1`) with the
 personal pipelines removed and replaced by extension seams. Nothing in this
 package knows about a particular company, calendar, mailbox, ticket system or
 assistant.

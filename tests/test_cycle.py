@@ -579,7 +579,7 @@ def test_chat_pending_gets_an_agent_reply_and_flag_clears(tmp_path, monkeypatch)
     task = orch.beads.create(
         title="Nightly release radar",
         description="d",
-        assigned_to="human:mabidoli",
+        assigned_to="human:alex",
         metadata={
             "chat": [{"type": "human", "text": "what's pending?", "at": NOW.isoformat()}],
             "chat_pending": True,
@@ -610,7 +610,7 @@ def test_chat_reply_never_touches_status_or_assignment(tmp_path, monkeypatch):
     task = orch.beads.create(
         title="human task",
         description="d",
-        assigned_to="human:mabidoli",
+        assigned_to="human:alex",
         status=TaskStatus.PENDING,
         metadata={
             "chat": [{"type": "human", "text": "hi", "at": NOW.isoformat()}],
@@ -622,7 +622,7 @@ def test_chat_reply_never_touches_status_or_assignment(tmp_path, monkeypatch):
 
     refreshed = orch.beads.get(task.id)
     assert refreshed.status == TaskStatus.PENDING
-    assert refreshed.assigned_to == "human:mabidoli"
+    assert refreshed.assigned_to == "human:alex"
     assert refreshed.assigned_agent is None
 
 
@@ -637,7 +637,7 @@ def test_chat_pending_does_not_dispatch_through_ready(tmp_path, monkeypatch):
     task = orch.beads.create(
         title="human task",
         description="d",
-        assigned_to="human:mabidoli",
+        assigned_to="human:alex",
         metadata={"chat": [], "chat_pending": True},
     )
 
@@ -670,7 +670,7 @@ def test_chat_reply_failure_is_recorded_and_flag_still_clears(tmp_path, monkeypa
     task = orch.beads.create(
         title="human task",
         description="d",
-        assigned_to="human:mabidoli",
+        assigned_to="human:alex",
         metadata={"chat": [], "chat_pending": True},
     )
 
@@ -701,7 +701,7 @@ def test_concurrent_chat_dispatch_does_not_double_answer(tmp_path, monkeypatch):
     task = orch.beads.create(
         title="race",
         description="d",
-        assigned_to="human:mabidoli",
+        assigned_to="human:alex",
         metadata={"chat": [], "chat_pending": True},
     )
 
@@ -728,7 +728,7 @@ def test_second_claim_of_a_live_lease_is_refused(tmp_path, monkeypatch):
     task = orch.beads.create(
         title="race",
         description="d",
-        assigned_to="human:mabidoli",
+        assigned_to="human:alex",
         metadata={"chat": [], "chat_pending": True},
     )
     first = _claim_chat_lease(orch.beads, task.id, now=NOW)
@@ -749,7 +749,7 @@ def test_stale_chat_lease_is_reclaimed(tmp_path, monkeypatch):
     task = orch.beads.create(
         title="stale lease",
         description="d",
-        assigned_to="human:mabidoli",
+        assigned_to="human:alex",
         metadata={"chat": [], "chat_pending": True, "chat_in_flight_at": stale_at},
     )
     monkeypatch.setattr(

@@ -261,9 +261,9 @@ def test_approve_verify_completes_and_records_approver(tmp_path):
     )
     beads.claim(task.id, "worker-a")
     beads.complete(task.id)
-    approved = beads.approve_verify(task.id, approver="mabidoli", reason="checked the diff")
+    approved = beads.approve_verify(task.id, approver="alex", reason="checked the diff")
     assert approved.status == TaskStatus.DONE
-    assert approved.metadata["verify_approval"]["approver"] == "mabidoli"
+    assert approved.metadata["verify_approval"]["approver"] == "alex"
     assert approved.metadata["verify_result"]["passed"] is True
 
 
@@ -273,7 +273,7 @@ def test_reject_verify_lands_in_verify_failed(tmp_path):
         "x", "d", metadata={"verify": {"class": "human", "check": "confirm"}}
     )
     beads.complete(task.id)
-    rejected = beads.reject_verify(task.id, approver="mabidoli", reason="wrong address")
+    rejected = beads.reject_verify(task.id, approver="alex", reason="wrong address")
     assert rejected.status == TaskStatus.VERIFY_FAILED
     assert "wrong address" in rejected.metadata["verify_rejection"]["reason"]
 
@@ -285,7 +285,7 @@ def test_approve_verify_refuses_a_bead_that_never_reached_the_gate(tmp_path):
     )
     beads.complete(task.id)  # -> verify_failed
     with pytest.raises(ValueError):
-        beads.approve_verify(task.id, approver="mabidoli", reason="checked the diff")
+        beads.approve_verify(task.id, approver="alex", reason="checked the diff")
 
 
 # --- the pinned gate is not the executor's to rewrite (ASOP.md §3.3) --------
@@ -381,9 +381,9 @@ def test_approval_without_a_verdict_is_refused(tmp_path):
     beads.claim(task.id, "worker-a")
     beads.complete(task.id)
     with pytest.raises(ValueError, match="needs a reason"):
-        beads.approve_verify(task.id, approver="mabidoli")
+        beads.approve_verify(task.id, approver="alex")
     with pytest.raises(ValueError, match="needs a reason"):
-        beads.approve_verify(task.id, approver="mabidoli", reason="   ")
+        beads.approve_verify(task.id, approver="alex", reason="   ")
 
 
 def test_an_approval_records_the_contract_verdict_shape(tmp_path):
@@ -394,7 +394,7 @@ def test_an_approval_records_the_contract_verdict_shape(tmp_path):
     beads.claim(task.id, "worker-a")
     beads.complete(task.id)
     done = beads.approve_verify(
-        task.id, approver="mabidoli", reason="invoice matches the PO line for line"
+        task.id, approver="alex", reason="invoice matches the PO line for line"
     )
     verdict = done.metadata["verify_approval"]["verdict"]
     assert verdict == {
@@ -426,9 +426,9 @@ def test_judged_gate_approver_cannot_be_the_executor(tmp_path):
     beads.complete(task.id)
     with pytest.raises(ValueError, match="distinct route"):
         beads.approve_verify(task.id, approver="forge", reason="self")
-    approved = beads.approve_verify(task.id, approver="mabidoli", reason="checked the diff")
+    approved = beads.approve_verify(task.id, approver="alex", reason="checked the diff")
     assert approved.status == TaskStatus.DONE
-    assert approved.metadata["verify_approval"]["approver"] == "mabidoli"
+    assert approved.metadata["verify_approval"]["approver"] == "alex"
 
 
 def test_human_gate_approver_cannot_be_the_executor_either(tmp_path):
@@ -440,7 +440,7 @@ def test_human_gate_approver_cannot_be_the_executor_either(tmp_path):
     beads.complete(task.id)
     with pytest.raises(ValueError, match="distinct route"):
         beads.approve_verify(task.id, approver="claude", reason="self")
-    approved = beads.approve_verify(task.id, approver="mabidoli", reason="checked the diff")
+    approved = beads.approve_verify(task.id, approver="alex", reason="checked the diff")
     assert approved.status == TaskStatus.DONE
 
 
@@ -642,7 +642,7 @@ def test_human_assigned_bead_is_never_tagged_unverified(tmp_path):
     """assigned_to human: is a person's own claim of completion, not an
     executor self-report — out of scope for this gate entirely."""
     beads = _store(tmp_path)
-    task = beads.create("call the vendor", "d", assigned_to="human:mabidoli")
+    task = beads.create("call the vendor", "d", assigned_to="human:alex")
     done = beads.update(task.id, status=TaskStatus.DONE, allow_human_reassign=False)
     assert done.status == TaskStatus.DONE
     assert "verify_result" not in done.metadata
@@ -667,12 +667,12 @@ def test_downstream_stays_blocked_through_awaiting_verify_and_verify_failed(tmp_
     assert beads.get(blocker.id).status == TaskStatus.AWAITING_VERIFY
     assert downstream.id not in {t.id for t in beads.ready()}
 
-    beads.reject_verify(blocker.id, approver="mabidoli", reason="no")
+    beads.reject_verify(blocker.id, approver="alex", reason="no")
     assert downstream.id not in {t.id for t in beads.ready()}
 
     # Only a genuinely passed gate releases the chain.
     beads.update(blocker.id, status=TaskStatus.AWAITING_VERIFY, verify_gate=False)
-    beads.approve_verify(blocker.id, approver="mabidoli", reason="checked")
+    beads.approve_verify(blocker.id, approver="alex", reason="checked")
     assert downstream.id in {t.id for t in beads.ready()}
 
 
@@ -725,7 +725,7 @@ def test_me_prefers_verify_gate_over_human_assigned_for_gated_beads(tmp_path):
     task = beads.create(
         "call the supplier",
         "d",
-        assigned_to="human:mabidoli",
+        assigned_to="human:alex",
         metadata={"verify": {"class": "human", "check": "confirm the call happened"}},
     )
     beads.complete(task.id)
@@ -784,7 +784,7 @@ def test_cli_approve_and_reject_verify_roundtrip(tmp_path, monkeypatch):
     beads.update(task.id, status=TaskStatus.AWAITING_VERIFY, verify_gate=False)
     result = runner.invoke(
         main,
-        ["tasks", "approve-verify", task.id, "--approver", "mabidoli",
+        ["tasks", "approve-verify", task.id, "--approver", "alex",
          "-m", "confirmed against the checklist"],
     )
     assert result.exit_code == 0, result.output

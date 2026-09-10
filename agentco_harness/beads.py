@@ -2037,7 +2037,7 @@ class Beads:
         is no status here to move to; `ready()` excludes the bead on the record
         instead. What the operator loses is legibility — "why is this not
         running" is answered by metadata rather than by status — and that cost
-        was accepted knowingly (mabidoli, 2026-09-10) as the price of not
+        was accepted knowingly (alex, 2026-09-10) as the price of not
         widening a protocol that reasons about each of its states.
         """
         return self.annotate(

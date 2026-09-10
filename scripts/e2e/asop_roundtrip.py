@@ -146,8 +146,8 @@ show(s3, "step3 judged -> parks")
 print("  --- now the separation-of-duties fixes ---")
 for who, reason, label in [
     ("cato", "looks fine", "executor approves itself"),
-    ("mabidoli", None, "approval with no verdict"),
-    ("mabidoli", "  ", "approval with blank verdict"),
+    ("alex", None, "approval with no verdict"),
+    ("alex", "  ", "approval with blank verdict"),
 ]:
     try:
         beads.approve_verify(s3.id, approver=who, reason=reason)
@@ -155,7 +155,7 @@ for who, reason, label in [
     except ValueError as e:
         print(f"  {label:<34} refused: {str(e)[:58]}")
 
-done = beads.approve_verify(s3.id, approver="mabidoli",
+done = beads.approve_verify(s3.id, approver="alex",
                             reason="both added paths trace to the move; no deletions")
 print(f"  distinct approver + verdict        {done.status.value}")
 print(f"  verdict recorded                   {done.metadata['verify_approval']['verdict']}")

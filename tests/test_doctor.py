@@ -659,7 +659,7 @@ def test_doctor_ignores_human_assigned_bead_with_no_agent(tmp_path, monkeypatch,
     Beads(tmp_path / "tasks.jsonl").create(
         title="Approve the LGPD LIA",
         description="d",
-        assigned_to="human:mabidoli",
+        assigned_to="human:alex",
     )
 
     code = run_doctor(cfg)
@@ -887,7 +887,7 @@ def test_doctor_fails_when_a_node_holds_procedures_and_declares_no_humans(
 def test_doctor_oks_a_node_that_declares_its_humans(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     (tmp_path / "company").mkdir()
-    monkeypatch.setenv("ASOP_HUMANS", "mabidoli")
+    monkeypatch.setenv("ASOP_HUMANS", "alex")
     run_doctor(_node_with_a_procedure(tmp_path))
     out = capsys.readouterr().out
     assert "BROKEN (asop.humans_declared)" not in out
@@ -961,7 +961,7 @@ def test_doctor_accepts_the_legacy_humans_variable(monkeypatch, tmp_path):
     deprecation window has to hold on the read side too, or the rename turns a
     working node's doctor red for no reason."""
     monkeypatch.delenv("ASOP_HUMANS", raising=False)
-    monkeypatch.setenv("AGENTCO_HUMANS", "mabidoli")
+    monkeypatch.setenv("AGENTCO_HUMANS", "alex")
     import os
     assert (os.environ.get("ASOP_HUMANS", "").strip()
             or os.environ.get("AGENTCO_HUMANS", "").strip())

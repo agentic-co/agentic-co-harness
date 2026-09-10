@@ -226,7 +226,7 @@ def test_completing_by_hand_records_who_said_so(tmp_path, monkeypatch):
 
     from agentco_harness.cli import main
 
-    monkeypatch.setenv("USER", "mabidoli")
+    monkeypatch.setenv("USER", "alex")
     store = tmp_path / "tasks.jsonl"
     config = tmp_path / "config.yaml"
     config.write_text(f"instance: t\ntasks_path: {store}\n")
@@ -240,7 +240,7 @@ def test_completing_by_hand_records_who_said_so(tmp_path, monkeypatch):
     assert result.exit_code == 0, result.output
     after = beads.get(task.id)
     assert after.status is TaskStatus.DONE
-    assert after.assigned_to == "human:mabidoli"
+    assert after.assigned_to == "human:alex"
 
 
 def test_completing_by_hand_does_not_overwrite_an_existing_assignee(tmp_path, monkeypatch):

@@ -47,11 +47,11 @@ def _write_config(root, extra: str = "") -> str:
 
 
 def test_assigned_to_round_trips():
-    t = Task(id="ac-1", title="call the accountant", description="x", assigned_to="human:mabidoli")
+    t = Task(id="ac-1", title="call the accountant", description="x", assigned_to="human:alex")
     line = t.to_json()
-    assert json.loads(line)["assigned_to"] == "human:mabidoli"
+    assert json.loads(line)["assigned_to"] == "human:alex"
     back = Task.from_json(line)
-    assert back.assigned_to == "human:mabidoli"
+    assert back.assigned_to == "human:alex"
 
 
 def test_old_line_without_assigned_to_parses():
@@ -72,11 +72,11 @@ def test_old_line_without_assigned_to_parses():
 def test_assigned_to_persists_through_beads(tmp_path):
     beads = Beads(str(tmp_path / "tasks.jsonl"))
     t = beads.create("desk work", "x")
-    beads.update(t.id, assigned_to="human:mabidoli")
+    beads.update(t.id, assigned_to="human:alex")
     refreshed = beads.get(t.id)
-    assert refreshed.assigned_to == "human:mabidoli"
+    assert refreshed.assigned_to == "human:alex"
     # And it survives a re-read from disk (fresh Beads instance).
-    assert Beads(str(tmp_path / "tasks.jsonl")).get(t.id).assigned_to == "human:mabidoli"
+    assert Beads(str(tmp_path / "tasks.jsonl")).get(t.id).assigned_to == "human:alex"
 
 
 # --------------------------------------------------------------- ready()
@@ -86,7 +86,7 @@ def test_ready_excludes_human_assigned(tmp_path):
     beads = Beads(str(tmp_path / "tasks.jsonl"))
     agent_task = beads.create("agent work", "x")
     human_task = beads.create("human work", "x")
-    beads.update(human_task.id, assigned_to="human:mabidoli")
+    beads.update(human_task.id, assigned_to="human:alex")
 
     ready_ids = {t.id for t in beads.ready()}
     assert agent_task.id in ready_ids
@@ -114,7 +114,7 @@ def test_pending_human_task_contributes_zero_over_two_cycles(tmp_path, monkeypat
     )
 
     t = orch.beads.create("call the bank", "x")
-    orch.beads.update(t.id, assigned_to="human:mabidoli")
+    orch.beads.update(t.id, assigned_to="human:alex")
 
     for _ in range(2):
         summary = orch.cycle(now=NOW)
@@ -124,7 +124,7 @@ def test_pending_human_task_contributes_zero_over_two_cycles(tmp_path, monkeypat
     # The task is untouched — still pending, still human-owned.
     after = orch.beads.get(t.id)
     assert after.status == TaskStatus.PENDING
-    assert after.assigned_to == "human:mabidoli"
+    assert after.assigned_to == "human:alex"
 
 
 # ------------------------------------------------------- dispatch guard
@@ -134,7 +134,7 @@ def test_dispatch_guard_blocks_human_task(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     orch = Orchestrator(_build_config(tmp_path))
     t = orch.beads.create("human only", "x")
-    orch.beads.update(t.id, assigned_to="human:mabidoli")
+    orch.beads.update(t.id, assigned_to="human:alex")
 
     # Even if it somehow reaches dispatch, it must NOT execute with any LLM.
     ok = orch._execute_cycle_task(orch.beads.get(t.id), now=NOW)
@@ -169,13 +169,13 @@ def test_me_lists_human_assigned_ranked(tmp_path):
     cfg = _write_config(tmp_path / "co")
     beads = Beads(str(tmp_path / "co" / "tasks.jsonl"))
     t = beads.create("review the lease", "x")
-    beads.update(t.id, assigned_to="human:mabidoli")
+    beads.update(t.id, assigned_to="human:alex")
 
     items = ranked(cfg, now=NOW)
     human = [i for i in items if i.kind == "human_assigned"]
     assert len(human) == 1
     assert human[0].task_id == t.id
-    assert "mabidoli" in human[0].detail
+    assert "alex" in human[0].detail
     assert "tasks complete" in human[0].resolve and t.id in human[0].resolve
 
 
@@ -184,7 +184,7 @@ def test_human_assigned_outranks_plain_blocked(tmp_path):
     cfg = _write_config(tmp_path / "co")
     beads = Beads(str(tmp_path / "co" / "tasks.jsonl"))
     h = beads.create("human task", "x")
-    beads.update(h.id, assigned_to="human:mabidoli")
+    beads.update(h.id, assigned_to="human:alex")
     gate = beads.create("gate", "x")
     beads.create("waits on gate", "x", blocked_by=[gate.id])
 
@@ -199,7 +199,7 @@ def test_human_assigned_outranks_plain_blocked(tmp_path):
 def test_human_lineage_invariant_raises_on_clear(tmp_path):
     beads = Beads(str(tmp_path / "tasks.jsonl"))
     t = beads.create("owned", "x")
-    beads.update(t.id, assigned_to="human:mabidoli")
+    beads.update(t.id, assigned_to="human:alex")
     with pytest.raises(HumanLineageError):
         beads.update(t.id, assigned_to=None)  # human → None: forbidden
 
@@ -207,7 +207,7 @@ def test_human_lineage_invariant_raises_on_clear(tmp_path):
 def test_human_lineage_invariant_raises_on_agent_flip(tmp_path):
     beads = Beads(str(tmp_path / "tasks.jsonl"))
     t = beads.create("owned", "x")
-    beads.update(t.id, assigned_to="human:mabidoli")
+    beads.update(t.id, assigned_to="human:alex")
     with pytest.raises(HumanLineageError):
         beads.update(t.id, assigned_to="agent:dev")  # human → agent: forbidden
 
@@ -215,7 +215,7 @@ def test_human_lineage_invariant_raises_on_agent_flip(tmp_path):
 def test_human_lineage_allows_explicit_reassign_flag(tmp_path):
     beads = Beads(str(tmp_path / "tasks.jsonl"))
     t = beads.create("owned", "x")
-    beads.update(t.id, assigned_to="human:mabidoli")
+    beads.update(t.id, assigned_to="human:alex")
     # The one sanctioned path: explicit approval clears it.
     updated = beads.update(t.id, assigned_to=None, allow_human_reassign=True)
     assert updated.assigned_to is None
@@ -236,7 +236,7 @@ def test_snoozed_task_absent_from_me_until_expiry(tmp_path):
     cfg = _write_config(tmp_path / "co")
     beads = Beads(str(tmp_path / "co" / "tasks.jsonl"))
     t = beads.create("annual review", "x")
-    beads.update(t.id, assigned_to="human:mabidoli")
+    beads.update(t.id, assigned_to="human:alex")
     snooze_task(beads, t.id, "2d", now=NOW)
 
     # During the snooze window: hidden.
@@ -251,7 +251,7 @@ def test_snoozed_task_absent_from_me_until_expiry(tmp_path):
 def test_decline_returns_task_to_queue(tmp_path):
     beads = Beads(str(tmp_path / "tasks.jsonl"))
     t = beads.create("do taxes", "x")
-    beads.update(t.id, assigned_to="human:mabidoli")
+    beads.update(t.id, assigned_to="human:alex")
 
     declined = decline_task(beads, t.id, reason="not my area")
     assert declined.assigned_to is None
@@ -271,14 +271,14 @@ def test_cli_create_assign_and_task_class(tmp_path):
         main,
         [
             "--config", cfg, "tasks", "create", "Review lease",
-            "--assign", "human:mabidoli", "--task-class", "personal",
+            "--assign", "human:alex", "--task-class", "personal",
         ],
     )
     assert result.exit_code == 0, result.output
 
     beads = Beads(str(tmp_path / "co" / "tasks.jsonl"))
     created = beads.list()[0]
-    assert created.assigned_to == "human:mabidoli"
+    assert created.assigned_to == "human:alex"
     assert created.metadata["task_class"] == "personal"
 
 
@@ -297,7 +297,7 @@ def test_cli_create_refuses_when_humans_disabled(tmp_path):
     runner = CliRunner()
     result = runner.invoke(
         main,
-        ["--config", cfg, "tasks", "create", "x", "--assign", "human:mabidoli"],
+        ["--config", cfg, "tasks", "create", "x", "--assign", "human:alex"],
     )
     assert result.exit_code != 0
     assert "humans.enabled is false" in result.output
@@ -309,7 +309,7 @@ def test_cli_decline_and_snooze(tmp_path):
     cfg = _write_config(tmp_path / "co")
     beads = Beads(str(tmp_path / "co" / "tasks.jsonl"))
     t = beads.create("chore", "x")
-    beads.update(t.id, assigned_to="human:mabidoli")
+    beads.update(t.id, assigned_to="human:alex")
 
     runner = CliRunner()
     r1 = runner.invoke(
@@ -319,7 +319,7 @@ def test_cli_decline_and_snooze(tmp_path):
     assert beads.get(t.id).assigned_to is None
 
     # Re-assign then snooze.
-    beads.update(t.id, assigned_to="human:mabidoli", allow_human_reassign=True)
+    beads.update(t.id, assigned_to="human:alex", allow_human_reassign=True)
     r2 = runner.invoke(main, ["--config", cfg, "tasks", "snooze", t.id, "--for", "2d"])
     assert r2.exit_code == 0, r2.output
     assert beads.get(t.id).metadata.get("snoozed_until")
@@ -381,7 +381,7 @@ def test_decline_refuses_wrong_status(tmp_path):
     # would resurrect/return gated work.
     beads = Beads(str(tmp_path / "tasks.jsonl"))
     t = beads.create(
-        "gated", "x", assigned_to="human:mabidoli", status=TaskStatus.PENDING_APPROVAL
+        "gated", "x", assigned_to="human:alex", status=TaskStatus.PENDING_APPROVAL
     )
     with pytest.raises(TaskStateError):
         decline_task(beads, t.id)
@@ -391,7 +391,7 @@ def test_decline_refuses_wrong_status(tmp_path):
 def test_decline_refuses_done_task(tmp_path):
     # Never resurrect DONE work via decline.
     beads = Beads(str(tmp_path / "tasks.jsonl"))
-    t = beads.create("finished", "x", assigned_to="human:mabidoli")
+    t = beads.create("finished", "x", assigned_to="human:alex")
     beads.complete(t.id)
     with pytest.raises(TaskStateError):
         decline_task(beads, t.id)
@@ -410,7 +410,7 @@ def test_snooze_allows_failed_human_task(tmp_path):
     # snooze carries only the ownership guard (not the pending/blocked status
     # guard) — a human triaging their own FAILED item may defer it.
     beads = Beads(str(tmp_path / "tasks.jsonl"))
-    t = beads.create("broke", "x", assigned_to="human:mabidoli")
+    t = beads.create("broke", "x", assigned_to="human:alex")
     beads.fail(t.id, result="boom")
     snoozed = snooze_task(beads, t.id, "2d", now=NOW)
     assert snoozed.metadata.get("snoozed_until")
@@ -436,7 +436,7 @@ def test_snoozed_failed_human_task_hidden_from_me(tmp_path):
     check is honored in every collection branch, not just human_assigned)."""
     cfg = _write_config(tmp_path / "co")
     beads = Beads(str(tmp_path / "co" / "tasks.jsonl"))
-    t = beads.create("broke", "x", assigned_to="human:mabidoli")
+    t = beads.create("broke", "x", assigned_to="human:alex")
     beads.fail(t.id, result="boom")
     # Sanity: before snoozing it shows up as a failed item.
     before = ranked(cfg, now=NOW)

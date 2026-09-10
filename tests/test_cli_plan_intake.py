@@ -166,7 +166,7 @@ def test_show_renders_awaiting_and_failed_states(tmp_path, monkeypatch):
     assert "AWAITING APPROVAL" in result.output
     assert f"approve-verify {gated.id}" in result.output
 
-    beads.reject_verify(gated.id, approver="mabidoli", reason="wrong recipient")
+    beads.reject_verify(gated.id, approver="alex", reason="wrong recipient")
     result = runner.invoke(main, ["tasks", "show", gated.id])
     assert "VERIFY FAILED" in result.output
     assert "wrong recipient" in result.output

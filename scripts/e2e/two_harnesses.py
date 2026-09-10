@@ -47,7 +47,7 @@ RUNTIME = HERE.parent.parent
 sys.path.insert(0, str(RUNTIME))
 from agentco_harness.hub_client import sign  # noqa: E402  (byte-identical to the plane's)
 
-ACTORS = ["harness-bigmac", "claude-code", "agy", "mabidoli", "judge", "codex", "zai", "lmstudio"]
+ACTORS = ["harness-bigmac", "claude-code", "agy", "alex", "judge", "codex", "zai", "lmstudio"]
 
 #: agy's own print-mode wall, and the subprocess wall outside it. The default
 #: 5m is under what a real turn on this task takes (observed >10m), and agy
@@ -55,7 +55,7 @@ ACTORS = ["harness-bigmac", "claude-code", "agy", "mabidoli", "judge", "codex", 
 #: wall must exceed the inner one or the outer kill hides the inner message.
 AGY_PRINT_TIMEOUT = "15m"
 AGY_WALL_S = 1020
-HUMAN = "mabidoli"
+HUMAN = "alex"
 #: A judged gate is answered by a DECLARED verifier holding the `verify`
 #: capability, and never by the party that executed the step. Declaring the
 #: capability is not the authority — `ASOP_VERIFIERS` is.
@@ -409,7 +409,7 @@ def main() -> int:
                          "zai and lmstudio are the same `claude` CLI pointed elsewhere, "
                          "under an isolated CLAUDE_CONFIG_DIR")
     ap.add_argument("--agy", choices=["http", "mcp"], default="http", help="mcp: real headless agy as the validator")
-    ap.add_argument("--auto-approve", action="store_true", help="answer the human gate as mabidoli without prompting")
+    ap.add_argument("--auto-approve", action="store_true", help="answer the human gate as alex without prompting")
     a = ap.parse_args()
     global ANALYST_ACTOR
     ANALYST_ACTOR = ANALYSTS[a.analyst][0]
@@ -491,7 +491,7 @@ def main() -> int:
         check("implementer: runtime executed steps 2-4 and the plane recorded them done", {2, 3, 4} <= set(done_steps), f"done={sorted(done_steps)} mirrored={mirrored}")
         check("execution: the analyst never touched steps 2-4", all(by_step[k].get("binding") == "harness-bigmac" for k in (2, 3, 4)))
 
-        # 5b. validator (agy) — human gate: agy pulls, reports; mabidoli answers the gate
+        # 5b. validator (agy) — human gate: agy pulls, reports; alex answers the gate
         if a.agy == "mcp":
             ok = agy_via_mcp(url, keys["agy"], target, a.hub_repo)
             # Assert on the ARTEFACT, not on the call. agy exiting 0 says its
@@ -515,7 +515,7 @@ def main() -> int:
                    "environment": f"e2e {a.gate} verdict", "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
         if a.gate == "human":
             if not a.auto_approve:
-                input("  >>> mabidoli: press Enter to answer the human gate (approve) ")
+                input("  >>> alex: press Enter to answer the human gate (approve) ")
             ans = plane.call(HUMAN, "POST", f"/work/{item5}/attest", {"attestation": {**verdict, "submitted_by": HUMAN}})
             check("gate: the named verifier answered it", plane.refused(ans) is None, json.dumps(ans)[:160])
         else:

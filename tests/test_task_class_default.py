@@ -7,7 +7,7 @@ filing time, so the block depended on someone remembering to type
 `--task-class agent`. This defaults it whenever `-a/--agent` is passed,
 while an explicit `--task-class` always wins.
 
-Blast radius (measured 2026-08-19, see the mabidoli request this closes):
+Blast radius (measured 2026-08-19, see the alex request this closes):
 of beads filed with an assigned_agent, 233 were `source: manual` ritual
 beads from ~/Portfolio/rituals/run.sh and 55 were `source: rca` — neither
 is genuine open-ended self-reported agent work. Both get a real exemption:

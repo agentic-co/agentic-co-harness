@@ -238,13 +238,13 @@ def test_create_carries_assigned_to_on_first_append(tmp_path):
     could grab."""
     path = tmp_path / "tasks.jsonl"
     beads = Beads(path)
-    t = beads.create("desk work", "x", assigned_to="human:mabidoli")
-    assert t.assigned_to == "human:mabidoli"
+    t = beads.create("desk work", "x", assigned_to="human:alex")
+    assert t.assigned_to == "human:alex"
 
     # It is on disk as human-assigned from the very first record — the single
     # append already carried it (a fresh reader sees it, no second write needed).
     line = path.read_text().splitlines()[0]
-    assert json.loads(line)["assigned_to"] == "human:mabidoli"
+    assert json.loads(line)["assigned_to"] == "human:alex"
     # And such a task never enters the agent-dispatch ready set.
     assert t.id not in {r.id for r in beads.ready()}
 

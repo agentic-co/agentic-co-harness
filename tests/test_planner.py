@@ -230,7 +230,7 @@ def test_planner_decompose_creates_pending_approval_subtasks_with_metadata(tmp_p
             {
                 "title": "write the parser",
                 "description": "parse the file",
-                "proposed_assigned_to": "human:mabidoli",
+                "proposed_assigned_to": "human:alex",
                 "executor_tier": "worker",
                 "acceptance_criteria": ["parses valid input", "rejects garbage"],
             }
@@ -250,7 +250,7 @@ def test_planner_decompose_creates_pending_approval_subtasks_with_metadata(tmp_p
     assert child.status == TaskStatus.PENDING_APPROVAL
     assert child.metadata["executor_tier"] == "worker"
     assert child.metadata["acceptance_criteria"] == ["parses valid input", "rejects garbage"]
-    assert child.metadata["proposed_assigned_to"] == "human:mabidoli"
+    assert child.metadata["proposed_assigned_to"] == "human:alex"
     assert child.metadata["requires_approval"] is True
     # Human-lineage safety: the proposal is metadata only — assigned_agent is NOT
     # set from a human token by the planner.
@@ -326,7 +326,7 @@ def test_planner_route_records_proposal_and_applies_nothing(tmp_path, monkeypatc
     orch = _orch(tmp_path)
     decision = {
         "decision": "route",
-        "proposed_assigned_to": "human:mabidoli",
+        "proposed_assigned_to": "human:alex",
         "proposed_agent": "dev",
         "rationale": "needs a human eye",
     }
@@ -339,7 +339,7 @@ def test_planner_route_records_proposal_and_applies_nothing(tmp_path, monkeypatc
     assert orch._execute_cycle_task(task) is True
     refreshed = orch.beads.get(task.id)
     # The proposal is recorded...
-    assert refreshed.metadata["proposed_route"]["proposed_assigned_to"] == "human:mabidoli"
+    assert refreshed.metadata["proposed_route"]["proposed_assigned_to"] == "human:alex"
     assert refreshed.metadata["proposed_route"]["proposed_agent"] == "dev"
     assert refreshed.metadata["proposed_route"]["rationale"] == "needs a human eye"
     # ...but NOTHING was auto-applied: the assignment is untouched and no subtasks exist.
@@ -360,7 +360,7 @@ def test_planner_route_never_flips_human_assignment_to_agent(tmp_path, monkeypat
     # stash it in metadata to prove Stage 2 never touches the live assignment).
     task = orch.beads.create(
         title="human work", description="x", assigned_agent="planner",
-        metadata={"proposed_assigned_to": "human:mabidoli"},
+        metadata={"proposed_assigned_to": "human:alex"},
     )
     assert orch._execute_cycle_task(task) is True
     refreshed = orch.beads.get(task.id)
@@ -454,10 +454,10 @@ def test_triage_summary_includes_proposed_and_assigned_info(tmp_path):
     orch = _orch(tmp_path)
     t = orch.beads.create(
         title="a", description="x", assigned_agent="planner",
-        metadata={"proposed_assigned_to": "human:mabidoli"},
+        metadata={"proposed_assigned_to": "human:alex"},
     )
     summary = json.loads(_summarize([orch.beads.get(t.id)]))
-    assert summary[0]["proposed_assigned_to"] == "human:mabidoli"
+    assert summary[0]["proposed_assigned_to"] == "human:alex"
     assert "assigned_to" in summary[0]  # present (None until Stage 1 lands)
 
 
