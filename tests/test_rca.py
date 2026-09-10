@@ -287,8 +287,16 @@ def test_same_error_in_one_batch_yields_one_rca_root(tmp_path):
     orch = _orch(tmp_path)
     error = "Unknown agent: box-scout"
 
+    # `assigned_agent` on purpose, and faithful to the incident: "Unknown agent"
+    # means the bead NAMED an agent that did not resolve, so an executor is
+    # recorded. Without it these are beads nobody was ever going to run, which
+    # `_fail_with_rca` now classifies as undispatchable rather than failed.
     failed = [
-        orch.beads.create(title=f"box-scout: BRAND{i} (brand{i})", description="crawl")
+        orch.beads.create(
+            title=f"box-scout: BRAND{i} (brand{i})",
+            description="crawl",
+            assigned_agent="box-scout",
+        )
         for i in range(5)
     ]
     for task in failed:

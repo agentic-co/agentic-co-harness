@@ -249,7 +249,15 @@ def test_verify_child_unknown_child_fails_loudly(tmp_path, monkeypatch, capsys):
     )
     orch.cycle(now=NOW)
 
-    assert orch.beads.get(task.id).status == TaskStatus.FAILED
+    # Undispatchable, not failed. The bead names a child that does not exist —
+    # a configuration problem found before anything was claimed, so there is no
+    # executor and nothing was tried. Recording it FAILED would count a typo as
+    # work found wanting, and would also be unreportable: no lease, and nothing
+    # for a judged gate's separation check to see.
+    after = orch.beads.get(task.id)
+    assert after.status == TaskStatus.PENDING
+    assert after.metadata[DISPATCH_REFUSAL_KEY]["code"] == "unresolvable_task"
+    assert task.id not in [t.id for t in orch.beads.ready()]
     assert "unknown child" in capsys.readouterr().out
 
 

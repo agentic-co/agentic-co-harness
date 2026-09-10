@@ -267,3 +267,60 @@ def test_completing_by_hand_does_not_overwrite_an_existing_assignee(tmp_path, mo
     after = beads.get(task.id)
     assert after.assigned_agent == "claude"
     assert after.assigned_to is None
+
+
+def test_a_failure_nobody_could_have_run_is_a_refusal_not_a_failure(tmp_path, monkeypatch):
+    """The failure path splits pre/post-claim exactly as dispatch did.
+
+    A bead naming a child that does not exist reaches the failure verb before
+    anything is claimed. Reporting FAILED there counts a typo as work that was
+    tried and found wanting — and it is unreportable anyway: no lease, no
+    executor, nothing for a judged gate's separation check to see.
+
+    The routing is by what the store knows about the bead, not by which call
+    site got there, so a future pre-claim failure is classified correctly
+    without anyone remembering this rule.
+    """
+    from agentco_harness.config import Config
+    from agentco_harness.orchestrator import Orchestrator
+
+    monkeypatch.chdir(tmp_path)
+    config = Config()
+    config.tasks_path = str(tmp_path / "tasks.jsonl")
+    config.notify.enabled = False
+    orch = Orchestrator(config)
+    task = orch.beads.create(
+        "verify ghost", "x", metadata={"type": "verify_child", "child": "ghost"}
+    )
+
+    orch._execute_verify_child(orch.beads.get(task.id))
+
+    after = orch.beads.get(task.id)
+    assert after.status == TaskStatus.PENDING
+    assert after.metadata[DISPATCH_REFUSAL_KEY]["code"] == "unresolvable_task"
+    assert task.id not in [t.id for t in orch.beads.ready()]
+
+
+def test_a_failure_with_an_executor_is_reported_as_one(tmp_path, monkeypatch):
+    """The other half, and the one that must not become a refusal.
+
+    A bead that names an agent HAS an executor even when that agent turns out
+    not to resolve — which is the 2026-08-04 shape, "Unknown agent: box-scout".
+    Work that was dispatched and went wrong is a failure, and misclassifying it
+    would hide real failures from every count that reads status.
+    """
+    from agentco_harness.config import Config
+    from agentco_harness.orchestrator import Orchestrator
+
+    monkeypatch.chdir(tmp_path)
+    config = Config()
+    config.tasks_path = str(tmp_path / "tasks.jsonl")
+    config.notify.enabled = False
+    orch = Orchestrator(config)
+    task = orch.beads.create("crawl", "d", assigned_agent="box-scout")
+
+    orch._fail_with_rca(orch.beads.get(task.id), "Unknown agent: box-scout")
+
+    after = orch.beads.get(task.id)
+    assert after.status == TaskStatus.FAILED
+    assert DISPATCH_REFUSAL_KEY not in after.metadata

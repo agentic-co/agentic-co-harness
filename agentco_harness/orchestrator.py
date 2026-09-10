@@ -18,6 +18,7 @@ from . import __version__
 from .beads import (
     DISPATCH_REFUSAL_KEY,
     Beads,
+    _recorded_executor,
     CapabilityError,
     Task,
     TaskResult,
@@ -737,7 +738,9 @@ class Orchestrator:
             return None
         return claimed.lease_attempt
 
-    def _fail_with_rca(self, task: Task, result: str | None) -> Task | None:
+    def _fail_with_rca(
+        self, task: Task, result: str | None, attempt: int | None = None
+    ) -> Task | None:
         """Fail a bead and, unless it's itself an RCA bead, spawn its RCA root.
 
         Centralizes the failure -> RCA hook so every failure path in the
@@ -751,8 +754,40 @@ class Orchestrator:
         Idempotent per ``rca.find_existing_rca_root``: a batch of beads failing
         the same way yields ONE root, and a bead that is retried and re-fails
         reuses its original root instead of opening a second one.
+
+        **Not every arrival here is a failure of the work.** The failure path
+        splits the same way dispatch did: `_execute_verify_child` reaches this
+        for a bead naming a child that does not exist, which is a configuration
+        problem discovered before anything was claimed. Reporting that FAILED
+        would count a typo as work that was tried and found wanting, and it
+        cannot be reported anyway — no lease, no executor, nothing for the
+        separation check to see. So the routing is by what the store knows
+        about the bead rather than by which call site got here: an executor is
+        recorded, or it is a dispatch refusal.
+
+        `attempt` is the lease this failure belongs to, passed by callers that
+        hold it. Absent, the bead's current attempt is used — weaker, because
+        the fence then agrees with whatever the bead says now, but the
+        alternative is threading a lease number through the planner helpers and
+        the two top-level exception guards, which do not have one and would
+        have to invent it.
         """
-        failed = self.beads.fail(task.id, result=result)
+        current = self.beads.get(task.id)
+        if current is not None and _recorded_executor(current) is None:
+            self.beads.refuse_dispatch(
+                task.id,
+                code="unresolvable_task",
+                message=result or "(no error captured)",
+                remediation="Correct the bead, then clear the refusal.",
+            )
+            failed = self.beads.get(task.id)
+        else:
+            fence = attempt if attempt is not None else (
+                current.lease_attempt if current is not None else 0
+            )
+            failed = self.beads.report_result(
+                task.id, fence, TaskStatus.FAILED, result=result
+            )
         if task.source == "rca":
             return failed
         try:
@@ -796,7 +831,7 @@ class Orchestrator:
         )
         if result["level"] == "fail":
             print(f"[cycle] verify_child FAIL: {child.name}: {result['detail']}")
-            self._fail_with_rca(task, json.dumps(result))
+            self._fail_with_rca(task, json.dumps(result), attempt=attempt)
             if child.notify and self.config.notify.enabled:
                 notify_event(
                     self.config.notify,
@@ -912,14 +947,14 @@ class Orchestrator:
             self._record_cost(task, 'claude', exec_result)
             if not exec_result.success:
                 print(f"[cycle] FAIL: claude subagent for {task.id}: {exec_result.error}")
-                self._fail_with_rca(task, exec_result.error)
+                self._fail_with_rca(task, exec_result.error, attempt=attempt)
                 return False
             # Result lives in the store — agent wrote it via `agentco tasks complete`
             refreshed = self.beads.get(task.id)
             if refreshed is None or refreshed.status != TaskStatus.DONE:
                 msg = "agent did not complete the task — result missing from store"
                 print(f"[cycle] FAIL: {task.id}: {msg}")
-                self._fail_with_rca(task, msg)
+                self._fail_with_rca(task, msg, attempt=attempt)
                 return False
             self._record_completion_marker(task, exec_result)
             self._run_completion_hooks(refreshed)
@@ -938,7 +973,7 @@ class Orchestrator:
             self._record_cost(task, 'claude', exec_result)
             if not exec_result.success:
                 print(f"[cycle] FAIL: claude subagent for {task.id}: {exec_result.error}")
-                self._fail_with_rca(task, exec_result.error)
+                self._fail_with_rca(task, exec_result.error, attempt=attempt)
                 return False
             self.beads.report_result(
                 task.id, attempt, TaskStatus.DONE, result=exec_result.output
@@ -967,7 +1002,7 @@ class Orchestrator:
         self._record_cost(task, "agy", exec_result)
         if not exec_result.success:
             print(f"[cycle] FAIL: agy subagent for {task.id}: {exec_result.error}")
-            self._fail_with_rca(task, exec_result.error)
+            self._fail_with_rca(task, exec_result.error, attempt=attempt)
             return False
         self.beads.report_result(
             task.id, attempt, TaskStatus.DONE, result=exec_result.output
@@ -1024,7 +1059,7 @@ class Orchestrator:
         self._record_cost(task, provider_name, exec_result)
         if not exec_result.success:
             print(f"[cycle] FAIL: {provider_name} for {task.id}: {exec_result.error}")
-            self._fail_with_rca(task, exec_result.error)
+            self._fail_with_rca(task, exec_result.error, attempt=attempt)
             return False
         self.beads.report_result(
             task.id, attempt, TaskStatus.DONE, result=exec_result.output
@@ -1061,13 +1096,13 @@ class Orchestrator:
         self._record_cost(task, 'zai', exec_result)
         if not exec_result.success:
             print(f"[cycle] FAIL: z.ai subagent for {task.id}: {exec_result.error}")
-            self._fail_with_rca(task, exec_result.error)
+            self._fail_with_rca(task, exec_result.error, attempt=attempt)
             return False
         refreshed = self.beads.get(task.id)
         if refreshed is None or refreshed.status != TaskStatus.DONE:
             msg = "z.ai agent did not complete the task — result missing from store"
             print(f"[cycle] FAIL: {task.id}: {msg}")
-            self._fail_with_rca(task, msg)
+            self._fail_with_rca(task, msg, attempt=attempt)
             return False
         self._record_completion_marker(task, exec_result)
         self._run_completion_hooks(refreshed)
@@ -1522,7 +1557,7 @@ class Orchestrator:
         self._record_cost(task, "forge", exec_result)
         if not exec_result.success:
             print(f"[cycle] FAIL: forge subagent for {task.id}: {exec_result.error}")
-            self._fail_with_rca(task, exec_result.error)
+            self._fail_with_rca(task, exec_result.error, attempt=attempt)
             return False
         self.beads.report_result(
             task.id, attempt, TaskStatus.DONE, result=exec_result.output
