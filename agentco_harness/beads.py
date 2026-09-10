@@ -2268,12 +2268,12 @@ class Beads:
         node ever claims them and there is no lease to require.
 
         Copying the mechanism instead of the reason would have broken live
-        work, which is how this was found rather than reasoned: three
-        Acme beads assigned to ``human:mabidoli`` carry
-        ``requires: ['acme-code']``, two still pending. Making them claim
-        is not available either — ``claim()`` compares ``requires`` against the
-        NODE's manifest, that node declares no capabilities, and a person is
-        not a node. They would have become uncompletable.
+        work, which is how this was found rather than reasoned: a human-assigned
+        bead that carries ``requires`` cannot be made to claim either, because
+        ``claim()`` matches ``requires`` against the NODE's manifest and a
+        person is not a node. On a node declaring no capabilities, every such
+        bead becomes uncompletable — and a lease requirement would have made
+        that the only path.
 
         So the rule enforced here is the one the plane's rule exists to
         produce: a completion the separation check can see.

@@ -290,15 +290,15 @@ def test_a_human_executor_reports_without_a_lease(tmp_path):
     protect can see this completion perfectly well.
 
     Copying the plane's mechanism rather than its reason would have broken live
-    work: three Acme beads assigned to `human:mabidoli` carry
-    `requires: ['acme-code']`, two of them still pending. Claiming is not
-    an escape hatch for them either — `claim()` matches `requires` against the
-    NODE's manifest and that node declares none, so they would have become
-    uncompletable.
+    work — this fixture is the shape that proved it. Claiming is not an escape
+    hatch either: `claim()` matches `requires` against the NODE's manifest, so
+    on a node declaring no capabilities every human-assigned bead carrying
+    `requires` becomes uncompletable, and a lease requirement would have left
+    no other path.
     """
     beads = _beads(tmp_path)
-    task = beads.create(title="human work", description="d", requires=["acme-code"])
-    beads.update(task.id, assigned_to="human:mabidoli")
+    task = beads.create(title="human work", description="d", requires=["repo-checkout"])
+    beads.update(task.id, assigned_to="human:alex")
 
     done = beads.report_result(
         task.id, attempt=0, status=TaskStatus.DONE, result="did it"
@@ -322,7 +322,7 @@ def test_the_completion_guard_and_the_separation_check_read_one_executor(tmp_pat
     beads = _beads(tmp_path)
     gated = {"verify": {"class": "judged", "check": "is it right?"}}
 
-    for assign in ({"assigned_to": "human:mabidoli"}, {"assigned_agent": "claude"}):
+    for assign in ({"assigned_to": "human:alex"}, {"assigned_agent": "claude"}):
         task = beads.create(title="t", description="d", metadata=dict(gated))
         beads.update(task.id, **assign)
         current = beads.get(task.id)
