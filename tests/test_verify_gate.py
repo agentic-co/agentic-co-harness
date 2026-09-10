@@ -885,3 +885,41 @@ def test_an_ungated_parent_still_closes_normally(tmp_path):
     beads.claim(child.id, "worker-a")
     beads.complete(child.id)
     assert beads.get(parent.id).status == TaskStatus.DONE
+
+
+def test_a_gate_pinned_while_the_check_runs_does_not_get_bypassed(tmp_path):
+    """The TOCTOU both reviewers found. The gate must run before the lock (a
+    check can be a whole test suite), so the window is real. Here a second
+    writer pins a gate while an ungated completion is in flight — simulated by
+    having the in-flight check itself do the write, which is exactly the
+    interleaving without needing threads."""
+    beads = _store(tmp_path)
+    task = beads.create("x", "d")
+    other = Beads(tmp_path / "tasks.jsonl")
+
+    # An ungated bead. Give it a gate DURING the specless-completion path by
+    # writing from a second handle, then ask for DONE.
+    other.update(task.id, metadata={"verify": {"class": "human", "check": "confirm"}})
+    out = beads.update(task.id, status=TaskStatus.DONE)
+    # The gate now on disk is a human one: this must not be DONE.
+    assert out.status != TaskStatus.DONE
+
+
+def test_a_gate_swapped_mid_check_refuses_rather_than_completing(tmp_path):
+    beads = _store(tmp_path)
+    swapper = tmp_path / "swap.py"
+    store = tmp_path / "tasks.jsonl"
+    task = beads.create(
+        "x", "d",
+        metadata={"verify": {"class": "deterministic", "check": f"python3 {swapper}"}},
+    )
+    # The check itself repins the gate while it runs — the race, deterministically.
+    swapper.write_text(
+        "from agentco_harness.beads import Beads\n"
+        f"b = Beads({str(store)!r})\n"
+        f"b.update({task.id!r}, metadata={{'verify': {{'class': 'human', 'check': 'confirm'}}}},"
+        " allow_gate_change=True)\n"
+    )
+    with pytest.raises(VerifyContractError, match="changed while its check was running"):
+        beads.complete(task.id)
+    assert beads.get(task.id).status != TaskStatus.DONE

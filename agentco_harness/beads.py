@@ -232,6 +232,12 @@ VERIFY_KEYS = frozenset(_asop_gates.GATE_FIELDS)
 
 DEFAULT_VERIFY_TIMEOUT_S = 120
 
+#: Distinguishes "the gate was not read before the lock" from "it was read and
+#: there was none". Only the second is a CAS baseline; `None` is a real value
+#: here — a bead legitimately has no gate, and completing one is the ordinary
+#: ungated path.
+_UNREAD = object()
+
 # How long a claim is believed by default. Two hours is chosen against the
 # execution budget, not plucked: `budget.timeout` defaults to executor's
 # DEFAULT_TIMEOUT (600s) and the longest budget anything actually runs on is
@@ -1672,9 +1678,11 @@ class Beads:
             kwargs["metadata"] = _validated_metadata(
                 kwargs["metadata"], self.path.parent
             )
+        gate_at_read = _UNREAD
         if verify_gate and kwargs.get("status") == TaskStatus.DONE:
             current = self.get(task_id)
             if current is not None:
+                gate_at_read = (current.metadata or {}).get("verify")
                 metadata_for_check = kwargs.get("metadata", current.metadata) or {}
                 # The gate that runs is the one PINNED ON THE BEAD, never one
                 # arriving alongside the completion. Reading it from the
@@ -1756,6 +1764,24 @@ class Beads:
                                 f"({' → '.join(chain)}). Nothing in that loop "
                                 f"could ever become ready. Break the chain by "
                                 f"removing one of those edges."
+                            )
+                    if gate_at_read is not _UNREAD and not allow_gate_change:
+                        # Compare-and-set on the GATE. The gate necessarily
+                        # runs before the lock — a deterministic check can be
+                        # a whole test suite and holding the store's lock
+                        # across it would stall every other reader. That gap
+                        # is a TOCTOU window both reviewers found: a gate
+                        # pinned (or dropped) while the check ran is not the
+                        # gate that was enforced, and the nastiest shape is a
+                        # bead with NO gate at read time completing DONE
+                        # although one was pinned meanwhile. Verified against
+                        # what is on disk now, under the lock.
+                        if (task.metadata or {}).get("verify") != gate_at_read:
+                            raise VerifyContractError(
+                                f"the verify gate on {task_id} changed while its "
+                                f"check was running, so what ran is not what is "
+                                f"pinned. Nothing was written; report again "
+                                f"against the current gate."
                             )
                     if "metadata" in kwargs and not allow_gate_change:
                         pinned = (task.metadata or {}).get("verify")
