@@ -48,6 +48,13 @@ sys.path.insert(0, str(RUNTIME))
 from agentco_harness.hub_client import sign  # noqa: E402  (byte-identical to the plane's)
 
 ACTORS = ["harness-bigmac", "claude-code", "agy", "mabidoli", "judge"]
+
+#: agy's own print-mode wall, and the subprocess wall outside it. The default
+#: 5m is under what a real turn on this task takes (observed >10m), and agy
+#: exits 0 on its own timeout, so both have to be raised together — the outer
+#: wall must exceed the inner one or the outer kill hides the inner message.
+AGY_PRINT_TIMEOUT = "15m"
+AGY_WALL_S = 1020
 HUMAN = "mabidoli"
 #: A judged gate is answered by a DECLARED verifier holding the `verify`
 #: capability, and never by the party that executed the step. Declaring the
@@ -245,11 +252,19 @@ def agy_via_mcp(plane_url: str, secret: str, target: Path, hub_repo: Path) -> bo
               "check every acceptance criterion maps to a test. Then call work_report with status done and the attempt you were "
               "given, and a one-line result naming the mapping. Do not attest — this step has a human gate and a person answers it.")
     try:
-        r = subprocess.run(["agy", "--print", prompt, "--dangerously-skip-permissions"], cwd=target,
-                           capture_output=True, text=True, timeout=600)
+        # --print-timeout defaults to 5m, which a real turn on this task
+        # exceeds; agy then returns PARTIAL OUTPUT and still exits 0, so the
+        # old `returncode == 0` read a timed-out turn as a success.
+        r = subprocess.run(["agy", "--print", prompt, "--dangerously-skip-permissions",
+                            "--print-timeout", AGY_PRINT_TIMEOUT], cwd=target,
+                           capture_output=True, text=True, timeout=AGY_WALL_S)
     finally:
         subprocess.run(["agy", "mcp", "remove", "agentco"], capture_output=True)
-    print("     agy:", (r.stdout or r.stderr).strip()[-200:])
+    said = (r.stdout or "") + (r.stderr or "")
+    print("     agy:", said.strip()[-200:])
+    if "timeout" in said.lower() and "turn in progress" in said.lower():
+        print("     agy: TIMED OUT mid-turn — treating as a failure, not a pass")
+        return False
     return r.returncode == 0
 
 
@@ -359,7 +374,15 @@ def main() -> int:
         # 5b. validator (agy) — human gate: agy pulls, reports; mabidoli answers the gate
         if a.agy == "mcp":
             ok = agy_via_mcp(url, keys["agy"], target, a.hub_repo)
-            check("validator: real agy over MCP pulled step 5 and reported", ok)
+            # Assert on the ARTEFACT, not on the call. agy exiting 0 says its
+            # process ended; only the plane can say the step actually moved,
+            # and this checkpoint passed a 21/25 run in which nothing had.
+            landed = ((plane.call(HUMAN, "GET", f"/runs/{run_id}").get("run") or {})
+                      .get("steps") or [])
+            moved = next((s.get("status") for s in landed if s.get("step") == 5), None)
+            check("validator: real agy over MCP pulled step 5 and reported",
+                  ok and (moved or "").lower() != "pending",
+                  f"agy_ok={ok} step5={moved}")
         else:
             r = participant_step(plane, "agy", lambda gate: 0, 5)
             check(f"validator: agy reported step 5 without attesting ({a.gate} gate)", bool(r) and plane.refused(r) is None, json.dumps(r)[:120])
