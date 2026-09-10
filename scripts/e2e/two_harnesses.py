@@ -47,7 +47,7 @@ RUNTIME = HERE.parent.parent
 sys.path.insert(0, str(RUNTIME))
 from agentco_harness.hub_client import sign  # noqa: E402  (byte-identical to the plane's)
 
-ACTORS = ["harness-bigmac", "claude-code", "agy", "mabidoli", "judge"]
+ACTORS = ["harness-bigmac", "claude-code", "agy", "mabidoli", "judge", "codex", "zai", "lmstudio"]
 
 #: agy's own print-mode wall, and the subprocess wall outside it. The default
 #: 5m is under what a real turn on this task takes (observed >10m), and agy
@@ -268,16 +268,99 @@ def agy_via_mcp(plane_url: str, secret: str, target: Path, hub_repo: Path) -> bo
     return r.returncode == 0
 
 
-def claude_code_via_mcp(plane_url: str, secret: str, target: Path, hub_repo: Path) -> bool:
-    mcp = {"mcpServers": {"agentco": {"command": str(hub_repo / ".venv" / "bin" / "python"), "args": ["-m", "agentco", "serve-mcp"],
-           "env": {"AGENTCO_ACTOR": "claude-code", "AGENTCO_REGISTRY_URL": plane_url, "AGENTCO_SECRET": secret}}}}
-    (target / ".mcp.json").write_text(json.dumps(mcp, indent=2))
-    prompt = ("You are the analyst on a procedure. Use the agentco MCP tools: call work_pull to claim your step, "
-              "read REQUIREMENT.md, write REQUIREMENTS.md listing each acceptance criterion as a bullet, then call "
-              "work_report with status done and the attempt you were given, and attest with check `test -s REQUIREMENTS.md`, "
-              "exit_status 0. Do nothing else.")
-    r = subprocess.run(["claude", "-p", prompt, "--mcp-config", str(target / ".mcp.json")], cwd=target, capture_output=True, text=True, timeout=600)
-    return r.returncode == 0 and (target / "REQUIREMENTS.md").exists()
+#: The analyst seat is vendor-swappable on purpose. ASOP.md §7 claims the same
+#: procedure, the same version and the same gates run by different harnesses —
+#: that claim is only worth anything if somebody actually swaps the vendor and
+#: the run still lands. Each of these fills ONE role; roles never overlap.
+ANALYSTS = {
+    #  key          actor          how it is driven
+    "claude-code": ("claude-code", "claude"),
+    "zai":         ("zai",         "claude"),        # same CLI, z.ai endpoint
+    "lmstudio":    ("lmstudio",    "claude"),        # same CLI, local endpoint
+    "codex":       ("codex",       "codex"),
+}
+
+ANALYST_ACTOR = "claude-code"
+
+ANALYST_PROMPT = (
+    "You are the analyst on a procedure. Use the agentco MCP tools: call work_pull to claim "
+    "your step, read REQUIREMENT.md, write REQUIREMENTS.md listing each acceptance criterion "
+    "as a bullet, then call work_report with status done and the attempt you were given, and "
+    "attest with check `test -s REQUIREMENTS.md`, exit_status 0. Do nothing else."
+)
+
+
+def _route_env(kind: str, work_dir: Path) -> dict:
+    """Environment for a `claude` run pointed somewhere other than Anthropic.
+
+    CLAUDE_CONFIG_DIR isolation is NOT optional here, and not a tidiness
+    preference: a headless `claude` inherits ~/.claude, which means the global
+    CLAUDE.md and every identity import travels to whatever endpoint the run
+    is pointed at. That was found live in 2026-08 shipping an operator's
+    identity files to a third-party route on every call, and the prompt-level
+    egress guard cannot see it because it only sees the visible prompt, not
+    what the child CLI loads.
+    """
+    if kind == "claude-code":
+        return {}
+    isolated = work_dir / f".claude-{kind}"
+    isolated.mkdir(exist_ok=True)
+    env = {"CLAUDE_CONFIG_DIR": str(isolated)}
+    if kind == "zai":
+        token = os.environ.get("ZAI_API_KEY", "")
+        env |= {"ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic",
+                "ANTHROPIC_AUTH_TOKEN": token, "ANTHROPIC_API_KEY": token}
+    elif kind == "lmstudio":
+        # The model has to be named: the CLI otherwise asks for an Anthropic
+        # model id the local endpoint has never heard of, and LM Studio
+        # answers 400. It also has to be LOADED, not merely listed —
+        # /v1/models advertises what is installed, `lms ps` what is resident.
+        local = os.environ.get("LMSTUDIO_MODEL", "qwen/qwen3.8-27b")
+        env |= {"ANTHROPIC_BASE_URL": os.environ.get("LMSTUDIO_URL", "http://localhost:4242"),
+                "ANTHROPIC_AUTH_TOKEN": "lm-studio", "ANTHROPIC_API_KEY": "lm-studio",
+                "ANTHROPIC_MODEL": local, "ANTHROPIC_SMALL_FAST_MODEL": local}
+    return env
+
+
+def analyst_via_cli(kind: str, plane_url: str, secret: str, target: Path, hub_repo: Path) -> bool:
+    """Drive one analyst, whichever vendor is in the seat."""
+    actor, driver = ANALYSTS[kind]
+    hub_py = str(hub_repo / ".venv" / "bin" / "python")
+    mcp_env = {"AGENTCO_ACTOR": actor, "AGENTCO_REGISTRY_URL": plane_url, "AGENTCO_SECRET": secret}
+
+    if driver == "codex":
+        subprocess.run(["codex", "mcp", "remove", "agentco"], capture_output=True)
+        add = subprocess.run(["codex", "mcp", "add", "agentco",
+                              *sum([["--env", f"{k}={v}"] for k, v in mcp_env.items()], []),
+                              "--", hub_py, "-m", "agentco", "serve-mcp"],
+                             capture_output=True, text=True)
+        if add.returncode != 0:
+            print("     codex mcp add failed:", (add.stderr or add.stdout).strip()[:200]); return False
+        try:
+            # --skip-git-repo-check: the target is a scratch directory, not a
+            # repo, and codex refuses to write outside a trusted one. The
+            # "Reading additional input from stdin..." line it prints first is
+            # informational and was a red herring for a while; the refusal is
+            # the line after it. stdin is closed anyway so an inherited pipe
+            # cannot stall the turn.
+            r = subprocess.run(["codex", "exec", "-m", os.environ.get("CODEX_MODEL", "gpt-5.6-luna"),
+                                "-s", "workspace-write", "--skip-git-repo-check", ANALYST_PROMPT],
+                               cwd=target, capture_output=True, text=True, timeout=900,
+                               stdin=subprocess.DEVNULL)
+        finally:
+            subprocess.run(["codex", "mcp", "remove", "agentco"], capture_output=True)
+    else:
+        mcp = {"mcpServers": {"agentco": {"command": hub_py, "args": ["-m", "agentco", "serve-mcp"], "env": mcp_env}}}
+        (target / ".mcp.json").write_text(json.dumps(mcp, indent=2))
+        r = subprocess.run(["claude", "-p", ANALYST_PROMPT, "--mcp-config", str(target / ".mcp.json")],
+                           cwd=target, capture_output=True, text=True, timeout=900,
+                           env={**os.environ, **_route_env(kind, target)})
+
+    said = ((r.stdout or "") + (r.stderr or "")).strip()
+    print(f"     analyst[{kind}]:", said[-200:] or f"(rc={r.returncode})")
+    # The artefact, not the exit code — the lesson from agy exiting 0 on its
+    # own timeout while nothing had landed.
+    return (target / "REQUIREMENTS.md").exists()
 
 
 # ----------------------------------------------------------------- main
@@ -290,9 +373,16 @@ def main() -> int:
     ap.add_argument("--gate", choices=["human", "judged"], default="human")
     ap.add_argument("--live", action="store_true", help="let the runtime run its real backend for implement")
     ap.add_argument("--claude-code", choices=["http", "mcp"], default="http")
+    ap.add_argument("--analyst", choices=["claude-code", "zai", "lmstudio", "codex"],
+                    default="claude-code",
+                    help="which vendor fills the analyst seat when --claude-code mcp. "
+                         "zai and lmstudio are the same `claude` CLI pointed elsewhere, "
+                         "under an isolated CLAUDE_CONFIG_DIR")
     ap.add_argument("--agy", choices=["http", "mcp"], default="http", help="mcp: real headless agy as the validator")
     ap.add_argument("--auto-approve", action="store_true", help="answer the human gate as mabidoli without prompting")
     a = ap.parse_args()
+    global ANALYST_ACTOR
+    ANALYST_ACTOR = ANALYSTS[a.analyst][0]
     work = a.work_dir or Path(tempfile.mkdtemp(prefix="asop-e2e-"))
     work.mkdir(parents=True, exist_ok=True)
     plane_dir, target, node = work / "plane", work / "target", work / "node"
@@ -338,12 +428,12 @@ def main() -> int:
 
         # 6 (early). separation of duties refused at filing
         bad = plane.call(HUMAN, "POST", f"/sops/{sop_id}/run", {"inputs": {"requirement": "REQUIREMENT.md", "repo": str(target)},
-                                                                 "bindings": {"analyst": "claude-code", "implementer": "agy", "validator": "agy"}})
+                                                                 "bindings": {"analyst": ANALYST_ACTOR, "implementer": "agy", "validator": "agy"}})
         check("filing: validator == implementer is refused", plane.refused(bad) == "constraint_unsatisfiable", str(plane.refused(bad)))
 
         # 3. the run
         filed = plane.call(HUMAN, "POST", f"/sops/{sop_id}/run", {"inputs": {"requirement": "REQUIREMENT.md", "repo": str(target)},
-                                                                   "bindings": {"analyst": "claude-code", "implementer": "harness-bigmac", "validator": "agy"}})
+                                                                   "bindings": {"analyst": ANALYST_ACTOR, "implementer": "harness-bigmac", "validator": "agy"}})
         run = filed.get("run") or {}
         run_id = run.get("id") or run.get("parentId") or run.get("runId") or run.get("parent")
         check("run: filed with three bindings", filed.get("state") == "accepted" and bool(run_id), json.dumps(filed)[:200])
@@ -354,7 +444,7 @@ def main() -> int:
 
         # 4. analyst (claude-code)
         if a.claude_code == "mcp":
-            ok = claude_code_via_mcp(url, keys["claude-code"], target, a.hub_repo)
+            ok = analyst_via_cli(a.analyst, url, keys[ANALYST_ACTOR], target, a.hub_repo)
             check("analyst: real Claude Code over MCP wrote REQUIREMENTS.md and reported", ok)
         else:
             def analyst_work(gate):
@@ -441,13 +531,13 @@ def main() -> int:
         still = plane.call(HUMAN, "GET", f"/runs/{run_id}").get("run") or {}
         check("versioning: the v1 run still resolves at v1 after supersession (§2.1)", still.get("version") == 1, str(still.get("version")))
         run2 = plane.call(HUMAN, "POST", f"/sops/{sop_id}/run", {"inputs": {"requirement": "REQUIREMENT.md", "repo": str(target)},
-                                                                  "bindings": {"analyst": "claude-code", "implementer": "harness-bigmac", "validator": "agy"}})
+                                                                  "bindings": {"analyst": ANALYST_ACTOR, "implementer": "harness-bigmac", "validator": "agy"}})
         check("versioning: a new run pins v2", run2.get("state") == "accepted" and (run2.get("run") or {}).get("version") == 2, str((run2.get("run") or {}).get("version")))
         out2 = plane.call(HUMAN, "GET", f"/sops/{sop_id}/outcomes")
         rows2 = out2.get("versions") or out2.get("outcomes") or out2.get("rows") or []
         check("versioning: outcomes now has a row per version", len(rows2) >= 2, f"{len(rows2)} rows")
         ret = plane.call(HUMAN, "POST", f"/sops/{sop_id}/retire", {})
-        blocked = plane.call(HUMAN, "POST", f"/sops/{sop_id}/run", {"inputs": {"requirement": "x", "repo": "y"}, "bindings": {"analyst": "claude-code", "implementer": "harness-bigmac", "validator": "agy"}})
+        blocked = plane.call(HUMAN, "POST", f"/sops/{sop_id}/run", {"inputs": {"requirement": "x", "repo": "y"}, "bindings": {"analyst": ANALYST_ACTOR, "implementer": "harness-bigmac", "validator": "agy"}})
         check("versioning: retire refuses new runs", ret.get("state") == "accepted" and plane.refused(blocked) == "sop_refused", str(plane.refused(blocked)))
     finally:
         server.terminate()
