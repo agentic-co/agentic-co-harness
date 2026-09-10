@@ -245,6 +245,41 @@ def test_report_releases_the_lease_but_keeps_the_attempt(tmp_path):
     assert done.lease_attempt == 1
 
 
+def test_a_report_needs_a_lease_to_end(tmp_path):
+    """No lease, no report — the rule the plane states and this store did not.
+
+    An unclaimed bead sits at `lease_attempt` 0, so a report at attempt 0
+    satisfied the fence and completed. Measured before the guard existed: the
+    bead went to DONE with `leased_by` None and no executor ever recorded.
+
+    Neighbouring test: `test_report_releases_the_lease_but_keeps_the_attempt`,
+    which claims first and so only ever exercises the half that holds.
+
+    The gated shape is the one that matters. It landed AWAITING_VERIFY with an
+    executor of None, and `approve_verify`'s separation check compares the
+    approver against the executor — against nothing, here. That is no longer a
+    self-approval hole (`29aa43d` refuses an absent executor) but it strands the
+    bead: parked forever, awaiting a verifier no approval can satisfy, by a
+    refusal whose own text reads "claim the bead before working it". This
+    enforces that sentence while it can still be acted on.
+    """
+    beads = _beads(tmp_path)
+
+    plain = beads.create(title="never claimed", description="d")
+    with pytest.raises(LeaseError, match="nobody holds it"):
+        beads.report_result(plain.id, attempt=0, status=TaskStatus.DONE, result="mine")
+    assert beads.get(plain.id).status == TaskStatus.PENDING
+
+    gated = beads.create(
+        title="gated, never claimed",
+        description="d",
+        metadata={"verify": {"class": "judged", "check": "is it right?"}},
+    )
+    with pytest.raises(LeaseError, match="nobody holds it"):
+        beads.report_result(gated.id, attempt=0, status=TaskStatus.DONE, result="mine")
+    assert beads.get(gated.id).status == TaskStatus.PENDING
+
+
 def test_report_failed_records_the_failure(tmp_path):
     beads = _beads(tmp_path)
     task = beads.create(title="t", description="d")

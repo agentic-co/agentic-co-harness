@@ -2215,6 +2215,20 @@ class Beads:
         The lease is released either way (``leased_by``/``lease_expires_at``
         cleared) while ``lease_attempt`` is kept: the count is the history of
         how many times this bead was handed out, and nothing should erase it.
+
+        **A report needs a lease to end.** An unclaimed bead has
+        ``lease_attempt`` 0, so a report at attempt 0 satisfied the fence and
+        completed — measured, not theorised. On a gated bead it landed
+        AWAITING_VERIFY with an executor of ``None``, and the separation check
+        on a judged gate compares the approver against the executor, so it
+        compared against nothing.
+
+        That is no longer a self-verification hole: ``approve_verify`` refuses
+        an absent executor since `29aa43d`. What it leaves instead is a bead
+        parked awaiting a verifier that can never be accepted — stranded, by a
+        refusal whose own message says "claim the bead before working it". This
+        enforces that sentence where it can still be acted on, which is the
+        rule the plane states as: no lease, no report.
         """
         if status not in (TaskStatus.DONE, TaskStatus.FAILED):
             raise ValueError(
@@ -2238,6 +2252,15 @@ class Beads:
                     f"{task.lease_attempt} (holder {task.leased_by!r}). The "
                     f"lease this result came from is no longer current — the "
                     f"work was superseded, not lost."
+                )
+            if task.leased_by is None:
+                raise LeaseError(
+                    f"refusing result for {task_id}: nobody holds it. A report "
+                    f"ends the lease it was issued under, and there is none — a "
+                    f"bead that was never claimed (or was reaped) has no "
+                    f"executor, and a completion with no executor is one the "
+                    f"separation check on a judged gate can never see. Claim it "
+                    f"first."
                 )
             return {}
 

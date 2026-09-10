@@ -715,6 +715,28 @@ class Orchestrator:
             return False
         return name in self.config.agents
 
+    def _claim(self, task: Task, agent: str) -> int | None:
+        """Claim a bead and return the lease attempt to report against.
+
+        The protocol's shape, and the reason it is worth the extra local: a
+        report is fenced on the attempt it was issued under, so the number has
+        to travel from the claim to the completion rather than be re-read at
+        the end. Re-reading it would make the fence agree with whatever the
+        bead currently says, which is precisely the case it exists to catch —
+        a long execution whose lease expired, was reaped, and was handed to
+        another node while this one was still working.
+
+        None means the claim did not stick and this executor must not proceed.
+        In-process that is not expected (these beads came out of `ready()`, so
+        the CAS is satisfied by construction) — but "not expected" stopped
+        being "impossible" when the MacBook worker began pulling the same
+        store, and the old code discarded this answer entirely.
+        """
+        claimed = self.beads.claim(task.id, agent, capabilities=self.node_capabilities)
+        if claimed is None:
+            return None
+        return claimed.lease_attempt
+
     def _fail_with_rca(self, task: Task, result: str | None) -> Task | None:
         """Fail a bead and, unless it's itself an RCA bead, spawn its RCA root.
 
@@ -763,7 +785,9 @@ class Orchestrator:
             self._fail_with_rca(task, msg)
             return False
 
-        self.beads.claim(task.id, "verify_child", capabilities=self.node_capabilities)
+        attempt = self._claim(task, "verify_child")
+        if attempt is None:
+            return False
         result = verify_child(
             child,
             now=now,
@@ -785,7 +809,9 @@ class Orchestrator:
             print(f"[cycle] verify_child WARN: {child.name}: {result['detail']}")
         else:
             print(f"[cycle] verify_child OK: {child.name}: {result['detail']}")
-        self.beads.complete(task.id, result=json.dumps(result))
+        self.beads.report_result(
+            task.id, attempt, TaskStatus.DONE, result=json.dumps(result)
+        )
         return True
 
     def _record_completion_marker(self, task: Task, exec_result) -> None:
@@ -865,7 +891,9 @@ class Orchestrator:
         # otherwise metadata.executor_tier resolves through the tier registry.
         model = self._resolve_model(task)
 
-        self.beads.claim(task.id, "claude", capabilities=self.node_capabilities)
+        attempt = self._claim(task, "claude")
+        if attempt is None:
+            return False
         mode = "store-backed" if store_backed else "prompt"
         print(
             f"[cycle] Executing {task.id} via claude subagent "
@@ -912,7 +940,9 @@ class Orchestrator:
                 print(f"[cycle] FAIL: claude subagent for {task.id}: {exec_result.error}")
                 self._fail_with_rca(task, exec_result.error)
                 return False
-            self.beads.complete(task.id, result=exec_result.output)
+            self.beads.report_result(
+                task.id, attempt, TaskStatus.DONE, result=exec_result.output
+            )
             print(f"[cycle] Completed {task.id} via claude ({exec_result.duration_seconds:.0f}s)")
             return True
 
@@ -924,7 +954,9 @@ class Orchestrator:
         model = task.metadata.get("model")
         workdir = task.metadata.get("workdir")
 
-        self.beads.claim(task.id, "agy", capabilities=self.node_capabilities)
+        attempt = self._claim(task, "agy")
+        if attempt is None:
+            return False
         print(
             f"[cycle] Executing {task.id} via agy subagent "
             f"(model={model or 'agy-default'}, timeout={timeout}s)"
@@ -937,7 +969,9 @@ class Orchestrator:
             print(f"[cycle] FAIL: agy subagent for {task.id}: {exec_result.error}")
             self._fail_with_rca(task, exec_result.error)
             return False
-        self.beads.complete(task.id, result=exec_result.output)
+        self.beads.report_result(
+            task.id, attempt, TaskStatus.DONE, result=exec_result.output
+        )
         print(f"[cycle] Completed {task.id} via agy ({exec_result.duration_seconds:.0f}s)")
         return True
 
@@ -963,7 +997,9 @@ class Orchestrator:
             return False
 
         model = self._resolve_model(task) or provider.model
-        self.beads.claim(task.id, provider_name, capabilities=self.node_capabilities)
+        attempt = self._claim(task, provider_name)
+        if attempt is None:
+            return False
         print(f"[cycle] Executing {task.id} via {provider_name} completion "
               f"(model={model}, endpoint={provider.base_url}, timeout={timeout}s)")
 
@@ -990,7 +1026,9 @@ class Orchestrator:
             print(f"[cycle] FAIL: {provider_name} for {task.id}: {exec_result.error}")
             self._fail_with_rca(task, exec_result.error)
             return False
-        self.beads.complete(task.id, result=exec_result.output)
+        self.beads.report_result(
+            task.id, attempt, TaskStatus.DONE, result=exec_result.output
+        )
         print(f"[cycle] Completed {task.id} via {provider_name} ({exec_result.duration_seconds:.0f}s)")
         return True
 
@@ -1003,7 +1041,9 @@ class Orchestrator:
         timeout, max_turns = self._resolve_budget(task)
         model = task.metadata.get("model")
 
-        self.beads.claim(task.id, "zai", capabilities=self.node_capabilities)
+        attempt = self._claim(task, "zai")
+        if attempt is None:
+            return False
         print(
             f"[cycle] Executing {task.id} via z.ai subagent "
             f"(model={model or 'zai-default'}, timeout={timeout}s, max_turns={max_turns})"
@@ -1469,7 +1509,9 @@ class Orchestrator:
         timeout, _ = self._resolve_budget(task)
         model = task.metadata.get("model")
 
-        self.beads.claim(task.id, "forge", capabilities=self.node_capabilities)
+        attempt = self._claim(task, "forge")
+        if attempt is None:
+            return False
         print(
             f"[cycle] Executing {task.id} via forge/codex subagent "
             f"(model={model or 'codex-default'}, timeout={timeout}s)"
@@ -1482,7 +1524,9 @@ class Orchestrator:
             print(f"[cycle] FAIL: forge subagent for {task.id}: {exec_result.error}")
             self._fail_with_rca(task, exec_result.error)
             return False
-        self.beads.complete(task.id, result=exec_result.output)
+        self.beads.report_result(
+            task.id, attempt, TaskStatus.DONE, result=exec_result.output
+        )
         print(f"[cycle] Completed {task.id} via forge ({exec_result.duration_seconds:.0f}s)")
         return True
 
@@ -2177,8 +2221,13 @@ class Orchestrator:
                     urgent=False,
                 )
 
-        # Complete the task
-        self.beads.complete(task.id, result=json.dumps(result.output))
+        # Complete the task, fenced on the lease this execution was issued under
+        self.beads.report_result(
+            task.id,
+            claimed.lease_attempt,
+            TaskStatus.DONE,
+            result=json.dumps(result.output),
+        )
         print(f"[work] Completed: {task.id}")
         return True
 
