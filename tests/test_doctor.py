@@ -869,24 +869,25 @@ def _node_with_a_procedure(tmp_path) -> str:
 def test_doctor_fails_when_a_node_holds_procedures_and_declares_no_humans(
     tmp_path, monkeypatch, capsys
 ):
-    """`--author-kind` defaults to human and stands where AGENTCO_HUMANS is unset,
+    """`--author-kind` defaults to human and stands where ASOP_HUMANS is unset,
     so on a runtime that dispatches shell-capable agents the revision policy binds
     nobody. Verified against the real CLI 2026-09-04: unset, an agent claiming
     human revised a procedure carrying a `money` step; declared, it was refused."""
     monkeypatch.chdir(tmp_path)
     (tmp_path / "company").mkdir()
+    monkeypatch.delenv("ASOP_HUMANS", raising=False)
     monkeypatch.delenv("AGENTCO_HUMANS", raising=False)
     code = run_doctor(_node_with_a_procedure(tmp_path))
     out = capsys.readouterr().out
     assert code == 1
     assert "BROKEN (asop.humans_declared)" in out
-    assert "AGENTCO_HUMANS" in out
+    assert "ASOP_HUMANS" in out
 
 
 def test_doctor_oks_a_node_that_declares_its_humans(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     (tmp_path / "company").mkdir()
-    monkeypatch.setenv("AGENTCO_HUMANS", "mabidoli")
+    monkeypatch.setenv("ASOP_HUMANS", "mabidoli")
     run_doctor(_node_with_a_procedure(tmp_path))
     out = capsys.readouterr().out
     assert "BROKEN (asop.humans_declared)" not in out
@@ -899,6 +900,7 @@ def test_doctor_says_nothing_about_humans_on_a_node_with_no_procedures(
     """The check is about procedures at risk, not about configuration taste."""
     monkeypatch.chdir(tmp_path)
     (tmp_path / "company").mkdir()
+    monkeypatch.delenv("ASOP_HUMANS", raising=False)
     monkeypatch.delenv("AGENTCO_HUMANS", raising=False)
     cfg = tmp_path / "config.yaml"
     cfg.write_text(yaml.safe_dump({
@@ -952,3 +954,14 @@ def test_dspy_is_no_longer_a_hard_required_import():
 
     assert "dspy" not in REQUIRED_IMPORTS
     assert {"yaml", "click"} <= set(REQUIRED_IMPORTS)
+
+
+def test_doctor_accepts_the_legacy_humans_variable(monkeypatch, tmp_path):
+    """A deployment still on AGENTCO_HUMANS is declared, not undeclared — the
+    deprecation window has to hold on the read side too, or the rename turns a
+    working node's doctor red for no reason."""
+    monkeypatch.delenv("ASOP_HUMANS", raising=False)
+    monkeypatch.setenv("AGENTCO_HUMANS", "mabidoli")
+    import os
+    assert (os.environ.get("ASOP_HUMANS", "").strip()
+            or os.environ.get("AGENTCO_HUMANS", "").strip())

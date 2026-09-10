@@ -3098,7 +3098,7 @@ def _refusal(e) -> None:
 def _kind(actor, claimed: str) -> str:
     """The caller's trust domain: the operator's declaration where there is one.
 
-    `AGENTCO_HUMANS` — the same variable the coordination plane reads, with
+    `ASOP_HUMANS` — the same variable the coordination plane reads, with
     the same exact-spelling, comma-separated shape — names the people. Where
     it is declared, the answer comes from it and `--author-kind` / `--by-kind`
     stop being an assertion the caller makes about itself: an agent that could
@@ -3164,7 +3164,7 @@ def sop_revise(ctx, asop_id, file, from_version, author, author_kind):
 @sop.command("activate")
 @click.argument("asop_id")
 @click.argument("version", type=int)
-@click.option("--by", default=None, help="Who is activating. Checked against AGENTCO_HUMANS where it is declared.")
+@click.option("--by", default=None, help="Who is activating. Checked against ASOP_HUMANS where it is declared.")
 @click.option("--by-kind", type=click.Choice(["human", "agent"]), default="human", show_default=True)
 @click.pass_context
 def sop_activate(ctx, asop_id, version, by, by_kind):
@@ -3182,7 +3182,7 @@ def sop_activate(ctx, asop_id, version, by, by_kind):
 
 @sop.command("retire")
 @click.argument("asop_id")
-@click.option("--by", default=None, help="Who is retiring it. Checked against AGENTCO_HUMANS where it is declared.")
+@click.option("--by", default=None, help="Who is retiring it. Checked against ASOP_HUMANS where it is declared.")
 @click.option("--by-kind", type=click.Choice(["human", "agent"]), default="human", show_default=True)
 @click.pass_context
 def sop_retire(ctx, asop_id, by, by_kind):

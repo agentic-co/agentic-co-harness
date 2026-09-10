@@ -58,7 +58,7 @@ AGY_WALL_S = 1020
 HUMAN = "mabidoli"
 #: A judged gate is answered by a DECLARED verifier holding the `verify`
 #: capability, and never by the party that executed the step. Declaring the
-#: capability is not the authority — `AGENTCO_VERIFIERS` is.
+#: capability is not the authority — `ASOP_VERIFIERS` is.
 JUDGE = "judge"
 RESULTS: list[tuple[str, bool, str]] = []
 
@@ -314,7 +314,7 @@ def main() -> int:
            # Declared verifiers. Undeclared, `verify` counts for nobody and a
            # judged gate can never be answered; declared, it counts only for
            # these actors, whatever anyone else claims in a payload.
-           "AGENTCO_VERIFIERS": JUDGE}
+           "ASOP_VERIFIERS": JUDGE}
     server = subprocess.Popen([str(hub_py), "-m", "agentco", "serve", "--port", str(a.port)], cwd=plane_dir, env=env,
                               stdout=open(plane_dir / "server.log", "w"), stderr=subprocess.STDOUT)
     url = f"http://127.0.0.1:{a.port}"

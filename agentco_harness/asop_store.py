@@ -70,7 +70,7 @@ def _declared_kind(verb: str, kind: str) -> str:
             "sop_refused",
             f"`{verb}` needs a declared caller: {kind!r} is not one of {AUTHOR_KINDS}",
             "Declare who is asking — 'human' or 'agent'. Who is human is the "
-            "operator's declaration (AGENTCO_HUMANS), never the caller's word.",
+            "operator's declaration (ASOP_HUMANS), never the caller's word.",
         )
     return kind
 
@@ -87,7 +87,7 @@ def _policed(exc: RevisionPolicyError) -> None:
         f"revision_policy:{exc.rule}",
         str(exc),
         "Have a person do this, or change the revision so the rule does not "
-        "fire. Who is human is declared by the operator (AGENTCO_HUMANS), "
+        "fire. Who is human is declared by the operator (ASOP_HUMANS), "
         "never inferred — an undeclared registry polices everyone.",
     )
 
@@ -106,7 +106,7 @@ class AsopStore:
         self._lock_path = self.path.with_suffix(self.path.suffix + ".lock")
         self.quarantined: list[str] = []
         # The defaults (`money`, `irreversible`) plus whatever this
-        # installation adds through `AGENTCO_PROTECTED_TAGS` — the same
+        # installation adds through `ASOP_PROTECTED_TAGS` — the same
         # variable, with the same name and the same add-only semantics, the
         # plane reads. Read once here, as the plane reads it once per
         # library, so a procedure cannot be protected halfway through a run.

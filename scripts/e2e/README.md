@@ -53,7 +53,7 @@ drafted v2 with the proposal on step 3 · v2 active · v1 pin resolves · new ru
 pins v2 · outcomes has two rows · retire refuses new runs.
 
 `--gate judged` runs the same procedure with a judged gate on step 5, answered by
-a declared verifier (`AGENTCO_VERIFIERS`) rather than a named human. It checks the
+a declared verifier (`ASOP_VERIFIERS`, `AGENTCO_VERIFIERS` still read as a deprecated fallback) rather than a named human. It checks the
 rails before the verdict, so the run is 25 checkpoints rather than 22: an
 undeclared actor claiming `verify` is refused, the party that executed the step is
 refused, and a declared verifier that does not claim the capability is refused too.

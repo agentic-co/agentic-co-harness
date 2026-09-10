@@ -965,7 +965,7 @@ def collect(config_path: str) -> DoctorReport:
     #
     # The store polices the kind it is HANDED. In-process that is honest — a
     # caller passing `agent` is bound by all four rules with no configuration.
-    # At the CLI the kind is a flag, and where `AGENTCO_HUMANS` is undeclared
+    # At the CLI the kind is a flag, and where `ASOP_HUMANS` is undeclared
     # the flag stands, on the reasoning that a local `agentic-co sop retire` has
     # no key to authenticate and there is an operator at the terminal.
     #
@@ -974,7 +974,7 @@ def collect(config_path: str) -> DoctorReport:
     # CLIs with shell access, and one of them can run `agentic-co sop revise ...
     # --author-kind human` (or omit the flag, which defaults to human) and
     # revise a procedure carrying a `money` step. Verified 2026-09-04: with the
-    # variable unset that revision is DRAFTED; with `AGENTCO_HUMANS` declared
+    # variable unset that revision is DRAFTED; with `ASOP_HUMANS` declared
     # the identical command is refused `revision_policy:protected`.
     #
     # Declaring the set is what turns the flag into a check, so a node with
@@ -989,16 +989,22 @@ def collect(config_path: str) -> DoctorReport:
     except Exception:  # noqa: BLE001 — a store we cannot read is check (q)'s business
         has_procedures = False
     if has_procedures:
-        if os.environ.get("AGENTCO_HUMANS", "").strip():
-            _ok("AGENTCO_HUMANS is declared, so the revision policy binds a caller's claimed kind")
+        # ASOP_HUMANS is the standard's name; AGENTCO_HUMANS is read as the
+        # deprecated fallback, exactly as `asop.revision` does. Presence rather
+        # than truthiness on the new name would be wrong HERE — doctor is
+        # asking "is anything declared", and an empty declaration declares
+        # nobody, which is the case it warns about.
+        if (os.environ.get("ASOP_HUMANS", "").strip()
+                or os.environ.get("AGENTCO_HUMANS", "").strip()):
+            _ok("ASOP_HUMANS is declared, so the revision policy binds a caller's claimed kind")
         else:
             _fail(
-                "this node holds ASOPs but AGENTCO_HUMANS is not declared — the "
+                "this node holds ASOPs but ASOP_HUMANS is not declared — the "
                 "revision policy cannot bind anyone who claims to be human, and "
                 "`--author-kind` defaults to human. Any dispatched agent with a "
                 "shell can revise or activate a procedure holding a protected "
                 "(`money` / `irreversible`) step. Declare the people: "
-                "AGENTCO_HUMANS=<comma-separated actors>."
+                "ASOP_HUMANS=<comma-separated actors>."
             )
 
     # (o4) The optional LM layer, required only where config asks for it.
