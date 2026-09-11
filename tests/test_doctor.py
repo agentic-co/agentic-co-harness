@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import json
 
+import sys
+
 import pytest
 import yaml
 
@@ -237,6 +239,10 @@ def _child_with_live_heartbeat(tmp_path, name: str = "kid"):
     return child_dir
 
 
+@pytest.mark.skipif(
+    sys.platform != "darwin",
+    reason="the scheduler check is launchd; doctor.py:726 reports it as info off darwin",
+)
 def test_doctor_broken_when_child_has_no_scheduler(tmp_path, monkeypatch, capsys):
     """The semijoias defect (ac-67fbc23f): monitored, healthy, unscheduled.
 
@@ -258,6 +264,10 @@ def test_doctor_broken_when_child_has_no_scheduler(tmp_path, monkeypatch, capsys
     assert "kid" in out
 
 
+@pytest.mark.skipif(
+    sys.platform != "darwin",
+    reason="the scheduler check is launchd; doctor.py:726 reports it as info off darwin",
+)
 def test_doctor_ok_when_child_has_a_loaded_scheduler(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     cfg = _healthy_cfg(tmp_path)
@@ -271,6 +281,10 @@ def test_doctor_ok_when_child_has_a_loaded_scheduler(tmp_path, monkeypatch, caps
     assert "child 'kid' scheduled by com.test.kid" in out
 
 
+@pytest.mark.skipif(
+    sys.platform != "darwin",
+    reason="the scheduler check is launchd; doctor.py:726 reports it as info off darwin",
+)
 def test_doctor_broken_when_scheduler_plist_present_but_not_loaded(
     tmp_path, monkeypatch, capsys
 ):

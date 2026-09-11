@@ -18,6 +18,10 @@ No network — beads are constructed directly against a tmp_path JSONL file.
 
 from __future__ import annotations
 
+import shutil
+
+import pytest
+
 from agentco_harness.beads import Beads, TaskPriority, TaskStatus
 from agentco_harness.config import AgentConfig, Config, LLMConfig
 from agentco_harness.orchestrator import Orchestrator
@@ -95,6 +99,10 @@ def test_create_rca_task_accepts_seeded_context(tmp_path):
 # --------------------------------------------------------------------- (b)
 
 
+@pytest.mark.skipif(
+    shutil.which("agentco") is None,
+    reason="exercises the real gate command, which shells out to the installed console script",
+)
 def test_advance_rca_walks_full_chain(tmp_path):
     beads = Beads(tmp_path / "tasks.jsonl")
     failed = beads.create(title="Ingest youtube: foo", description="d")
@@ -509,6 +517,10 @@ def test_a_later_cycle_needs_its_own_terminal_action(tmp_path):
     assert has_terminal_action(beads, cycle2) is None
 
 
+@pytest.mark.skipif(
+    shutil.which("agentco") is None,
+    reason="exercises the real gate command, which shells out to the installed console script",
+)
 def test_closing_on_analysis_alone_lands_in_verify_failed(tmp_path):
     """The whole point: `complete` on an empty-handed analysis is NOT done."""
     beads = Beads(tmp_path / "tasks.jsonl")
