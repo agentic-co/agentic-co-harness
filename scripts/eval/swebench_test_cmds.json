@@ -1,0 +1,946 @@
+{
+ "_source": "swebench==2.1.8 MAP_REPO_VERSION_TO_SPECS, extracted 2026-09-11",
+ "_why": "vendored: swebench>=5 moved to a dataset schema carrying eval_script per row, which the HF SWE-bench_Verified rows do not have; importing the package at runtime drags in modal and breaks",
+ "specs": {
+  "astropy/astropy": {
+   "3.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "4.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "4.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "4.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "5.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "5.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "5.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "v5.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.1": {
+    "test_cmd": "pytest -rA -vv -o console_output_style=classic --tb=no"
+   },
+   "0.2": {
+    "test_cmd": "pytest -rA -vv -o console_output_style=classic --tb=no"
+   },
+   "0.3": {
+    "test_cmd": "pytest -rA -vv -o console_output_style=classic --tb=no"
+   },
+   "0.4": {
+    "test_cmd": "pytest -rA -vv -o console_output_style=classic --tb=no"
+   },
+   "1.1": {
+    "test_cmd": "pytest -rA -vv -o console_output_style=classic --tb=no"
+   },
+   "1.2": {
+    "test_cmd": "pytest -rA -vv -o console_output_style=classic --tb=no"
+   },
+   "1.3": {
+    "test_cmd": "pytest -rA -vv -o console_output_style=classic --tb=no"
+   }
+  },
+  "dbt-labs/dbt-core": {
+   "0.13": {
+    "test_cmd": null
+   },
+   "0.14": {
+    "test_cmd": null
+   },
+   "0.15": {
+    "test_cmd": null
+   },
+   "0.16": {
+    "test_cmd": null
+   },
+   "0.17": {
+    "test_cmd": null
+   },
+   "0.18": {
+    "test_cmd": null
+   },
+   "0.19": {
+    "test_cmd": null
+   },
+   "0.20": {
+    "test_cmd": null
+   },
+   "0.21": {
+    "test_cmd": null
+   },
+   "1.0": {
+    "test_cmd": null
+   },
+   "1.1": {
+    "test_cmd": null
+   },
+   "1.2": {
+    "test_cmd": null
+   },
+   "1.3": {
+    "test_cmd": null
+   },
+   "1.4": {
+    "test_cmd": null
+   },
+   "1.5": {
+    "test_cmd": null
+   },
+   "1.6": {
+    "test_cmd": null
+   },
+   "1.7": {
+    "test_cmd": null
+   }
+  },
+  "django/django": {
+   "1.7": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "1.8": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "1.9": {
+    "test_cmd": "./tests/runtests.py --verbosity 2"
+   },
+   "1.10": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "1.11": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "2.0": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "2.1": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "2.2": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "1.4": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "1.5": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "1.6": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "3.0": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "3.1": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "3.2": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "4.0": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "4.1": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "4.2": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "5.0": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "5.1": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   },
+   "5.2": {
+    "test_cmd": "./tests/runtests.py --verbosity 2 --settings=test_sqlite --parallel 1"
+   }
+  },
+  "matplotlib/matplotlib": {
+   "3.5": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.6": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.7": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.8": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.9": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.4": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.4": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.5": {
+    "test_cmd": "pytest -rA"
+   }
+  },
+  "marshmallow-code/marshmallow": {
+   "2.18": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.19": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.20": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.10": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.11": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.12": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.13": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.15": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.16": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.19": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.4": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.8": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.9": {
+    "test_cmd": "pytest -rA"
+   }
+  },
+  "mwaskom/seaborn": {
+   "0.11": {
+    "test_cmd": "pytest --no-header -rA"
+   },
+   "0.12": {
+    "test_cmd": "pytest --no-header -rA"
+   },
+   "0.13": {
+    "test_cmd": "pytest --no-header -rA"
+   },
+   "0.14": {
+    "test_cmd": "pytest --no-header -rA"
+   }
+  },
+  "pallets/flask": {
+   "2.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.1": {
+    "test_cmd": "pytest -rA"
+   }
+  },
+  "psf/requests": {
+   "0.7": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.8": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.9": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.11": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.13": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.14": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.4": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.5": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.7": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.8": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.9": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.10": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.11": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.12": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.17": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.18": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.19": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.22": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.26": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.25": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.27": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.31": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.0": {
+    "test_cmd": "pytest -rA"
+   }
+  },
+  "pvlib/pvlib-python": {
+   "0.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.4": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.5": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.6": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.7": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.8": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.9": {
+    "test_cmd": "pytest -rA"
+   }
+  },
+  "pydata/xarray": {
+   "0.12": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.18": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.19": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.20": {
+    "test_cmd": "pytest -rA"
+   },
+   "2022.03": {
+    "test_cmd": "pytest -rA"
+   },
+   "2022.06": {
+    "test_cmd": "pytest -rA"
+   },
+   "2022.09": {
+    "test_cmd": "pytest -rA"
+   },
+   "2023.07": {
+    "test_cmd": "pytest -rA"
+   },
+   "2024.05": {
+    "test_cmd": "pytest -rA"
+   }
+  },
+  "pydicom/pydicom": {
+   "1.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.4": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.4": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.0": {
+    "test_cmd": "pytest -rA"
+   }
+  },
+  "pylint-dev/astroid": {
+   "2.10": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.12": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.13": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.14": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.15": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.16": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.5": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.6": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.7": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.8": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.9": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.0": {
+    "test_cmd": "pytest -rA"
+   }
+  },
+  "pylint-dev/pylint": {
+   "2.10": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.11": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.13": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.14": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.15": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.16": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.17": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.8": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.9": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "3.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "4.0": {
+    "test_cmd": "pytest -rA"
+   }
+  },
+  "pytest-dev/pytest": {
+   "4.4": {
+    "test_cmd": "pytest -rA"
+   },
+   "4.5": {
+    "test_cmd": "pytest -rA"
+   },
+   "4.6": {
+    "test_cmd": "pytest -rA"
+   },
+   "5.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "5.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "5.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "5.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "5.4": {
+    "test_cmd": "pytest -rA"
+   },
+   "6.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "6.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "6.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "7.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "7.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "7.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "7.4": {
+    "test_cmd": "pytest -rA"
+   },
+   "8.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "8.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "8.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "8.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "8.4": {
+    "test_cmd": "pytest -rA"
+   }
+  },
+  "pyvista/pyvista": {
+   "0.20": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.21": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.22": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.23": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.24": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.25": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.26": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.27": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.28": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.29": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.30": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.31": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.32": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.33": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.34": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.35": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.36": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.37": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.38": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.39": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.40": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.41": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.42": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.43": {
+    "test_cmd": "pytest -rA"
+   }
+  },
+  "scikit-learn/scikit-learn": {
+   "0.20": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.21": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.22": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.4": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.5": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.6": {
+    "test_cmd": "pytest -rA"
+   }
+  },
+  "sphinx-doc/sphinx": {
+   "1.5": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "1.6": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "1.7": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "1.8": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "2.0": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "2.1": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "2.2": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "2.3": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "2.4": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "3.0": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "3.1": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "3.2": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "3.3": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "3.4": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "3.5": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "4.0": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "4.1": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "4.2": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "4.3": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "4.4": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "4.5": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "5.0": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "5.1": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "5.2": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "5.3": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "6.0": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "6.2": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "7.0": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "7.1": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "7.2": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "7.3": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "7.4": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "8.0": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   },
+   "8.1": {
+    "test_cmd": "tox --current-env -epy39 -v --"
+   }
+  },
+  "sqlfluff/sqlfluff": {
+   "0.10": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.11": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.12": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.13": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.4": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.5": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.6": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.8": {
+    "test_cmd": "pytest -rA"
+   },
+   "0.9": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.2": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.3": {
+    "test_cmd": "pytest -rA"
+   },
+   "1.4": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.0": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.1": {
+    "test_cmd": "pytest -rA"
+   },
+   "2.2": {
+    "test_cmd": "pytest -rA"
+   }
+  },
+  "swe-bench/humaneval": {
+   "1.0": {
+    "test_cmd": "python"
+   }
+  },
+  "sympy/sympy": {
+   "0.7": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   },
+   "1.0": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   },
+   "1.1": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   },
+   "1.10": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   },
+   "1.11": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   },
+   "1.12": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   },
+   "1.2": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   },
+   "1.4": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   },
+   "1.5": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   },
+   "1.6": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   },
+   "1.7": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   },
+   "1.8": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   },
+   "1.9": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   },
+   "1.13": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   },
+   "1.14": {
+    "test_cmd": "PYTHONWARNINGS='ignore::UserWarning,ignore::SyntaxWarning' bin/test -C --verbose"
+   }
+  }
+ }
+}
