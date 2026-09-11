@@ -26,3 +26,9 @@ procedures/
 # leakguard denylist — a list of real names is itself a list of real names.
 # Local only; CI runs base rules, or supplies its own via --config.
 tools/leakguard/leakguard.toml
+
+# Work-front coordination state: which agents are live, vendor usage limits,
+# machine permissions, vault paths. Operational detail about ONE deployment,
+# which is not what a public runtime repo is for. Stays on disk so the agents
+# working this tree still read it; just not published.
+ai-tasks/

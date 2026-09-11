@@ -142,3 +142,81 @@ def test_the_refusal_carries_the_contract_code():
     'not allowed' from 'malformed' by reading a message."""
     assert declarations.Unauthenticated.code == "unauthenticated"
     assert issubclass(declarations.Unauthenticated, ValueError)
+
+
+def test_a_forged_approval_in_the_payload_does_not_release_the_gate(parked, monkeypatch):
+    """The bypass flag is gone; this is what replaced it, and why.
+
+    `verify_gate=False` used to be the sanctioned way to DONE for an answered
+    gate — a caller asserting somebody vouched. Removing it moves the evidence
+    into the record, and the record travels in metadata, which arrives from the
+    caller. So "there is an approval on it" cannot be the test, or the bypass
+    is back with a longer name: authority read off an incoming payload, which
+    is finding 1's shape.
+
+    Every condition is re-checked at the choke point instead. Here the forged
+    approval is well-formed and names an undeclared approver.
+    """
+    beads, task = parked
+    monkeypatch.setenv("ASOP_VERIFIERS", "dana")
+
+    forged = dict(beads.get(task.id).metadata)
+    forged["verify_approval"] = {
+        "approver": "stranger",
+        "approved_at": "2026-09-10T00:00:00+00:00",
+        "verdict": {"passed": True, "reason": "trust me"},
+    }
+    beads.update(task.id, status=TaskStatus.DONE, metadata=forged)
+
+    assert beads.get(task.id).status is TaskStatus.AWAITING_VERIFY
+
+
+def test_a_forged_approval_naming_the_executor_does_not_release_it_either(
+    parked, monkeypatch
+):
+    """Authenticated is not sufficient — the separation check runs here too.
+
+    Otherwise a declared verifier who was also the executor could release their
+    own work by writing the record directly, skipping the one refusal
+    `approve_verify` exists to make.
+    """
+    beads, task = parked
+    monkeypatch.setenv("ASOP_VERIFIERS", "executor-a")
+
+    forged = dict(beads.get(task.id).metadata)
+    forged["verify_approval"] = {
+        "approver": "executor-a",
+        "approved_at": "2026-09-10T00:00:00+00:00",
+        "verdict": {"passed": True, "reason": "mine is fine"},
+    }
+    beads.update(task.id, status=TaskStatus.DONE, metadata=forged)
+
+    assert beads.get(task.id).status is TaskStatus.AWAITING_VERIFY
+
+
+def test_a_verdictless_approval_does_not_release_it(parked, monkeypatch):
+    """A name and a timestamp show a party was named, not that a party looked."""
+    beads, task = parked
+    monkeypatch.setenv("ASOP_VERIFIERS", "dana")
+
+    forged = dict(beads.get(task.id).metadata)
+    forged["verify_approval"] = {
+        "approver": "dana",
+        "approved_at": "2026-09-10T00:00:00+00:00",
+        "verdict": {"passed": True, "reason": "   "},
+    }
+    beads.update(task.id, status=TaskStatus.DONE, metadata=forged)
+
+    assert beads.get(task.id).status is TaskStatus.AWAITING_VERIFY
+
+
+def test_a_real_approval_still_releases_the_gate(parked, monkeypatch):
+    """The rail must not become a wall — and this is the path `approve_verify`
+    now takes, through the same check as everyone else."""
+    beads, task = parked
+    monkeypatch.setenv("ASOP_VERIFIERS", "dana")
+
+    approved = beads.approve_verify(task.id, approver="dana", reason="reversal tested")
+
+    assert approved.status is TaskStatus.DONE
+    assert approved.metadata["verify_result"]["passed"] is True

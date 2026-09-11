@@ -6,6 +6,9 @@ touching ASOP, gates, verification, adjudication, or the embedded runtime** — 
 Codex, and agy are all working this front, and that file is what keeps them from re-deriving
 (or contradicting) each other. Update it in the same turn as any material change.
 
+> `ai-tasks/` is **local-only and gitignored** — it carries one deployment's coordination state (which agents are live, vendor limits, machine permissions), which is not what a public runtime repo publishes. A fresh clone will not have it; the agents working an existing tree still do.
+
+
 ## Invariants specific to this repo
 
 - **The gate is the contract, not a suggestion.** `Beads.update()` is the single choke point

@@ -288,10 +288,16 @@ class HubClient:
         attestation = self.attestation_for(task) if status == "done" else None
         receipt = self.report(hub["item_id"], int(hub.get("attempt") or 0), status,
                               result=task.result, attestation=attestation)
-        stamped = dict(task.metadata or {})
-        stamped[HUB_KEY] = {**hub, "reported_at": datetime.now(timezone.utc).isoformat(),
-                            "reported_status": status, "plane_state": receipt.get("state")}
-        beads.update(task.id, metadata=stamped, verify_gate=False)
+        # `annotate`, not `update(verify_gate=False)`. This only ever wrote
+        # metadata, and the gate only fires on a DONE transition — so the
+        # bypass flag here never suppressed anything. It read like authority
+        # and was noise, which is the worse of the two.
+        beads.annotate(task.id, {HUB_KEY: {
+            **hub,
+            "reported_at": datetime.now(timezone.utc).isoformat(),
+            "reported_status": status,
+            "plane_state": receipt.get("state"),
+        }})
         return receipt
 
     def sync(self, beads: Beads) -> list[dict]:

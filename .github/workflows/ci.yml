@@ -15,20 +15,47 @@ jobs:
     # into a public repo is a different class of failure from a failing test,
     # and it must not be reported as one line in a test summary.
     #
-    # Ported from agentic-co-hub, which has had this since the public
-    # extraction. This repo went public without it, and the cost showed:
-    # personal names, company names and one operator's live work state are
-    # spread across its tests and docs. The guard is what stops the next one.
+    # Make this a REQUIRED check in branch protection. Without that it reports
+    # and nothing stops the merge, which is the same as not having it — the
+    # leak this repo already shipped went in past a green build.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Scan for identity leakage
-        # No leakguard.toml in the tree on purpose — a denylist of real names is
-        # itself a list of real names. CI runs base rules; a fork or a private
-        # mirror can supply its own via --config.
+
+      - name: Materialise the denylist
+        # The denylist is a list of real names, so it cannot live in the tree of
+        # a public repo — that would publish exactly what it exists to keep out.
+        # It lives in the LEAKGUARD_CONFIG secret instead, and is written to a
+        # path git ignores.
         #
-        # Base rules catch SHAPES (emails, tenant GUIDs, home paths, internal
-        # hosts). They do NOT catch a bare first name or a company name; those
-        # need a denylist, which cannot live here. Contributors get that half
-        # locally via tools/leakguard/pre-commit and their own leakguard.toml.
-        run: python3 tools/leakguard/leakguard.py --root .
+        # A fork has no secret and gets base rules only. That is the correct
+        # degradation: a fork cannot leak this operator's names because it does
+        # not have them, and the alternative is every fork's CI failing on a
+        # secret it can never hold.
+        env:
+          LEAKGUARD_CONFIG: ${{ secrets.LEAKGUARD_CONFIG }}
+        run: |
+          if [ -n "$LEAKGUARD_CONFIG" ]; then
+            printf '%s' "$LEAKGUARD_CONFIG" > tools/leakguard/leakguard.toml
+            echo "denylist supplied — names, domains and codenames are checked"
+          else
+            echo "::warning::no LEAKGUARD_CONFIG secret; base rules only (shapes, not names)"
+          fi
+
+      - name: Scan for identity leakage
+        # --config is passed unconditionally. When the file is absent the tool
+        # says so on stderr and runs base rules, which is louder than silently
+        # choosing a mode.
+        run: python3 tools/leakguard/leakguard.py --root . --config tools/leakguard/leakguard.toml
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Run the suite
+        run: uv run --python ${{ matrix.python-version }} pytest -q

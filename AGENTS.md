@@ -7,6 +7,9 @@ read [`ai-tasks/asop-v3.2/CONTEXT.md`](ai-tasks/asop-v3.2/CONTEXT.md).** It carr
 baseline SHAs, what has already landed, what is in flight and by whom, and the ranked pending
 list. It exists so you do not re-derive state three agents have already established.
 
+> `ai-tasks/` is **local-only and gitignored** — it carries one deployment's coordination state (which agents are live, vendor limits, machine permissions), which is not what a public runtime repo publishes. A fresh clone will not have it; the agents working an existing tree still do.
+
+
 If you change something material on this front, update that file in the same turn.
 
 ## Lane discipline

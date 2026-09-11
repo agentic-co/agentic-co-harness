@@ -1599,6 +1599,36 @@ class Beads:
         kwargs["metadata"] = metadata
         return kwargs
 
+    def _approval_answers_gate(self, task: Task, spec: dict, metadata: dict) -> bool:
+        """Does this bead's record carry an attestation that releases the gate?
+
+        Every condition `approve_verify` enforces is enforced again here,
+        deliberately. Not defensive duplication — relocation: these are the
+        conditions, and `approve_verify` is now one convenient way to satisfy
+        them rather than the place they live. A hand-built `verify_approval` in
+        an incoming payload gets exactly the same scrutiny as one this class
+        wrote, because the choke point cannot tell them apart and must not try.
+
+        Returns False rather than raising: a bead arriving at the gate with no
+        approval yet is the ordinary case, and it parks.
+        """
+        approval = metadata.get("verify_approval")
+        if not isinstance(approval, dict):
+            return False
+        approver = approval.get("approver")
+        verdict = approval.get("verdict")
+        if not isinstance(verdict, dict) or not str(verdict.get("reason", "")).strip():
+            return False  # a name and a timestamp are not a verdict (§5.3)
+        if not approval.get("approved_at"):
+            return False
+        try:
+            declarations.authenticate(
+                approver, declarations.verifiers(), role="verifier"
+            )
+        except declarations.Unauthenticated:
+            return False
+        return approver != _recorded_executor(task)
+
     def _apply_verify_gate(self, task: Task, spec: dict, kwargs: dict) -> dict:
         """Rewrite a DONE-bound update according to the bead's verify payload.
 
@@ -1611,6 +1641,34 @@ class Beads:
         cls = gate_kind(spec)
         metadata = dict(kwargs.get("metadata", task.metadata) or {})
         if cls in ("human", "judged"):
+            # The gate is ANSWERED when the record shows a valid attestation,
+            # not when a caller passes a flag saying so. `verify_gate=False`
+            # used to be that flag: a keyword argument asserting "somebody
+            # trustworthy vouched". It was honest about being a bypass and it
+            # was still the answer to "is there a path to DONE that skips the
+            # gate" — yes, for anyone who could call the method.
+            #
+            # Now the evidence is re-checked HERE, at the choke point that
+            # flips the status, which is where §9 puts authentication rather
+            # than leaving it "a convention the caller is trusted to honour".
+            # `approve_verify` becomes the thing that CONSTRUCTS a valid
+            # record; it is no longer the thing that is believed.
+            #
+            # Which matters because the record travels in metadata, and
+            # metadata arrives from the caller. Trusting `verify_approval`
+            # because it is present would be finding 1 wearing a new hat —
+            # authority read off an incoming payload.
+            if self._approval_answers_gate(task, spec, metadata):
+                approval = metadata["verify_approval"]
+                metadata["verify_result"] = {
+                    "class": cls,
+                    "check": verify_check_text(spec),
+                    "passed": True,
+                    "checked_at": approval["approved_at"],
+                    "output_tail": f"approved by {approval['approver']}",
+                }
+                kwargs["metadata"] = metadata
+                return kwargs
             # Neither gate transitions to DONE from here — only
             # `approve_verify` can, and `approve_verify` now refuses an
             # approver that matches the bead's own executor (see there).
@@ -1657,7 +1715,6 @@ class Beads:
         self,
         task_id: str,
         allow_human_reassign: bool = False,
-        verify_gate: bool = True,
         allow_gate_change: bool = False,
         precheck=None,
         **kwargs,
@@ -1679,13 +1736,19 @@ class Beads:
         ``metadata.verify_result = {"class": "unverified", ...}`` instead of
         looking identical to a checked completion.
 
-        ``verify_gate=False`` is a deliberate, code-reviewable bypass — a
-        caller asserting a human or equally-trustworthy piece of code, not the
-        completing executor, already vouches for the result. ``approve_verify``
-        is the human-approval instance; ``supersede_resolved_rcas`` (recurring.py)
-        is the other — it closes an RCA on store-visible evidence that its
-        subject already resolved, not on the RCA's own say-so. Both are
-        call-site opt-ins, never the caller's default.
+        **There is no bypass parameter.** There used to be: ``verify_gate=False``
+        let a caller assert that somebody trustworthy had already vouched. It
+        was honest about being a bypass and it was still the answer to "is
+        there a path to DONE that skips the gate" — yes, for anyone who could
+        call this method. The invariant was "no ORDINARY path reaches DONE
+        ungated", which is not the invariant anybody wanted.
+
+        A gated bead now reaches DONE only when its record carries an
+        attestation that survives re-checking at this choke point
+        (``_approval_answers_gate``): authenticated verifier, distinct from the
+        executor, carrying a verdict. ``approve_verify`` constructs such a
+        record; it is no longer believed on its own account, and neither is
+        anybody else.
 
         Referential integrity: a ``parent_id``/``blocked_by`` update is
         validated for FORMAT and EXISTENCE (``TaskReferenceError``) before the
@@ -1719,7 +1782,7 @@ class Beads:
                 kwargs["metadata"], self.path.parent
             )
         gate_at_read = _UNREAD
-        if verify_gate and kwargs.get("status") == TaskStatus.DONE:
+        if kwargs.get("status") == TaskStatus.DONE:
             current = self.get(task_id)
             if current is not None:
                 gate_at_read = (current.metadata or {}).get("verify")
@@ -2481,7 +2544,6 @@ class Beads:
             task_id,
             status=TaskStatus.DONE,
             metadata=metadata,
-            verify_gate=False,
         )
 
     def reject_verify(
@@ -2515,9 +2577,11 @@ class Beads:
         metadata["verify_result"] = result
         return self.update(
             task_id,
+            # VERIFY_FAILED is not DONE, so the gate never fired on this
+            # path anyway — the old `verify_gate=False` here was dead weight
+            # that read like a bypass.
             status=TaskStatus.VERIFY_FAILED,
             metadata=metadata,
-            verify_gate=False,
         )
 
     def awaiting_verify(self) -> list[Task]:
