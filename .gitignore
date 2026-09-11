@@ -32,3 +32,10 @@ tools/leakguard/leakguard.toml
 # which is not what a public runtime repo is for. Stays on disk so the agents
 # working this tree still read it; just not published.
 ai-tasks/
+
+# Grader artifacts: swebench run_evaluation writes logs/ relative to cwd.
+# Run output, not source, and it carries third-party test output.
+logs/
+*.goldcheck.json
+*.nullcheck.json
+*.asop-eval.json
