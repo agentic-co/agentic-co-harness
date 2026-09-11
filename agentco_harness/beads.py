@@ -264,6 +264,13 @@ DISPATCH_REFUSAL_KEY = "dispatch_refusal"
 # news, and the human queues filter on it. See `recurring.supersede_*`.
 SUPERSEDED_KEY = "superseded"
 
+# Gate answers. These record that somebody CHECKED the work, so they cannot
+# arrive WITH the work — a bead that is filed already carrying its own approval
+# has been answered by whoever filed it. Stripped at `create()`; only
+# `approve_verify`/`reject_verify` may put them on a bead, through `update()`,
+# where the approval is re-checked at the choke point that flips the status.
+GATE_ANSWER_KEYS = ("verify_approval", "verify_rejection", "verify_result")
+
 
 def _recorded_executor(task: "Task") -> str | None:
     """Who this runtime considers to have executed a bead, or None.
@@ -588,6 +595,42 @@ def validate_sop(payload: object) -> dict:
 
 
 _CONTRACTED_METADATA_KEYS = ("verify", "divergence", "context_refs", "sop")
+
+
+def _without_gate_answers(metadata: dict | None, *, where: str) -> dict | None:
+    """Drop any gate answer riding along with a bead being filed.
+
+    Found by an adversarial review of the completion path, and it is a hole in
+    that path's own fix. `_approval_answers_gate` re-checks an approval at the
+    choke point — authenticated verifier, distinct from the executor, carrying a
+    verdict — and a payload can satisfy every one of those and still be a
+    forgery, because nothing said WHEN the approval was allowed to appear.
+
+    A bead filed already carrying `verify_approval` was answered by whoever
+    filed it. Measured before this existed: such a bead went straight to DONE on
+    the executor's own report, and the judged gate never parked.
+
+    It matters most on the connected path. `HubClient.mirror` copies a plane's
+    metadata wholesale, so a hostile or impersonated plane could ship the work
+    and its approval in one payload — the gate answered by the party the gate
+    exists to check.
+
+    Stripped rather than refused: a plane may legitimately carry stale verify
+    state for its own reasons, and refusing the whole bead would break mirroring
+    over something we can simply decline to believe. Announced on stderr,
+    because a silent strip is how this class of bug survives.
+    """
+    if not metadata:
+        return metadata
+    present = [k for k in GATE_ANSWER_KEYS if k in metadata]
+    if not present:
+        return metadata
+    print(
+        f"[beads] dropped gate answer(s) {present} arriving with {where} — "
+        f"a gate answer cannot pre-exist the work it answers",
+        file=sys.stderr,
+    )
+    return {k: v for k, v in metadata.items() if k not in GATE_ANSWER_KEYS}
 
 
 def _validated_metadata(
@@ -1250,6 +1293,7 @@ class Beads:
             period=natural_key_period,
         )
         metadata = _validated_metadata(metadata, self.path.parent)
+        metadata = _without_gate_answers(metadata, where=f"create({title[:40]!r})")
         if key is not None:
             metadata = dict(metadata or {})
             metadata[NATURAL_KEY_FIELD] = key

@@ -210,6 +210,45 @@ CONSUMED_EXECUTOR_KEYS = {"idle_timeout_s"}
 DEFAULT_IDLE_TIMEOUT_S = 900
 
 
+def _require_authenticated_plane(url: str | None, path) -> None:
+    """Refuse a plane URL this runtime cannot authenticate.
+
+    The HMAC in `hub_client` signs what we SEND. Nothing verifies what comes
+    back — `_request` hands the response straight to `json.loads`. So the
+    signature proves we are us; it never proves the peer is the plane.
+
+    That is only a trust gap until you follow what a response becomes.
+    `HubClient.mirror` lifts the plane's `verify` onto the bead and its
+    `verify.cwd` into `metadata.workdir`, and a deterministic gate runs its
+    `check` through a shell. An on-path answer to a plaintext pull is therefore
+    an arbitrary command, in an attacker-chosen directory, on a runtime that
+    runs unattended with the operator's credentials in its environment.
+
+    Refused at config load, which is the last point where it is one line rather
+    than an incident. `https` gives the authentication the design already
+    assumes; loopback is exempt because there is no path to be on.
+
+    This is a floor, not the fix. Signing responses is the fix, and until that
+    lands TLS is what stands between a pull and a shell.
+    """
+    if not url:
+        return
+    from urllib.parse import urlparse
+
+    parsed = urlparse(str(url))
+    if parsed.scheme == "https":
+        return
+    if parsed.hostname in ("localhost", "127.0.0.1", "::1"):
+        return
+    raise ValueError(
+        f"{path}: hub.url must be https (got {parsed.scheme or 'no scheme'!r}). "
+        f"Responses from the plane are not authenticated — they are parsed, and "
+        f"a mirrored bead's gate runs its check through a shell — so a plaintext "
+        f"plane connection is remote code execution for anyone on the path. Use "
+        f"https, or a loopback address if the plane is on this machine."
+    )
+
+
 def _warn_unknown_nested(block_name: str, block: Any, consumed: set[str], path: Path) -> None:
     """Warn (loudly, once) about keys inside a nested block that nothing reads."""
     if not isinstance(block, dict):
@@ -592,6 +631,7 @@ class Config:
         if "hub" in data:
             hub = data["hub"] or {}
             _warn_unknown_nested("hub", hub, {"url", "actor", "secret_env", "timeout_s", "lease_ttl_s", "executor"}, path)
+            _require_authenticated_plane(hub.get("url"), path)
             config.hub = HubConfig(
                 url=hub.get("url"), actor=hub.get("actor", "harness"),
                 secret_env=hub.get("secret_env", "AGENTCO_HUB_SECRET"),
