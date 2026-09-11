@@ -271,6 +271,13 @@ SUPERSEDED_KEY = "superseded"
 # where the approval is re-checked at the choke point that flips the status.
 GATE_ANSWER_KEYS = ("verify_approval", "verify_rejection", "verify_result")
 
+# The subset that GRANTS something. Only an approval releases a gate, so only an
+# approval is worth forging — a rejection lands VERIFY_FAILED, which is not DONE
+# and which nobody attacks to get work accepted. `create()` strips all three,
+# because none of them may pre-exist the work; `update()` strips only this one,
+# so `reject_verify` can still record why it said no.
+GATE_RELEASING_KEYS = ("verify_approval",)
+
 
 def _recorded_executor(task: "Task") -> str | None:
     """Who this runtime considers to have executed a bead, or None.
@@ -597,7 +604,8 @@ def validate_sop(payload: object) -> dict:
 _CONTRACTED_METADATA_KEYS = ("verify", "divergence", "context_refs", "sop")
 
 
-def _without_gate_answers(metadata: dict | None, *, where: str) -> dict | None:
+def _without_gate_answers(metadata: dict | None, *, where: str,
+                          keys: tuple[str, ...] = GATE_ANSWER_KEYS) -> dict | None:
     """Drop any gate answer riding along with a bead being filed.
 
     Found by an adversarial review of the completion path, and it is a hole in
@@ -622,7 +630,7 @@ def _without_gate_answers(metadata: dict | None, *, where: str) -> dict | None:
     """
     if not metadata:
         return metadata
-    present = [k for k in GATE_ANSWER_KEYS if k in metadata]
+    present = [k for k in keys if k in metadata]
     if not present:
         return metadata
     print(
@@ -630,7 +638,7 @@ def _without_gate_answers(metadata: dict | None, *, where: str) -> dict | None:
         f"a gate answer cannot pre-exist the work it answers",
         file=sys.stderr,
     )
-    return {k: v for k, v in metadata.items() if k not in GATE_ANSWER_KEYS}
+    return {k: v for k, v in metadata.items() if k not in keys}
 
 
 def _validated_metadata(
@@ -1643,7 +1651,7 @@ class Beads:
         kwargs["metadata"] = metadata
         return kwargs
 
-    def _approval_answers_gate(self, task: Task, spec: dict, metadata: dict) -> bool:
+    def _approval_answers_gate(self, task: Task, spec: dict, approval: dict | None) -> bool:
         """Does this bead's record carry an attestation that releases the gate?
 
         Every condition `approve_verify` enforces is enforced again here,
@@ -1656,7 +1664,6 @@ class Beads:
         Returns False rather than raising: a bead arriving at the gate with no
         approval yet is the ordinary case, and it parks.
         """
-        approval = metadata.get("verify_approval")
         if not isinstance(approval, dict):
             return False
         approver = approval.get("approver")
@@ -1673,7 +1680,8 @@ class Beads:
             return False
         return approver != _recorded_executor(task)
 
-    def _apply_verify_gate(self, task: Task, spec: dict, kwargs: dict) -> dict:
+    def _apply_verify_gate(self, task: Task, spec: dict, kwargs: dict,
+                           attestation: dict | None = None) -> dict:
         """Rewrite a DONE-bound update according to the bead's verify payload.
 
         Returns the kwargs the write should actually apply. Deliberately runs
@@ -1702,8 +1710,9 @@ class Beads:
             # metadata arrives from the caller. Trusting `verify_approval`
             # because it is present would be finding 1 wearing a new hat —
             # authority read off an incoming payload.
-            if self._approval_answers_gate(task, spec, metadata):
-                approval = metadata["verify_approval"]
+            if self._approval_answers_gate(task, spec, attestation):
+                approval = dict(attestation)
+                metadata["verify_approval"] = approval
                 metadata["verify_result"] = {
                     "class": cls,
                     "check": verify_check_text(spec),
@@ -1760,6 +1769,7 @@ class Beads:
         task_id: str,
         allow_human_reassign: bool = False,
         allow_gate_change: bool = False,
+        attestation: dict | None = None,
         precheck=None,
         **kwargs,
     ) -> Task | None:
@@ -1822,8 +1832,10 @@ class Beads:
         on. A precheck that returns None simply contributes no extra fields.
         """
         if "metadata" in kwargs:
-            kwargs["metadata"] = _validated_metadata(
-                kwargs["metadata"], self.path.parent
+            kwargs["metadata"] = _without_gate_answers(
+                _validated_metadata(kwargs["metadata"], self.path.parent),
+                where=f"update({task_id})",
+                keys=GATE_RELEASING_KEYS,
             )
         gate_at_read = _UNREAD
         if kwargs.get("status") == TaskStatus.DONE:
@@ -1843,7 +1855,9 @@ class Beads:
                 # (task_class and friends) legitimately travels with an update.
                 spec = (current.metadata or {}).get("verify")
                 if spec is not None:
-                    kwargs = self._apply_verify_gate(current, spec, dict(kwargs))
+                    kwargs = self._apply_verify_gate(
+                        current, spec, dict(kwargs), attestation=attestation
+                    )
                 else:
                     action = self._classify_specless_done(current, kwargs, metadata_for_check)
                     if action == "await":
@@ -2571,14 +2585,32 @@ class Beads:
                 f"{verify_check_text(task.metadata.get('verify'))!r} did you "
                 f"find true? A name and a timestamp are not a verdict."
             )
-        metadata = dict(task.metadata)
-        metadata["verify_approval"] = {
+        # The attestation travels as an ARGUMENT, never inside metadata.
+        #
+        # Metadata is transport-reachable: `HubClient.mirror` copies a plane's
+        # metadata wholesale, and any caller can hand `update()` a dict. So an
+        # approval carried there is answerable by anyone who can write a payload
+        # and name a declared verifier — and verifier names are not secrets,
+        # they are in config and in `agentco verifiers` output. Measured: an
+        # executor forged an approval naming the declared verifier and closed
+        # its own judged gate.
+        #
+        # A keyword argument is not reachable that way. It is the same reasoning
+        # the plane applies to `by_plane`, which a cross-vendor review examined
+        # and endorsed: a Python keyword no transport reads off a payload cannot
+        # be requested remotely. This is NOT the `verify_gate=False` pattern in
+        # new clothes — that flag SKIPPED the check; this argument still faces
+        # every one of them (authenticated verifier, distinct from the executor,
+        # non-empty verdict) in `_approval_answers_gate`. What changed is who
+        # can put an approval in front of that check.
+        attestation = {
             "approver": approver,
             "approved_at": datetime.now(timezone.utc).isoformat(),
             # The contract's shape (schema/v1/attestation.yaml), emitted here
             # so the record is already the one a plane will accept.
             "verdict": {"passed": True, "reason": reason.strip()},
         }
+        metadata = dict(task.metadata)
         result = dict(metadata.get("verify_result") or {})
         if result:
             result["passed"] = True
@@ -2588,6 +2620,7 @@ class Beads:
             task_id,
             status=TaskStatus.DONE,
             metadata=metadata,
+            attestation=attestation,
         )
 
     def reject_verify(

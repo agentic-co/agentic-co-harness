@@ -93,3 +93,53 @@ def test_a_plane_url_this_runtime_cannot_authenticate_is_refused(tmp_path, url, 
     else:
         with pytest.raises(Exception, match="https"):
             Config.load(str(cfg))
+
+
+def test_a_declared_verifiers_name_is_not_enough_to_answer_a_gate(tmp_path, monkeypatch):
+    """The attack the first fix missed, and the one that actually matters.
+
+    An earlier test forged an approval naming an UNDECLARED approver, so it
+    proved only that the registry check runs. Verifier names are not secrets —
+    they are in config, in docs, in `agentco verifiers` output. The real
+    question is whether knowing one is enough.
+
+    It was. An executor forged an approval naming the declared verifier and
+    closed its own judged gate, satisfying every condition the choke point
+    checks: authenticated, distinct from the executor, carrying a verdict.
+
+    The fix is not another condition. It is that an attestation no longer
+    travels in metadata, which is transport-reachable — `mirror` copies a
+    plane's metadata wholesale — but as a keyword argument, which no transport
+    can set. Same reasoning the plane applies to `by_plane`.
+    """
+    monkeypatch.setenv("ASOP_VERIFIERS", "dana")
+    beads = Beads(tmp_path / "tasks.jsonl")
+    task = beads.create("work", "d", metadata={"verify": dict(GATE)})
+    claimed = beads.claim(task.id, "worker")
+    beads.report_result(task.id, claimed.lease_attempt, TaskStatus.DONE, result="did it")
+    assert beads.get(task.id).status is TaskStatus.AWAITING_VERIFY
+
+    forged = dict(beads.get(task.id).metadata)
+    forged["verify_approval"] = dict(FORGED)  # names 'dana', who IS declared
+    out = beads.update(task.id, status=TaskStatus.DONE, metadata=forged)
+
+    assert out.status is TaskStatus.AWAITING_VERIFY, (
+        "a forged approval naming a declared verifier released the gate"
+    )
+    assert "verify_approval" not in beads.get(task.id).metadata
+
+
+def test_a_rejection_can_still_record_why(tmp_path, monkeypatch):
+    """The strip must not become a wall. A rejection lands VERIFY_FAILED, which
+    is not DONE — nobody forges one to get work accepted — so `update` strips
+    only the key that grants something."""
+    monkeypatch.setenv("ASOP_VERIFIERS", "dana")
+    beads = Beads(tmp_path / "tasks.jsonl")
+    task = beads.create("work", "d", metadata={"verify": dict(GATE)})
+    claimed = beads.claim(task.id, "worker")
+    beads.report_result(task.id, claimed.lease_attempt, TaskStatus.DONE, result="did it")
+
+    rejected = beads.reject_verify(task.id, approver="dana", reason="wrong address")
+
+    assert rejected.status is TaskStatus.VERIFY_FAILED
+    assert "wrong address" in rejected.metadata["verify_rejection"]["reason"]
