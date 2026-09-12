@@ -79,12 +79,21 @@ def main() -> int:
             return False, "the user id was never supplied"
         return True, "the precondition is visible in the transcript"
 
+    # Three model roles, all stubbed: executor, verifier, router. Routing is
+    # infrastructure and runs for every document; without a router the agent
+    # correctly stays in triage forever, which is fail-closed but proves
+    # nothing about gates.
+    def route(_prompt: str) -> str:
+        return "Cancel Flight"
+
     agent = aa.ASOPAgent(
         tools=[],
         domain_policy=args.asop.read_text(),
         llm="stub-executor",
         verifier=aa.Verifier(identity="stub-verifier", judge=judge),
         identity="stub-executor",
+        route_fn=route,
+        max_refusals=3,
     )
     # The constructor must reject same-identity; give the verifier its own.
     state = agent.get_init_state([])
@@ -138,6 +147,40 @@ def main() -> int:
         ok = False
     if state.verdicts and state.step_index == 0 and len(state.verdicts) > 2:
         print("\nFAIL: gates passed but the procedure never advanced")
+        ok = False
+
+    # --- scenario 2: a gate that always refuses must escalate -------------
+    calls["n"] = 0
+
+    def always_refuse(_prompt: str):
+        return False, "never satisfied"
+
+    agent2 = aa.ASOPAgent(
+        tools=[],
+        domain_policy=args.asop.read_text(),
+        llm="stub-executor",
+        verifier=aa.Verifier(identity="stub-verifier", judge=always_refuse),
+        identity="stub-executor",
+        route_fn=route,
+        max_refusals=3,
+    )
+    st2 = agent2.get_init_state([])
+    for _ in range(8):
+        _m, st2 = agent2.generate_next_message(
+            UserMessage(role="user", content="cancel it"), st2
+        )
+
+    print("\n--- scenario 2: a gate that never passes ---")
+    print(f"  escalated: {st2.escalated}")
+    print(f"  step_index reached: {st2.step_index}")
+    if not st2.escalated:
+        print("  FAIL: the run looped on one step instead of escalating")
+        ok = False
+    if st2.step_index == 0:
+        print("  FAIL: escalation did not unblock the procedure")
+        ok = False
+    if any(v["passed"] for v in st2.verdicts):
+        print("  FAIL: a gate that always refuses recorded a pass")
         ok = False
 
     print("\nsmoke:", "ok" if ok else "BROKEN")

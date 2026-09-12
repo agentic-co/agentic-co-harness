@@ -97,6 +97,7 @@ class ASOP:
     # has one. v1 of every extraction had no entry point at all, which is how a
     # Modify Flight task reached Book Flight and jammed there for 42 turns.
     routing: tuple[tuple[str, str], ...] = ()
+    routing_text: str = ""
 
     def procedure(self, name: str) -> Optional[Procedure]:
         want = name.strip().lower()
@@ -250,6 +251,7 @@ def parse_asop(markdown: str) -> ASOP:
         preamble="\n\n".join(p for p in preamble_parts if p),
         procedures=procs,
         routing=_parse_routing(routing_body, [p.name for p in procs]),
+        routing_text=routing_body.strip(),
     )
 
 
@@ -509,6 +511,8 @@ class ASOPAgentState(LLMAgentState):  # type: ignore[misc,valid-type]
     """LLMAgentState plus where we are in the procedure."""
 
     conversation: int = -1
+    consecutive_refusals: int = 0
+    escalated: list[str] = []
     procedure: Optional[str] = None
     step_index: int = 0
     refusal: Optional[str] = None
@@ -532,6 +536,8 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
         llm_args: Optional[dict] = None,
         verifier: Optional[Verifier] = None,
         identity: str = "executor",
+        route_fn: Optional[Callable[[str], str]] = None,
+        max_refusals: int = 3,
     ) -> None:
         super().__init__(
             tools=tools, domain_policy=domain_policy, llm=llm, llm_args=llm_args
@@ -546,6 +552,14 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
         if verifier.identity == identity:
             raise ValueError("verifier and executor must be different parties")
         self.verifier = verifier
+        self._route_fn = route_fn
+        # A gate that refuses forever starves the task it is protecting. The
+        # first stepwise run spent 15 evaluations on one step across 4 tasks
+        # and ran out of turns. After this many consecutive refusals the step
+        # is ESCALATED: recorded as never attested, and stepped past so the
+        # run keeps producing evidence about later steps. It is not a pass and
+        # must never be counted as one.
+        self.max_refusals = max_refusals
         self.verdicts: list[Verdict] = []
 
     # -- prompt ----------------------------------------------------------
@@ -583,7 +597,7 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
         assistant_message, state = super().generate_next_message(message, state)
 
         if state.procedure is None:
-            state.procedure = self._select_procedure(state)
+            state.procedure = self._route(state)
             return assistant_message, state
 
         attempted = bool(getattr(assistant_message, "tool_calls", None))
@@ -591,34 +605,35 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
             self._run_gates(assistant_message, state)
         return assistant_message, state
 
-    def _select_procedure(self, state: "ASOPAgentState") -> Optional[str]:
-        """Pick the procedure from what the user has actually said.
-
-        Keyed off the procedure names in the document rather than a hardcoded
-        list, so an extraction that named its procedures differently still
-        routes instead of silently never starting.
-        """
-        said = " ".join(
-            str(getattr(m, "content", "") or "")
+    def _route(self, state: "ASOPAgentState") -> Optional[str]:
+        """The real routing call. See _select_procedure for why it is uniform."""
+        said = "\n".join(
+            f"user: {getattr(m, 'content', '') or ''}"
             for m in state.messages
             if getattr(m, "role", None) == "user"
-        ).lower()
-        # The document's own routing table first, when it has one. Longest
-        # phrase wins, so "change cabin" beats a bare "change".
-        for phrase, target in sorted(
-            self.asop.routing, key=lambda pr: -len(pr[0])
-        ):
-            if phrase in said:
-                return target
-
-        # Fallback for a document with no Routing section: match the
-        # procedure's own first word. This is what v1 had, and it is why
-        # "I'd like to change my flight" reached Book Flight — no procedure is
-        # named "change". Kept so v1 still runs and the two are comparable.
-        for p in self.asop.procedures:
-            key = p.name.lower().split()[0]
-            if key and key in said:
-                return p.name
+        ).strip()
+        if not said or self._route_fn is None:
+            return None
+        names = [p.name for p in self.asop.procedures]
+        guidance = (
+            f"The procedure document gives this routing guidance:\n\n{self.asop.routing_text}\n"
+            if self.asop.routing_text
+            else "The document gives no routing guidance; decide from the names alone.\n"
+        )
+        answer = self._route_fn(
+            "Choose which procedure this request belongs to.\n\n"
+            "PROCEDURES\n" + "\n".join("- " + n for n in names) + "\n\n"
+            f"{guidance}\n"
+            f"WHAT THE USER HAS SAID\n{said}\n\n"
+            "Answer with the procedure name exactly as written above and nothing "
+            "else. If the request is ambiguous, or the user has not yet said what "
+            "they want, answer NONE."
+        )
+        answer = (answer or "").strip().splitlines()[0].strip(" .`*") if answer else ""
+        low = answer.lower()
+        for n in names:
+            if n.lower() == low or n.lower() in low:
+                return n
         return None
 
     def _run_gates(self, assistant_message, state: "ASOPAgentState") -> None:
@@ -659,9 +674,35 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
             _record(entry)
             if not verdict.passed:
                 state.refusal = verdict.reason
+                state.consecutive_refusals += 1
+                if state.consecutive_refusals >= self.max_refusals:
+                    # Unblock the run without pretending the gate passed.
+                    state.escalated.append(step.label)
+                    _record(
+                        {
+                            "conversation": state.conversation,
+                            "procedure": step.procedure,
+                            "step": step.number,
+                            "label": step.label,
+                            "gate": kind.value,
+                            "passed": False,
+                            "escalated": True,
+                            "reason": (
+                                f"escalated after {state.consecutive_refusals} "
+                                f"consecutive refusals; last: {verdict.reason}"
+                            ),
+                            "verifier": verdict.verifier,
+                            "executor": verdict.executor,
+                            "fell_back": verdict.fell_back,
+                        }
+                    )
+                    state.consecutive_refusals = 0
+                    state.refusal = None
+                    state.step_index += 1
                 return
 
         state.refusal = None
+        state.consecutive_refusals = 0
         state.step_index += 1
 
     def get_init_state(self, message_history=None):  # type: ignore[override]
@@ -670,6 +711,8 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
             system_messages=base.system_messages,
             messages=base.messages,
             conversation=next(_CONVERSATION),
+            consecutive_refusals=0,
+            escalated=[],
             procedure=None,
             step_index=0,
             refusal=None,
@@ -702,6 +745,17 @@ def create_asop_agent(tools, domain_policy, **kwargs):
             )
             return parse_verdict(str(getattr(reply, "content", "") or ""))
 
+    def route_fn(prompt: str) -> str:
+        from tau2.utils.llm_utils import generate
+
+        reply = generate(
+            model=verifier_llm,
+            tools=[],
+            messages=[SystemMessage(role="system", content=prompt)],
+            call_name="asop_route",
+        )
+        return str(getattr(reply, "content", "") or "")
+
     return ASOPAgent(
         tools=tools,
         domain_policy=domain_policy,
@@ -709,6 +763,8 @@ def create_asop_agent(tools, domain_policy, **kwargs):
         llm_args=llm_args,
         verifier=Verifier(identity=f"verifier:{verifier_llm}", judge=judge),
         identity=f"executor:{llm}",
+        route_fn=kwargs.pop("route_fn", route_fn),
+        max_refusals=kwargs.pop("max_refusals", 3),
     )
 
 
