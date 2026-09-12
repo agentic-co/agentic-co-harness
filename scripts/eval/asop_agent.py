@@ -40,6 +40,11 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from enum import Enum
+import itertools
+import json
+import os
+import threading
+from pathlib import Path
 from typing import Any, Callable, Optional
 
 # ── the ASOP, parsed ─────────────────────────────────────────────────────────
@@ -230,6 +235,39 @@ def _title_of(step_body: str) -> str:
     if m:
         return m.group(1).strip()
     return step_body.strip().split(".")[0][:80]
+
+
+
+
+# ── the verdict sink ─────────────────────────────────────────────────────────
+#
+# The point of walking steps is not a better score. It is that a failure lands
+# ON A STEP — "Cancel Flight step 4's gate refused because eligibility was
+# never checked" — instead of on a whole run. A step-located refusal is an
+# adjudication, and adjudications are what draft the next version. A single
+# pass/fail for the conversation cannot feed that loop at all.
+#
+# So every verdict is written out as it happens, not summarised at the end.
+# tau2 builds agents inside its own runner, so there is no handle to read them
+# off afterwards; a sink the agent writes to is the way out that does not
+# require patching the benchmark.
+
+_SINK_LOCK = threading.Lock()
+_CONVERSATION = itertools.count()
+
+
+def _sink_path() -> Optional[Path]:
+    raw = os.environ.get("ASOP_VERDICT_LOG")
+    return Path(raw) if raw else None
+
+
+def _record(entry: dict) -> None:
+    path = _sink_path()
+    if path is None:
+        return
+    with _SINK_LOCK:
+        with path.open("a") as fh:
+            fh.write(json.dumps(entry) + "\n")
 
 
 # ── evidence and verdicts ────────────────────────────────────────────────────
@@ -437,6 +475,7 @@ You have NOT completed it. Address what is missing before trying again.
 class ASOPAgentState(LLMAgentState):  # type: ignore[misc,valid-type]
     """LLMAgentState plus where we are in the procedure."""
 
+    conversation: int = -1
     procedure: Optional[str] = None
     step_index: int = 0
     refusal: Optional[str] = None
@@ -558,17 +597,21 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
         for kind in step.gate_kinds:
             verdict = self.verifier.attest(evidence, kind, executor=self.identity)
             self.verdicts.append(verdict)
-            state.verdicts.append(
-                {
-                    "step": step.label,
-                    "gate": kind.value,
-                    "passed": verdict.passed,
-                    "reason": verdict.reason,
-                    "verifier": verdict.verifier,
-                    "executor": verdict.executor,
-                    "fell_back": verdict.fell_back,
-                }
-            )
+            entry = {
+                "conversation": state.conversation,
+                "procedure": step.procedure,
+                "step": step.number,
+                "step_title": step.title,
+                "label": step.label,
+                "gate": kind.value,
+                "passed": verdict.passed,
+                "reason": verdict.reason,
+                "verifier": verdict.verifier,
+                "executor": verdict.executor,
+                "fell_back": verdict.fell_back,
+            }
+            state.verdicts.append(entry)
+            _record(entry)
             if not verdict.passed:
                 state.refusal = verdict.reason
                 return
@@ -581,6 +624,7 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
         return ASOPAgentState(
             system_messages=base.system_messages,
             messages=base.messages,
+            conversation=next(_CONVERSATION),
             procedure=None,
             step_index=0,
             refusal=None,
@@ -628,6 +672,6 @@ def register() -> None:
     from tau2.registry import registry
 
     try:
-        registry.register_agent_factory("asop_stepwise", create_asop_agent)
+        registry.register_agent_factory(create_asop_agent, "asop_stepwise")
     except Exception:  # already registered
         pass
