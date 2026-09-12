@@ -235,7 +235,14 @@ def parse_asop(markdown: str) -> ASOP:
         clean = _clean_name(name)
         steps = _steps_in(body, clean)
         if name.strip().lower().startswith("routing"):
+            # Captured for the routing call, and deliberately NOT added to the
+            # preamble. The preamble is injected into every step prompt, so a
+            # routing table left in it becomes noise on every turn after the
+            # procedure is already chosen — and proposals only ever ADD text,
+            # so each round would inherit a longer prompt and the loop would
+            # degrade by construction. v2 lost to v1 on exactly this.
             routing_body = body
+            continue
         if steps:
             procedures.append(Procedure(name=clean, steps=steps))
         else:

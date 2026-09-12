@@ -223,3 +223,25 @@ def test_longer_routing_phrases_win():
     v2 = aa.parse_asop((ASOPS / "asop.claude.v2.md").read_text())
     ordered = [p for p, _ in sorted(v2.routing, key=lambda pr: -len(pr[0]))]
     assert len(ordered[0]) >= len(ordered[-1])
+
+
+def test_routing_never_leaks_into_the_per_step_preamble():
+    """The preamble is injected into EVERY step prompt.
+
+    A routing table left in it is noise on every turn after the procedure is
+    already chosen, and proposals only ever add text — so each round would
+    inherit a longer prompt and the loop would degrade by construction rather
+    than because the procedure got worse. v2 lost to v1 on exactly this.
+    """
+    v1 = aa.parse_asop((ASOPS / "asop.claude.md").read_text())
+    v2 = aa.parse_asop((ASOPS / "asop.claude.v2.md").read_text())
+
+    assert "Modify Flight |" not in v2.preamble
+    assert "## Routing" not in v2.preamble
+    # The routing text still exists — it just goes to the routing call only.
+    assert len(v2.routing_text.split()) > 100
+    assert v2.routing
+
+    # The two versions must present near-identical context per step, or the
+    # comparison measures prompt length instead of the revision.
+    assert abs(len(v2.preamble.split()) - len(v1.preamble.split())) < 30
