@@ -22,7 +22,7 @@ serialize. Two agents extending the same file silently clobber each other.
 
 - `main` here can sit **ahead of origin and unpushed** — check `git log origin/main..HEAD`
   before assuming the remote reflects local work. Do not force-push or rebase without asking.
-- The contract package `asop-spec` comes from `github.com/alex/asop` **by version**, not by
+- The contract package `asop-spec` comes from `github.com/mabidoli/asop` **by version**, not by
   path. The spec is the source of truth for gate/refusal/attestation semantics; this repo
   implements it, it does not define it.
 - Tests: `uv run pytest -q`. Green baseline is **1249 passed, 1 skipped**.
