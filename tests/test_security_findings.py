@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pytest
 
-from agentco_harness.beads import Beads, TaskStatus
+from agentco_harness.beads import DISPATCH_REFUSAL_KEY, Beads, TaskStatus
 from agentco_harness.config import Config
 
 GATE = {"class": "judged", "check": "is it right?"}
@@ -143,3 +143,85 @@ def test_a_rejection_can_still_record_why(tmp_path, monkeypatch):
 
     assert rejected.status is TaskStatus.VERIFY_FAILED
     assert "wrong address" in rejected.metadata["verify_rejection"]["reason"]
+
+
+def _orch(tmp_path):
+    from agentco_harness.config import Config
+    from agentco_harness.orchestrator import Orchestrator
+
+    config = Config()
+    config.tasks_path = str(tmp_path / "store" / "tasks.jsonl")
+    (tmp_path / "store").mkdir(exist_ok=True)
+    config.notify.enabled = False
+    return Orchestrator(config)
+
+
+def test_an_agent_is_not_run_where_it_could_edit_its_own_bead(tmp_path):
+    """`update()` is a choke point for callers, not for writers.
+
+    Records carry no integrity field and the agent CLI runs with permissions
+    skipped inside `metadata.workdir`. When that directory contains the store,
+    the agent can set its own bead to done with a fabricated result and never
+    pass through `update()` — every gate, lease and attestation check sits on a
+    road it can walk around.
+
+    This is where "the agent can do anything in its workdir" stops being the
+    product. Doing anything to the WORK is the product; the queue governing the
+    agent is not part of the agent's work.
+    """
+    orch = _orch(tmp_path)
+    store_dir = str(tmp_path / "store")
+    task = orch.beads.create("work", "d", assigned_agent="claude",
+                             metadata={"workdir": store_dir})
+
+    assert orch._workdir_is_safe(orch.beads.get(task.id)) is False
+    after = orch.beads.get(task.id)
+    assert after.metadata[DISPATCH_REFUSAL_KEY]["code"] == "workdir_contains_store"
+    assert task.id not in [t.id for t in orch.beads.ready()]
+
+
+def test_a_symlink_cannot_put_the_store_back_in_scope(tmp_path):
+    """A link inside a benign workdir is the obvious way around a string
+    comparison, so the check resolves before comparing."""
+    orch = _orch(tmp_path)
+    benign = tmp_path / "repo"
+    benign.mkdir()
+    (benign / "link").symlink_to(tmp_path / "store")
+    task = orch.beads.create("work", "d", assigned_agent="claude",
+                             metadata={"workdir": str(benign / "link")})
+
+    assert orch._workdir_is_safe(orch.beads.get(task.id)) is False
+
+
+def test_an_ordinary_repository_workdir_still_runs(tmp_path):
+    """The guard must not become a wall — a normal workdir is the common case."""
+    orch = _orch(tmp_path)
+    repo = tmp_path / "some-project"
+    repo.mkdir()
+    task = orch.beads.create("work", "d", assigned_agent="claude",
+                             metadata={"workdir": str(repo)})
+
+    assert orch._workdir_is_safe(orch.beads.get(task.id)) is True
+    assert DISPATCH_REFUSAL_KEY not in orch.beads.get(task.id).metadata
+
+
+def test_a_child_starts_with_no_operator_credentials(monkeypatch):
+    """An agent that never receives a credential cannot leak one, however it is
+    prompted — which matters most on a route that runs with permissions skipped.
+
+    The denylist this replaced named three keys and passed everything else, so
+    a child started with the whole of ~/.claude/.env already in its process.
+    """
+    from agentco_harness.executor import _clean_env
+
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "secret-value")
+    monkeypatch.setenv("FRONTSTEPS_ADO_PAT", "secret-value")
+    monkeypatch.setenv("GOOGLE_OAUTH_CLIENT_SECRET", "secret-value")
+
+    env = _clean_env()
+
+    assert "TELEGRAM_BOT_TOKEN" not in env
+    assert "FRONTSTEPS_ADO_PAT" not in env
+    assert "GOOGLE_OAUTH_CLIENT_SECRET" not in env
+    # and the child can still find its interpreter and its home
+    assert "PATH" in env and "HOME" in env

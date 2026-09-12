@@ -180,8 +180,47 @@ class ExecResult:
     idle_timeout_hit: bool = False
 
 
+# What a child actually needs, rather than what the parent happens to hold.
+#
+# The denylist this replaced named three keys and passed everything else, so an
+# agent running with permissions skipped started with every operator secret
+# already in its process — the Telegram token, the ADO PAT, the Outlook and
+# Google secrets, all of `~/.claude/.env`. None of that is required to edit a
+# file or run a test, and an agent that never receives a credential cannot leak
+# one, however it is prompted.
+#
+# Each route adds what IT needs on top (`_claude_env`, `_zai_env`), which is
+# also what makes the grant readable: the vendor key a route uses is named at
+# the route, not inherited invisibly.
+_ENV_ALLOW = frozenset({
+    "PATH", "HOME", "USER", "LOGNAME", "SHELL", "TERM", "TERMINFO",
+    "LANG", "TMPDIR", "TZ",
+    # TLS trust. Omitting these does not fail loudly — it fails as a
+    # certificate error deep inside a vendor CLI, which reads as the model
+    # having no answer.
+    "SSL_CERT_FILE", "SSL_CERT_DIR", "REQUESTS_CA_BUNDLE", "NODE_EXTRA_CA_CERTS",
+    # Claude Code keys its credential store by $USER and reads its config dir
+    # from here; dropping it forks the OAuth refresh-token lineage, which has
+    # bitten this estate twice.
+    "CLAUDE_CONFIG_DIR",
+})
+_ENV_ALLOW_PREFIXES = ("LC_",)
+
+
 def _clean_env() -> dict[str, str]:
-    return {k: v for k, v in os.environ.items() if k not in _STRIP_KEYS}
+    """The environment a subprocess gets: an allowlist, not a denylist.
+
+    `_STRIP_KEYS` still matters and is applied on top, because two of its
+    entries (`ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`) are names a ROUTE may
+    legitimately set afterwards — the strip is about what must not be inherited,
+    the allowlist about what may be.
+    """
+    env = {
+        k: v for k, v in os.environ.items()
+        if (k in _ENV_ALLOW or k.startswith(_ENV_ALLOW_PREFIXES))
+        and k not in _STRIP_KEYS
+    }
+    return env
 
 
 # Unattended-billing opt-in (2026-08-25, sandbox-scaleout step 1): when

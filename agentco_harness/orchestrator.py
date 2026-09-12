@@ -738,6 +738,54 @@ class Orchestrator:
             return None
         return claimed.lease_attempt
 
+    def _workdir_is_safe(self, task: Task) -> bool:
+        """Refuse to run an agent in a directory that contains the bead store.
+
+        `update()` is a choke point for CALLERS. It is not one for WRITERS:
+        records in `tasks.jsonl` carry no integrity field, and the agent CLI
+        runs with permissions skipped inside `metadata.workdir`. Whenever that
+        directory contains the store, the agent can edit its own bead to `done`
+        with a fabricated `verify_result` and never pass through `update()` at
+        all — every gate, every lease and every attestation check sits on a road
+        the agent can simply walk around.
+
+        This is the line where "the agent can do anything in its workdir" stops
+        being the product. Doing anything to the WORK is the product. The queue
+        that governs the agent is not part of the agent's work.
+
+        Symlinks resolved before comparing, since a link inside a benign workdir
+        is the obvious way to get the store back into scope.
+        """
+        raw = (task.metadata or {}).get("workdir")
+        if not raw:
+            return True
+        try:
+            workdir = Path(str(raw)).resolve()
+            store = Path(self.config.tasks_path).resolve().parent
+        except OSError as e:
+            self.beads.refuse_dispatch(
+                task.id, code="workdir_unresolvable",
+                message=f"workdir {raw!r} could not be resolved: {e}",
+                remediation="Point workdir at a real directory.",
+            )
+            return False
+        if workdir == store or store in workdir.parents or workdir in store.parents:
+            self.beads.refuse_dispatch(
+                task.id,
+                code="workdir_contains_store",
+                message=(
+                    f"workdir {workdir} contains or is the bead store at {store}; "
+                    f"an agent running there could edit its own bead without "
+                    f"passing the gate"
+                ),
+                remediation=(
+                    "Point workdir at the repository the work is in. The store "
+                    "must sit outside anything an executor can write."
+                ),
+            )
+            return False
+        return True
+
     def _fail_with_rca(
         self, task: Task, result: str | None, attempt: int | None = None
     ) -> Task | None:
@@ -1478,6 +1526,10 @@ class Orchestrator:
         assignee scheme gets the same treatment so an unknown token is never
         silently routed to a model.
         """
+        # Before anything is claimed or run: an agent must not be pointed at a
+        # directory containing the queue that governs it.
+        if not self._workdir_is_safe(task):
+            return False
         if task.assigned_to is not None:
             assignee = task.assigned_to
             if isinstance(assignee, str) and assignee.startswith("human:"):
@@ -2132,6 +2184,10 @@ class Orchestrator:
         and made the three box-scout incidents invisible in exactly the signal
         that should have caught them. A skip that repeats forever is not a skip.
         """
+        # Same guard as the cycle path: both are dispatch entry points, and a
+        # containment check on only one of them is a containment check.
+        if not self._workdir_is_safe(task):
+            return False
         if not task.assigned_agent:
             reason = (
                 "task reached dispatch with no assigned_agent and no assigned_to — "
