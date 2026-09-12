@@ -641,6 +641,19 @@ def _without_gate_answers(metadata: dict | None, *, where: str,
     return {k: v for k, v in metadata.items() if k not in keys}
 
 
+def _gate_env() -> dict[str, str]:
+    """Environment for a gate subprocess: the executor's allowlist.
+
+    Imported lazily to keep `beads` free of an import cycle with `executor` —
+    the allowlist lives there because that is where every other spawn path
+    reads it, and two copies of this list is exactly the divergence that would
+    leave one path leaking again.
+    """
+    from .executor import _clean_env
+
+    return _clean_env()
+
+
 def _validated_metadata(
     metadata: dict | None, base_dir: Path | str | None = None
 ) -> dict | None:
@@ -1442,12 +1455,33 @@ class Beads:
         return None
 
     def _run_one_stage(self, command: str, cwd: str, timeout: int) -> dict:
-        """Run ONE command fresh and report `passed`/`exit_code`/`output_tail`."""
+        """Run ONE command fresh and report `passed`/`exit_code`/`output_tail`.
+
+        **The environment is the allowlist, not the operator's.** This path
+        passed no `env=` at all, so a gate check inherited every secret the
+        runtime holds — measured, with a probe secret coming back out of a
+        check's own stdout. The executor routes were tightened when the
+        allowlist landed and this one was missed, which is the usual shape: an
+        allowlist applied to some spawn paths is a denylist.
+
+        **What this does NOT do is contain the check.** `shell=True` is the
+        contract here — a deterministic gate IS a command — and a command goes
+        wherever the process can reach. Measured: a check declaring
+        `cwd: /tmp` read the bead store anyway. So `cwd` is a starting
+        directory, never a boundary, and the store is not protected by it.
+
+        The real control is upstream, in who may write a `check` string: a gate
+        is pinned at filing and cannot be swapped at completion, and a plane
+        that supplies one must be authenticated (`hub.url` must be https). If
+        that upstream ever fails, nothing here will save it, and the honest
+        thing is to say so rather than imply that a directory argument does.
+        """
         try:
             proc = subprocess.run(
                 command,
                 shell=True,
                 cwd=cwd,
+                env=_gate_env(),
                 capture_output=True,
                 text=True,
                 timeout=timeout,

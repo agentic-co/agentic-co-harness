@@ -225,3 +225,75 @@ def test_a_child_starts_with_no_operator_credentials(monkeypatch):
     assert "GOOGLE_OAUTH_CLIENT_SECRET" not in env
     # and the child can still find its interpreter and its home
     assert "PATH" in env and "HOME" in env
+
+
+def test_a_gate_check_does_not_inherit_the_operators_secrets(tmp_path, monkeypatch):
+    """Found by a second review, in a path the first fix missed.
+
+    The allowlist landed on the executor's spawn routes. The gate subprocess
+    passed no `env=` at all, so a deterministic check — an arbitrary shell
+    command — started with every secret the runtime holds. Measured by having a
+    check print one back out of its own stdout.
+
+    An allowlist applied to some spawn paths is a denylist.
+    """
+    monkeypatch.setenv("PROBE_OPERATOR_SECRET", "leaked-value")
+    beads = Beads(tmp_path / "tasks.jsonl")
+    task = beads.create(
+        "gate probe", "d",
+        metadata={"verify": {
+            "class": "deterministic",
+            "check": 'echo "SECRET=${PROBE_OPERATOR_SECRET:-absent}"',
+        }},
+    )
+    claimed = beads.claim(task.id, "worker")
+    out = beads.report_result(task.id, claimed.lease_attempt, TaskStatus.DONE, result="x")
+
+    tail = (out.metadata.get("verify_result") or {}).get("output_tail", "")
+    assert "SECRET=absent" in tail
+    assert "leaked-value" not in tail
+
+
+def test_every_spawn_route_uses_the_same_allowlist(monkeypatch):
+    """The z.ai route rebuilt its environment as a denylist over os.environ, so
+    work routed there handed the child 75 variables where the allowlist gives
+    nine. Two copies of an environment policy is how one of them drifts."""
+    monkeypatch.setenv("PROBE_OPERATOR_SECRET", "leaked-value")
+    monkeypatch.setenv("ZAI_API_KEY", "test-key")
+    from agentco_harness.executor import _clean_env, _zai_env
+
+    zai = _zai_env()
+    assert "PROBE_OPERATOR_SECRET" not in zai
+    # and the route still carries what it needs to reach z.ai at all
+    assert zai["ANTHROPIC_AUTH_TOKEN"] and zai["ANTHROPIC_BASE_URL"]
+    assert set(_clean_env()) <= set(zai)
+
+
+def test_cwd_is_a_starting_directory_and_not_a_boundary(tmp_path):
+    """Pinned deliberately as a NON-property, so nobody later reads the workdir
+    guard as containment for gate checks.
+
+    `shell=True` is the contract — a deterministic gate IS a command — and a
+    command goes wherever the process can reach. A check declaring `cwd: /tmp`
+    reads the bead store anyway. The control is upstream, in who may write a
+    `check` string: the gate is pinned at filing and cannot be swapped at
+    completion, and a plane supplying one must be authenticated.
+
+    If this test ever fails because the store became unreachable, that is a real
+    containment boundary arriving and this test should be replaced by one that
+    asserts it.
+    """
+    beads = Beads(tmp_path / "tasks.jsonl")
+    store = tmp_path / "tasks.jsonl"
+    task = beads.create(
+        "reach", "d",
+        metadata={"verify": {
+            "class": "deterministic", "cwd": "/tmp",
+            "check": f'ls {store} >/dev/null && echo REACHED',
+        }},
+    )
+    claimed = beads.claim(task.id, "worker")
+    out = beads.report_result(task.id, claimed.lease_attempt, TaskStatus.DONE, result="x")
+
+    tail = (out.metadata.get("verify_result") or {}).get("output_tail", "")
+    assert "REACHED" in tail, "if this changed, containment arrived — assert it instead"

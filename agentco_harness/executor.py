@@ -277,7 +277,11 @@ def _zai_env(api_key: str | None = None) -> dict[str, str]:
     # Strip CLAUDECODE (no nesting) and ANTHROPIC_API_KEY (x-api-key must not win over
     # the Bearer token). Set ANTHROPIC_AUTH_TOKEN (Bearer) + ANTHROPIC_BASE_URL, and map
     # the CLI model tiers to GLM so a model=None subagent doesn't request a claude-* name.
-    env = {k: v for k, v in os.environ.items() if k not in _ZAI_STRIP_KEYS}
+    # `_clean_env()`, not a denylist over the whole environment. This route was
+    # missed when the allowlist landed, so z.ai-bound work still handed the
+    # child every operator secret — 75 variables against the allowlist's nine.
+    # An allowlist applied to two of three spawn paths is a denylist.
+    env = _clean_env()
     env["ANTHROPIC_AUTH_TOKEN"] = key
     env["ANTHROPIC_BASE_URL"] = _ZAI_BASE_URL
     env.update(_ZAI_MODEL_ENV)
