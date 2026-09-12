@@ -15,8 +15,9 @@ Codex, and agy are all working this front, and that file is what keeps them from
   where a bead reaches `done`; every path (`complete()`, the CLI, the orchestrator, the agent
   itself) goes through it. Do not add a second way to reach `done`.
 - **`asop-spec` arrives by version, never by path.** Gate kinds, refusal codes, and attestation
-  shape are defined in `github.com/mabidoli/asop` — change the spec there and adopt it here;
-  don't fork the semantics locally.
+  shape are defined by the `asop-spec` package — change the spec at its own source and adopt a
+  new version here; don't fork the semantics locally. (The rule applies to this line too: a
+  repository URL is a path, so the spec is named by package, not located by link.)
 - **Never push or rebase without checking `git log origin/main..HEAD` first.** This repo
   routinely carries unpushed local commits.
 - Tests are `uv run pytest -q`; the green baseline is 1249 passed, 1 skipped.
