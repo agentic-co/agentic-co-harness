@@ -2,6 +2,13 @@
 
 A small, reproducible experiment, published whichever way it comes out.
 
+> **Status: run complete. The result is null and the design turned out not to
+> test the thing it was built for.** Start with
+> [What this does NOT test](#what-this-does-not-test), then
+> [Results](#results). Those two sections and one corrected sentence under
+> [The question](#the-question) were added after the run; every other word is
+> as it stood before any arm executed.
+
 ## The question
 
 Everyone accepts that telling an agent the rules helps. This asks something
@@ -9,7 +16,14 @@ narrower: **holding the rules constant, does expressing them as an ordered
 procedure with explicit preconditions and gates change how reliably an agent
 follows them?**
 
-That is the claim behind ASOP, and it is separable from "prompting works".
+That is a question about the SHAPE OF A PROMPT, and it is separable from
+"prompting works".
+
+**It is not the claim behind ASOP.** An earlier version of this line said it
+was, which was wrong and is corrected here rather than quietly deleted. The
+claim behind ASOP is that verification is separated from execution — a gate is
+actually run, the executor cannot attest to its own work, and outcomes attach
+to a version. This experiment tests none of that; see below.
 
 ## The design
 
@@ -34,6 +48,41 @@ measurement:
 - all three beat prose → the effect is structural;
 - one beats prose → the effect was authorship, and n=1 would have fooled us;
 - the spread across C1–C3 is itself the error bar on "who wrote it".
+
+## What this does NOT test
+
+Added after the run, because the limitation is fundamental and a reader deserves
+it before the numbers rather than after.
+
+Every arm delivers its document **whole, as a single system prompt**, and the
+agent then runs one uninterrupted conversation. τ²-bench owns that loop. So in
+every arm, including the treatments:
+
+- no step boundary exists — the procedure is never walked;
+- **no gate is ever evaluated**, only described;
+- there is no verifier, and nothing prevents the agent from asserting its own
+  success;
+- no attestation is produced, and no outcome attaches to a version.
+
+The ASOPs here *describe* gates. Nothing ran one. The execution runtime that
+implements steps, gates and attestations was not in the loop at any point.
+
+What follows from that: **this experiment could not have validated or refuted
+ASOP even with a perfect model.** At best it could have shown that a
+procedure-shaped prompt reads better than a prose one. That is worth knowing and
+it is not the thesis.
+
+The missing arm is the one that matters:
+
+| arm | document | execution |
+|---|---|---|
+| B | prose | single shot |
+| C1–C3 | ASOP | single shot |
+| **(c)** | **ASOP** | **step by step, gate evaluated after each, executor ≠ verifier** |
+
+**(b) vs (c) is the comparison that tests the claim** — same document, different
+execution model. It does not exist yet. Building it means writing a τ²-bench
+agent adapter that hands turns to the runtime so gates fire between steps.
 
 ## Blinding
 
@@ -159,6 +208,76 @@ exclusion set covers every compromised arm.
   primary, always** — not only when it is favourable.
 - If the two disagree, the deviations mattered, and the affected arm is
   reported as compromised rather than averaged into the treatment mean.
+
+## Results
+
+Run 2026-09-12. Agent `gpt-oss-20b`, simulated customer `gemma-4-31b`, both
+local via LM Studio. 13 TEST tasks × 2 trials = 26 runs per arm.
+
+| arm | | pass^1 | pass^2 | successes |
+|---|---|---|---|---|
+| **A** | no policy | 0.115 | 0.077 | 3/26 |
+| **B** | prose (baseline) | 0.154 | 0.000 | 4/26 |
+| **C1** | claude | 0.231 | 0.077 | 6/26 |
+| **C2** | codex | 0.077 | 0.077 | 2/26 |
+| **C3** | agy | 0.115 | 0.077 | 3/26 |
+| | **C mean** | **0.141** | **0.077** | |
+
+**Primary comparison, B vs C-mean: −0.013 on pass^1.** The treatment mean is
+below the baseline. Fisher exact on the strongest treatment against the
+baseline (6/26 vs 4/26) gives **p = 0.73**.
+
+### The instrument did not discriminate
+
+**Arm A carried no policy at all and still scored 0.115 / 0.077** — beating C2
+and tying C3. The pre-registered rule was that a non-zero score there means the
+comparison is invalid. It fired.
+
+**7 of the 13 TEST tasks were never solved by any arm in any trial** (7, 12, 21,
+23, 37, 39, 44). Six tasks ever produced a success, and task 16 is solved by
+almost everything including the no-policy arm. Published τ²-bench airline
+results with frontier models run far above this; at 8–23% the agent cannot
+complete the work regardless of what it is told, so procedure quality has
+nothing to act on.
+
+This is an instrument failure, not a finding about the treatment. A setup that
+cannot tell "no policy" apart from "the policy" says nothing about the policy,
+and reporting this as "ASOPs did not help" would be as dishonest as reporting
+the pass^2 column as a win.
+
+### The sensitivity analysis removed the one apparent win
+
+Excluding tasks 8, 23 and 25 exactly as pre-registered above:
+
+| arm | pass^1 | pass^2 |
+|---|---|---|
+| A | 0.150 | 0.100 |
+| B | 0.150 | 0.000 |
+| C1 | 0.200 | **0.000** |
+| C2 | 0.100 | 0.100 |
+| C3 | 0.050 | **0.000** |
+
+C1's only pass^2 success was task **8**. C3's was task **25**. Both are on the
+exclusion list. Removing them drops both arms to 0.000 — identical to prose —
+and the C-mean pass^2 advantage falls from +0.077 to +0.033, carried entirely by
+C2, which also ties the no-policy arm.
+
+The single number that looked like a win for the treatment was produced entirely
+by the three tasks already written down as compromised. The rule existed so it
+could not be chosen after seeing the numbers, and that is what it did.
+
+### What would have to change
+
+1. **A stronger agent model.** The baseline must sit well above floor before a
+   treatment has room to move it.
+2. **A precondition gate on the experiment itself**: require arm A ≈ 0 *and* arm
+   B clearly above floor before any treatment arm is worth running. That check
+   costs one arm and would have ended this run in an hour.
+3. **Arm (c)** — see [What this does NOT test](#what-this-does-not-test).
+   Without it, no configuration of this experiment tests the thesis.
+
+More tasks and more trials matter too, but only after (1) and (3). At 13 tasks
+and 2 trials nothing short of an enormous effect is detectable.
 
 ## Attribution and licence
 
