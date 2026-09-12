@@ -20,4 +20,4 @@ Codex, and agy are all working this front, and that file is what keeps them from
   repository URL is a path, so the spec is named by package, not located by link.)
 - **Never push or rebase without checking `git log origin/main..HEAD` first.** This repo
   routinely carries unpushed local commits.
-- Tests are `uv run pytest -q`; the green baseline is 1249 passed, 1 skipped.
+- Tests are `uv run pytest -q`; the green baseline is 1345 passed, 2 skipped.
