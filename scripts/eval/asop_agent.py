@@ -93,6 +93,10 @@ class Procedure:
 class ASOP:
     preamble: str
     procedures: tuple[Procedure, ...]
+    # phrase -> procedure name, read off a "## Routing" table when the document
+    # has one. v1 of every extraction had no entry point at all, which is how a
+    # Modify Flight task reached Book Flight and jammed there for 42 turns.
+    routing: tuple[tuple[str, str], ...] = ()
 
     def procedure(self, name: str) -> Optional[Procedure]:
         want = name.strip().lower()
@@ -177,6 +181,30 @@ def _steps_in(body: str, procedure: str) -> tuple[Step, ...]:
     )
 
 
+_ROUTING_ROW_RE = re.compile(r"^\|([^|]+)\|([^|]+)\|\s*$", re.M)
+
+
+def _parse_routing(section_body: str, procedures: list[str]) -> tuple[tuple[str, str], ...]:
+    """Read a Routing table into phrase -> procedure pairs.
+
+    The table is prose written for a human executor; this turns the same rows
+    into something the adapter can select on, so the document and the machine
+    agree on routing instead of each having its own idea.
+    """
+    known = {p.lower(): p for p in procedures}
+    out: list[tuple[str, str]] = []
+    for row in _ROUTING_ROW_RE.finditer(section_body):
+        phrases, target = row.group(1).strip(), row.group(2).strip()
+        if target.lower() not in known or set(target) <= set("- "):
+            continue
+        for phrase in re.split(r"[;,]| or ", phrases.replace("The user wants to...", "")):
+            phrase = phrase.strip().strip(".").lower()
+            phrase = re.sub(r"^(an?|the)\s+", "", phrase)
+            if len(phrase) >= 3:
+                out.append((phrase, known[target.lower()]))
+    return tuple(out)
+
+
 def parse_asop(markdown: str) -> ASOP:
     """Split an extracted ASOP into procedures and steps.
 
@@ -198,12 +226,15 @@ def parse_asop(markdown: str) -> ASOP:
 
     preamble_parts = [markdown[: bounds[0][0]].strip()]
     procedures: list[Procedure] = []
+    routing_body = ""
     for i, (start, name) in enumerate(bounds):
         end = bounds[i + 1][0] if i + 1 < len(bounds) else len(markdown)
         block = markdown[start:end]
         body = block.split("\n", 1)[1] if "\n" in block else ""
         clean = _clean_name(name)
         steps = _steps_in(body, clean)
+        if name.strip().lower().startswith("routing"):
+            routing_body = body
         if steps:
             procedures.append(Procedure(name=clean, steps=steps))
         else:
@@ -214,9 +245,11 @@ def parse_asop(markdown: str) -> ASOP:
 
     if not procedures:
         raise ValueError("no section yielded a step — is this an ASOP?")
+    procs = tuple(procedures)
     return ASOP(
         preamble="\n\n".join(p for p in preamble_parts if p),
-        procedures=tuple(procedures),
+        procedures=procs,
+        routing=_parse_routing(routing_body, [p.name for p in procs]),
     )
 
 
@@ -570,6 +603,18 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
             for m in state.messages
             if getattr(m, "role", None) == "user"
         ).lower()
+        # The document's own routing table first, when it has one. Longest
+        # phrase wins, so "change cabin" beats a bare "change".
+        for phrase, target in sorted(
+            self.asop.routing, key=lambda pr: -len(pr[0])
+        ):
+            if phrase in said:
+                return target
+
+        # Fallback for a document with no Routing section: match the
+        # procedure's own first word. This is what v1 had, and it is why
+        # "I'd like to change my flight" reached Book Flight — no procedure is
+        # named "change". Kept so v1 still runs and the two are comparable.
         for p in self.asop.procedures:
             key = p.name.lower().split()[0]
             if key and key in said:

@@ -189,3 +189,37 @@ def test_agent_refuses_to_run_without_a_verifier():
     """Arm (c) without a verifier is arm (b) wearing its name."""
     with pytest.raises(ValueError, match="requires a verifier"):
         aa.ASOPAgent(tools=[], domain_policy=SAMPLE, llm="x", verifier=None)
+
+
+# ── routing, added in ASOP v2 ────────────────────────────────────────────────
+
+
+def test_v1_has_no_routing_and_v2_does():
+    """The first real arm (c) run localised a failure to a missing entry point.
+
+    v1 of every extraction jumps straight into procedures without saying how to
+    pick one, so "I'd like to change my flight" matched nothing and the executor
+    jammed on step 1 of whichever procedure a stray word hit. v2 adds the table
+    that was missing. This test is the regression guard on that revision.
+    """
+    v1 = aa.parse_asop((ASOPS / "asop.claude.md").read_text())
+    v2 = aa.parse_asop((ASOPS / "asop.claude.v2.md").read_text())
+    assert v1.routing == ()
+    assert len(v2.routing) > 10
+
+
+def test_v2_routes_the_request_that_v1_misrouted():
+    v2 = aa.parse_asop((ASOPS / "asop.claude.v2.md").read_text())
+    said = "i'd like to change my flight"
+    hit = next(
+        (t for p, t in sorted(v2.routing, key=lambda pr: -len(pr[0])) if p in said),
+        None,
+    )
+    assert hit == "Modify Flight"
+
+
+def test_longer_routing_phrases_win():
+    """"change cabin" must not lose to a bare "change" that happens to sort first."""
+    v2 = aa.parse_asop((ASOPS / "asop.claude.v2.md").read_text())
+    ordered = [p for p, _ in sorted(v2.routing, key=lambda pr: -len(pr[0]))]
+    assert len(ordered[0]) >= len(ordered[-1])
