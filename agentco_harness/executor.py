@@ -934,6 +934,25 @@ def run_agy_task(
 
     Prompt goes as an argument, not stdin — agy's print mode takes it
     positionally.
+
+    **An accepted exception, not an oversight.** Every other route here passes
+    the prompt on stdin by stated invariant, because argv is world-readable:
+    for the duration of a run, `ps` shows any local process the bead's full
+    text. A security review raised it, and the answer is a deliberate choice
+    rather than a missing option, so it is written down instead of left to look
+    like one.
+
+    Checked against the CLI directly (agy 1.2.0): `-p` REQUIRES its argument —
+    `agy --input-format text -p` exits with "flag needs an argument", and
+    putting the flag after `-p` makes agy read the flag itself as the prompt.
+    The only stdin path is `--input-format stream-json`, which mandates
+    `--output-format stream-json` and NDJSON framing, i.e. replacing this
+    route's output parsing and telemetry extraction wholesale.
+
+    So the trade is: a bead's text visible to local processes on a
+    single-user machine, against rewriting the I/O contract of one vendor
+    route. Taken knowingly. Revisit if this ever runs on a shared host, where
+    "local processes" stops meaning "the operator's own".
     """
     exe = shutil.which(agy_bin) or agy_bin
     cmd = [exe, "--print", prompt, "--dangerously-skip-permissions",
