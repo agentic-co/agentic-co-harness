@@ -1,0 +1,39 @@
+{
+  "domain": "airline",
+  "seed": 20260912,
+  "gradeable_tasks": 26,
+  "read_only_excluded": 24,
+  "dev": [
+    "30",
+    "24",
+    "20",
+    "42",
+    "14",
+    "15",
+    "29",
+    "40",
+    "35",
+    "19",
+    "18",
+    "22",
+    "17"
+  ],
+  "test": [
+    "44",
+    "21",
+    "39",
+    "11",
+    "25",
+    "32",
+    "33",
+    "7",
+    "12",
+    "16",
+    "23",
+    "37",
+    "8"
+  ],
+  "scoring": "EvaluationType.ENV \u2014 database-state hash only, no judge",
+  "v1_policy_sha": "10dc052542152120",
+  "v1_policy_words": 1313
+}
