@@ -1,29 +1,69 @@
-# τ²-bench airline: does procedure STRUCTURE change outcomes?
+# τ²-bench airline: can a procedure get better by being run?
 
 A small, reproducible experiment, published whichever way it comes out.
 
-> **Status: run complete. The result is null and the design turned out not to
-> test the thing it was built for.** Start with
-> [What this does NOT test](#what-this-does-not-test), then
-> [Results](#results). Those two sections and one corrected sentence under
-> [The question](#the-question) were added after the run; every other word is
-> as it stood before any arm executed.
+> **Where this stands.** Round one asked a narrower question — does an
+> ASOP-*shaped* prompt beat a prose one on a single execution — and came back
+> [null](#round-one-the-null-result). The design could not have answered the
+> real question anyway; [why is here](#what-round-one-did-not-test).
+>
+> The experiment has been reframed around what the format is actually for.
+> Start with [What this measures](#what-this-measures). The round-one material
+> below it is kept unchanged, including its pre-registration, because deleting
+> a null result you have published is not how this is supposed to work.
 
-## The question
+## What this measures
 
-Everyone accepts that telling an agent the rules helps. This asks something
-narrower: **holding the rules constant, does expressing them as an ordered
-procedure with explicit preconditions and gates change how reliably an agent
-follows them?**
+Most organisations already have procedures. Written down or carried in
+somebody's head, they exist. The claim behind ASOP is not that a procedure
+formatted a particular way makes a model smarter for one run. It is that a
+procedure can be **converted into a form an agent can execute, executed with
+its steps actually gated, and then improved by evidence that the execution
+itself produced** — and that when a step cannot pass its gate, the work goes
+to a human instead of proceeding unverified.
 
-That is a question about the SHAPE OF A PROMPT, and it is separable from
-"prompting works".
+So the question here is:
 
-**It is not the claim behind ASOP.** An earlier version of this line said it
-was, which was wrong and is corrected here rather than quietly deleted. The
-claim behind ASOP is that verification is separated from execution — a gate is
-actually run, the executor cannot attest to its own work, and outcomes attach
-to a version. This experiment tests none of that; see below.
+> **Take a procedure that already exists. Run it. How much better is it after
+> one, two, three rounds of having been run?**
+
+The measurement is the **slope across rounds**, not the score of any single
+run. That distinction decides everything else about the design:
+
+- **A weak model is an asset, not a limitation.** A model that fails often
+  produces more localised failures, and localised failures are the raw
+  material the loop consumes. Round one treated the local model's weakness as
+  the thing that ruined the experiment. For this experiment it is the supply.
+- **Stepwise execution is a precondition, not a treatment.** A single-shot run
+  yields one verdict for a whole conversation. "The run failed" names no step,
+  so there is nothing to adjudicate and no revision to propose. Gating each
+  step moves the unit of failure onto *a step, with a reason* — which is a
+  draft of the next version. The gate is what makes the loop exist; the score
+  is a by-product.
+- **Escalation is part of the design, not a fallback.** A step that cannot
+  pass its gate after repeated attempts is blocked work, and blocked work
+  belongs to a person. It is recorded as never attested and never counted as
+  a pass. In a benchmark there is no human to route to, so the run steps past
+  and records the escalation; in a real runtime that is a human decision with
+  a name on it.
+
+Two rules keep the loop from measuring itself:
+
+1. **The proposer never sees a task, a gold action, or the database.** It sees
+   the step it is revising and the refusal reasons that step accumulated.
+   Anything wider and later versions are tuned to the answer key.
+2. **Adjudicate on DEV, measure on TEST.** Revising against the tasks you then
+   report on produces a beautiful curve that measures memorisation.
+
+## Round one: the question it asked
+
+Kept as written. Round one asked: **holding the rules constant, does expressing
+them as an ordered procedure with explicit preconditions and gates change how
+reliably an agent follows them?**
+
+That is a question about the SHAPE OF A PROMPT. An earlier version of this file
+called it "the claim behind ASOP", which was wrong and is corrected here rather
+than quietly deleted.
 
 ## The design
 
@@ -49,7 +89,7 @@ measurement:
 - one beats prose → the effect was authorship, and n=1 would have fooled us;
 - the spread across C1–C3 is itself the error bar on "who wrote it".
 
-## What this does NOT test
+## What round one did not test
 
 Added after the run, because the limitation is fundamental and a reader deserves
 it before the numbers rather than after.
@@ -81,8 +121,20 @@ The missing arm is the one that matters:
 | **(c)** | **ASOP** | **step by step, gate evaluated after each, executor ≠ verifier** |
 
 **(b) vs (c) is the comparison that tests the claim** — same document, different
-execution model. It does not exist yet. Building it means writing a τ²-bench
-agent adapter that hands turns to the runtime so gates fire between steps.
+execution model.
+
+**Arm (c) now exists** (`scripts/eval/asop_agent.py`). It shows the executor one
+step at a time, evaluates that step's gate, sends a refusal back with its
+reason, and refuses to let the executor attest its own work. It is the
+precondition for the round-based experiment above: without gated steps there is
+nothing to adjudicate.
+
+What it found on its first outing was not a score. It was that **none of the
+three extracted ASOPs has an entry point** — no step says how to decide which
+procedure applies, because the source prose does not either. Every extractor
+faithfully reproduced a gap that is invisible until you try to execute the
+procedure rather than read it. `asops/asop.claude.v2.md` adds the routing
+section that was missing, and that revision came from the run, not from us.
 
 ## Blinding
 
@@ -209,7 +261,7 @@ exclusion set covers every compromised arm.
 - If the two disagree, the deviations mattered, and the affected arm is
   reported as compromised rather than averaged into the treatment mean.
 
-## Results
+## Round one: the null result
 
 Run 2026-09-12. Agent `gpt-oss-20b`, simulated customer `gemma-4-31b`, both
 local via LM Studio. 13 TEST tasks × 2 trials = 26 runs per arm.
@@ -273,7 +325,7 @@ could not be chosen after seeing the numbers, and that is what it did.
 2. **A precondition gate on the experiment itself**: require arm A ≈ 0 *and* arm
    B clearly above floor before any treatment arm is worth running. That check
    costs one arm and would have ended this run in an hour.
-3. **Arm (c)** — see [What this does NOT test](#what-this-does-not-test).
+3. **Arm (c)** — see [What round one did not test](#what-round-one-did-not-test).
    Without it, no configuration of this experiment tests the thesis.
 
 More tasks and more trials matter too, but only after (1) and (3). At 13 tasks
