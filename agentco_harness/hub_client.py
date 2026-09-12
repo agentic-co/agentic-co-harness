@@ -33,6 +33,7 @@ import platform
 import socket
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -74,6 +75,39 @@ class HubUnreachable(Exception):
     """No plane answered. Distinct from a refusal: nothing was decided."""
 
 
+class _NoSchemeDowngrade(urllib.request.HTTPRedirectHandler):
+    """Refuse a redirect that leaves the scheme the operator authorised.
+
+    `config._require_authenticated_plane` checks `hub.url` at load. That check
+    guards a STRING; the capability lives at the socket, and urllib follows
+    redirects across schemes — its own handler permits http, https and ftp
+    without comment. So an https plane answering 302 with an http Location
+    gets this runtime to reconnect in plaintext, and the response is then
+    parsed and its `verify` lifted onto a bead whose gate runs through a shell.
+    The config check is bypassed at runtime by a header.
+
+    Found by a second security review after the config check landed, and it is
+    the same shape that review named elsewhere: the guard on the path somebody
+    traced, the capability on the sibling nobody did.
+
+    A redirect WITHIN https is left alone — that is ordinary, and the
+    authentication the design assumes still holds.
+    """
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        old = urllib.parse.urlparse(req.full_url).scheme
+        new = urllib.parse.urlparse(newurl).scheme
+        if old == "https" and new != "https":
+            raise urllib.error.HTTPError(
+                newurl, code,
+                f"plane redirected {old} -> {new or 'no scheme'}; refusing. "
+                f"Responses from the plane are not authenticated, so a "
+                f"downgraded connection is one an on-path attacker can answer.",
+                headers, fp,
+            )
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
 @dataclass
 class HubClient:
     url: str
@@ -99,7 +133,8 @@ class HubClient:
         req = urllib.request.Request(self.url.rstrip("/") + path, data=body if payload is not None else None,
                                      method=method, headers=headers)
         try:
-            with urllib.request.urlopen(req, timeout=self.timeout_s) as resp:
+            opener = urllib.request.build_opener(_NoSchemeDowngrade)
+            with opener.open(req, timeout=self.timeout_s) as resp:
                 raw = resp.read()
                 status = resp.status
         except urllib.error.HTTPError as e:

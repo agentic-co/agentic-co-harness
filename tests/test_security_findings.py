@@ -297,3 +297,50 @@ def test_cwd_is_a_starting_directory_and_not_a_boundary(tmp_path):
 
     tail = (out.metadata.get("verify_result") or {}).get("output_tail", "")
     assert "REACHED" in tail, "if this changed, containment arrived — assert it instead"
+
+
+@pytest.mark.parametrize(
+    "start,target,followed",
+    [
+        ("https://plane.example/a", "http://evil.example/b", False),
+        ("https://plane.example/a", "ftp://evil.example/b", False),
+        ("https://plane.example/a", "https://plane.example/b", True),
+        ("http://127.0.0.1:8791/a", "http://127.0.0.1:8791/b", True),
+    ],
+)
+def test_a_plane_cannot_redirect_the_runtime_off_https(start, target, followed):
+    """The config check guards a STRING; the capability lives at the socket.
+
+    `_require_authenticated_plane` validates `hub.url` at load. urllib then
+    follows redirects across schemes — its own handler permits http, https and
+    ftp without comment — so an https plane answering 302 with an http Location
+    gets the runtime to reconnect in plaintext. The response is parsed and its
+    `verify` lifted onto a bead whose gate runs through a shell. A header
+    undoes a config check.
+
+    Reported as speculative by a second review; confirmed by reading urllib's
+    own redirect handler, which is why it is fixed rather than filed.
+
+    https -> https is left alone: ordinary, and the authentication the design
+    assumes still holds. Loopback stays usable for local development.
+    """
+    import urllib.error
+    import urllib.request
+
+    from agentco_harness.hub_client import _NoSchemeDowngrade
+
+    class _FP:
+        def read(self, *a):
+            return b""
+
+        def close(self):
+            pass
+
+    handler = _NoSchemeDowngrade()
+    req = urllib.request.Request(start, method="POST")
+
+    if followed:
+        assert handler.redirect_request(req, _FP(), 302, "Found", {}, target) is not None
+    else:
+        with pytest.raises(urllib.error.HTTPError, match="refusing"):
+            handler.redirect_request(req, _FP(), 302, "Found", {}, target)
