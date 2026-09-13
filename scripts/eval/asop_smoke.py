@@ -49,7 +49,12 @@ def main() -> int:
 
     sys.path.insert(0, str(args.tau2 / "src"))
     import tau2.agent.llm_agent as llm_agent
-    from tau2.data_model.message import AssistantMessage, ToolCall, UserMessage
+    from tau2.data_model.message import (
+        AssistantMessage,
+        ToolCall,
+        ToolMessage,
+        UserMessage,
+    )
 
     aa = load_adapter()
 
@@ -111,6 +116,12 @@ def main() -> int:
         _msg, state = agent.generate_next_message(
             UserMessage(role="user", content=text), state
         )
+        # tau2 executes the call and hands the result back on the next turn;
+        # gates fire on that arrival, so the driver has to do the same or it
+        # would be testing a loop that does not exist.
+        _msg, state = agent.generate_next_message(
+            ToolMessage(id="1", role="tool", content="ok", requestor="assistant"), state
+        )
         cur = state.procedure or "(triage — no procedure selected yet)"
         print(f"turn {i}: procedure={cur!r} step_index={state.step_index}")
         if state.refusal:
@@ -168,6 +179,9 @@ def main() -> int:
     for _ in range(8):
         _m, st2 = agent2.generate_next_message(
             UserMessage(role="user", content="cancel it"), st2
+        )
+        _m, st2 = agent2.generate_next_message(
+            ToolMessage(id="1", role="tool", content="ok", requestor="assistant"), st2
         )
 
     print("\n--- scenario 2: a gate that never passes ---")

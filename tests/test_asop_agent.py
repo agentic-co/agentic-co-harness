@@ -395,3 +395,64 @@ def test_a_human_gate_is_not_silently_an_llm_opinion():
     assert not aa.GateKind.HUMAN.is_substituted
     assert not aa.GateKind.DETERMINISTIC.is_substituted
     assert not aa.GateKind.JUDGED.is_substituted
+
+
+# ── T1 scoring: the tautology detector ───────────────────────────────────────
+
+import importlib.util as _ilu  # noqa: E402
+
+_T1 = Path(__file__).resolve().parents[1] / "scripts" / "eval" / "t1_label.py"
+_t1spec = _ilu.spec_from_file_location("t1_label", _T1)
+t1 = _ilu.module_from_spec(_t1spec)
+sys.modules["t1_label"] = t1
+_t1spec.loader.exec_module(t1)
+
+
+def _dec(passed, truth, run_passed):
+    return {"passed": passed, "truth": truth, "run_passed": run_passed}
+
+
+def test_refusal_precision_and_recall():
+    rows = [
+        _dec(False, "not_held", True),   # refused, correctly  -> tp
+        _dec(False, "held", True),       # refused, wrongly    -> fp
+        _dec(True, "not_held", True),    # passed, wrongly     -> fn
+        _dec(True, "held", True),        # passed, correctly   -> tn
+    ]
+    m = t1._pr(rows)
+    assert m["precision"] == 0.5 and m["recall"] == 0.5 and m["accuracy"] == 0.5
+
+
+def test_a_verifier_that_always_refuses_scores_no_better_than_chance():
+    """The state the first 15 runs were actually in.
+
+    A constant refuser has perfect recall and precision equal to the base rate,
+    which is why a single headline number can look survivable. Accuracy is what
+    gives it away.
+    """
+    rows = [_dec(False, "not_held", False) for _ in range(5)]
+    rows += [_dec(False, "held", True) for _ in range(5)]
+    m = t1._pr(rows)
+    assert m["recall"] == 1.0
+    assert m["precision"] == 0.5
+    assert m["accuracy"] == 0.5
+
+
+def test_the_split_catches_a_verifier_reading_the_run():
+    """The failure cross-review warned about, made concrete.
+
+    This verifier is right about every decision in runs that ended well and
+    wrong about every decision in runs that ended badly — judging the room
+    rather than the precondition. Overall accuracy is a respectable 0.5, which
+    is exactly how an aggregate hides it.
+    """
+    good = [_dec(False, "not_held", True), _dec(True, "held", True)]
+    bad = [_dec(True, "not_held", False), _dec(False, "held", False)]
+    assert t1._pr(good)["accuracy"] == 1.0
+    assert t1._pr(bad)["accuracy"] == 0.0
+    assert t1._pr(good + bad)["accuracy"] == 0.5
+
+
+def test_unclear_labels_are_excluded_not_coerced():
+    rows = [_dec(False, "not_held", True), _dec(True, "unclear", True)]
+    assert t1._pr(rows)["n"] == 1

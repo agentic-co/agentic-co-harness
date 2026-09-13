@@ -752,6 +752,19 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
         # every arm that came before: the model is never holding the whole
         # procedure, so "followed the procedure" cannot mean "happened to
         # mention something from a document it could see all of".
+        # Gates are evaluated at the TOP of the turn, on the evidence that has
+        # just ARRIVED, before the next step is chosen and the prompt is built.
+        #
+        # They used to fire at the bottom, on `assistant_message.tool_calls`.
+        # Two things were wrong with that. A tool call is a request: its RESULT
+        # arrives on the following turn, so a gate meant to check whether the
+        # action succeeded was reading evidence that did not exist yet. And any
+        # tool call fired the gate, whatever step it belonged to — while a step
+        # gated on something the USER supplies had no trigger of its own and
+        # was only ever evaluated when the model happened to call a tool.
+        if state.procedure is not None and self._is_new_evidence(message, state):
+            self._run_gates(state, arrived=message)
+
         state.system_messages = [
             SystemMessage(role="system", content=self._system_prompt_for(state))
         ]
@@ -761,12 +774,30 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
             state.procedure = self._route(state)
             if state.procedure:
                 state.step_started_at = len(state.messages)
-            return assistant_message, state
-
-        attempted = bool(getattr(assistant_message, "tool_calls", None))
-        if attempted:
-            self._run_gates(assistant_message, state)
         return assistant_message, state
+
+    def _is_new_evidence(self, message, state: "ASOPAgentState") -> bool:
+        """Is there anything here this step's gate could not see last turn?
+
+        A tool RESULT always counts — it is the outcome of an action. A user
+        message counts when the step's gate depends on what a person supplies,
+        which is most of this domain. Firing on neither would leave
+        user-supplied steps ungated; firing on everything would spend a judge
+        call on turns that added nothing.
+        """
+        role = getattr(message, "role", None)
+        if role == "tool" or getattr(message, "tool_messages", None):
+            return True
+        if role == "user":
+            pos = self._position(state)
+            if pos.procedure is None:
+                return False
+            step = pos.procedure.steps[min(pos.index, len(pos.procedure.steps) - 1)]
+            return any(
+                k in (GateKind.HUMAN, GateKind.HUMAN_UNAVAILABLE, GateKind.JUDGED)
+                for k in step.gate_kinds
+            )
+        return False
 
     def _route(self, state: "ASOPAgentState") -> Optional[str]:
         """The real routing call. See _select_procedure for why it is uniform."""
@@ -799,17 +830,24 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
                 return n
         return None
 
-    def _run_gates(self, assistant_message, state: "ASOPAgentState") -> None:
+    def _run_gates(self, state: "ASOPAgentState", arrived=None) -> None:
         pos = self._position(state)
         assert pos.procedure is not None
         step = pos.procedure.steps[min(pos.index, len(pos.procedure.steps) - 1)]
 
         evidence = Evidence(
             step=step,
+            # `arrived` has not been appended to state.messages yet — it is
+            # this turn's new evidence and is exactly what the gate is here to
+            # judge, so it is included explicitly.
             transcript=tuple(
-                _render_turn(m) for m in state.messages[state.step_started_at :]
+                _render_turn(m)
+                for m in list(state.messages[state.step_started_at :])
+                + ([arrived] if arrived is not None else [])
             ),
-            tool_history=_tool_history(state.messages),
+            tool_history=_tool_history(
+                list(state.messages) + ([arrived] if arrived is not None else [])
+            ),
         )
         _assert_no_gold(evidence, "the gate evaluator")
 
@@ -858,6 +896,15 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
                 "substituted": kind.is_substituted,
                 "fell_back": verdict.fell_back,
             }
+            if os.environ.get("ASOP_RECORD_EVIDENCE"):
+                # What the verifier actually saw. Needed to hand-label a
+                # decision, and off by default because it is large — a labelled
+                # sample is a deliberate act, not a side effect of every run.
+                entry["evidence"] = {
+                    "step_body": step.body,
+                    "transcript": list(evidence.transcript),
+                    "tool_history": list(evidence.tool_history),
+                }
             state.verdicts.append(entry)
             _record(entry)
             if not verdict.passed:
