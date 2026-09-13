@@ -89,7 +89,7 @@ def main() -> int:
     args = ap.parse_args()
 
     aa = load_adapter(args.tau2)
-    from tau2.data_model.message import SystemMessage
+    from tau2.data_model.message import SystemMessage, UserMessage
     from tau2.utils.llm_utils import generate
 
     lines = [l for l in args.worksheet.read_text().splitlines() if l.strip()]
@@ -116,10 +116,15 @@ def main() -> int:
         for i, r in enumerate(rows, 1):
             prompt, conditional = rebuild_prompt(aa, r)
             try:
+                # A system message with no user turn is rejected by several
+                # chat templates ("Error rendering prompt with jinja
+                # template") — qwen and glm among them. The judge prompt goes
+                # as a USER turn, which every template accepts, so the ladder
+                # measures the models rather than their prompt formats.
                 reply = generate(
                     model=model,
                     tools=[],
-                    messages=[SystemMessage(role="system", content=prompt)],
+                    messages=[UserMessage(role="user", content=prompt)],
                     call_name="t1_rejudge",
                 )
                 passed, reason, na = aa.parse_verdict(
