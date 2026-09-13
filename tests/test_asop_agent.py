@@ -508,3 +508,59 @@ def test_not_applicable_is_neither_a_pass_nor_a_refusal():
         not_applicable=True,
     )
     assert v.not_applicable and not v.passed
+
+
+# ── model-free ground truth for T1 ───────────────────────────────────────────
+
+
+def _row(step_body, tool_history):
+    return {"evidence": {"step_body": step_body, "tool_history": list(tool_history)}}
+
+
+def test_a_successful_lookup_means_the_user_was_identified():
+    r = _row(
+        "**Obtain the user id** from the user. Precondition: none.",
+        ["called get_user_details(user_id='u1')", "  -> ok: {...}"],
+    )
+    assert t1.derive_truth(r) == ("held", "user_identified")
+
+
+def test_a_failed_lookup_means_the_precondition_did_not_hold():
+    r = _row(
+        "**Obtain user id.** Precondition: the user must provide their user id.",
+        ["called get_user_details(user_id='nope')", "  -> FAILED: not found"],
+    )
+    assert t1.derive_truth(r)[0] == "not_held"
+
+
+def test_the_latest_attempt_wins():
+    """An early failure followed by a success means the user WAS identified."""
+    r = _row(
+        "**Obtain user id.** Precondition: the user must provide their user id.",
+        [
+            "called get_user_details(user_id='wrong')", "  -> FAILED: not found",
+            "called get_user_details(user_id='right')", "  -> ok: {...}",
+        ],
+    )
+    assert t1.derive_truth(r)[0] == "held"
+
+
+def test_a_step_naming_two_preconditions_needs_both():
+    """"obtain user id AND reservation id" is not half-held."""
+    r = _row(
+        "**Obtain user id and reservation id.** Precondition: both.",
+        ["called get_user_details(user_id='u1')", "  -> ok: {...}"],
+    )
+    label, rule = t1.derive_truth(r)
+    assert label == "not_held"
+    assert "user_identified" in rule and "reservation_located" in rule
+
+
+def test_no_rule_means_no_label_rather_than_a_guess():
+    """Silence is the honest answer where no predicate has an objective reading.
+
+    Inventing a label here would quietly fabricate ground truth, and every
+    figure downstream would inherit it.
+    """
+    r = _row("**Offer travel insurance.** Terms: $30 per passenger.", [])
+    assert t1.derive_truth(r) == ("", "")

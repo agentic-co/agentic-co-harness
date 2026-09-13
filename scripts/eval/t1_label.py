@@ -50,6 +50,7 @@ import argparse
 import collections
 import json
 import random
+import re
 from pathlib import Path
 
 TRUTH_HELP = """\
@@ -140,6 +141,98 @@ def sample(args) -> int:
     return 0
 
 
+# ── model-free ground truth ──────────────────────────────────────────────────
+#
+# Some preconditions have an objective reading that a deterministic rule can
+# settle from the tool history: "the user must provide their user id" is
+# satisfied exactly when a get_user_details call returned ok. No model, no
+# verifier, no human judgment — which is what makes it usable as a LABEL for
+# the verifier rather than another opinion to compare against.
+#
+# Two honesty notes that belong next to the code, not in a footnote:
+#
+#   * These are PROXIES. "a successful lookup happened" stands in for "the user
+#     was identified". Defensible, and not the same sentence. Where the proxy
+#     and the precondition could come apart, the decision is left for a human.
+#   * Using the run's own evidence to build the label is not the leakage the
+#     adapter guards against. The gate never sees this; it is computed offline,
+#     afterwards, and never fed back. Scoring a classifier against labels is the
+#     point of having labels. Deriving them from the GOLD ACTIONS would be
+#     leakage, and that is why no predicate here touches them.
+
+
+def _last_result(tool_history: tuple, tool: str) -> str:
+    """ok / failed / absent for the most recent call to `tool`."""
+    state = "absent"
+    for i, line in enumerate(tool_history):
+        if line.startswith(f"called {tool}("):
+            nxt = tool_history[i + 1] if i + 1 < len(tool_history) else ""
+            state = "ok" if nxt.startswith("  -> ok") else "failed"
+    return state
+
+
+def _user_identified(ev: dict) -> str:
+    return {"ok": "held", "failed": "not_held", "absent": "not_held"}[
+        _last_result(tuple(ev["tool_history"]), "get_user_details")
+    ]
+
+
+def _reservation_located(ev: dict) -> str:
+    return {"ok": "held", "failed": "not_held", "absent": "not_held"}[
+        _last_result(tuple(ev["tool_history"]), "get_reservation_details")
+    ]
+
+
+PREDICATES = [
+    # (what the step's precondition must mention, name, rule)
+    (re.compile(r"user\s*id", re.I), "user_identified", _user_identified),
+    (re.compile(r"reservation\s*id", re.I), "reservation_located", _reservation_located),
+]
+
+
+def derive_truth(row: dict) -> tuple[str, str]:
+    """(label, which rule), or ("", "") when no rule applies.
+
+    A step naming several checkable preconditions must satisfy ALL of them —
+    "obtain user id AND reservation id" is not half-held.
+    """
+    body = row["evidence"]["step_body"]
+    applied, verdicts = [], []
+    for pattern, name, rule in PREDICATES:
+        if pattern.search(body):
+            applied.append(name)
+            verdicts.append(rule(row["evidence"]))
+    if not applied:
+        return "", ""
+    label = "held" if all(v == "held" for v in verdicts) else "not_held"
+    return label, "+".join(applied)
+
+
+def derive(args) -> int:
+    lines = [l for l in args.worksheet.read_text().splitlines() if l.strip()]
+    header, rows = lines[0], [json.loads(l) for l in lines[1:]]
+
+    auto = 0
+    for r in rows:
+        if r.get("truth"):
+            continue
+        label, rule = derive_truth(r)
+        if label:
+            r["truth"] = label
+            r["truth_source"] = f"rule:{rule}"
+            auto += 1
+
+    args.worksheet.write_text(
+        header + "\n" + "\n".join(json.dumps(r) for r in rows) + "\n"
+    )
+    left = sum(1 for r in rows if not r.get("truth"))
+    print(f"[t1] {auto} of {len(rows)} labelled by deterministic rule")
+    print(f"[t1] {left} still need a person — no rule has an objective reading")
+    if auto:
+        print("[t1] these are PROXY labels; the rule name is recorded on each row")
+    return 0
+
+
 def _pr(rows: list[dict]) -> dict:
     """Precision and recall of REFUSAL as a detector of an unmet precondition."""
     tp = sum(1 for r in rows if not r["passed"] and r["truth"] == "not_held")
@@ -224,6 +317,10 @@ def main() -> int:
     s1.add_argument("--n", type=int, default=60)
     s1.add_argument("--seed", type=int, default=20260912)
     s1.set_defaults(fn=sample)
+
+    s3 = sub.add_parser("derive")
+    s3.add_argument("--worksheet", type=Path, required=True)
+    s3.set_defaults(fn=derive)
 
     s2 = sub.add_parser("score")
     s2.add_argument("--worksheet", type=Path, required=True)
