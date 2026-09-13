@@ -129,7 +129,7 @@ def main() -> int:
     print("\n--- verdicts recorded ---")
     for v in state.verdicts:
         mark = "PASS" if v["passed"] else "FAIL"
-        fb = "  [fell back from deterministic]" if v["fell_back"] else ""
+        fb = f"  [substituted: declared {v.get('declared_gate', '?')}]" if v["fell_back"] else ""
         print(f"  {mark}  {v['step']}  gate={v['gate']}{fb}")
         print(f"        {v['verifier']} on {v['executor']}: {v['reason']}")
 

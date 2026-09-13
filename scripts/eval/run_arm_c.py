@@ -167,8 +167,9 @@ def report(results, verdict_log: Path, out: Path) -> int:
     fell = sum(1 for v in verdicts if v["fell_back"])
     if fell:
         print(
-            f"\n  {fell}/{len(verdicts)} gates declared 'deterministic' but named no "
-            "re-runnable check, so they were judged instead."
+            f"\n  {fell}/{len(verdicts)} gates did not get the check they declared "
+            "(deterministic with nothing re-runnable named, or human with no "
+            "person present) and were judged by a model instead."
         )
 
     summary = {

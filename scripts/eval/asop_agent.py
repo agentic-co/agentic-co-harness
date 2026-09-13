@@ -68,6 +68,20 @@ class GateKind(str, Enum):
     DETERMINISTIC_UNAVAILABLE = "deterministic_unavailable"
     JUDGED = "judged"
     HUMAN = "human"
+    # There is no person in a benchmark. A step declaring `Gate: human` cannot
+    # get what it asked for, and an LLM opinion stamped `human` in the log is
+    # the same lie as calling a rule a deterministic check. Substitution is
+    # recorded, so the write-up can say how much of this procedure was never
+    # gated the way it asked to be.
+    HUMAN_UNAVAILABLE = "human_unavailable"
+
+    @property
+    def is_substituted(self) -> bool:
+        """True when the gate did not get the kind of check it declared."""
+        return self in (
+            GateKind.DETERMINISTIC_UNAVAILABLE,
+            GateKind.HUMAN_UNAVAILABLE,
+        )
 
 
 @dataclass(frozen=True)
@@ -377,14 +391,30 @@ def _render_turn(m: Any) -> str:
         return f"{role} CALLS: {rendered}"
     if role == "tool":
         flag = " [ERROR]" if getattr(m, "error", False) else ""
-        return f"tool RESULT{flag}: {str(getattr(m, 'content', '') or '')[:400]}"
-    return f"{role}: {str(getattr(m, 'content', '') or '')[:600]}"
+        return f"tool RESULT{flag}: {_clip(getattr(m, 'content', '') or '', 400)}"
+    return f"{role}: {_clip(getattr(m, 'content', '') or '', 600)}"
+
+
+def _clip(text: str, n: int) -> str:
+    """Truncate, and SAY SO.
+
+    Silent truncation is the narration leak wearing a different hat: if the
+    precondition-relevant value falls past the cut, the verifier sees nothing
+    about it and cannot tell "absent" from "trimmed" — so it falls back on
+    whatever the executor said about that value.
+    """
+    text = str(text)
+    return text if len(text) <= n else text[:n] + f"…[+{len(text) - n} chars trimmed]"
 
 
 def _render_args(args: Any) -> str:
     if not isinstance(args, dict):
         return ""
-    return ", ".join(f"{k}={v!r}" for k, v in list(args.items())[:8])
+    items = list(args.items())
+    shown = ", ".join(f"{k}={_clip(repr(v), 160)}" for k, v in items[:8])
+    if len(items) > 8:
+        shown += f", …[+{len(items) - 8} more arguments not shown]"
+    return shown
 
 
 def _tool_history(messages: list) -> tuple[str, ...]:
@@ -398,8 +428,49 @@ def _tool_history(messages: list) -> tuple[str, ...]:
             )
         if getattr(m, "role", None) == "tool":
             flag = "FAILED" if getattr(m, "error", False) else "ok"
-            out.append(f"  -> {flag}: {str(getattr(m, 'content', '') or '')[:300]}")
+            out.append(f"  -> {flag}: {_clip(getattr(m, 'content', '') or '', 300)}")
     return tuple(out)
+
+
+# ── the one gate that is not an opinion ──────────────────────────────────────
+
+_TOOL_NAME_RE = re.compile(r"`([a-z_][a-z0-9_]*)`|\b([a-z_]+_[a-z_]+)\b")
+
+
+def named_tool(step: Step) -> Optional[str]:
+    """The tool a step's gate says must run, if it names one.
+
+    A `deterministic (tool call)` gate is only deterministic if there is
+    something to re-check. When the step names a tool, "did that tool run and
+    succeed" is answerable from the tool history without asking any model.
+    """
+    m = _GATE_RE.search(step.body)
+    scope = (m.group(1) if m else "") + " " + step.body
+    for hit in _TOOL_NAME_RE.finditer(scope):
+        name = hit.group(1) or hit.group(2)
+        if name and "_" in name and not name.endswith("_economy"):
+            return name
+    return None
+
+
+def check_tool_succeeded(tool: str, tool_history: tuple[str, ...]) -> tuple[bool, str]:
+    """Re-runnable, model-free: did `tool` run, and did its result come back ok?
+
+    This is what `deterministic` is supposed to mean. It answers yes and no from
+    the same evidence every time, and no prompt can talk it round.
+    """
+    called = False
+    for i, line in enumerate(tool_history):
+        if line.startswith("called ") and tool in line:
+            called = True
+            nxt = tool_history[i + 1] if i + 1 < len(tool_history) else ""
+            if nxt.startswith("  -> ok"):
+                return True, f"{tool} ran and returned ok"
+            if nxt.startswith("  -> FAILED"):
+                return False, f"{tool} ran and FAILED: {nxt[12:140]}"
+    if called:
+        return False, f"{tool} was called but no result is recorded yet"
+    return False, f"{tool} has not been called"
 
 
 # ── the verifier ─────────────────────────────────────────────────────────────
@@ -427,10 +498,19 @@ PASS — <what you found true, citing the call or statement that shows it>
 or
 FAIL — <which precondition or prohibition is unmet>
 
-Judge what the evidence shows, not how much of it there is. A step whose
-preconditions are satisfied by an earlier tool call passes even if this step's
-turns are brief. A step narrated as done, with no call or user statement behind
-it, does not pass — saying a thing was checked is not checking it.\
+PASS only if you can point to a specific tool-call RESULT or an explicit user
+statement in the evidence whose actual value satisfies the precondition — and
+name that value in your reason. A precondition satisfied by an earlier call
+passes even if this step's turns are brief.
+
+A tool call merely having been made is not evidence that its result satisfied
+anything. Cite the value, not the call.
+
+FAIL if the evidence is missing, ambiguous, trimmed where it mattered, or
+contradicts the precondition, and say exactly what is absent. Uncertain
+evidence is FAIL, not a lean toward PASS. A step narrated as done with no call
+or user statement behind it does not pass — saying a thing was checked is not
+checking it.\
 """
 
 
@@ -466,7 +546,7 @@ class Verifier:
             gate_kind=kind,
             verifier=self.identity,
             executor=executor,
-            fell_back=kind is GateKind.DETERMINISTIC_UNAVAILABLE,
+            fell_back=kind.is_substituted,
         )
 
 
@@ -505,6 +585,23 @@ def _assert_no_gold(obj: Any, where: str) -> None:
                 f"{attr!r}. Gates read the ASOP and the transcript, nothing "
                 "that could carry the gold state."
             )
+
+
+def require_verifier(verifier: "Optional[Verifier]", identity: str) -> None:
+    """The most load-bearing guard in this file, kept out of the class.
+
+    It lived in ASOPAgent.__init__, whose only test was skipped whenever tau2
+    was absent — which is every normal `pytest` run. The single most important
+    invariant here was reported green while never executing. A free function is
+    testable anywhere.
+    """
+    if verifier is None:
+        raise ValueError(
+            "arm (c) requires a verifier. Running without one is arm (b) "
+            "with extra steps, and would be reported as if it were this."
+        )
+    if verifier.identity == identity:
+        raise ValueError("verifier and executor must be different parties")
 
 
 # ── the agent ────────────────────────────────────────────────────────────────
@@ -604,19 +701,14 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
         identity: str = "executor",
         route_fn: Optional[Callable[[str], str]] = None,
         max_refusals: int = 3,
+        human_gate_unavailable: bool = True,
     ) -> None:
         super().__init__(
             tools=tools, domain_policy=domain_policy, llm=llm, llm_args=llm_args
         )
         self.asop = parse_asop(domain_policy)
         self.identity = identity
-        if verifier is None:
-            raise ValueError(
-                "arm (c) requires a verifier. Running without one is arm (b) "
-                "with extra steps, and would be reported as if it were this."
-            )
-        if verifier.identity == identity:
-            raise ValueError("verifier and executor must be different parties")
+        require_verifier(verifier, identity)
         self.verifier = verifier
         self._route_fn = route_fn
         # A gate that refuses forever starves the task it is protecting. The
@@ -626,6 +718,9 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
         # run keeps producing evidence about later steps. It is not a pass and
         # must never be counted as one.
         self.max_refusals = max_refusals
+        # A benchmark has no person to sign off. Set False only where one
+        # genuinely exists, which is the runtime and not here.
+        self.human_gate_unavailable = human_gate_unavailable
         self.verdicts: list[Verdict] = []
 
     # -- prompt ----------------------------------------------------------
@@ -718,8 +813,35 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
         )
         _assert_no_gold(evidence, "the gate evaluator")
 
-        for kind in step.gate_kinds:
-            verdict = self.verifier.attest(evidence, kind, executor=self.identity)
+        for declared in step.gate_kinds:
+            kind = declared
+            verdict = None
+
+            # A deterministic gate that names a tool is answerable without a
+            # model. This is the ONLY path in this file that is not an opinion,
+            # and keeping it separate is the point — everything else is a judge,
+            # and the log must not pretend otherwise.
+            if declared is GateKind.DETERMINISTIC:
+                tool = named_tool(step)
+                if tool:
+                    passed, reason = check_tool_succeeded(tool, evidence.tool_history)
+                    verdict = Verdict(
+                        passed=passed,
+                        reason=reason,
+                        gate_kind=GateKind.DETERMINISTIC,
+                        verifier="deterministic-check",
+                        executor=self.identity,
+                    )
+                else:
+                    # Declared deterministic, names nothing to re-run.
+                    kind = GateKind.DETERMINISTIC_UNAVAILABLE
+            elif declared is GateKind.HUMAN and self.human_gate_unavailable:
+                # No person exists here. Record the substitution rather than
+                # stamping an LLM opinion `human`.
+                kind = GateKind.HUMAN_UNAVAILABLE
+
+            if verdict is None:
+                verdict = self.verifier.attest(evidence, kind, executor=self.identity)
             self.verdicts.append(verdict)
             entry = {
                 "conversation": state.conversation,
@@ -732,6 +854,8 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
                 "reason": verdict.reason,
                 "verifier": verdict.verifier,
                 "executor": verdict.executor,
+                "declared_gate": declared.value,
+                "substituted": kind.is_substituted,
                 "fell_back": verdict.fell_back,
             }
             state.verdicts.append(entry)
@@ -757,7 +881,9 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
                             ),
                             "verifier": verdict.verifier,
                             "executor": verdict.executor,
-                            "fell_back": verdict.fell_back,
+                            "declared_gate": declared.value,
+                "substituted": kind.is_substituted,
+                "fell_back": verdict.fell_back,
                         }
                     )
                     state.consecutive_refusals = 0

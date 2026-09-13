@@ -299,11 +299,99 @@ def test_tool_history_survives_the_step_window():
     assert any("u1" in h for h in hist)
 
 
-def test_verifier_prompt_no_longer_treats_absence_as_failure():
-    """"Absence of evidence is FAIL" made the verifier refuse almost everything.
+def test_the_verifier_is_actually_shown_the_evidence():
+    """The integration point, not a string in a template.
 
-    It refused 4+ times per run on every one of 15 runs, passing and failing
-    alike. A gate that always refuses carries no information.
+    An earlier version of this test asserted a phrase was present in
+    VERIFIER_PROMPT. That is a diff-applied check: it would have passed even if
+    the evidence never reached the prompt, which is the failure it was named
+    for. This captures the prompt the verifier really receives and asserts the
+    proving value is in it.
     """
-    assert "Absence of evidence is FAIL" not in aa.VERIFIER_PROMPT
-    assert "saying a thing was checked is not checking it" in aa.VERIFIER_PROMPT
+    seen = {}
+
+    def judge(prompt):
+        seen["prompt"] = prompt
+        return True, "user id u1 appears in the get_user_details result"
+
+    step = aa.parse_asop(SAMPLE).procedure("Cancel Flight").steps[0]
+    ev = aa.Evidence(
+        step=step,
+        transcript=("assistant: let me look that up",),
+        tool_history=(
+            "called get_user_details(user_id='mya_1234')",
+            "  -> ok: {'user_id': 'mya_1234', 'membership': 'gold'}",
+        ),
+    )
+    aa.Verifier("v", judge).attest(ev, aa.GateKind.HUMAN, executor="e")
+
+    prompt = seen["prompt"]
+    assert "get_user_details" in prompt, "the call never reached the verifier"
+    assert "mya_1234" in prompt, "the proving value never reached the verifier"
+    assert "gold" in prompt, "the result body never reached the verifier"
+    # And the bias that made it refuse 4+ times on every run is gone.
+    assert "Absence of evidence is FAIL" not in prompt
+
+
+def test_truncation_announces_itself():
+    """Silent truncation is the narration leak wearing a different hat.
+
+    If the precondition-relevant value falls past the cut, the verifier cannot
+    tell "absent" from "trimmed" and falls back on what the executor said.
+    """
+    long_value = "x" * 900
+    line = aa._render_turn(_Msg("tool", content=long_value))
+    assert "trimmed" in line
+
+    many = {f"k{i}": i for i in range(12)}
+    rendered = aa._render_args(many)
+    assert "not shown" in rendered
+
+
+# ── guards that must run even without a tau2 checkout ────────────────────────
+
+
+def test_the_verifier_requirement_is_enforced():
+    """This guard was previously only reachable through ASOPAgent.__init__,
+    whose test skips whenever tau2 is absent — which is every normal run. The
+    most load-bearing invariant in the adapter was reported green without ever
+    executing. It lives in a free function now so it is always tested.
+    """
+    with pytest.raises(ValueError, match="requires a verifier"):
+        aa.require_verifier(None, "executor:x")
+    v = aa.Verifier("executor:x", judge=lambda _p: (True, "fine"))
+    with pytest.raises(ValueError, match="different parties"):
+        aa.require_verifier(v, "executor:x")
+    aa.require_verifier(aa.Verifier("verifier:y", lambda _p: (True, "ok")), "executor:x")
+
+
+# ── the one gate that is not an opinion ──────────────────────────────────────
+
+
+def test_a_deterministic_gate_is_decided_without_a_model():
+    hist = (
+        "called update_reservation_flights(reservation_id='GV1N64')",
+        "  -> ok: updated",
+    )
+    ok, why = aa.check_tool_succeeded("update_reservation_flights", hist)
+    assert ok and "ok" in why
+
+    bad = ("called update_reservation_flights(x=1)", "  -> FAILED: not permitted")
+    ok, why = aa.check_tool_succeeded("update_reservation_flights", bad)
+    assert not ok and "FAILED" in why
+
+    ok, why = aa.check_tool_succeeded("update_reservation_flights", ())
+    assert not ok and "has not been called" in why
+
+
+def test_a_human_gate_is_not_silently_an_llm_opinion():
+    """Every gate kind used to run the same judge call, and `kind` was stamped
+    on the verdict for logging only. A step declaring `Gate: human` got an LLM
+    opinion labelled `human` — the same lie as calling a rule a deterministic
+    check, in the log that the whole experiment is read from.
+    """
+    assert aa.GateKind.HUMAN_UNAVAILABLE.is_substituted
+    assert aa.GateKind.DETERMINISTIC_UNAVAILABLE.is_substituted
+    assert not aa.GateKind.HUMAN.is_substituted
+    assert not aa.GateKind.DETERMINISTIC.is_substituted
+    assert not aa.GateKind.JUDGED.is_substituted
