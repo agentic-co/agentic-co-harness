@@ -325,8 +325,19 @@ class Evidence:
     """
 
     step: Step
+    # Turns since THIS step began. A fixed last-N window spans step boundaries
+    # and retry churn, so a step's own refusal blocks evict the tool evidence
+    # that would have satisfied it.
     transcript: tuple[str, ...]
-    tool_calls: tuple[str, ...]
+    # Every tool call in the run so far, with arguments and result. This is the
+    # durable evidence: a precondition satisfied at turn 3 by a tool call is
+    # still visible at turn 20, where a scoped transcript alone would lose it.
+    #
+    # Carrying calls at all is the point. Before this, Evidence held tool NAMES
+    # for the current turn and nothing else — so the verifier judged
+    # preconditions off the executor's own narration, and the separation the
+    # identity check enforces on paper leaked in practice.
+    tool_history: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -350,6 +361,47 @@ class Verdict:
             raise ValueError("a verdict must say what it found, not merely pass")
 
 
+def _render_turn(m: Any) -> str:
+    """One transcript line, with tool CALLS made visible.
+
+    An assistant message carrying tool_calls has no content, so the previous
+    renderer emitted an empty line for exactly the turns that mattered.
+    """
+    role = getattr(m, "role", "?")
+    calls = getattr(m, "tool_calls", None) or []
+    if calls:
+        rendered = "; ".join(
+            f"{getattr(c, 'name', '?')}({_render_args(getattr(c, 'arguments', None))})"
+            for c in calls
+        )
+        return f"{role} CALLS: {rendered}"
+    if role == "tool":
+        flag = " [ERROR]" if getattr(m, "error", False) else ""
+        return f"tool RESULT{flag}: {str(getattr(m, 'content', '') or '')[:400]}"
+    return f"{role}: {str(getattr(m, 'content', '') or '')[:600]}"
+
+
+def _render_args(args: Any) -> str:
+    if not isinstance(args, dict):
+        return ""
+    return ", ".join(f"{k}={v!r}" for k, v in list(args.items())[:8])
+
+
+def _tool_history(messages: list) -> tuple[str, ...]:
+    """Every call and its result, in order. The run's durable evidence."""
+    out: list[str] = []
+    for m in messages:
+        calls = getattr(m, "tool_calls", None) or []
+        for c in calls:
+            out.append(
+                f"called {getattr(c, 'name', '?')}({_render_args(getattr(c, 'arguments', None))})"
+            )
+        if getattr(m, "role", None) == "tool":
+            flag = "FAILED" if getattr(m, "error", False) else "ok"
+            out.append(f"  -> {flag}: {str(getattr(m, 'content', '') or '')[:300]}")
+    return tuple(out)
+
+
 # ── the verifier ─────────────────────────────────────────────────────────────
 
 JudgeFn = Callable[[str], tuple[bool, str]]
@@ -364,16 +416,21 @@ show the step's stated preconditions and prohibitions were satisfied?
 THE STEP
 {step}
 
-WHAT WAS SAID AND DONE
+EVERY TOOL CALL MADE SO FAR, WITH RESULTS
+{tools}
+
+THIS STEP'S TURNS
 {evidence}
 
 Answer with a verdict line and nothing else:
-PASS — <what you found true>
+PASS — <what you found true, citing the call or statement that shows it>
 or
 FAIL — <which precondition or prohibition is unmet>
 
-Refuse to pass a step whose evidence is merely plausible. Absence of evidence \
-is FAIL. You are not required to be helpful.\
+Judge what the evidence shows, not how much of it there is. A step whose
+preconditions are satisfied by an earlier tool call passes even if this step's
+turns are brief. A step narrated as done, with no call or user statement behind
+it, does not pass — saying a thing was checked is not checking it.\
 """
 
 
@@ -399,7 +456,8 @@ class Verifier:
             )
         prompt = VERIFIER_PROMPT.format(
             step=f"{ev.step.label}: {ev.step.body}",
-            evidence="\n".join(ev.transcript[-12:] + ev.tool_calls[-12:]) or "(nothing)",
+            tools="\n".join(ev.tool_history) or "(no tool call has been made)",
+            evidence="\n".join(ev.transcript) or "(no turns yet)",
         )
         passed, reason = self._judge(prompt)
         return Verdict(
@@ -519,6 +577,7 @@ class ASOPAgentState(LLMAgentState):  # type: ignore[misc,valid-type]
 
     conversation: int = -1
     consecutive_refusals: int = 0
+    step_started_at: int = 0
     escalated: list[str] = []
     procedure: Optional[str] = None
     step_index: int = 0
@@ -605,6 +664,8 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
 
         if state.procedure is None:
             state.procedure = self._route(state)
+            if state.procedure:
+                state.step_started_at = len(state.messages)
             return assistant_message, state
 
         attempted = bool(getattr(assistant_message, "tool_calls", None))
@@ -651,13 +712,9 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
         evidence = Evidence(
             step=step,
             transcript=tuple(
-                f"{getattr(m, 'role', '?')}: {getattr(m, 'content', '') or ''}"
-                for m in state.messages[-12:]
+                _render_turn(m) for m in state.messages[state.step_started_at :]
             ),
-            tool_calls=tuple(
-                str(getattr(tc, "name", tc))
-                for tc in (getattr(assistant_message, "tool_calls", None) or [])
-            ),
+            tool_history=_tool_history(state.messages),
         )
         _assert_no_gold(evidence, "the gate evaluator")
 
@@ -706,11 +763,13 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
                     state.consecutive_refusals = 0
                     state.refusal = None
                     state.step_index += 1
+                    state.step_started_at = len(state.messages)
                 return
 
         state.refusal = None
         state.consecutive_refusals = 0
         state.step_index += 1
+        state.step_started_at = len(state.messages)
 
     def get_init_state(self, message_history=None):  # type: ignore[override]
         base = super().get_init_state(message_history)
@@ -719,6 +778,7 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
             messages=base.messages,
             conversation=next(_CONVERSATION),
             consecutive_refusals=0,
+            step_started_at=0,
             escalated=[],
             procedure=None,
             step_index=0,

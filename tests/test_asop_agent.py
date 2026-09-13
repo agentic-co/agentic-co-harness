@@ -109,7 +109,7 @@ def test_executor_cannot_attest_its_own_work():
 def test_verifier_refuses_to_judge_when_it_is_the_executor():
     v = aa.Verifier("agent-1", judge=lambda _p: (True, "fine"))
     step = aa.parse_asop(SAMPLE).procedure("Cancel Flight").steps[0]
-    ev = aa.Evidence(step=step, transcript=(), tool_calls=())
+    ev = aa.Evidence(step=step, transcript=(), tool_history=())
     with pytest.raises(ValueError, match="separation"):
         v.attest(ev, aa.GateKind.JUDGED, executor="agent-1")
 
@@ -172,7 +172,7 @@ def test_gate_evaluator_refuses_anything_carrying_gold(obj):
 
 def test_evidence_carries_nothing_task_shaped():
     step = aa.parse_asop(SAMPLE).procedure("Cancel Flight").steps[0]
-    ev = aa.Evidence(step=step, transcript=("user: hi",), tool_calls=())
+    ev = aa.Evidence(step=step, transcript=("user: hi",), tool_history=())
     aa._assert_no_gold(ev, "the gate evaluator")  # must not raise
     for attr in aa._GOLD_ATTRS:
         assert not hasattr(ev, attr)
@@ -245,3 +245,65 @@ def test_routing_never_leaks_into_the_per_step_preamble():
     # The two versions must present near-identical context per step, or the
     # comparison measures prompt length instead of the revision.
     assert abs(len(v2.preamble.split()) - len(v1.preamble.split())) < 30
+
+
+# ── evidence shape: the leak the identity check did not catch ────────────────
+
+
+class _Call:
+    def __init__(self, name, arguments):
+        self.name, self.arguments = name, arguments
+
+
+class _Msg:
+    def __init__(self, role, content=None, tool_calls=None, error=False):
+        self.role, self.content, self.tool_calls, self.error = (
+            role, content, tool_calls, error,
+        )
+
+
+def test_a_tool_call_is_visible_to_the_verifier():
+    """An assistant turn carrying tool_calls has no content.
+
+    The previous renderer emitted "assistant: " for exactly those turns — so the
+    verifier could see a tool's RESULT but never which tool was called or with
+    what. It was judging preconditions off the executor's narration, which is
+    the separation the identity check is supposed to enforce, leaking.
+    """
+    m = _Msg("assistant", tool_calls=[_Call("get_user_details", {"user_id": "mya_1234"})])
+    line = aa._render_turn(m)
+    assert "get_user_details" in line
+    assert "mya_1234" in line
+    assert line.strip() != "assistant:"
+
+
+def test_tool_results_carry_their_error_flag():
+    ok = aa._render_turn(_Msg("tool", content="reservation GV1N64 found"))
+    bad = aa._render_turn(_Msg("tool", content="User ? not found", error=True))
+    assert "[ERROR]" in bad and "[ERROR]" not in ok
+
+
+def test_tool_history_survives_the_step_window():
+    """A precondition satisfied at turn 3 must still be visible at turn 20.
+
+    Scoping the transcript to the current step fixes retry churn evicting
+    evidence, but on its own it would lose everything established earlier. The
+    tool history is the durable channel.
+    """
+    msgs = [
+        _Msg("assistant", tool_calls=[_Call("get_user_details", {"user_id": "u1"})]),
+        _Msg("tool", content="found"),
+    ] + [_Msg("assistant", content="thinking") for _ in range(30)]
+    hist = aa._tool_history(msgs)
+    assert any("get_user_details" in h for h in hist)
+    assert any("u1" in h for h in hist)
+
+
+def test_verifier_prompt_no_longer_treats_absence_as_failure():
+    """"Absence of evidence is FAIL" made the verifier refuse almost everything.
+
+    It refused 4+ times per run on every one of 15 runs, passing and failing
+    alike. A gate that always refuses carries no information.
+    """
+    assert "Absence of evidence is FAIL" not in aa.VERIFIER_PROMPT
+    assert "saying a thing was checked is not checking it" in aa.VERIFIER_PROMPT
