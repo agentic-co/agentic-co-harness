@@ -107,7 +107,7 @@ def test_executor_cannot_attest_its_own_work():
 
 
 def test_verifier_refuses_to_judge_when_it_is_the_executor():
-    v = aa.Verifier("agent-1", judge=lambda _p: (True, "fine"))
+    v = aa.Verifier("agent-1", judge=lambda _p, _na=False: (True, "fine", False))
     step = aa.parse_asop(SAMPLE).procedure("Cancel Flight").steps[0]
     ev = aa.Evidence(step=step, transcript=(), tool_history=())
     with pytest.raises(ValueError, match="separation"):
@@ -135,7 +135,7 @@ def test_an_unparseable_verdict_is_a_failure_not_a_pass(raw):
 
     Defaulting the other way is how a broken verifier turns a whole arm green.
     """
-    passed, reason = aa.parse_verdict(raw)
+    passed, reason, _na = aa.parse_verdict(raw)
     assert passed is False
     assert reason
 
@@ -310,9 +310,9 @@ def test_the_verifier_is_actually_shown_the_evidence():
     """
     seen = {}
 
-    def judge(prompt):
+    def judge(prompt, allow_na=False):
         seen["prompt"] = prompt
-        return True, "user id u1 appears in the get_user_details result"
+        return True, "user id u1 appears in the get_user_details result", False
 
     step = aa.parse_asop(SAMPLE).procedure("Cancel Flight").steps[0]
     ev = aa.Evidence(
@@ -359,10 +359,10 @@ def test_the_verifier_requirement_is_enforced():
     """
     with pytest.raises(ValueError, match="requires a verifier"):
         aa.require_verifier(None, "executor:x")
-    v = aa.Verifier("executor:x", judge=lambda _p: (True, "fine"))
+    v = aa.Verifier("executor:x", judge=lambda _p, _na=False: (True, "fine", False))
     with pytest.raises(ValueError, match="different parties"):
         aa.require_verifier(v, "executor:x")
-    aa.require_verifier(aa.Verifier("verifier:y", lambda _p: (True, "ok")), "executor:x")
+    aa.require_verifier(aa.Verifier("verifier:y", lambda _p, _na=False: (True, "ok", False)), "executor:x")
 
 
 # ── the one gate that is not an opinion ──────────────────────────────────────
@@ -456,3 +456,55 @@ def test_the_split_catches_a_verifier_reading_the_run():
 def test_unclear_labels_are_excluded_not_coerced():
     rows = [_dec(False, "not_held", True), _dec(True, "unclear", True)]
     assert t1._pr(rows)["n"] == 1
+
+
+# ── conditional steps ────────────────────────────────────────────────────────
+
+
+@pytest.mark.parametrize(
+    "body,expected",
+    [
+        ("**Change cabin**, if requested. Preconditions: …", True),
+        ("**Change flights**, if requested. Gate: deterministic.", True),
+        ("**Check cancellation eligibility**, otherwise. Precondition: …", True),
+        ("**Obtain the user id** from the user. Precondition: none.", False),
+        ("**Confirm and book.** Precondition: steps 1-7 complete.", False),
+    ],
+)
+def test_conditional_steps_are_recognised(body, expected):
+    assert aa.is_conditional(body) is expected
+
+
+def test_the_real_asops_contain_conditional_steps():
+    """Not a hypothetical. Modify Flight step 3 refused 4 times out of 4 with
+    'the user never requested a cabin change' — an optional step being failed
+    for correctly not happening.
+    """
+    asop = aa.parse_asop((ASOPS / "asop.claude.md").read_text())
+    conds = [s for p in asop.procedures for s in p.steps if s.conditional]
+    assert conds, "no conditional steps detected in a document full of them"
+    assert any("cabin" in s.title.lower() for s in conds)
+
+
+def test_not_applicable_is_only_available_to_conditional_steps():
+    """N/A must not become a back door out of a mandatory step.
+
+    A verifier that could answer N/A anywhere would let the executor skip the
+    steps it found hardest, and the log would show neither a pass nor a refusal.
+    """
+    assert aa.parse_verdict("N/A — no cabin change requested", allow_na=True)[2] is True
+    passed, reason, na = aa.parse_verdict("N/A — no cabin change requested")
+    assert na is False
+    assert passed is False, "an unrecognised verdict must never read as a pass"
+
+
+def test_not_applicable_is_neither_a_pass_nor_a_refusal():
+    v = aa.Verdict(
+        passed=False,
+        reason="the user never asked for a cabin change",
+        gate_kind=aa.GateKind.JUDGED,
+        verifier="v",
+        executor="e",
+        not_applicable=True,
+    )
+    assert v.not_applicable and not v.passed

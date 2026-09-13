@@ -78,11 +78,11 @@ def main() -> int:
     # that can distinguish "walks steps" from "advances no matter what".
     calls = {"n": 0}
 
-    def judge(_prompt: str):
+    def judge(_prompt: str, allow_na: bool = False):
         calls["n"] += 1
         if calls["n"] == 1:
-            return False, "the user id was never supplied"
-        return True, "the precondition is visible in the transcript"
+            return False, "the user id was never supplied", False
+        return True, "the precondition is visible in the transcript", False
 
     # Three model roles, all stubbed: executor, verifier, router. Routing is
     # infrastructure and runs for every document; without a router the agent
@@ -163,8 +163,8 @@ def main() -> int:
     # --- scenario 2: a gate that always refuses must escalate -------------
     calls["n"] = 0
 
-    def always_refuse(_prompt: str):
-        return False, "never satisfied"
+    def always_refuse(_prompt: str, allow_na: bool = False):
+        return False, "never satisfied", False
 
     agent2 = aa.ASOPAgent(
         tools=[],

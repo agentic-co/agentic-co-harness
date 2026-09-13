@@ -97,12 +97,20 @@ def load_run(run: Path) -> list[dict]:
 
 
 def sample(args) -> int:
-    rows = load_run(args.run)
-    if not any("evidence" in r for r in rows):
+    all_rows = load_run(args.run)
+    # Escalation records are written by the escalation path rather than by a
+    # verdict, so they carry no evidence. A decision a labeller cannot read is
+    # a decision they would be guessing at, so they are dropped here and the
+    # count is printed rather than quietly shrinking the sample.
+    rows = [r for r in all_rows if "evidence" in r]
+    dropped = len(all_rows) - len(rows)
+    if not rows:
         raise SystemExit(
             "no evidence recorded — re-run with ASOP_RECORD_EVIDENCE=1, or a "
             "labeller has nothing to read and would be guessing."
         )
+    if dropped:
+        print(f"[t1] {dropped} escalation record(s) excluded: no evidence attached")
 
     # Stratify so no cell can be silently absent. The outcome axis is the one
     # that matters; the others stop a sample being all of one step.
@@ -126,7 +134,7 @@ def sample(args) -> int:
         + "\n".join(json.dumps(r) for r in out)
         + "\n"
     )
-    print(f"[t1] {len(rows)} decisions -> {len(out)} sampled across {len(buckets)} cells")
+    print(f"[t1] {len(rows)} labellable decisions -> {len(out)} sampled across {len(buckets)} cells")
     print(f"[t1] worksheet -> {args.out}")
     print("[t1] fill in every \"truth\" field, then run: t1_label.py score")
     return 0

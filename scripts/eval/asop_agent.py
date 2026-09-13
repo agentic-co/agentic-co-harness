@@ -91,6 +91,12 @@ class Step:
     body: str
     gate_kinds: tuple[GateKind, ...]
     procedure: str
+    # "Change cabin, IF REQUESTED" is optional. Without this the gate reads
+    # "the user never asked for a cabin change" as an unmet precondition and
+    # refuses a step that correctly did not happen — which it did, 4 times out
+    # of 4, on the first run that recorded evidence. Every conditional step in
+    # every one of these extractions had the same hole.
+    conditional: bool = False
 
     @property
     def label(self) -> str:
@@ -171,6 +177,24 @@ def _gate_kinds(step_body: str) -> tuple[GateKind, ...]:
     return tuple(kinds) or (GateKind.JUDGED,)
 
 
+_CONDITIONAL_RE = re.compile(
+    r",?\s*\bif\s+(requested|needed|applicable|any|the user)\b|\botherwise\b"
+    r"|\bwhere\s+applicable\b|\bwhen\s+requested\b",
+    re.I,
+)
+
+
+def is_conditional(step_body: str) -> bool:
+    """Does this step only apply in some runs?
+
+    Read off the step's own wording rather than configured per document, so a
+    differently-worded extraction gets the same treatment as the one this was
+    found on.
+    """
+    head = step_body.split(".")[0] if "." in step_body else step_body
+    return bool(_CONDITIONAL_RE.search(head[:200]))
+
+
 def _steps_in(body: str, procedure: str) -> tuple[Step, ...]:
     """Extract steps from one section, trying both layouts.
 
@@ -191,6 +215,7 @@ def _steps_in(body: str, procedure: str) -> tuple[Step, ...]:
             body=raw.strip(),
             gate_kinds=_gate_kinds(raw),
             procedure=procedure,
+            conditional=is_conditional(raw),
         )
         for n, raw in found
     )
@@ -362,6 +387,10 @@ class Verdict:
     verifier: str
     executor: str
     fell_back: bool = False
+    # A conditional step that was never triggered. NOT a pass: nothing was
+    # verified, and counting it as one would inflate every gate statistic with
+    # steps that never ran.
+    not_applicable: bool = False
 
     def __post_init__(self) -> None:
         # The invariant the whole project rests on. An attestation naming the
@@ -475,7 +504,7 @@ def check_tool_succeeded(tool: str, tool_history: tuple[str, ...]) -> tuple[bool
 
 # ── the verifier ─────────────────────────────────────────────────────────────
 
-JudgeFn = Callable[[str], tuple[bool, str]]
+JudgeFn = Callable[..., tuple[bool, str, bool]]
 
 VERIFIER_PROMPT = """\
 You are a verifier. You did not do this work and you are not helping anyone \
@@ -496,7 +525,7 @@ THIS STEP'S TURNS
 Answer with a verdict line and nothing else:
 PASS — <what you found true, citing the call or statement that shows it>
 or
-FAIL — <which precondition or prohibition is unmet>
+FAIL — <which precondition or prohibition is unmet>{na_option}
 
 PASS only if you can point to a specific tool-call RESULT or an explicit user
 statement in the evidence whose actual value satisfies the precondition — and
@@ -534,12 +563,18 @@ class Verifier:
                 f"verifier and executor are both {executor!r} — "
                 "the separation this gate exists to enforce is absent"
             )
+        na_option = (
+            "\nor\nN/A — <why this step does not apply to this request>"
+            if ev.step.conditional
+            else ""
+        )
         prompt = VERIFIER_PROMPT.format(
+            na_option=na_option,
             step=f"{ev.step.label}: {ev.step.body}",
             tools="\n".join(ev.tool_history) or "(no tool call has been made)",
             evidence="\n".join(ev.transcript) or "(no turns yet)",
         )
-        passed, reason = self._judge(prompt)
+        passed, reason, not_applicable = self._judge(prompt, ev.step.conditional)
         return Verdict(
             passed=passed,
             reason=reason,
@@ -547,10 +582,11 @@ class Verifier:
             verifier=self.identity,
             executor=executor,
             fell_back=kind.is_substituted,
+            not_applicable=not_applicable,
         )
 
 
-def parse_verdict(raw: str) -> tuple[bool, str]:
+def parse_verdict(raw: str, allow_na: bool = False) -> tuple[bool, str, bool]:
     """Read a verdict line. Anything unrecognised is a FAIL, never a PASS.
 
     A verifier that returns something unparseable has not formed a verdict, and
@@ -558,11 +594,15 @@ def parse_verdict(raw: str) -> tuple[bool, str]:
     the other way is how a broken judge turns into a green run.
     """
     head = raw.strip().splitlines()[0] if raw.strip() else ""
+    if allow_na:
+        na = re.match(r"\s*N/?A\b\s*[—:-]?\s*(.*)", head, re.I)
+        if na:
+            return False, na.group(1).strip() or "step does not apply", True
     m = re.match(r"\s*(PASS|FAIL)\b\s*[—:-]?\s*(.*)", head, re.I)
     if not m:
-        return False, f"unparseable verdict: {head[:120]!r}"
+        return False, f"unparseable verdict: {head[:120]!r}", False
     reason = m.group(2).strip() or "no reason given"
-    return m.group(1).upper() == "PASS", reason
+    return m.group(1).upper() == "PASS", reason, False
 
 
 # ── guard ────────────────────────────────────────────────────────────────────
@@ -895,6 +935,7 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
                 "declared_gate": declared.value,
                 "substituted": kind.is_substituted,
                 "fell_back": verdict.fell_back,
+                "not_applicable": verdict.not_applicable,
             }
             if os.environ.get("ASOP_RECORD_EVIDENCE"):
                 # What the verifier actually saw. Needed to hand-label a
@@ -907,6 +948,10 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
                 }
             state.verdicts.append(entry)
             _record(entry)
+            if verdict.not_applicable:
+                # Skipped, not passed and not refused. Counting it either way
+                # would be a lie about a step that never ran.
+                continue
             if not verdict.passed:
                 state.refusal = verdict.reason
                 state.consecutive_refusals += 1
@@ -931,6 +976,7 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
                             "declared_gate": declared.value,
                 "substituted": kind.is_substituted,
                 "fell_back": verdict.fell_back,
+                "not_applicable": verdict.not_applicable,
                         }
                     )
                     state.consecutive_refusals = 0
@@ -976,14 +1022,14 @@ def create_asop_agent(tools, domain_policy, **kwargs):
     if judge is None:
         from tau2.utils.llm_utils import generate  # local: tau2 only
 
-        def judge(prompt: str) -> tuple[bool, str]:
+        def judge(prompt: str, allow_na: bool = False) -> tuple[bool, str, bool]:
             reply = generate(
                 model=verifier_llm,
                 tools=[],
                 messages=[SystemMessage(role="system", content=prompt)],
                 call_name="asop_gate_verdict",
             )
-            return parse_verdict(str(getattr(reply, "content", "") or ""))
+            return parse_verdict(str(getattr(reply, "content", "") or ""), allow_na)
 
     def route_fn(prompt: str) -> str:
         from tau2.utils.llm_utils import generate
