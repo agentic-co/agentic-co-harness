@@ -564,3 +564,19 @@ def test_no_rule_means_no_label_rather_than_a_guess():
     """
     r = _row("**Offer travel insurance.** Terms: $30 per passenger.", [])
     assert t1.derive_truth(r) == ("", "")
+
+
+def test_scoring_refuses_a_single_class_sample():
+    """precision=1.00 on a sample with no negatives is 1.00 by construction.
+
+    The first full T1 run produced 75 labelled decisions, every one of them
+    not_held, and reported precision 1.00 — the most flattering number in the
+    file and the emptiest. A detector cannot be measured where nothing it could
+    have got wrong exists.
+    """
+    m = t1._pr([_dec(False, "not_held", True) for _ in range(20)])
+    assert m["precision"] == 1.0
+    assert m["fp"] == 0 and m["tn"] == 0, (
+        "no 'held' decisions exist, so precision is vacuous — the guard in "
+        "score() must refuse rather than print it"
+    )

@@ -270,6 +270,24 @@ def score(args) -> int:
         raise SystemExit("nothing labelled yet")
 
     print(f"\n[t1] {len(labelled)} labelled, {unclear} unclear (excluded)\n")
+
+    # A detector cannot be measured on a sample with only one class. With no
+    # decisions where the precondition genuinely HELD, there is nothing a
+    # refusal could have got wrong, so precision is 1.00 by construction and
+    # says nothing at all. Reporting it would be the most flattering number in
+    # this file and the emptiest.
+    held = sum(1 for r in labelled if r["truth"] == "held")
+    not_held = sum(1 for r in labelled if r["truth"] == "not_held")
+    if not held or not not_held:
+        missing = "held" if not held else "not_held"
+        print(f"!! REFUSING TO SCORE: every labelled decision is {('not_held' if not held else 'held')}.")
+        print(f"   No {missing!r} cases exist, so precision is 1.00 by construction")
+        print("   and the classifier is unmeasurable. This is a sampling problem,")
+        print("   not a result. Draw decisions where the precondition DID hold —")
+        print("   later steps, after a successful lookup — and score again.")
+        print(f"\n   counts: held={held}  not_held={not_held}")
+        return 1
+
     print("OVERALL — refusal as a detector of an unmet precondition")
     print(_fmt("all decisions", _pr(labelled)))
 
@@ -282,7 +300,15 @@ def score(args) -> int:
     if mp["accuracy"] is not None and mf["accuracy"] is not None:
         gap = abs(mp["accuracy"] - mf["accuracy"])
         print(f"\n  accuracy gap between the two: {gap:.2f}")
-        if gap > 0.15:
+        smaller = min(mp["n"], mf["n"])
+        if smaller < 20:
+            print(
+                f"  NOT INTERPRETABLE: the smaller arm has n={smaller}. A gap this\n"
+                "  statistic reports at that size is noise, and calling it a\n"
+                "  tautology would be the same overclaiming this check exists to\n"
+                "  catch. Needs ~20 labelled decisions on each side."
+            )
+        elif gap > 0.15:
             print(
                 "  A large gap means the verifier is reading the RUN, not the\n"
                 "  precondition — the same decision judged differently depending\n"
