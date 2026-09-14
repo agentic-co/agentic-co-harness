@@ -73,6 +73,15 @@ def main() -> int:
     sys.path.insert(0, str(args.tau2 / "src"))
     aa = _load_adapter()
 
+    # tau2's agent sends system-only messages on the opening turn, which every
+    # OpenAI-compatible endpoint accepts and Anthropic's rejects outright
+    # ("requires at least one non-system message"). litellm inserts a minimal
+    # user turn when a provider demands one. It is a real difference from the
+    # local runs' first turn and is recorded here rather than left implicit.
+    import litellm
+
+    litellm.modify_params = True
+
     from tau2.data_model.tasks import Task
     from tau2.registry import registry
     from tau2.run import run_tasks
