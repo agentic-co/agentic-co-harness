@@ -47,4 +47,4 @@ same turn as any material change.
   repository URL is a path, so the spec is named by package, not located by link.)
 - **Never push or rebase without checking `git log origin/main..HEAD` first.** This repo
   routinely carries unpushed local commits.
-- Tests are `uv run pytest -q`; the green baseline is **1444 passed, 2 skipped** (2026-09-16, after N9's terminal-gate relocation). ⚠️ **The recorded figure has now been stale four times** — 1417 here and in `AGENTS.md` while the tree measured 1431, and 1345/1375/1377 before that. It is the smallest possible instance of N10: a claim about the code, written once, believed after. **Measure it, do not quote it.**
+- Tests are `uv run pytest -q`; the green baseline is **1458 passed, 2 skipped** (2026-09-16, after N9's relocation and N11's gate probe). ⚠️ **The recorded figure has now been stale four times** — 1417 here and in `AGENTS.md` while the tree measured 1431, and 1345/1375/1377 before that. It is the smallest possible instance of N10: a claim about the code, written once, believed after. **Measure it, do not quote it.**
