@@ -25,8 +25,8 @@ serialize. Two agents extending the same file silently clobber each other.
 - The contract package `asop-spec` is depended on **by version**, not by path — including here:
   a repository URL is a path. The spec is the source of truth for gate/refusal/attestation
   semantics; this repo implements it, it does not define it.
-- Tests: `uv run pytest -q`. Green baseline is **1458 passed, 2 skipped** (2026-09-16, after N9's
-  relocation and N11's gate probe). ⚠️ This figure has been stale four times running — **measure it, do
+- Tests: `uv run pytest -q`. Green baseline is **1473 passed, 2 skipped** (2026-09-16, after N9,
+  N11, C1-coding scoring and P2b). ⚠️ This figure has been stale four times running — **measure it, do
   not quote it.**
 - **A bead reaches any terminal state through one choke point**, `Beads.update()`, which consults
   `beads.TERMINAL_GATE_POLICY` for the status being written. The rule used to say "reaches `done`"
