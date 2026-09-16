@@ -51,6 +51,27 @@ def test_an_undeclared_registry_authenticates_nobody(parked, monkeypatch):
     assert beads.get(task.id).status is TaskStatus.AWAITING_VERIFY
 
 
+def test_a_declared_but_empty_registry_authenticates_nobody(parked, monkeypatch):
+    """Not merely unset — an operator who explicitly declared an EMPTY set.
+
+    ``_declared`` reads presence, not truthiness (see ``verifiers()`` and
+    ``test_a_deliberately_empty_declaration_is_not_overridden`` below): an
+    empty ``ASOP_VERIFIERS=""`` is a real, deliberate declaration of "nobody",
+    and must fail closed through the real choke point exactly like an unset
+    registry does, not merely at the dict-returning helper in isolation
+    (phase-0.md item R7 — "a successful rename can coexist with incorrect
+    empty-registry authorization").
+    """
+    beads, task = parked
+    monkeypatch.setenv("ASOP_VERIFIERS", "")
+    monkeypatch.delenv("AGENTCO_VERIFIERS", raising=False)
+
+    with pytest.raises(declarations.Unauthenticated, match="no registry is declared"):
+        beads.approve_verify(task.id, approver="anybody", reason="looks fine")
+
+    assert beads.get(task.id).status is TaskStatus.AWAITING_VERIFY
+
+
 def test_an_actor_outside_the_registry_is_refused(parked, monkeypatch):
     beads, task = parked
     monkeypatch.setenv("ASOP_VERIFIERS", "dana,sam")

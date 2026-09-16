@@ -2901,14 +2901,26 @@ def tasks_reject_verify(ctx, task_id: str, reason: str | None, approver: str | N
 @tasks.command("decline")
 @click.argument("task_id")
 @click.option("--reason", default=None, help="Why the assignee declined (recorded in metadata)")
+@click.option(
+    "--terminal",
+    is_flag=True,
+    default=False,
+    help=(
+        "Retire the task instead of requeuing it: resolves to SKIPPED rather "
+        "than PENDING. Use for a decline nobody is meant to pick back up "
+        "(e.g. a kill-dated bead) — the plain decline leaves it PENDING with "
+        "no assigned_to and no assigned_agent, which is dispatchable-but-"
+        "unowned by `agentco doctor`'s queue.dispatchability check."
+    ),
+)
 @click.pass_context
-def tasks_decline(ctx, task_id: str, reason: str | None):
+def tasks_decline(ctx, task_id: str, reason: str | None, terminal: bool):
     """Decline a human-assigned task — returns it to the queue, unassigned.
 
     Clears assigned_to via the explicit human-approved path (the only sanctioned
     way past the human-lineage invariant), records the reason, and resets the
-    task to pending. Decline exists so age-pressure never structurally
-    incentivizes a false 'done'.
+    task to pending (or, with --terminal, to skipped). Decline exists so
+    age-pressure never structurally incentivizes a false 'done'.
     """
     config = Config.load(ctx.obj["config_path"])
     beads = open_lifecycle(config.tasks_path)
@@ -2916,14 +2928,70 @@ def tasks_decline(ctx, task_id: str, reason: str | None):
     from .humans import decline_task, TaskStateError
 
     try:
-        task = decline_task(beads, task_id, reason)
+        task = decline_task(beads, task_id, reason, terminal=terminal)
     except TaskStateError as e:
         click.echo(f"Cannot decline: {e}", err=True)
         sys.exit(1)
     if task is None:
         click.echo(f"Task not found: {task_id}", err=True)
         sys.exit(1)
-    click.echo(f"Declined: {task_id} — returned to queue")
+    if terminal:
+        click.echo(f"Declined (terminal): {task_id} — retired as skipped")
+    else:
+        click.echo(f"Declined: {task_id} — returned to queue")
+
+
+@tasks.command("retire")
+@click.argument("task_id")
+@click.option("--by", default=None, help="Who is retiring it (defaults to $USER)")
+@click.option("-m", "--reason", default=None, help="Why it's moot (recorded in metadata)")
+@click.pass_context
+def tasks_retire(ctx, task_id: str, by: str | None, reason: str | None):
+    """Administrative close for moot, UNGATED work: pending/blocked → skipped.
+
+    Refuses a bead carrying a verify gate outright — that is what `cancel`
+    is for (D2, ai-tasks/unified/phase-0.md).
+    """
+    config = Config.load(ctx.obj["config_path"])
+    beads = open_lifecycle(config.tasks_path)
+
+    who = by or os.environ.get("USER") or "unknown"
+    try:
+        task = beads.retire(task_id, by=who, reason=reason)
+    except ValueError as e:
+        click.echo(f"Cannot retire: {e}", err=True)
+        sys.exit(1)
+    if task is None:
+        click.echo(f"Task not found: {task_id}", err=True)
+        sys.exit(1)
+    click.echo(f"Retired: {task_id} closed as moot (by {who})")
+
+
+@tasks.command("cancel")
+@click.argument("task_id")
+@click.option("--by", default=None, help="Who is cancelling it (defaults to $USER)")
+@click.option("-m", "--reason", required=True, help="Why it's being abandoned — required")
+@click.pass_context
+def tasks_cancel(ctx, task_id: str, by: str | None, reason: str):
+    """Abandon gated (or any) work unfinished: → cancelled, never done.
+
+    Distinct from `retire`: produces no attestation, is excluded from any
+    success/failure accounting, and the executor may not cancel its own work
+    (D2, ai-tasks/unified/phase-0.md).
+    """
+    config = Config.load(ctx.obj["config_path"])
+    beads = open_lifecycle(config.tasks_path)
+
+    who = by or os.environ.get("USER") or "unknown"
+    try:
+        task = beads.cancel(task_id, by=who, reason=reason)
+    except ValueError as e:
+        click.echo(f"Cannot cancel: {e}", err=True)
+        sys.exit(1)
+    if task is None:
+        click.echo(f"Task not found: {task_id}", err=True)
+        sys.exit(1)
+    click.echo(f"Cancelled: {task_id} — {reason} (by {who})")
 
 
 @tasks.command("snooze")

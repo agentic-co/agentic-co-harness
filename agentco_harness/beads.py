@@ -880,6 +880,15 @@ class TaskStatus(str, Enum):
     # gate silently off the human queue after 14 days.
     AWAITING_VERIFY = "awaiting_verify"  # human-class gate: work claimed, approval pending
     VERIFY_FAILED = "verify_failed"  # the gate ran and said no. Retryable, never done.
+    # --- cancellation (D2, ai-tasks/unified/phase-0.md, 2026-09-15) ---------
+    # A terminal status distinct from DONE and from SKIPPED: DONE asserts the
+    # work completed; SKIPPED (retire's target) says ungated work is no
+    # longer wanted; CANCELLED says gated work is being abandoned WITHOUT
+    # ever completing it. Conflating any of these three would corrupt the
+    # record the way encoding "abandoned" as "done" would (D2's rejected
+    # alternative). Any code that tallies successes/failures over terminal
+    # statuses must exclude CANCELLED explicitly — it is neither.
+    CANCELLED = "cancelled"
 
 
 class TaskPriority(int, Enum):
@@ -2698,6 +2707,109 @@ class Beads:
     def awaiting_verify(self) -> list[Task]:
         """Beads parked at a human verify gate."""
         return self.list(status=TaskStatus.AWAITING_VERIFY)
+
+    def retire(self, task_id: str, *, by: str, reason: str | None = None) -> Task | None:
+        """Administrative close for moot, UNGATED work: → SKIPPED, never DONE.
+
+        D2 (ai-tasks/unified/phase-0.md, 2026-09-15) resolves a contradiction:
+        the plane's `retire` was described as covering moot work generally,
+        "which can be gated" — but closing a gated item this way would let it
+        go quiet without ever facing its gate, which is indistinguishable from
+        the sanctioned-bypass shape this runtime already removed once
+        (`update()`'s retired `verify_gate=False`). So retire REFUSES any bead
+        carrying a ``metadata.verify`` spec outright. `cancel` is the verb for
+        abandoning gated work — it earns its own terminal status and records
+        who/why, instead of retire quietly wearing two incompatible meanings.
+
+        Raises ValueError (not silently) on a gated bead, an already-terminal
+        bead, or a missing ``by`` — a caller needs a loud reason to route
+        around this, the same posture ``humans.decline_task`` takes.
+        """
+        task = self.get(task_id)
+        if task is None:
+            return None
+        if task.status in (TaskStatus.DONE, TaskStatus.CANCELLED, TaskStatus.SKIPPED):
+            raise ValueError(
+                f"task {task_id} is already {task.status.value} — nothing to retire"
+            )
+        if (task.metadata or {}).get("verify"):
+            raise ValueError(
+                f"task {task_id} carries a verify gate and cannot be retired — "
+                f"retire is the administrative close for UNGATED work only. "
+                f"Use `cancel` for gated work that is being abandoned "
+                f"(ai-tasks/unified/phase-0.md, D2)."
+            )
+        if not (by or "").strip():
+            raise ValueError(f"retiring {task_id} needs who is retiring it")
+        metadata = dict(task.metadata)
+        metadata["retirement"] = {
+            "by": by,
+            "reason": reason or "",
+            "at": datetime.now(timezone.utc).isoformat(),
+        }
+        updated = self.update(task_id, status=TaskStatus.SKIPPED, metadata=metadata)
+        print(
+            f"[beads] RETIRED: {task_id} closed as moot (by {by})"
+            + (f" — {reason}" if reason else "")
+        )
+        return updated
+
+    def cancel(self, task_id: str, *, by: str, reason: str) -> Task | None:
+        """Terminal CANCELLED for gated (or any) work being abandoned unfinished.
+
+        D2 (ai-tasks/unified/phase-0.md, 2026-09-15): DONE asserts completion;
+        cancellation is the opposite claim, so it earns a real terminal status
+        rather than being laundered through DONE (rejected: "a recorded bypass
+        that reaches DONE") or through SKIPPED (retire's target, which is for
+        work that was never gated in the first place). No attestation is
+        produced — cancelling is not a verdict on the work, it is the record
+        that nobody is answering its gate any more. A cancelled run belongs in
+        neither the success nor the failure column of whatever tallies
+        outcomes over terminal statuses (`outcomes_by_version` on the plane;
+        this runtime has no local equivalent yet, but CANCELLED is added here
+        precisely so one, when it exists, has something unambiguous to exclude).
+
+        Authority mirrors ``approve_verify``'s separation (§9 reused, not
+        reinvented): the executor whose own work this is may not cancel it.
+        This runtime has no ownership/registry concept beyond the recorded
+        executor (P3 ownership and a dedicated cancel registry are plane-side,
+        not yet present here), so the guard enforced here is the one
+        mechanical, testable piece of D2's "owner or declared human" rule:
+        distinct-from-executor, exactly as a verify approval must be.
+        ``reason`` is mandatory for the same cause a verdict is — a status
+        change with no reason is not evidence anyone looked.
+        """
+        task = self.get(task_id)
+        if task is None:
+            return None
+        if task.status in (TaskStatus.DONE, TaskStatus.CANCELLED, TaskStatus.SKIPPED):
+            raise ValueError(
+                f"task {task_id} is already {task.status.value} — nothing to cancel"
+            )
+        if not (by or "").strip():
+            raise ValueError(f"cancelling {task_id} needs who is cancelling it")
+        if not (reason or "").strip():
+            raise ValueError(
+                f"cancelling {task_id} needs a reason — a status change with no "
+                f"reason is not evidence anyone looked"
+            )
+        executor = _recorded_executor(task)
+        if executor is not None and by == executor:
+            raise ValueError(
+                f"task {task_id} cannot be cancelled by {by!r} — that is the "
+                f"executor whose own work this would be closing out without "
+                f"finishing. Cancellation needs a distinct route, the same "
+                f"separation `approve_verify` enforces (§9)."
+            )
+        metadata = dict(task.metadata)
+        metadata["cancellation"] = {
+            "by": by,
+            "reason": reason.strip(),
+            "at": datetime.now(timezone.utc).isoformat(),
+        }
+        updated = self.update(task_id, status=TaskStatus.CANCELLED, metadata=metadata)
+        print(f"[beads] CANCELLED: {task_id} — {reason.strip()} (by {by})")
+        return updated
 
     def fail(self, task_id: str, result: str | None = None) -> Task | None:
         """Mark a task as failed."""

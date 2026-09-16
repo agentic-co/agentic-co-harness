@@ -339,9 +339,23 @@ def test_truncation_announces_itself():
     If the precondition-relevant value falls past the cut, the verifier cannot
     tell "absent" from "trimmed" and falls back on what the executor said.
     """
-    long_value = "x" * 900
+    # Derived from the limit rather than hardcoded: this test previously used a
+    # fixed 900 chars, which stopped exercising truncation the moment the clip was
+    # raised from 400 to 2000 and failed instead of quietly passing. Tie it to the
+    # constant so it keeps testing the behaviour at whatever the limit becomes.
+    long_value = "x" * (aa.TOOL_RESULT_CLIP + 100)
     line = aa._render_turn(_Msg("tool", content=long_value))
     assert "trimmed" in line
+
+    # And the other half of the contract: a result INSIDE the limit arrives whole.
+    # The 400-char limit cut the gated arms' evidence in 85% of airline tool
+    # results and 78% of retail's, refusing steps whose value the agent had in
+    # fact retrieved. A clip that silently swallows the decisive field is the
+    # failure this whole function exists to prevent.
+    short_value = "y" * (aa.TOOL_RESULT_CLIP - 100)
+    whole = aa._render_turn(_Msg("tool", content=short_value))
+    assert "trimmed" not in whole
+    assert short_value in whole
 
     many = {f"k{i}": i for i in range(12)}
     rendered = aa._render_args(many)

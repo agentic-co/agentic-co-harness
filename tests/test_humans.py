@@ -257,8 +257,26 @@ def test_decline_returns_task_to_queue(tmp_path):
     assert declined.assigned_to is None
     assert declined.status == TaskStatus.PENDING
     assert declined.metadata["decline_history"][-1]["reason"] == "not my area"
+    assert declined.metadata["decline_history"][-1]["terminal"] is False
     # Back in the ready set now that it is unassigned.
     assert t.id in {r.id for r in beads.ready()}
+
+
+def test_decline_terminal_retires_as_skipped(tmp_path):
+    # A kill-dated bead's decline is not "back in the queue" — it is closed
+    # out. terminal=True must never leave it PENDING/unassigned/unowned,
+    # which is exactly the dispatchable-but-unowned shape doctor.py's
+    # queue.dispatchability check flags (ac-77459255, ac-e5e5ba7b).
+    beads = Beads(str(tmp_path / "tasks.jsonl"))
+    t = beads.create("overdue kill-dated bead", "x")
+    beads.update(t.id, assigned_to="human:alex")
+
+    declined = decline_task(beads, t.id, reason="kill date reached", terminal=True)
+    assert declined.assigned_to is None
+    assert declined.status == TaskStatus.SKIPPED
+    assert declined.metadata["decline_history"][-1]["terminal"] is True
+    # Not dispatchable, not in the ready set.
+    assert t.id not in {r.id for r in beads.ready()}
 
 
 # ----------------------------------------------------------------- CLI
@@ -323,6 +341,27 @@ def test_cli_decline_and_snooze(tmp_path):
     r2 = runner.invoke(main, ["--config", cfg, "tasks", "snooze", t.id, "--for", "2d"])
     assert r2.exit_code == 0, r2.output
     assert beads.get(t.id).metadata.get("snoozed_until")
+
+
+def test_cli_decline_terminal_retires_as_skipped(tmp_path):
+    cfg = _write_config(tmp_path / "co")
+    beads = Beads(str(tmp_path / "co" / "tasks.jsonl"))
+    t = beads.create("kill-dated bead", "x")
+    beads.update(t.id, assigned_to="human:alex")
+
+    runner = CliRunner()
+    result = runner.invoke(
+        main,
+        [
+            "--config", cfg, "tasks", "decline", t.id,
+            "--reason", "kill date reached", "--terminal",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert "retired as skipped" in result.output
+    updated = beads.get(t.id)
+    assert updated.assigned_to is None
+    assert updated.status == TaskStatus.SKIPPED
 
 
 def test_cli_snooze_rejects_bad_interval(tmp_path):

@@ -91,15 +91,36 @@ def push_assignment(config: Config, task: Task) -> None:
         print(f"[humans] WARNING: assignment push failed for {task.id}: {e}")
 
 
-def decline_task(beads: Beads, task_id: str, reason: str | None = None) -> Task | None:
-    """Return a human-assigned task to the queue, unassigned.
+def decline_task(
+    beads: Beads,
+    task_id: str,
+    reason: str | None = None,
+    *,
+    terminal: bool = False,
+) -> Task | None:
+    """Return a human-assigned task to the queue, unassigned — or retire it.
 
     Clears ``assigned_to`` through the explicit ``allow_human_reassign`` path
-    (the only sanctioned way past the human-lineage invariant), appends the
-    reason to metadata, and resets status to pending. Returns None if the task
-    does not exist. Raises TaskStateError if the task is not a human-assigned,
-    open (pending/blocked) task — declining anything else would return an
-    agent task to the queue or resurrect finished/gated work.
+    (the only sanctioned way past the human-lineage invariant) and appends the
+    reason to metadata. Returns None if the task does not exist. Raises
+    TaskStateError if the task is not a human-assigned, open (pending/blocked)
+    task — declining anything else would return an agent task to the queue or
+    resurrect finished/gated work.
+
+    ``terminal=False`` (default) is the original "not my area, let someone
+    else pick it up" decline: status resets to PENDING, unassigned, and stays
+    live for reassignment.
+
+    ``terminal=True`` is for a decline that is not meant to be picked up by
+    anybody — a kill-dated or otherwise retired bead. It resolves to SKIPPED
+    instead of PENDING. Without this, a kill-dated bead declined at PENDING
+    landed unassigned AND unowned (no assigned_to, no assigned_agent) while
+    still counted as a live status — dispatchable-but-unowned by
+    `queue.dispatchability`'s definition (doctor.py), yet nothing was ever
+    going to dispatch it, since the ritual that declined it meant to close it
+    out. (RCA: ac-77459255, ac-e5e5ba7b — standdown declined an overdue
+    kill-dated bead via this path and left it in exactly that state for 5.5h
+    before the hourly preflight gate caught it.)
     """
     task = beads.get(task_id)
     if task is None:
@@ -108,18 +129,24 @@ def decline_task(beads: Beads, task_id: str, reason: str | None = None) -> Task 
     metadata = dict(task.metadata)
     history = list(metadata.get("decline_history", []))
     history.append(
-        {"reason": reason or "", "at": datetime.now(timezone.utc).isoformat()}
+        {
+            "reason": reason or "",
+            "at": datetime.now(timezone.utc).isoformat(),
+            "terminal": terminal,
+        }
     )
     metadata["decline_history"] = history
     updated = beads.update(
         task_id,
         assigned_to=None,
-        status=TaskStatus.PENDING,
+        status=TaskStatus.SKIPPED if terminal else TaskStatus.PENDING,
         metadata=metadata,
         allow_human_reassign=True,
     )
+    verb = "RETIRED (terminal)" if terminal else "DECLINE"
+    destination = "closed out, no longer dispatchable" if terminal else "returned to queue"
     print(
-        f"[humans] DECLINE: {task_id} returned to queue (was {task.assigned_to!r})"
+        f"[humans] {verb}: {task_id} {destination} (was {task.assigned_to!r})"
         + (f" — reason: {reason}" if reason else "")
     )
     return updated

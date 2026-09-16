@@ -68,6 +68,26 @@ def check(name: str, ok: bool, detail: str = "") -> None:
     print(f"  [{'PASS' if ok else 'FAIL'}] {name}" + (f" — {detail}" if detail else ""))
 
 
+def run_proving(cmd, *, shell: bool = False, cwd=None, timeout=None, env=None) -> subprocess.CompletedProcess:
+    """subprocess.run, but a bare `returncode == 0` is never trusted alone (0.1d).
+
+    This estate has already been bitten once: a gate `check` wrapped in
+    `timeout` reads as a clean pass on macOS, which has no `timeout` binary —
+    the shell either can't find it (a "command not found" rc, sometimes
+    absorbed to 0 by whatever it's chained with) and the intended command
+    never runs at all. rc alone cannot distinguish "ran and passed" from
+    "never ran, and something upstream swallowed the failure", so this always
+    captures stdout/stderr and forces the returncode nonzero (127, the real
+    shell exit for "command not found") whenever the captured text says a
+    binary didn't resolve, even if something in the chain reported 0.
+    """
+    r = subprocess.run(cmd, shell=shell, cwd=cwd, env=env, capture_output=True, text=True, timeout=timeout)
+    text = f"{r.stdout or ''}{r.stderr or ''}".lower()
+    if r.returncode == 0 and ("command not found" in text or "no such file or directory" in text):
+        r.returncode = 127
+    return r
+
+
 # ----------------------------------------------------------------- a signed HTTP client per actor
 
 class Plane:
@@ -166,8 +186,7 @@ def feature_dev_body(target: Path, gate5: str) -> dict:
 
 def runtime_cli(node: Path, hub_repo: Path, args: list[str], env: dict) -> subprocess.CompletedProcess:
     exe = RUNTIME / ".venv" / "bin" / "agentic-co"
-    return subprocess.run([str(exe), "-c", str(node / "config.yaml"), *args], cwd=node, env=env,
-                          capture_output=True, text=True)
+    return run_proving([str(exe), "-c", str(node / "config.yaml"), *args], cwd=node, env=env)
 
 
 def implementer_via_runtime(node: Path, hub_repo: Path, plane_url: str, secret: str, target: Path, live: bool) -> list[str]:
@@ -185,7 +204,11 @@ def implementer_via_runtime(node: Path, hub_repo: Path, plane_url: str, secret: 
           executor: claude
     '''))
     (node / "tasks.jsonl").touch()
-    r = runtime_cli(node, hub_repo, ["hub", "status"], env); check("runtime: plane reachable and signature accepted", r.returncode == 0, r.stdout.strip() or r.stderr.strip())
+    r = runtime_cli(node, hub_repo, ["hub", "status"], env)
+    # rc==0 is not proof anything answered — assert the success line
+    # `hub status` actually prints (cli.py's hub_status: "OK  <url>  as <actor>").
+    check("runtime: plane reachable and signature accepted", r.returncode == 0 and "OK" in r.stdout,
+          r.stdout.strip() or r.stderr.strip())
     out: list[str] = []
     for round_ in range(4):                      # steps 2, 3, 4 become ready one after another
         r = runtime_cli(node, hub_repo, ["hub", "pull"], env)
@@ -252,18 +275,30 @@ def agy_via_mcp(plane_url: str, secret: str, target: Path, hub_repo: Path) -> bo
               "check every acceptance criterion maps to a test. Then call work_report with status done and the attempt you were "
               "given, and a one-line result naming the mapping. Do not attest — this step has a human gate and a person answers it.")
     try:
-        # --print-timeout defaults to 5m, which a real turn on this task
-        # exceeds; agy then returns PARTIAL OUTPUT and still exits 0, so the
-        # old `returncode == 0` read a timed-out turn as a success.
-        r = subprocess.run(["agy", "--print", prompt, "--dangerously-skip-permissions",
-                            "--print-timeout", AGY_PRINT_TIMEOUT], cwd=target,
-                           capture_output=True, text=True, timeout=AGY_WALL_S)
+        try:
+            # --print-timeout defaults to 5m, which a real turn on this task
+            # exceeds; agy then returns PARTIAL OUTPUT and still exits 0, so the
+            # old `returncode == 0` read a timed-out turn as a success.
+            r = run_proving(["agy", "--print", prompt, "--dangerously-skip-permissions",
+                             "--print-timeout", AGY_PRINT_TIMEOUT], cwd=target, timeout=AGY_WALL_S)
+        except FileNotFoundError as e:
+            # rc==0 was never reachable here anyway, but an unhandled
+            # FileNotFoundError would skip the `finally` cleanup below via a
+            # bare crash — make "the binary never resolved" explicit and loud
+            # instead (0.1d: a gate must prove it ran before rc means anything).
+            print(f"     agy: binary not found on PATH ({e}) — treating as a failure, not a pass")
+            return False
     finally:
         subprocess.run(["agy", "mcp", "remove", "agentco"], capture_output=True)
     said = (r.stdout or "") + (r.stderr or "")
     print("     agy:", said.strip()[-200:])
     if "timeout" in said.lower() and "turn in progress" in said.lower():
         print("     agy: TIMED OUT mid-turn — treating as a failure, not a pass")
+        return False
+    if not said.strip():
+        # A clean rc with zero output is the same "exited without proving it
+        # ran" shape as the macOS `timeout` hazard — not a pass on its own.
+        print("     agy: rc=0 but produced no output — treating as unproven, not a pass")
         return False
     return r.returncode == 0
 
@@ -430,7 +465,12 @@ def main() -> int:
 
     # 1. plane up
     env = {**os.environ, "AGENTCO_DB": str(plane_dir / "registry.sqlite3"), "AGENTCO_REGISTRY_KEYS": str(plane_dir / "keys.json"),
-           "AGENTCO_HUMANS": HUMAN, "AGENTCO_ADJUDICATORS": "",
+           # All three declared registries use the standard's names (0.1b —
+           # this e2e is what's supposed to attest the AGENTCO_* -> ASOP_*
+           # rename, so it cannot itself set legacy spellings). AGENTCO_DB and
+           # AGENTCO_REGISTRY_KEYS above are unrelated plane storage config,
+           # not part of the ASOP §9 declared-registry vocabulary — untouched.
+           "ASOP_HUMANS": HUMAN, "ASOP_ADJUDICATORS": "",
            # Declared verifiers. Undeclared, `verify` counts for nobody and a
            # judged gate can never be answered; declared, it counts only for
            # these actors, whatever anyone else claims in a payload.
@@ -479,7 +519,15 @@ def main() -> int:
         else:
             def analyst_work(gate):
                 (target / "REQUIREMENTS.md").write_text("- lowercase\n- spaces to dashes\n- punctuation dropped\n")
-                return subprocess.run(gate["check"], shell=True, cwd=gate.get("cwd")).returncode
+                # This IS the hazard 0.1d names directly: `gate["check"]` is a
+                # shell command that arrives from the ASOP itself, so a
+                # `timeout`-wrapped check reading as a clean pass on macOS
+                # (no `timeout` binary) belongs right here, not hypothetically.
+                r = run_proving(gate["check"], shell=True, cwd=gate.get("cwd"))
+                if r.returncode != 0:
+                    print(f"     analyst gate did not prove it ran: rc={r.returncode} "
+                          f"stderr={(r.stderr or '').strip()[:200]}")
+                return r.returncode
             r = participant_step(plane, "claude-code", analyst_work, 1)
             check("analyst: claude-code pulled step 1 only, reported done with attestation", bool(r) and r.get("state") in ("reported", "accepted", "done"), json.dumps(r)[:160])
 
