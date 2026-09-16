@@ -111,7 +111,7 @@ def test_terminal_decline_refuses_and_offers_both_alternatives(tmp_path, monkeyp
     runner = CliRunner()
     beads = _node(tmp_path, monkeypatch)
     task = beads.create("migrate the store", "d", metadata={"verify": json.loads(GATE)})
-    beads.update(task.id, assigned_to="human:mabidoli")
+    beads.update(task.id, assigned_to="human:alex")
 
     result = runner.invoke(
         main, ["tasks", "decline", task.id, "--reason", "kill-dated", "--terminal"]

@@ -82,7 +82,7 @@ def test_terminal_decline_is_refused_on_a_gated_bead(beads, gated):
     The point of the relocation is that this file was never touched: the door
     closes because SKIPPED closed, not because decline() learned a new rule.
     """
-    beads.update(gated.id, assigned_to="human:mabidoli")
+    beads.update(gated.id, assigned_to="human:alex")
     with pytest.raises(ValueError, match="verify gate"):
         humans.decline_task(beads, gated.id, "kill-dated", terminal=True)
     assert beads.get(gated.id).status is TaskStatus.PENDING
@@ -96,7 +96,7 @@ def test_non_terminal_decline_still_works_on_a_gated_bead(beads, gated):
     working — a relocation that broke it would be enforcing the rule on the
     wrong event.
     """
-    beads.update(gated.id, assigned_to="human:mabidoli")
+    beads.update(gated.id, assigned_to="human:alex")
     returned = humans.decline_task(beads, gated.id, "not my area")
     assert returned.status is TaskStatus.PENDING
     assert returned.assigned_to is None
@@ -125,9 +125,9 @@ def test_cancel_still_abandons_gated_work(beads, gated):
     this too, the only remaining exit for a gated bead nobody will finish would
     be to leave it live forever — which is the state D1 was written about.
     """
-    cancelled = beads.cancel(gated.id, by="mabidoli", reason="requirement withdrawn")
+    cancelled = beads.cancel(gated.id, by="alex", reason="requirement withdrawn")
     assert cancelled.status is TaskStatus.CANCELLED
-    assert cancelled.metadata["cancellation"]["by"] == "mabidoli"
+    assert cancelled.metadata["cancellation"]["by"] == "alex"
 
 
 def test_fail_still_works_on_a_gated_bead(beads, gated):
@@ -155,12 +155,12 @@ def test_reject_verify_still_reaches_verify_failed(beads, monkeypatch):
 
 def test_ungated_work_still_reaches_skipped_by_every_route(beads, ungated):
     """The rule is about GATED beads. Ungated administrative close is untouched."""
-    beads.update(ungated.id, assigned_to="human:mabidoli")
+    beads.update(ungated.id, assigned_to="human:alex")
     declined = humans.decline_task(beads, ungated.id, "kill-dated", terminal=True)
     assert declined.status is TaskStatus.SKIPPED
 
     second = beads.create("another moot thing", "d")
-    retired = beads.retire(second.id, by="mabidoli", reason="moot")
+    retired = beads.retire(second.id, by="alex", reason="moot")
     assert retired.status is TaskStatus.SKIPPED
 
 
@@ -172,4 +172,4 @@ def test_retire_still_refuses_first_with_its_own_message(beads, gated):
     would make the rule correct and unhelpable.
     """
     with pytest.raises(ValueError, match="Use `cancel`"):
-        beads.retire(gated.id, by="mabidoli", reason="moot")
+        beads.retire(gated.id, by="alex", reason="moot")
