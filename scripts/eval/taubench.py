@@ -39,7 +39,18 @@ import random
 import sys
 from pathlib import Path
 
-DOMAIN = "airline"
+DOMAIN = "airline"  # default; overridden by --domain (see set_domain)
+
+
+def set_domain(name: str) -> None:
+    """Point the module at another tau2 domain.
+
+    retail is the second dataset: its policy.md is the same per-action-procedure
+    shape as airline's, scored the same ENV way, and a conclusion drawn on one
+    domain's policy is a conclusion about that policy until a second one agrees.
+    """
+    global DOMAIN
+    DOMAIN = name
 
 
 def _load_tau2(tau2: Path):
@@ -60,7 +71,11 @@ def _load_tau2(tau2: Path):
     # network call. Importing the narrow thing keeps the self-check runnable in
     # an environment that could not possibly run a voice benchmark.
     from tau2.data_model.tasks import Task  # noqa: E402
-    from tau2.domains.airline.environment import get_environment  # noqa: E402
+    import importlib
+
+    # Imported by name rather than statically: the domain is a runtime choice now.
+    env_mod = importlib.import_module(f"tau2.domains.{DOMAIN}.environment")
+    get_environment = env_mod.get_environment
 
     return Task, get_environment
 
@@ -91,6 +106,7 @@ def discriminating(tau2: Path) -> tuple[list[str], list[str]]:
     Task, get_environment = _load_tau2(tau2)
     gradeable: list[str] = []
     read_only: list[str] = []
+    unreplayable: list[str] = []
     for raw in _tasks(tau2):
         task = Task.model_validate(raw)
         actions = (task.evaluation_criteria.actions or []) if task.evaluation_criteria else []
@@ -105,12 +121,30 @@ def discriminating(tau2: Path) -> tuple[list[str], list[str]]:
         )
         gold = get_environment()
         gold.set_state(**kw)
+        # retail carries tasks whose recorded actions raise on replay (a
+        # `get_product_details` for a product the seeded DB does not have). A
+        # read-only call that fails changes no state, so the gold DB is still
+        # correct and the task is still gradeable. A WRITE that fails leaves the
+        # gold DB half-built, and grading against a half-built gold would mark a
+        # correct agent wrong — so that task is dropped rather than guessed at.
+        broken = False
         for a in actions:
-            gold.make_tool_call(a.name, **(a.arguments or {}))
+            try:
+                gold.make_tool_call(a.name, **(a.arguments or {}))
+            except Exception:
+                if not a.name.startswith(("get_", "list_", "search_", "find_", "calculate")):
+                    broken = True
+                    break
+        if broken:
+            unreplayable.append(task.id)
+            continue
         untouched = get_environment()
         untouched.set_state(**kw)
         (gradeable if untouched.get_db_hash() != gold.get_db_hash()
          else read_only).append(task.id)
+    if unreplayable:
+        print(f"[taubench] {len(unreplayable)} task(s) dropped — a WRITE in their gold "
+              f"actions raised on replay, so gold DB cannot be trusted: {unreplayable}")
     return gradeable, read_only
 
 
@@ -247,6 +281,7 @@ def main() -> int:
     for name in ("prepare", "selfcheck"):
         s = sub.add_parser(name)
         s.add_argument("--tau2", type=Path, required=True)
+        s.add_argument("--domain", default="airline")
         s.add_argument("--out", type=Path, required=True)
         if name == "prepare":
             s.add_argument("--dev", type=int, default=12)
@@ -254,6 +289,7 @@ def main() -> int:
             s.add_argument("--seed", type=int, default=20260912)
 
     a = ap.parse_args()
+    set_domain(a.domain)
     if a.cmd == "prepare":
         return prepare(a.tau2, a.out, a.dev, a.test, a.seed)
     return selfcheck(a.tau2, a.out)

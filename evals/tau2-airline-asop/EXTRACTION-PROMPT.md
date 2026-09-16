@@ -38,6 +38,31 @@ step states:
 
 A procedure without those properties is documentation, not an ASOP.
 
+Each procedure also states:
+
+- **multiplicity** — how much of one request a single pass covers, written as
+  `Multiplicity: once per <unit>` (`once per reservation`, `once per shipment`,
+  `once per account`). Omit the line only when one pass always covers any request.
+
+Multiplicity is the property most easily lost in extraction, and losing it is
+expensive. Source prose states caps in passing — "at most one travel certificate",
+"no more than five passengers" — and a per-instance cap means a request that exceeds
+it needs the procedure to RUN AGAIN, not to bend. Prose leaves that implication for a
+human to draw. A numbered list does not, and an executor walking the list one step at
+a time has no way to draw it: it reaches the last step and stops, having served part
+of the request.
+
+Measured (2026-09-14/15, tau2-airline task 23, three certificates to spend against a
+one-certificate-per-reservation cap): both arms executing the ASOP stepwise put three
+passengers and three certificates on a single booking, every trial, and scored 0.0.
+The rule was quoted verbatim in the document they were reading. They had no vocabulary
+for "do this three times".
+
+So: whenever a rule caps what one instance may hold, say which unit it caps, and state
+the multiplicity on the procedure. Name the cap beside the precondition it belongs to
+as well, so a reader meeting the step alone knows an overflow means another pass rather
+than a refusal.
+
 ## What to produce
 
 For each distinct procedure in the input, an ASOP with ordered steps. Make

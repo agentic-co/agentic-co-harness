@@ -128,6 +128,13 @@ def sample(args) -> int:
 
     for i, r in enumerate(out):
         r["truth"] = ""  # to be filled by a person
+        # Always present, even when empty. `derive` stamps "rule:<name>" on the
+        # rows it labels, so provenance used to be readable only as the ABSENCE
+        # of the field on a human-labelled row — and absence is not a record.
+        # Seeding it here means a proxy label and a human label are distinguished
+        # by what the row SAYS, which is what stops the mistake that forced the
+        # JUDGE-LADDER retraction from recurring at a different layer.
+        r["truth_source"] = ""
         r["_id"] = i
 
     args.out.write_text(
@@ -270,6 +277,24 @@ def score(args) -> int:
         raise SystemExit("nothing labelled yet")
 
     print(f"\n[t1] {len(labelled)} labelled, {unclear} unclear (excluded)\n")
+
+    # Provenance mix. A number computed over proxy labels and a number computed
+    # over human labels are different claims, and every figure this script prints
+    # is silent about which it is unless the mix is stated beside it.
+    by_source = collections.Counter(
+        r.get("truth_source") or "UNATTRIBUTED" for r in labelled
+    )
+    print("LABEL PROVENANCE — every figure below inherits this mix")
+    for source, count in by_source.most_common():
+        print(f"  {source:<40} {count}")
+    if by_source.get("UNATTRIBUTED"):
+        print("  !! UNATTRIBUTED rows carry a label with no recorded origin. A proxy")
+        print("     label and a human label are not interchangeable evidence; treat")
+        print("     these as proxy until someone says otherwise.")
+    if by_source and all(s.startswith("rule:") for s in by_source):
+        print("  NOTE: every label here is a deterministic PROXY. These figures")
+        print("        describe the rule's agreement with the gate, not ground truth.")
+    print()
 
     # A detector cannot be measured on a sample with only one class. With no
     # decisions where the precondition genuinely HELD, there is nothing a

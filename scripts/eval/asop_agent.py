@@ -107,6 +107,18 @@ class Step:
 class Procedure:
     name: str
     steps: tuple[Step, ...]
+    # MULTIPLICITY. A procedure whose rules carry a per-instance cap ("at most one
+    # travel certificate per reservation") may have to run MORE THAN ONCE to serve a
+    # single request. v1 and v2 had no way to say that and the agent had no way to do
+    # it: `step_index` only ever incremented, and `_system_prompt_for` clamped to the
+    # last step forever once it ran past the end. Measured consequence on task 23,
+    # which needs three bookings to spend three certificates: both stepwise arms put
+    # 3 passengers and 3 certificates on ONE booking every trial and scored 0.0, while
+    # both whole-document arms split it correctly every trial. The rule was quoted
+    # verbatim in the document they were reading — they could not act on it, not
+    # having failed to understand it.
+    repeatable: bool = False
+    repeat_unit: str = ""  # e.g. "reservation" — what one run of this procedure covers
 
 
 @dataclass(frozen=True)
@@ -182,6 +194,33 @@ _CONDITIONAL_RE = re.compile(
     r"|\bwhere\s+applicable\b|\bwhen\s+requested\b",
     re.I,
 )
+
+
+_MULTIPLICITY_RE = re.compile(
+    r"^\s*(?:\*\*)?Multiplicity(?:\*\*)?\s*[:—-]\s*(.+)$", re.M | re.I
+)
+_UNIT_RE = re.compile(r"\bper\s+([a-z][a-z _-]{2,30}?)\b", re.I)
+
+
+def _multiplicity(section_body: str) -> tuple[bool, str]:
+    """Read a procedure's `Multiplicity:` line, if it declares one.
+
+    Read off the document rather than configured per file, for the same reason
+    `is_conditional` is: a differently-worded extraction of the same policy has to get
+    the same treatment, or the arms differ in something other than what is under test.
+
+    A procedure is repeatable when its Multiplicity line names a per-instance unit —
+    "once per reservation" — which is the shape a per-instance cap takes. Absent the
+    line, nothing changes: the procedure runs once, exactly as before.
+    """
+    found = _MULTIPLICITY_RE.search(section_body)
+    if not found:
+        return False, ""
+    said = found.group(1).strip()
+    unit = _UNIT_RE.search(said)
+    if not unit:
+        return False, ""
+    return True, unit.group(1).strip()
 
 
 def is_conditional(step_body: str) -> bool:
@@ -283,7 +322,10 @@ def parse_asop(markdown: str) -> ASOP:
             routing_body = body
             continue
         if steps:
-            procedures.append(Procedure(name=clean, steps=steps))
+            repeatable, unit = _multiplicity(body)
+            procedures.append(
+                Procedure(name=clean, steps=steps, repeatable=repeatable, repeat_unit=unit)
+            )
         else:
             # Reference data, scope, definitions — context the executor needs
             # on every step, so it rides along in the preamble rather than
@@ -420,8 +462,24 @@ def _render_turn(m: Any) -> str:
         return f"{role} CALLS: {rendered}"
     if role == "tool":
         flag = " [ERROR]" if getattr(m, "error", False) else ""
-        return f"tool RESULT{flag}: {_clip(getattr(m, 'content', '') or '', 400)}"
+        return f"tool RESULT{flag}: {_clip(getattr(m, 'content', '') or '', TOOL_RESULT_CLIP)}"
     return f"{role}: {_clip(getattr(m, 'content', '') or '', 600)}"
+
+
+# Tool results reach the verifier through `_clip`. The limit was 400 chars, and
+# MEASURED 2026-09-15 that was starving the gate of the value it was asked to
+# confirm: 85% of airline tool results and 78% of retail's exceeded it (medians
+# 716 and 899). In retail, the `status` field a step gates on fell past the cut in
+# 72% of the results carrying one — which is why every "check its status" step
+# refused almost every time (Cancel step 2: 12/12, Return: 17/18, Exchange: 17/18,
+# Modify: 41/44) while the agent had in fact retrieved the status correctly.
+#
+# 2000 exposes the status field in 100% of observed retail results and sits above
+# airline's p90 of 1155. It applies ONLY to the verifier's evidence record — the
+# executor always saw tau2's messages in full — so this handicapped the gated arms
+# and no other. Gate numbers from before this change are not comparable with ones
+# after it, T1's precision/recall included.
+TOOL_RESULT_CLIP = 2000
 
 
 def _clip(text: str, n: int) -> str:
@@ -457,7 +515,7 @@ def _tool_history(messages: list) -> tuple[str, ...]:
             )
         if getattr(m, "role", None) == "tool":
             flag = "FAILED" if getattr(m, "error", False) else "ok"
-            out.append(f"  -> {flag}: {_clip(getattr(m, 'content', '') or '', 300)}")
+            out.append(f"  -> {flag}: {_clip(getattr(m, 'content', '') or '', TOOL_RESULT_CLIP)}")
     return tuple(out)
 
 
@@ -682,6 +740,44 @@ After this step: {remaining}
 </remaining>\
 """
 
+RESTART_PROMPT = """\
+<instructions>
+You have completed one full pass of {procedure} — that pass covers ONE {unit}.
+You have completed {done} so far.
+
+Decide ONE thing: does this user's request need another {unit}? It does when a
+per-{unit} limit in the rules means a single {unit} cannot carry everything they
+asked for. If it does, say so to the user and begin {procedure} again from step 1.
+If it does not, tell the user what has been done and ask if anything else is needed.
+
+Do not repeat work already completed for a {unit} that is finished.
+
+In each turn you may either send a message to the user or make a tool call,
+never both. Generate valid JSON only.
+</instructions>
+
+<global_rules>
+{preamble}
+</global_rules>\
+"""
+
+COMPLETE_PROMPT = """\
+<instructions>
+{procedure} is complete. Every step has been worked and there are no more.
+
+Tell the user what was done and ask whether they need anything else. Do not
+re-run steps of a completed procedure. If the user raises something new that a
+different procedure covers, follow that one instead.
+
+In each turn you may either send a message to the user or make a tool call,
+never both. Generate valid JSON only.
+</instructions>
+
+<global_rules>
+{preamble}
+</global_rules>\
+"""
+
 TRIAGE_PROMPT = """\
 <instructions>
 You are a customer service agent. Find out what the user needs, then follow the
@@ -718,6 +814,7 @@ class ASOPAgentState(LLMAgentState):  # type: ignore[misc,valid-type]
     escalated: list[str] = []
     procedure: Optional[str] = None
     step_index: int = 0
+    instances: int = 0  # completed passes of the current procedure (multiplicity)
     refusal: Optional[str] = None
     verdicts: list[dict] = []
 
@@ -741,6 +838,7 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
         identity: str = "executor",
         route_fn: Optional[Callable[[str], str]] = None,
         max_refusals: int = 3,
+        max_instances: int = 4,
         human_gate_unavailable: bool = True,
     ) -> None:
         super().__init__(
@@ -758,6 +856,9 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
         # run keeps producing evidence about later steps. It is not a pass and
         # must never be counted as one.
         self.max_refusals = max_refusals
+        # A repeatable procedure that never stops repeating is the same starvation
+        # failure as a gate that never passes, arriving from the other side. Bound it.
+        self.max_instances = max_instances
         # A benchmark has no person to sign off. Set False only where one
         # genuinely exists, which is the runtime and not here.
         self.human_gate_unavailable = human_gate_unavailable
@@ -776,7 +877,22 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
                 preamble=self.asop.preamble,
                 procedures="\n".join(f"- {p.name}" for p in self.asop.procedures),
             )
-        step = pos.procedure.steps[min(pos.index, len(pos.procedure.steps) - 1)]
+        # Past the last step the procedure is DONE. Before this it clamped to the
+        # final step and re-presented it forever, which is the "runs past the last
+        # step with no terminal state" defect — the agent was told to keep working a
+        # step it had already completed, with no way to either finish or start again.
+        if pos.index >= len(pos.procedure.steps):
+            if pos.procedure.repeatable and state.instances < self.max_instances:
+                return RESTART_PROMPT.format(
+                    preamble=self.asop.preamble,
+                    procedure=pos.procedure.name,
+                    unit=pos.procedure.repeat_unit or "instance",
+                    done=state.instances,
+                )
+            return COMPLETE_PROMPT.format(
+                preamble=self.asop.preamble, procedure=pos.procedure.name
+            )
+        step = pos.procedure.steps[pos.index]
         remaining = [s.title for s in pos.procedure.steps[pos.index + 1 :]]
         return STEP_PROMPT.format(
             preamble=self.asop.preamble,
@@ -809,6 +925,25 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
             SystemMessage(role="system", content=self._system_prompt_for(state))
         ]
         assistant_message, state = super().generate_next_message(message, state)
+
+        # RE-ENTRY. Standing at the end of a repeatable procedure, a tool call is the
+        # agent acting on another instance — the restart prompt just asked it to decide,
+        # and this is the decision, observed rather than inferred. Re-arm at step 1.
+        # Deciding FOR it (auto-restarting on completion) would force a second booking
+        # on every user who only ever needed one.
+        pos = self._position(state)
+        if (
+            pos.procedure is not None
+            and pos.index >= len(pos.procedure.steps)
+            and pos.procedure.repeatable
+            and state.instances < self.max_instances
+            and getattr(assistant_message, "tool_calls", None)
+        ):
+            state.instances += 1
+            state.step_index = 0
+            state.step_started_at = len(state.messages)
+            state.refusal = None
+            state.consecutive_refusals = 0
 
         if state.procedure is None:
             state.procedure = self._route(state)
@@ -1001,6 +1136,7 @@ class ASOPAgent(LLMAgent):  # type: ignore[misc,valid-type]
             escalated=[],
             procedure=None,
             step_index=0,
+            instances=0,
             refusal=None,
             verdicts=[],
         )

@@ -49,6 +49,20 @@ def _load_adapter():
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--tau2", type=Path, required=True)
+    ap.add_argument(
+        "--defer-consent-stop",
+        action="store_true",
+        help="give the agent one more turn when the user grants consent and stops in the "
+        "same turn. CHANGES CONVERSATION DYNAMICS — a run with this flag is not comparable "
+        "with one without it, so re-run the baseline alongside.",
+    )
+    ap.add_argument(
+        "--domain",
+        default="airline",
+        help="tau2 domain. `retail` is the second dataset (114 tasks, its own policy.md, "
+        "same EvaluationType.ENV scoring) — the point of it is that a conclusion drawn on "
+        "one domain's policy is a conclusion about that policy.",
+    )
     ap.add_argument("--data", type=Path, required=True)
     ap.add_argument("--asop", type=str, default="asops/asop.claude.md")
     ap.add_argument("--out", type=Path, required=True)
@@ -82,6 +96,15 @@ def main() -> int:
 
     litellm.modify_params = True
 
+    # Two measured scoring faults; see scripts/eval/harness_fixes.py for both and for
+    # why only one of them is fixed rather than detected.
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import harness_fixes
+
+    print(f"[arm c] FIX: {harness_fixes.canonicalise_payment_history(args.domain)}")
+    if args.defer_consent_stop:
+        print(f"[arm c] FIX: {harness_fixes.defer_consent_stop()}")
+
     from tau2.data_model.tasks import Task
     from tau2.registry import registry
     from tau2.run import run_tasks
@@ -99,13 +122,13 @@ def main() -> int:
     # Restore it whatever happens: an extracted ASOP left at the canonical
     # policy path would silently corrupt every later run, including somebody
     # else's who does not know this script exists.
-    policy = args.tau2 / "data/tau2/domains/airline/policy.md"
+    policy = args.tau2 / f"data/tau2/domains/{args.domain}/policy.md"
     backup = args.out / "policy.original.md"
     if not backup.exists():
         shutil.copy(policy, backup)
 
     task_ids = args.tasks or json.loads((args.data / "split.json").read_text())["test"]
-    raw = json.loads((args.tau2 / "data/tau2/domains/airline/tasks.json").read_text())
+    raw = json.loads((args.tau2 / f"data/tau2/domains/{args.domain}/tasks.json").read_text())
     raw = raw if isinstance(raw, list) else raw.get("tasks", [])
     tasks = [Task.model_validate(t) for t in raw if str(t["id"]) in set(map(str, task_ids))]
     if not tasks:
@@ -120,7 +143,7 @@ def main() -> int:
     try:
         shutil.copy(args.data / args.asop, policy)
         results = run_tasks(
-            domain="airline",
+            domain=args.domain,
             tasks=tasks,
             agent="asop_stepwise",
             user="user_simulator",
@@ -141,8 +164,21 @@ def main() -> int:
 
 
 def report(results, verdict_log: Path, out: Path) -> int:
+    import harness_fixes
+
     sims = getattr(results, "simulations", []) or []
-    rewards = [s.reward_info.reward for s in sims]
+    # FAULT 2: the user granted consent and stopped in the same turn, so the agent
+    # never got a turn in which to act. Reported, never silently counted as a failure.
+    skipped = harness_fixes.unscoreable_cells(results)
+    for c in skipped:
+        print(f"[arm c] UNSCOREABLE task {c['task_id']} trial {c['trial']}: "
+              f"user consented and stopped in one turn — {c['said']!r}")
+    if skipped:
+        print(f"[arm c] {len(skipped)} cell(s) unscoreable; pass^1 below EXCLUDES them")
+    excluded = {(str(c["task_id"]), c["trial"]) for c in skipped}
+    sims = [s for s in sims
+            if (str(getattr(s, "task_id", None)), getattr(s, "trial", None)) not in excluded]
+    rewards = [s.reward_info.reward for s in sims if getattr(s, "reward_info", None)]
     if rewards:
         print(f"\n[arm c] pass^1 = {sum(rewards) / len(rewards):.3f}  ({int(sum(rewards))}/{len(rewards)})")
 

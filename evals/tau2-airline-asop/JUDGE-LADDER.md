@@ -1,6 +1,30 @@
 # Does a bigger judge make the gate work?
 
-No. Not within anything this machine can run.
+> # 🛑 RETRACTED — 2026-09-15. Do not cite the result below.
+>
+> **This experiment measured which decisions got labelled, not whether a judge
+> discriminates.** Every decision in its labelled set was `not_held` — a single class.
+> With one class, "catches" is just the judge's refusal rate over labelled decisions and
+> the base rate is its refusal rate over everything, so **LIFT collapses into the
+> labelled-vs-unlabelled refusal gap** and tracks it almost exactly for all four judges.
+> A metric built to be zero for a random judge was, here, zero-by-construction for every
+> judge. That the numbers replicated across two passes is not evidence against this — a
+> deterministic artifact replicates perfectly.
+>
+> **Root cause, and it is not sampling.** Across all 245 recorded decisions from the 20B
+> run the deterministic proxy yielded **78 `not_held` and zero `held`**. Of 78 decisions
+> whose step requires a user id, `get_user_details` had succeeded in **7**. The 20B
+> executor almost never satisfied the precondition, so the class being detected barely
+> existed and **no detector could be measured against it at any judge capability.** The
+> model that needed upgrading was the **executor**, not the judge.
+>
+> **The question below is still open and is now answerable.** GLM-4.7 on the same tasks
+> produces both classes (3 `held` against 5 `not_held` in 18 decisions), so the ladder can
+> be re-scored on that evidence — for nothing, since re-judging needs no agent, no user
+> simulator and no environment. Until that re-score exists, this page has no result.
+>
+> Retraction recorded in `ai-tasks/asop-eval/CONTEXT.md` § RETRACTED and carried out as
+> item 0.4 of `ai-tasks/unified/phase-0.md`.
 
 ## The question
 
@@ -25,7 +49,10 @@ that refuses everything scores 1.00 — and precision is unavailable because the
 rule-labelled set is single-class. A judge refusing at random scores lift 0
 however good its catch rate looks.
 
-## The result
+## The result — 🛑 RETRACTED, see the banner at the top of this file
+
+*Kept for provenance. Every lift figure in this table is an artifact of a single-class
+labelled set; the prose after it reasons from those figures and is retracted with them.*
 
 | judge | params | refuses | catches | **lift** |
 |---|---|---|---|---|
