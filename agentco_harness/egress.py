@@ -114,12 +114,68 @@ ARTIFACT_NAME = "inference-routes.json"
 _SUPPORTED_SCHEMA = 1
 
 
-class EgressDenied(Exception):
+#: Machine codes for this module's refusals (ISC-4 / goal G1).
+#:
+#: WHY CODES AT ALL. This module is the worked example of a Claude Code hook
+#: (`EgressClassGuard.hook.ts`) re-expressed as backend-agnostic runtime policy —
+#: see the module docstring. ISC-4's acceptance bar is not "both backends refuse";
+#: it is **the same rule producing the same refusal CODE under two different
+#: executor adapters.** A refusal that exists only as prose cannot meet that bar,
+#: because every message here interpolates the agent and route name, so two
+#: adapters refused by one rule produce two different strings by construction.
+#: The hub carries the identical defect on its own list (`MCP refusals`: a code
+#: that survives "only as a string prefix", where `errors.py` says clients branch
+#: on the code).
+#:
+#: 🛑 THESE ARE NOT `asop-spec` CODES, and the namespace prefix says so out loud.
+#: `asop.refusals.CODES` is the protocol's vocabulary and this repo's invariant is
+#: that it "arrives by version, never by path" — adding one locally would fork the
+#: semantics the spec exists to hold. Egress classification is **runtime policy**,
+#: not plane protocol: it governs which vendor a bead may be dispatched to, a
+#: question the plane has no opinion on. So it gets its own namespace, and the
+#: `egress:` prefix is what stops a reader mistaking it for a contract code.
+EGRESS_UNKNOWN_DATA_CLASS = "egress:unknown_data_class"
+EGRESS_ROUTE_UNDECLARED = "egress:route_undeclared"
+EGRESS_ROUTE_ABSENT = "egress:route_absent"
+EGRESS_CEILING_EXCEEDED = "egress:ceiling_exceeded"
+EGRESS_POLICY_UNAVAILABLE = "egress:policy_unavailable"
+
+#: Every code this module can raise, so a caller can branch exhaustively and a
+#: test can assert the set has not grown silently.
+EGRESS_CODES = frozenset({
+    EGRESS_UNKNOWN_DATA_CLASS,
+    EGRESS_ROUTE_UNDECLARED,
+    EGRESS_ROUTE_ABSENT,
+    EGRESS_CEILING_EXCEEDED,
+    EGRESS_POLICY_UNAVAILABLE,
+})
+
+
+class _CodedRefusal(Exception):
+    """A refusal that carries a machine code alongside its prose.
+
+    The code identifies the RULE, never the request — that is the whole point.
+    Two agents denied by the same rule carry the same code and different
+    messages, which is what makes the code branchable and the message useful.
+    """
+
+    default_code = "egress:unclassified"
+
+    def __init__(self, message: str, *, code: str | None = None) -> None:
+        super().__init__(message)
+        self.code = code or self.default_code
+
+
+class EgressDenied(_CodedRefusal):
     """A bead's data class exceeds the ceiling of the route it was sent to."""
 
+    default_code = EGRESS_CEILING_EXCEEDED
 
-class PolicyUnavailable(Exception):
+
+class PolicyUnavailable(_CodedRefusal):
     """The route artifact is missing or malformed and the route is not native."""
+
+    default_code = EGRESS_POLICY_UNAVAILABLE
 
 
 @dataclass(frozen=True)
@@ -216,7 +272,8 @@ def resolve_data_class(task_metadata: dict) -> DataClass:
         if key not in CLASS_RANK:
             raise EgressDenied(
                 f"bead declares unknown data_class {declared!r} — "
-                f"expected one of {', '.join(CLASS_RANK)}"
+                f"expected one of {', '.join(CLASS_RANK)}",
+                code=EGRESS_UNKNOWN_DATA_CLASS,
             )
         return key  # type: ignore[return-value]
 
@@ -259,7 +316,8 @@ def check_egress(
     if route_name is None:
         raise EgressDenied(
             f"agent {agent!r} has no declared egress route — add it to "
-            f"agentco_harness.egress.AGENT_ROUTE before dispatching to it"
+            f"agentco_harness.egress.AGENT_ROUTE before dispatching to it",
+            code=EGRESS_ROUTE_UNDECLARED,
         )
 
     try:
@@ -277,7 +335,8 @@ def check_egress(
     route = table.get(route_name)
     if route is None:
         raise EgressDenied(
-            f"route {route_name!r} (agent {agent!r}) is absent from the policy artifact"
+            f"route {route_name!r} (agent {agent!r}) is absent from the policy artifact",
+            code=EGRESS_ROUTE_ABSENT,
         )
 
     ceiling = route.ceiling_unsupervised if not supervised else route.ceiling
