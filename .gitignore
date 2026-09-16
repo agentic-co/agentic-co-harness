@@ -39,3 +39,8 @@ logs/
 *.goldcheck.json
 *.nullcheck.json
 *.asop-eval.json
+
+# Another agent's analysis scratch. Like ai-tasks/, this is one deployment's
+# working state, not something a public runtime repo publishes — the findings
+# that matter are promoted into ai-tasks/unified/DECISIONS.md by hand.
+.agents/
