@@ -62,6 +62,29 @@ def test_reject_still_works_on_an_ungated_bead(tmp_path, monkeypatch):
     assert beads.get(task_id).status is TaskStatus.SKIPPED
 
 
+def test_reject_records_a_retirement_stamp(tmp_path, monkeypatch):
+    """`approve reject` now calls `Beads.retire()` (P2b) instead of writing
+    SKIPPED via a raw `update()`. This pins the one behaviour that changed:
+    the bead should come back carrying `metadata.retirement` (who closed it
+    and why) the same way any other administrative retire does — a caller
+    reading `metadata.retirement` off a bead closed either way must not see
+    a divergence depending on which surface closed it.
+    """
+    runner = CliRunner()
+    beads = _node(tmp_path, monkeypatch)
+    task_id = _awaiting_approval(beads, "tidy the scratch dir", gated=False)
+
+    result = runner.invoke(main, ["approve", "reject", task_id])
+
+    assert result.exit_code == 0, result.output
+    task = beads.get(task_id)
+    assert task.status is TaskStatus.SKIPPED
+    retirement = task.metadata.get("retirement")
+    assert retirement is not None, "retire() should stamp metadata.retirement"
+    assert retirement["reason"] == "Rejected by principal"
+    assert retirement["by"], "retire() requires a non-empty `by`"
+
+
 def test_reject_all_rejects_the_ungated_and_reports_the_gated(tmp_path, monkeypatch):
     """The batch contract: partial success is reported, not hidden.
 
@@ -85,6 +108,12 @@ def test_reject_all_rejects_the_ungated_and_reports_the_gated(tmp_path, monkeypa
     assert beads.get(plain_a).status is TaskStatus.SKIPPED
     assert beads.get(plain_b).status is TaskStatus.SKIPPED
     assert beads.get(gated).status is TaskStatus.PENDING_APPROVAL
+
+    # reject-all goes through the same beads.retire() call as the single-task
+    # `reject` (P2b) — every rejected bead in the batch should carry the same
+    # retirement stamp, not just the singular path.
+    assert beads.get(plain_a).metadata.get("retirement") is not None
+    assert beads.get(plain_b).metadata.get("retirement") is not None
 
 
 def test_reject_all_exits_zero_when_nothing_is_gated(tmp_path, monkeypatch):

@@ -3189,12 +3189,15 @@ def approve_reject(ctx, task_id: str):
         click.echo(f"Task {task_id} is not pending_approval (status={task.status.value})", err=True)
         sys.exit(1)
     # A bead at PENDING_APPROVAL has never run, so its verify gate is entirely
-    # ahead of it — rejecting it to SKIPPED was `retire()`'s semantics written
-    # without `retire()`'s guard, which is N9's purest instance. The choke point
-    # refuses it now; this turns the refusal into a usable instruction rather
-    # than a traceback.
+    # ahead of it — rejecting it to SKIPPED IS `retire()`'s semantics (moot,
+    # ungated-only, administrative close), so it goes through that verb rather
+    # than a raw update() reimplementing its guard.
     try:
-        beads.update(task_id, status=TaskStatus.SKIPPED, result="Rejected by principal")
+        beads.retire(
+            task_id,
+            by=os.environ.get("USER") or "unknown",
+            reason="Rejected by principal",
+        )
     except ValueError as e:
         click.echo(f"Cannot reject: {e}", err=True)
         click.echo(
@@ -3222,7 +3225,11 @@ def approve_reject_all(ctx):
     rejected, refused = 0, []
     for t in waiting:
         try:
-            beads.update(t.id, status=TaskStatus.SKIPPED, result="Rejected by principal")
+            beads.retire(
+                t.id,
+                by=os.environ.get("USER") or "unknown",
+                reason="Rejected by principal",
+            )
         except ValueError as e:
             refused.append((t, e))
             continue

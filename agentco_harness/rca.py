@@ -566,9 +566,8 @@ def advance_rca(beads: Beads, bead: Task, outcome: dict) -> Task:
     fixed = bool(outcome.get("fixed"))
     notes = outcome.get("notes", "")
     if fixed:
-        return beads.update(
+        return beads.complete(
             root_id,
-            status=TaskStatus.DONE,
             result=f"RCA resolved after {cycle} cycle(s). {notes}".strip(),
         )
     return _loop_or_escalate(

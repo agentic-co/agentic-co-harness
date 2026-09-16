@@ -59,12 +59,21 @@ EXPECTED_TERMINAL_WRITES = {
     ("beads.py", "CANCELLED"),      # cancel(): D2 — deliberate, abandons gated work
     ("beads.py", "FAILED"),         # a failure is not a completion claim
     # --- outside beads.py: the doors -----------------------------------------
-    ("rca.py", "DONE"),             # routes through update() -> gate fires
-    ("cli.py", "DONE"),             # ditto
+    ("cli.py", "DONE"),             # routes through update() -> gate fires
     ("cli.py", "FAILED"),
-    ("cli.py", "SKIPPED"),          # approve reject/reject-all — closed by N9
     ("humans.py", "SKIPPED"),       # decline(terminal=True) — N5's door, closed by N9
 }
+#: Doors CLOSED (P2b, `ai-tasks/embedded-plane/PLAN.md`) by migrating the raw
+#: `update(status=...)` call onto the plane's own verb, which no longer names
+#: the status as a literal kwarg so this file's text scanner stops seeing it:
+#: `("rca.py", "DONE")` — the RCA-resolved write now calls `beads.complete()`.
+#: `("cli.py", "SKIPPED")` — `approve reject` / `reject-all` now call
+#: `beads.retire()` (the exact semantics that raw call was reimplementing,
+#: per its own former comment) instead of writing the status inline. Neither
+#: removal changes what `TERMINAL_GATE_POLICY` does with DONE or SKIPPED —
+#: `complete()` and `retire()` both still route through `update()` internally
+#: (see `("beads.py", "DONE")` / `("beads.py", "SKIPPED")` above), so the gate
+#: still fires exactly as before. Only the caller's vocabulary changed.
 
 #: An assignment to `status`, excluding `==` comparisons. Anchoring on the
 #: ASSIGNMENT and then collecting every terminal status named on that line is
