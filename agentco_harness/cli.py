@@ -2932,6 +2932,16 @@ def tasks_decline(ctx, task_id: str, reason: str | None, terminal: bool):
     except TaskStateError as e:
         click.echo(f"Cannot decline: {e}", err=True)
         sys.exit(1)
+    except ValueError as e:
+        # N9: --terminal writes SKIPPED, which the choke point refuses on a
+        # gated bead. The plain decline is unaffected, so say which one failed.
+        click.echo(f"Cannot decline (terminal): {e}", err=True)
+        click.echo(
+            f"  try: agentco tasks cancel {task_id} -m {reason or 'no longer wanted'!r}",
+            err=True,
+        )
+        click.echo(f"  or:  agentco tasks decline {task_id}   # return it to the queue", err=True)
+        sys.exit(1)
     if task is None:
         click.echo(f"Task not found: {task_id}", err=True)
         sys.exit(1)
@@ -3178,7 +3188,19 @@ def approve_reject(ctx, task_id: str):
     if task.status != TaskStatus.PENDING_APPROVAL:
         click.echo(f"Task {task_id} is not pending_approval (status={task.status.value})", err=True)
         sys.exit(1)
-    beads.update(task_id, status=TaskStatus.SKIPPED, result="Rejected by principal")
+    # A bead at PENDING_APPROVAL has never run, so its verify gate is entirely
+    # ahead of it — rejecting it to SKIPPED was `retire()`'s semantics written
+    # without `retire()`'s guard, which is N9's purest instance. The choke point
+    # refuses it now; this turns the refusal into a usable instruction rather
+    # than a traceback.
+    try:
+        beads.update(task_id, status=TaskStatus.SKIPPED, result="Rejected by principal")
+    except ValueError as e:
+        click.echo(f"Cannot reject: {e}", err=True)
+        click.echo(
+            f"  try: agentco tasks cancel {task_id} -m 'rejected at approval'", err=True
+        )
+        sys.exit(1)
     click.echo(f"Rejected: {task_id} — {task.title}")
 
 
@@ -3192,10 +3214,27 @@ def approve_reject_all(ctx):
     if not waiting:
         click.echo("No tasks awaiting approval.")
         return
+    # A gated bead in the batch is REPORTED AND SKIPPED, never silently dropped
+    # and never allowed to abort the rest. A bulk reject that dies halfway
+    # leaves the operator with no idea which half happened — and a bulk reject
+    # that swallows the refusal is how a gated bead gets closed by accident,
+    # which is the whole of N9.
+    rejected, refused = 0, []
     for t in waiting:
-        beads.update(t.id, status=TaskStatus.SKIPPED, result="Rejected by principal")
+        try:
+            beads.update(t.id, status=TaskStatus.SKIPPED, result="Rejected by principal")
+        except ValueError as e:
+            refused.append((t, e))
+            continue
+        rejected += 1
         click.echo(f"Rejected: {t.id} — {t.title}")
-    click.echo(f"\nRejected {len(waiting)} task(s).")
+    click.echo(f"\nRejected {rejected} task(s).")
+    if refused:
+        click.echo(f"\n{len(refused)} NOT rejected — gated work needs `cancel`:", err=True)
+        for t, e in refused:
+            click.echo(f"  {t.id} — {t.title}", err=True)
+            click.echo(f"    agentco tasks cancel {t.id} -m 'rejected at approval'", err=True)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

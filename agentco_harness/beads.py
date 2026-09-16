@@ -906,6 +906,46 @@ class TaskStatus(str, Enum):
     CANCELLED = "cancelled"
 
 
+#: What the verify gate does at each TERMINAL status (N9, principal 2026-09-16).
+#:
+#: The PoC's PPEV invariant (`feae5c8a`, 2026-08-07) was *"every route to DONE
+#: funnels through one choke point"*. It held to the letter and failed in
+#: spirit, because this runtime grew terminal states the original rule never
+#: contemplated: `decline(terminal=True)` and the CLI's `approve reject` both
+#: reached SKIPPED without consulting `metadata.verify`, while `retire()` — the
+#: verb that means the same thing — refused a gated bead outright. Patching each
+#: door as it is found is what let `cancel()` be added without anybody asking
+#: the same question of it, so the rule is keyed on the STATUS being written
+#: rather than on the verb that reached for it.
+#:
+#: This is the relocation `_approval_answers_gate` already documents for its own
+#: conditions: `retire()` keeps its check (its error names `cancel`, which this
+#: table cannot, not knowing which verb the caller used), but it is no longer
+#: the place the rule lives.
+#:
+#: A status ABSENT from this table is not terminal and is not the gate's
+#: business. Adding a terminal status without adding it here is caught by
+#: `tests/test_terminal_paths.py`, which enumerates the doors independently of
+#: this table — on purpose, so the manifest cannot be satisfied by editing the
+#: thing it audits.
+_GATE = "gate"  #: the completion claim — must satisfy metadata.verify
+_EXEMPT = "exempt"  #: written BY the gate; gating it would deadlock it
+_REFUSE_IF_GATED = "refuse_if_gated"  #: for work whose gate was never at stake
+_ALLOW = "allow"  #: not a completion claim, so the gate stays silent
+
+TERMINAL_GATE_POLICY = {
+    TaskStatus.DONE: _GATE,
+    TaskStatus.VERIFY_FAILED: _EXEMPT,
+    TaskStatus.SKIPPED: _REFUSE_IF_GATED,
+    # D2: DONE asserts completion, cancellation is the opposite claim. CANCELLED
+    # is the sanctioned exit for gated work nobody will finish — close it and a
+    # gated bead's only remaining option is to stay live forever, which is the
+    # state D1 exists to kill.
+    TaskStatus.CANCELLED: _ALLOW,
+    TaskStatus.FAILED: _ALLOW,
+}
+
+
 class TaskPriority(int, Enum):
     CRITICAL = 0
     HIGH = 1
@@ -1896,7 +1936,17 @@ class Beads:
                 keys=GATE_RELEASING_KEYS,
             )
         gate_at_read = _UNREAD
-        if kwargs.get("status") == TaskStatus.DONE:
+        policy = TERMINAL_GATE_POLICY.get(kwargs.get("status"))
+        if policy is _REFUSE_IF_GATED:
+            current = self.get(task_id)
+            if current is not None and (current.metadata or {}).get("verify"):
+                raise ValueError(
+                    f"task {task_id} carries a verify gate and cannot be moved to "
+                    f"{kwargs['status'].value} — that status is for work whose gate "
+                    f"was never at stake. Gated work being abandoned unfinished goes "
+                    f"through `cancel` (ai-tasks/unified/DECISIONS.md, D2/N9)."
+                )
+        if policy is _GATE:
             current = self.get(task_id)
             if current is not None:
                 gate_at_read = (current.metadata or {}).get("verify")

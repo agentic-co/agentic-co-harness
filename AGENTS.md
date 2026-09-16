@@ -25,4 +25,10 @@ serialize. Two agents extending the same file silently clobber each other.
 - The contract package `asop-spec` is depended on **by version**, not by path — including here:
   a repository URL is a path. The spec is the source of truth for gate/refusal/attestation
   semantics; this repo implements it, it does not define it.
-- Tests: `uv run pytest -q`. Green baseline is **1417 passed, 2 skipped** (2026-09-15 night, after Phase 0; 1377 before that, and 1345/1375 were both stale).
+- Tests: `uv run pytest -q`. Green baseline is **1444 passed, 2 skipped** (2026-09-16, after N9's
+  terminal-gate relocation). ⚠️ This figure has been stale four times running — **measure it, do
+  not quote it.**
+- **A bead reaches any terminal state through one choke point**, `Beads.update()`, which consults
+  `beads.TERMINAL_GATE_POLICY` for the status being written. The rule used to say "reaches `done`"
+  and was broken exactly there (N9). Adding a terminal status means adding a policy entry; adding
+  a door means declaring it in `tests/test_terminal_paths.py`.
