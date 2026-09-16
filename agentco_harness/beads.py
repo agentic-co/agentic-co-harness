@@ -220,6 +220,21 @@ class CapabilityError(LeaseError):
     """
 
 
+class ChatLeaseTaken(Exception):
+    """Raised when another live attempt already holds a bead's chat-answer lease.
+
+    Deliberately NOT a ``LeaseError``. A ``LeaseError`` means "the bead is not
+    yours" in the lifecycle sense ``claim()``/``report_result()`` enforce —
+    ownership of the bead's execution, fenced through ``update()``. The chat
+    lease is a runtime-local mutual-exclusion on answering one chat turn; it
+    was never a lifecycle concern (D3, ``ai-tasks/unified/DECISIONS.md``), so
+    it gets its own exception and its own atomic primitive
+    (``Beads.try_hold_chat_lease``) instead of riding through ``update()``'s
+    ``precheck``. Nothing about this bead's status, assignment, or lease
+    fields changes when this is raised or caught.
+    """
+
+
 # The verify payload's accepted classes. `deterministic` re-runs a command;
 # `human` and `judged` both park the bead for `approve_verify`/`reject_verify`
 # — v1 does not dispatch `judge_route` to an automated judge, so a judged
@@ -2377,6 +2392,64 @@ class Beads:
         except LeaseError as e:
             print(f"[beads] claim refused: {e}", file=sys.stderr)
             return None
+
+    def try_hold_chat_lease(
+        self,
+        task_id: str,
+        ttl_seconds: float,
+        now: datetime | None = None,
+    ) -> Task | None:
+        """Atomically try to hold ``task_id``'s chat-answer lease.
+
+        A time-boxed eligibility hold, not a lifecycle transition (D3,
+        ``ai-tasks/unified/DECISIONS.md``): a chat turn racing between the
+        immediate-dispatch path and the cycle's safety-net sweep needs
+        exactly-one-winner, and that is all this is. It reads
+        ``metadata.chat_pending``/``metadata.chat_in_flight_at`` and, when
+        free (never held, or held past ``ttl_seconds``), stamps a fresh
+        ``chat_in_flight_at`` — read, check, and write all under the same
+        ``flock`` (``_locked()``) that ``update()``'s ``precheck`` runs
+        inside and that every other read-modify-write on this store already
+        serializes on, so two attempts racing for the same bead's lease can
+        never both win. Deliberately does NOT go through ``update()``: this
+        is metadata-only mutual exclusion, not a status change, and none of
+        ``update()``'s lifecycle machinery (the DONE/verify gate, cycle
+        checks, human-lineage guard) has anything to do with it — routing it
+        through that choke point anyway would be the "callable across a
+        wire" mistake D3 rejected, just kept in-process instead of on one.
+
+        Returns the freshly-stamped task on success, or ``None`` if the bead
+        does not exist. Raises ``ChatLeaseTaken`` when there is nothing
+        pending to answer, or a live attempt already holds the lease (a
+        lease older than ``ttl_seconds`` is treated as abandoned — the
+        holder crashed mid-run — and reclaimed rather than blocking forever).
+        """
+        now = now or datetime.now(timezone.utc)
+        with self._locked():
+            tasks = self._read_all()
+            for i, task in enumerate(tasks):
+                if task.id != task_id:
+                    continue
+                if not task.metadata.get("chat_pending"):
+                    raise ChatLeaseTaken(f"{task_id}: no pending chat to answer")
+                held_at = task.metadata.get("chat_in_flight_at")
+                if held_at:
+                    try:
+                        age = (now - datetime.fromisoformat(held_at)).total_seconds()
+                    except ValueError:
+                        age = None
+                    if age is not None and age < ttl_seconds:
+                        raise ChatLeaseTaken(
+                            f"{task_id}: already in flight since {held_at}"
+                        )
+                meta = dict(task.metadata)
+                meta["chat_in_flight_at"] = now.isoformat()
+                task.metadata = meta
+                task.updated_at = now.isoformat()
+                tasks[i] = task
+                self._write_all(tasks)
+                return task
+        return None
 
     def report_result(
         self,

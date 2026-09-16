@@ -20,6 +20,7 @@ from .beads import (
     Beads,
     _recorded_executor,
     CapabilityError,
+    ChatLeaseTaken,
     Task,
     TaskResult,
     TaskStatus,
@@ -326,9 +327,10 @@ def _attribution_for(tasks_path, task: Task, lane: str, model: str | None = None
     )
 
 
-class _ChatLeaseTaken(Exception):
-    """Internal signal: another live attempt already holds this bead's chat-answer lease."""
-
+# Runtime-local alias: this was never a lifecycle exception (D3,
+# ai-tasks/unified/DECISIONS.md), it just used to be raised from inside this
+# module before the lease grew its own home in Beads.
+_ChatLeaseTaken = ChatLeaseTaken
 
 # Comfortably above DEFAULT_TIMEOUT (600s): a live answer's own lease must
 # never expire out from under it while it is still legitimately running.
@@ -336,42 +338,32 @@ _CHAT_LEASE_TTL_S = 900
 
 
 def _claim_chat_lease(beads: Beads, task_id: str, now: datetime | None = None) -> Task | None:
-    """CAS-claim the right to answer `task_id`'s pending chat.
+    """Claim the right to answer `task_id`'s pending chat.
 
     Returns the freshly-claimed task (carrying a fresh `chat_in_flight_at`)
     on success, or None when there is nothing pending to answer, or a live
-    attempt already holds the lease. Runs the check-and-stamp entirely inside
-    `Beads.update`'s own `precheck` — the same flock every other
-    read-modify-write on this store already serializes on — so a cycle-
+    attempt already holds the lease. Delegates to
+    `Beads.try_hold_chat_lease` — runtime-local turn exclusion, not a
+    lifecycle transition, so it does NOT go through `Beads.update()` (D3:
+    the chat lease "was never a lifecycle concern").
+
+    Deliberately NOT called an "eligibility hold": D3 reserves that term for
+    a generalised, time-boxed hold, to be built only if a SECOND such hold
+    ever appears. One hold does not earn the abstraction, and naming this as
+    though it were one would let a later reader assume it exists.
+
+    That method still
+    achieves atomicity the same way `Beads.claim()`'s CAS does (ac-9cae7593):
+    read, check, and stamp all inside the store's own `flock`, so a cycle-
     triggered answer and a POST-triggered answer racing for the same bead
-    can never both win. Same CAS idiom `Beads.claim()` uses for bead
-    assignment (ac-9cae7593), applied here to a metadata flag instead of
-    status so it can run on a human-assigned bead without touching
-    `assigned_to`.
+    can never both win.
 
     A lease older than `_CHAT_LEASE_TTL_S` is treated as abandoned (the
     holder crashed mid-run) and reclaimed rather than blocking forever.
     """
-    now = now or datetime.now(timezone.utc)
-
-    def cas(fresh: Task) -> dict:
-        if not fresh.metadata.get("chat_pending"):
-            raise _ChatLeaseTaken(f"{task_id}: no pending chat to answer")
-        held_at = fresh.metadata.get("chat_in_flight_at")
-        if held_at:
-            try:
-                age = (now - datetime.fromisoformat(held_at)).total_seconds()
-            except ValueError:
-                age = None
-            if age is not None and age < _CHAT_LEASE_TTL_S:
-                raise _ChatLeaseTaken(f"{task_id}: already in flight since {held_at}")
-        meta = dict(fresh.metadata)
-        meta["chat_in_flight_at"] = now.isoformat()
-        return {"metadata": meta}
-
     try:
-        return beads.update(task_id, precheck=cas)
-    except _ChatLeaseTaken as e:
+        return beads.try_hold_chat_lease(task_id, _CHAT_LEASE_TTL_S, now=now)
+    except ChatLeaseTaken as e:
         print(f"[chat] lease not claimed — {e}")
         return None
 

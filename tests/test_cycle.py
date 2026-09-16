@@ -11,7 +11,7 @@ from dspy.utils.dummies import DummyLM
 
 import agentco_harness as agentco
 import agentco_harness.orchestrator as orchestrator_mod
-from agentco_harness.beads import DISPATCH_REFUSAL_KEY, TaskStatus
+from agentco_harness.beads import Beads, ChatLeaseTaken, DISPATCH_REFUSAL_KEY, TaskStatus
 from agentco_harness.children import ChildRef
 from agentco_harness.config import AgentConfig, Config, LLMConfig
 from agentco_harness.executor import ExecResult
@@ -771,3 +771,116 @@ def test_stale_chat_lease_is_reclaimed(tmp_path, monkeypatch):
     refreshed = orch.beads.get(task.id)
     assert "chat_pending" not in refreshed.metadata
     assert refreshed.metadata["chat"][-1]["text"] == "ok"
+
+
+# ---------------------------------------------------- Beads.try_hold_chat_lease
+# Direct tests of the runtime-local primitive itself (D3, ai-tasks/unified/
+# DECISIONS.md: the chat lease is not a lifecycle concern and no longer goes
+# through Beads.update() at all — these exercise it standalone, without an
+# Orchestrator or a cycle in the way).
+
+
+def test_try_hold_chat_lease_acquired_when_free(tmp_path):
+    beads = Beads(tmp_path / "tasks.jsonl")
+    task = beads.create(
+        title="t", description="d", assigned_to="human:alex",
+        metadata={"chat": [], "chat_pending": True},
+    )
+
+    held = beads.try_hold_chat_lease(task.id, ttl_seconds=900, now=NOW)
+
+    assert held is not None
+    assert held.metadata["chat_in_flight_at"] == NOW.isoformat()
+    # Nothing lifecycle-shaped moved: status/assignment are untouched.
+    assert held.status == TaskStatus.PENDING
+    assert held.assigned_to == "human:alex"
+
+
+def test_try_hold_chat_lease_refused_when_held_and_fresh(tmp_path):
+    beads = Beads(tmp_path / "tasks.jsonl")
+    task = beads.create(
+        title="t", description="d", assigned_to="human:alex",
+        metadata={"chat": [], "chat_pending": True},
+    )
+    beads.try_hold_chat_lease(task.id, ttl_seconds=900, now=NOW)
+
+    with pytest.raises(ChatLeaseTaken):
+        beads.try_hold_chat_lease(task.id, ttl_seconds=900, now=NOW)
+
+
+def test_try_hold_chat_lease_acquired_when_expired(tmp_path):
+    beads = Beads(tmp_path / "tasks.jsonl")
+    task = beads.create(
+        title="t", description="d", assigned_to="human:alex",
+        metadata={"chat": [], "chat_pending": True},
+    )
+    beads.try_hold_chat_lease(task.id, ttl_seconds=900, now=NOW)
+
+    later = NOW + timedelta(seconds=901)
+    held = beads.try_hold_chat_lease(task.id, ttl_seconds=900, now=later)
+
+    assert held is not None
+    assert held.metadata["chat_in_flight_at"] == later.isoformat()
+
+
+def test_try_hold_chat_lease_no_pending_chat_raises(tmp_path):
+    beads = Beads(tmp_path / "tasks.jsonl")
+    task = beads.create(
+        title="t", description="d", assigned_to="human:alex",
+        metadata={"chat": []},
+    )
+
+    with pytest.raises(ChatLeaseTaken):
+        beads.try_hold_chat_lease(task.id, ttl_seconds=900, now=NOW)
+
+
+def test_try_hold_chat_lease_missing_bead_returns_none(tmp_path):
+    beads = Beads(tmp_path / "tasks.jsonl")
+
+    assert beads.try_hold_chat_lease("bd-doesnotexist", ttl_seconds=900, now=NOW) is None
+
+
+def test_try_hold_chat_lease_concurrent_attempts_admit_exactly_one(tmp_path):
+    """The property the `precheck` CAS existed to guarantee, exercised for
+    real: N threads hit the SAME on-disk store at once, each calling
+    try_hold_chat_lease with no external coordination beyond the store's own
+    flock. This is an honest test of exclusion, not an approximation — the
+    threads really race on the same lock file and the same JSONL file, doing
+    real read-modify-write I/O, so a broken lock (or a version that dropped
+    back to a bare read+write with no lock at all) reliably shows more than
+    one winner here. Threads (not processes) are enough because `_locked()`
+    opens a fresh file descriptor per call and fcntl.flock arbitrates at the
+    OS level across file descriptions, not per-thread — the same mechanism
+    that already has to hold across the daemon and CLI within one process.
+    """
+    import threading
+
+    beads = Beads(tmp_path / "tasks.jsonl")
+    task = beads.create(
+        title="race", description="d", assigned_to="human:alex",
+        metadata={"chat": [], "chat_pending": True},
+    )
+
+    winners: list = []
+    errors: list = []
+    barrier = threading.Barrier(8)
+
+    def attempt():
+        barrier.wait()  # line everyone up so the race is as tight as possible
+        try:
+            result = beads.try_hold_chat_lease(task.id, ttl_seconds=900, now=NOW)
+            if result is not None:
+                winners.append(result)
+        except ChatLeaseTaken as e:
+            errors.append(e)
+
+    threads = [threading.Thread(target=attempt) for _ in range(8)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+
+    assert len(winners) == 1
+    assert len(errors) == 7
+    refreshed = beads.get(task.id)
+    assert refreshed.metadata["chat_in_flight_at"] == NOW.isoformat()
