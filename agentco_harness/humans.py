@@ -171,9 +171,7 @@ def snooze_task(
     if task is None:
         return None
     _require_human(task, "snooze")
-    metadata = dict(task.metadata)
-    metadata["snoozed_until"] = until.isoformat()
-    updated = beads.update(task_id, metadata=metadata)
+    updated = beads.annotate(task_id, {"snoozed_until": until.isoformat()})
     print(f"[humans] SNOOZE: {task_id} hidden until {until.isoformat()} (+{interval})")
     return updated
 

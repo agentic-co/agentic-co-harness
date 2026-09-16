@@ -915,9 +915,7 @@ class Orchestrator:
             f"'{COMPLETION_MARKER}' line — completion is unconfirmed "
             f"(flagged metadata.completion_marker=missing, bead NOT failed)"
         )
-        metadata = dict(refreshed.metadata or {})
-        metadata["completion_marker"] = "missing"
-        self.beads.update(task.id, metadata=metadata)
+        self.beads.annotate(task.id, {"completion_marker": "missing"})
 
     def _resolve_budget(self, task: Task) -> tuple[int, int]:
         """Resolve (timeout, max_turns) for a dispatch — see module-level

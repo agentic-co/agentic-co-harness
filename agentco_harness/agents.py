@@ -231,10 +231,7 @@ class PMAgent:
         # the task as metadata and are never turned into work. Subtasks are a
         # separate, explicit decision (needs_decomposition), capped downstream.
         acceptance_criteria = list(result.acceptance_criteria)
-        self.beads.update(
-            task.id,
-            metadata={**task.metadata, "acceptance_criteria": acceptance_criteria},
-        )
+        self.beads.annotate(task.id, {"acceptance_criteria": acceptance_criteria})
         ac_meta = {"acceptance_criteria": acceptance_criteria}
 
         subtasks = None

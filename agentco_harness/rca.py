@@ -393,10 +393,7 @@ def create_rca_task(
             also = list(existing.metadata.get("rca_also_failed") or [])
             if failed_task.id not in also:
                 also.append(failed_task.id)
-                existing = beads.update(
-                    existing.id,
-                    metadata={**existing.metadata, "rca_also_failed": also},
-                )
+                existing = beads.annotate(existing.id, {"rca_also_failed": also})
         return existing
     prior = find_closed_rca_root(beads, failed_task, cycle=cycle)
     return _create_analyze_bead(
@@ -480,9 +477,7 @@ def advance_rca(beads: Beads, bead: Task, outcome: dict) -> Task:
         fix_plan = outcome.get("fix_plan", "")
         # Record the analysis on the analyze bead itself so the chain (and
         # escalate_rca's history walk) can read it back later.
-        beads.update(
-            bead.id, metadata={**bead.metadata, "root_cause": root_cause, "fix_plan": fix_plan}
-        )
+        beads.annotate(bead.id, {"root_cause": root_cause, "fix_plan": fix_plan})
         return beads.create(
             title=_title_for("verify_plan", failed_title),
             description=(
