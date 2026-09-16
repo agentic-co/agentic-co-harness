@@ -9,9 +9,11 @@ what those decisions rule out — **read that first after a context clear.**
 
 ⚠️ **Before believing anything downstream of Phase 3, read
 [`ai-tasks/unified/EVIDENCE.md`](ai-tasks/unified/EVIDENCE.md):** the ASOP apparatus **loses to a
-bare prompt on airline** (−0.240 paired, 7-1, **p = 0.070** — the previously published 0.039 is
-withdrawn) and **ties it on retail** (26/30 vs 26/30). Two domains, opposite answers. The gate has
-still never fired deterministically in either. The coding domain is untested and is the entire
+bare prompt in BOTH domains, by very different margins** — airline −0.240 (7-1, **p = 0.070**;
+the published 0.039 is withdrawn), retail **−0.083** (4-1, p = 0.375) in the clean
+`--defer-consent-stop` regime. ⚠️ **An earlier "retail ties" reading is withdrawn** — it came from
+a 30-cell comparison after dropping faulted cells; the 36-cell fixed-regime pair is the better
+measurement. The gate has still never fired deterministically on retail. The coding domain is untested and is the entire
 remaining argument for the mechanism.
 
 Per-front state-of-record, still current and still authoritative for their own scope:
