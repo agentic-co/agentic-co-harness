@@ -27,7 +27,7 @@
 # completion rule. A null result is ambiguous between "the stance does not work"
 # and "the dose was too small". Say so when reporting, whichever way it lands.
 set -u
-cd /Users/marcelobidolifernandes/Code/agentco-harness
+cd "$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 TAU2=~/Code/tau2-bench
 OUT="${OUT:?set OUT to the output dir}"
