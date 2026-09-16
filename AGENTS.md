@@ -25,4 +25,4 @@ serialize. Two agents extending the same file silently clobber each other.
 - The contract package `asop-spec` is depended on **by version**, not by path — including here:
   a repository URL is a path. The spec is the source of truth for gate/refusal/attestation
   semantics; this repo implements it, it does not define it.
-- Tests: `uv run pytest -q`. Green baseline is **1377 passed, 2 skipped** (re-measured 2026-09-15; 1345 and 1375 were both stale).
+- Tests: `uv run pytest -q`. Green baseline is **1417 passed, 2 skipped** (2026-09-15 night, after Phase 0; 1377 before that, and 1345/1375 were both stale).

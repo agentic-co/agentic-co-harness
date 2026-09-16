@@ -37,4 +37,4 @@ same turn as any material change.
   repository URL is a path, so the spec is named by package, not located by link.)
 - **Never push or rebase without checking `git log origin/main..HEAD` first.** This repo
   routinely carries unpushed local commits.
-- Tests are `uv run pytest -q`; the green baseline is **1377 passed, 2 skipped** (re-measured 2026-09-15; the older 1345 and 1375 figures were both stale).
+- Tests are `uv run pytest -q`; the green baseline is **1417 passed, 2 skipped** (2026-09-15 night, after Phase 0; it was 1377 before that, and the older 1345/1375 figures were both stale).
