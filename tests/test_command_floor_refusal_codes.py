@@ -87,3 +87,50 @@ def test_tricky_protected_branch_references_are_caught():
 
     with pytest.raises(CommandFloorViolation):
         command_floor.check_command("git push -f origin refs/heads/master", ADAPTER_A)
+
+
+# ------------------------------------------------------------ regression: over-triggering
+#
+# Both found by actually running check_command against a probe, not by reading
+# the code and reasoning about it. Rules 2 (force detection) and 3 (protected
+# branch names) originally scanned every token in the WHOLE command rather than
+# the window this one push invocation owns — so an unrelated word or flag
+# elsewhere in a compound command leaked into the decision. N15's lesson
+# applies here as much as it does to an ASOP gate: a rule that fires on
+# unrelated commands is indistinguishable, to the caller it wrongly refuses,
+# from a rule that always refuses.
+
+
+def test_an_unrelated_earlier_command_naming_a_protected_branch_does_not_leak_in():
+    """The false positive that motivated scoping rule 3 to `cmd_args`.
+
+    An unquoted, unrelated commit message mentioning "main" earlier in a
+    compound command must not make a later, genuinely safe force-push to an
+    unrelated branch get refused.
+    """
+    command_floor.check_command(
+        "git commit -m update main docs && git push -f origin feature-branch",
+        ADAPTER_A,
+    )
+
+
+def test_an_unrelated_earlier_force_flag_does_not_make_a_plain_push_look_forced():
+    """The false positive that motivated scoping rule 2 to `cmd_args`.
+
+    `-f` on an unrelated preceding command (here, `grep -f`) must not make an
+    ordinary, non-force `git push origin main` register as a force-push at
+    all — this is a worse failure than the branch-name leak, because it
+    would refuse a ordinary push that was never a force-push in the first
+    place, on a branch that a bare `git push` to would legitimately touch.
+    """
+    command_floor.check_command("grep -f patterns.txt && git push origin main", ADAPTER_A)
+
+
+def test_a_force_flag_after_this_pushs_shell_boundary_does_not_leak_in():
+    """The mirror case: an unrelated command chained AFTER a safe force-push
+    must not retroactively make that push look like it targeted main, even
+    though the chained command names main."""
+    command_floor.check_command(
+        "git push -f origin feature-branch && git commit -m fix main docs",
+        ADAPTER_A,
+    )

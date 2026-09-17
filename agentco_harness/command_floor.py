@@ -104,23 +104,62 @@ def check_command(
     if push_idx == -1:
         return None
 
+    # The window this ONE `git push` invocation actually owns: from its first
+    # argument up to the next shell operator (&&, ||, ;, |, a redirect).
+    # EVERY rule below reads from `cmd_args`, never raw `tokens` — scanning
+    # outside this window is how a command chained before or after the push
+    # leaks into the decision. This was computed AFTER the force check in an
+    # earlier draft, and that ordering was itself a bug: `grep -f
+    # patterns.txt && git push origin main` was refused as a force-push,
+    # when the actual `git push` has no force flag at all — the `-f` an
+    # unrelated PRECEDING command's flag. Confirmed empirically (2026-09-17)
+    # by probing this exact function, the same way the branch-name false
+    # positive below was found. Known remaining limitation, not fixed here
+    # because it is a larger, separate redesign: a compound command with
+    # TWO `git push` invocations only ever has the first evaluated — this
+    # function returns as soon as it decides the first one is safe, so
+    # `git push origin safe && git push -f origin main` would not be caught.
+    args_after = tokens[push_idx + 1:]
+    shell_ops = {"&&", "||", ";", "|", ">", "<", ">>"}
+    cmd_args = []
+    for arg in args_after:
+        if arg in shell_ops:
+            break
+        cmd_args.append(arg)
+
     # 2. Is it a force push?
     # We must find --force or -f, but NOT --force-with-lease.
-    has_force = "-f" in tokens or "--force" in tokens
+    has_force = "-f" in cmd_args or "--force" in cmd_args
     if not has_force:
         # Check combined short flags like -uf (though git push doesn't typically use this, we handle it defensively)
-        for t in tokens:
+        for t in cmd_args:
             if t.startswith("-") and not t.startswith("--") and "f" in t:
                 has_force = True
                 break
-                
+
     if not has_force:
         return None
 
     # 3. Detect explicitly named protected branches.
-    # We check if any protected branch name appears as a discrete token or within a refspec.
+    # Scoped to `cmd_args` (this push's own window) — never the whole command.
+    # A false positive was found and confirmed empirically (2026-09-17) by
+    # probing this exact function: `git commit -m "update main docs" &&
+    # git push -f origin feature-branch` was refused, because the word "main"
+    # in the UNRELATED, unquoted commit message BEFORE the push matched this
+    # loop when it scanned every token in the string. The push target was
+    # `feature-branch` — a genuinely safe push — and the rule blocked it
+    # anyway. (The original CommandFloorGuard.hook.ts carries the identical
+    # flaw; this port does not need to repeat it to be faithful, and a
+    # security floor that refuses unrelated safe commands is exactly the kind
+    # of over-triggering this project's own evidence programme has spent this
+    # session arguing against — N15's "a gate that fires on everything is
+    # indistinguishable from always-refuse" applies here as much as it does
+    # to an ASOP gate. `push_idx` alone was not enough: an UNRELATED command
+    # chained AFTER this push, e.g. `git push -f origin safe && git commit -m
+    # "fix main docs"`, would leak in from the other direction without also
+    # stopping at the same shell-operator boundary rule 4 already computes.)
     for p_branch in protected_branches:
-        for t in tokens:
+        for t in cmd_args:
             # Handle refs/heads/main, HEAD:main, HEAD:refs/heads/main
             parts = t.replace(':', '/').split('/')
             if p_branch in parts:
@@ -136,14 +175,6 @@ def check_command(
                 )
 
     # 4. Check if it's an explicit push to a safe branch.
-    args_after = tokens[push_idx + 1:]
-    shell_ops = {"&&", "||", ";", "|", ">", "<", ">>"}
-    cmd_args = []
-    for arg in args_after:
-        if arg in shell_ops:
-            break
-        cmd_args.append(arg)
-        
     non_flags = [a for a in cmd_args if not a.startswith('-')]
     
     # A refspec is provided if there are at least two non-flags (remote + refspec)
