@@ -23,6 +23,10 @@ claim is provable without spending two hours to find out it was wrong.
 from __future__ import annotations
 
 import importlib.util
+import json
+import os
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -50,6 +54,14 @@ GOLD = (
     "+return value\n"
 )
 ENTRY = {"instance_id": "acme__widget-1", "patch": GOLD}
+TEST_PATCH = (
+    "diff --git a/tests/example.py b/tests/example.py\n"
+    "--- a/tests/example.py\n"
+    "+++ b/tests/example.py\n"
+    "@@ -10,2 +10,5 @@\n"
+    "+def test_hidden_name():\n"
+    "+    pass\n"
+)
 
 
 def _trial(cls: str, public: bool, hidden: bool, n: int = 1) -> list[dict]:
@@ -109,6 +121,41 @@ def test_the_broken_patch_fails_at_import():
 
 def test_the_correct_patch_is_the_gold_patch_unmodified():
     assert swebench.synthesize_patch(ENTRY, swebench.CORRECT) == GOLD
+
+
+def test_public_instance_scrubs_hidden_patch_content_but_keeps_test_targets():
+    entry = {
+        "instance_id": "acme__widget-1",
+        "repo": "acme/widget",
+        "version": "1.0",
+        "base_commit": "abc123",
+        "patch": GOLD,
+        "test_patch": TEST_PATCH,
+        "fail_to_pass": ["test_hidden_name"],
+        "pass_to_pass": ["test_existing"],
+    }
+
+    public = swebench._evaluation_instance(entry, public=True)
+
+    assert "tests/example.py" in public["test_patch"]
+    assert "test_hidden_name" not in public["test_patch"]
+    assert "@@ -10,2 +10,5 @@" not in public["test_patch"]
+    assert json.loads(public["FAIL_TO_PASS"]) == []
+    assert json.loads(public["PASS_TO_PASS"]) == ["test_existing"]
+
+
+def test_public_and_hidden_verdicts_delegate_to_the_official_runner(monkeypatch):
+    calls = []
+
+    def fake_runner(entry, patch, *, public):
+        calls.append((entry, patch, public))
+        return public
+
+    monkeypatch.setattr(swebench, "_run_official_verdict", fake_runner)
+
+    assert swebench.public_passed(ENTRY, "public patch") is True
+    assert swebench.hidden_resolved(ENTRY, "hidden patch") is False
+    assert [call[2] for call in calls] == [True, False]
 
 
 def test_an_instance_whose_gold_patch_touches_no_file_is_refused():
@@ -185,6 +232,51 @@ def test_the_liveness_caveat_travels_with_every_report():
     """It is the caveat this project has lost track of most often."""
     out = swebench.format_score(swebench.score_trials(_trial(swebench.SILENT, True, False)))
     assert "LIVENESS" in out and "CORRECTNESS" in out
+
+
+def _docker_available() -> bool:
+    if shutil.which("docker") is None:
+        return False
+    try:
+        probe = subprocess.run(
+            ["docker", "info"], capture_output=True, text=True, timeout=5
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return probe.returncode == 0
+
+
+@pytest.mark.skipif(
+    os.environ.get("RUN_SWEBENCH_DOCKER_TESTS") != "1" or not _docker_available(),
+    reason="SWE-bench Docker integration tests require explicit opt-in and a live Docker daemon",
+)
+def test_real_swebench_trial_classes():
+    """Opt-in integration check; never adds a Docker run to the default suite."""
+    manifest_value = os.environ.get("SWEBENCH_TEST_MANIFEST")
+    if not manifest_value:
+        pytest.skip("SWEBENCH_TEST_MANIFEST is not set")
+    manifest = Path(manifest_value)
+    if not manifest.exists():
+        pytest.skip("SWEBENCH_TEST_MANIFEST does not name an existing manifest")
+    entry = next(
+        e for e in json.loads(manifest.read_text())
+        if e["instance_id"] == "django__django-16662"
+    )
+    actual = []
+    for patch_class in swebench.PATCH_CLASSES:
+        patch = swebench.synthesize_patch(entry, patch_class)
+        actual.append(
+            (
+                patch_class,
+                swebench.public_passed(entry, patch),
+                swebench.hidden_resolved(entry, patch),
+            )
+        )
+    assert actual == [
+        (swebench.CORRECT, True, True),
+        (swebench.BROKEN, False, False),
+        (swebench.SILENT, True, False),
+    ]
 
 
 # -------------------------------------------------------- the leakage boundary

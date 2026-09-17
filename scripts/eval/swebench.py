@@ -39,11 +39,26 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import re
 import subprocess
 import sys
+import tempfile
+from typing import TYPE_CHECKING
 import urllib.parse
 import urllib.request
+import uuid
 from pathlib import Path
+
+if TYPE_CHECKING:
+    from swebench.harness.test_spec.test_spec import TestSpec
+
+
+COMMAND_TIMEOUT_SECONDS = 7200
+DOCKER_CLIENT_TIMEOUT_SECONDS = 30
+EVALUATION_TIMEOUT_SECONDS = 1800
+HELPER_TIMEOUT_SECONDS = EVALUATION_TIMEOUT_SECONDS + 300
+SWEBENCH_VERSION = "3.0.15"
+VERDICT_RESULT_PREFIX = "__SWEBENCH_VERDICT__ "
 
 DATASET = "princeton-nlp/SWE-bench_Verified"
 ROWS_URL = "https://datasets-server.huggingface.co/rows"
@@ -119,6 +134,14 @@ def sample(rows: list[dict], count: int, seed: int) -> list[dict]:
 
 
 def run(cmd: list[str], **kw) -> subprocess.CompletedProcess:
+    """Run a local command with a bounded lifetime.
+
+    The long ceiling accommodates image pulls and the existing official gate;
+    evaluation itself has the shorter timeout passed to SWE-bench below. A
+    timeout is still preferable to leaving a CI or experiment process parked
+    forever on a dead Docker or network operation.
+    """
+    kw.setdefault("timeout", COMMAND_TIMEOUT_SECONDS)
     return subprocess.run(cmd, capture_output=True, text=True, **kw)
 
 
@@ -253,6 +276,275 @@ def gate(manifest_path: Path, instance_id: str, run_id: str) -> int:
     print(f"{instance_id}: {'RESOLVED' if resolved else 'unresolved'}"
           f"  (empty_patch={instance_id in (data.get('empty_patch_ids') or [])})")
     return 0 if resolved else 1
+
+
+def _public_test_patch(entry: dict) -> str:
+    """Make a harmless test-file patch that gives SWE-bench public targets.
+
+    In swebench 3.0.15, ``make_eval_script_list`` derives test-file directives
+    from ``test_patch``. Passing an empty patch therefore runs the repo-wide
+    command, rather than only the public tests. We retain only the paths from
+    the hidden patch and add a comment to each existing test file; this lets the
+    official per-repo script select the relevant test files without copying any
+    hidden hunk, test name, or test code into the public container.
+    """
+    paths: list[str] = []
+    for line in str(entry.get("test_patch", "")).splitlines():
+        match = re.fullmatch(r"diff --git a/(.+) b/(.+)", line)
+        if match and match.group(1) == match.group(2):
+            path = match.group(1)
+            if path not in paths:
+                paths.append(path)
+    if not paths:
+        raise ValueError(
+            f"{entry['instance_id']}: cannot construct public test targets "
+            "without test-file paths"
+        )
+
+    hunks = []
+    for path in paths:
+        hunks.append(
+            f"diff --git a/{path} b/{path}\n"
+            f"--- a/{path}\n"
+            f"+++ b/{path}\n"
+            "@@ -1,0 +1 @@\n"
+            "+# public gate marker\n"
+        )
+    return "\n".join(hunks)
+
+
+def _evaluation_instance(entry: dict, *, public: bool) -> dict:
+    """Build the package-shaped instance while keeping its data off the agent path."""
+    return {
+        "repo": entry["repo"],
+        "instance_id": entry["instance_id"],
+        "base_commit": entry["base_commit"],
+        "patch": entry.get("patch", ""),
+        "test_patch": _public_test_patch(entry) if public else entry["test_patch"],
+        "problem_statement": entry.get("problem_statement", ""),
+        "hints_text": "",
+        "created_at": "",
+        "version": entry["version"],
+        "FAIL_TO_PASS": json.dumps([] if public else entry["fail_to_pass"]),
+        "PASS_TO_PASS": json.dumps(entry["pass_to_pass"]),
+        "environment_setup_commit": entry["base_commit"],
+    }
+
+
+def _official_test_spec(entry: dict, *, public: bool) -> TestSpec:
+    """Build an official TestSpec without rebuilding a prepared image.
+
+    SWE-bench's generic factory fetches repository requirements while creating
+    an environment-image script. The manifest's remote instance image already
+    contains that environment, so fetching or rebuilding it is unnecessary and
+    would make an otherwise local trial depend on GitHub availability.
+    """
+    from swebench.harness.constants import (
+        MAP_REPO_TO_EXT,
+        MAP_REPO_VERSION_TO_SPECS,
+    )
+    from swebench.harness.test_spec.create_scripts import (
+        make_eval_script_list,
+        make_repo_script_list,
+    )
+    from swebench.harness.test_spec.test_spec import TestSpec
+
+    instance = _evaluation_instance(entry, public=public)
+    repo = entry["repo"]
+    version = entry["version"]
+    base_commit = entry["base_commit"]
+    repo_directory = "/testbed"
+    env_name = "testbed"
+    specs = MAP_REPO_VERSION_TO_SPECS[repo][version]
+    return TestSpec(
+        instance_id=entry["instance_id"],
+        repo=repo,
+        version=version,
+        repo_script_list=make_repo_script_list(
+            specs, repo, repo_directory, base_commit, env_name
+        ),
+        eval_script_list=make_eval_script_list(
+            instance, specs, env_name, repo_directory, base_commit,
+            instance["test_patch"],
+        ),
+        # The remote instance image is already prepared; this list is not used
+        # unless the evaluator is asked to build a local environment image.
+        env_script_list=[],
+        arch="x86_64",
+        FAIL_TO_PASS=json.loads(instance["FAIL_TO_PASS"]),
+        PASS_TO_PASS=json.loads(instance["PASS_TO_PASS"]),
+        language=MAP_REPO_TO_EXT[repo],
+        docker_specs=specs.get("docker_specs", {}),
+        namespace="swebench",
+        base_image_tag="latest",
+        env_image_tag="latest",
+        instance_image_tag="latest",
+    )
+
+
+def _run_official_verdict(entry: dict, patch: str, *, public: bool) -> bool:
+    """Run the vendored evaluator in an isolated ``uv`` process.
+
+    This script deliberately does not import swebench at module load time: the
+    repository's own environment does not depend on it. The child process uses
+    ``run_instance`` and ``get_eval_report`` from swebench, so image setup,
+    patch application, test execution, and per-repo log parsing stay official.
+    """
+    mode = "public" if public else "hidden"
+    request = {"entry": entry, "patch": patch, "public": public}
+    with tempfile.TemporaryDirectory(prefix="swebench-verdict-") as temp_dir:
+        request_path = Path(temp_dir) / "request.json"
+        request_path.write_text(json.dumps(request))
+        result = run(
+            [
+                "uv",
+                "run",
+                "--with",
+                f"swebench=={SWEBENCH_VERSION}",
+                "--no-project",
+                "python",
+                str(Path(__file__).resolve()),
+                "_verdict-helper",
+                "--request",
+                str(request_path),
+            ],
+            cwd=temp_dir,
+            timeout=HELPER_TIMEOUT_SECONDS,
+        )
+
+        result_line = next(
+            (
+                line[len(VERDICT_RESULT_PREFIX):]
+                for line in reversed(result.stdout.splitlines())
+                if line.startswith(VERDICT_RESULT_PREFIX)
+            ),
+            None,
+        )
+        if result.returncode != 0 or result_line is None:
+            details = "\n".join(
+                part for part in (result.stdout[-3000:], result.stderr[-3000:]) if part
+            )
+            raise RuntimeError(
+                f"official SWE-bench {mode} evaluation failed "
+                f"(exit {result.returncode}):\n{details}"
+            )
+
+        outcome = json.loads(result_line)
+        if outcome.get("kind") == "patch_apply_failed":
+            return False
+        if outcome.get("kind") != "verdict":
+            raise RuntimeError(f"official SWE-bench {mode} returned an invalid result")
+        return bool(outcome["resolved"])
+
+
+def public_passed(entry: dict, patch: str) -> bool:
+    """Return whether every public SWE-bench test remains passing.
+
+    The candidate patch is applied only inside the official instance container.
+    A candidate patch that cannot apply is a normal public failure; Docker,
+    image, setup, or evaluator failures raise so they cannot be confused with
+    a real failing test result.
+    """
+    return _run_official_verdict(entry, patch, public=True)
+
+
+def hidden_resolved(entry: dict, patch: str) -> bool:
+    """Return the official SWE-bench RESOLVED verdict for a candidate patch."""
+    return _run_official_verdict(entry, patch, public=False)
+
+
+def _verdict_helper(request_path: Path) -> int:
+    """Child-process entry point; all package and Docker imports stay here."""
+    # Running this file by absolute path puts scripts/eval on sys.path[0]. That
+    # directory contains this file, also named swebench.py, which would shadow
+    # the PyPI package in the imports below. Remove the shadowing directory
+    # before resolving the package.
+    script_dir = str(Path(__file__).resolve().parent)
+    sys.path = [path for path in sys.path if path != script_dir]
+
+    import docker
+    from swebench.harness.constants import APPLY_PATCH_FAIL
+    from swebench.harness.run_evaluation import run_instance
+
+    request = json.loads(request_path.read_text())
+    entry = request["entry"]
+    public = bool(request["public"])
+    mode = "public" if public else "hidden"
+    run_id = f"c1-{mode}-{uuid.uuid4().hex[:12]}"
+    model_name = f"c1-{mode}-verdict"
+    spec = _official_test_spec(entry, public=public)
+    if spec.instance_image_key != entry["image"]:
+        raise RuntimeError(
+            f"{entry['instance_id']}: SWE-bench resolved image "
+            f"{spec.instance_image_key!r}, manifest pins {entry['image']!r}"
+        )
+
+    client = docker.from_env(timeout=DOCKER_CLIENT_TIMEOUT_SECONDS)
+    try:
+        client.ping()
+        result = run_instance(
+            spec,
+            {
+                "instance_id": entry["instance_id"],
+                "model_name_or_path": model_name,
+                "model_patch": request["patch"],
+            },
+            rm_image=False,
+            force_rebuild=False,
+            client=client,
+            run_id=run_id,
+            timeout=EVALUATION_TIMEOUT_SECONDS,
+        )
+    finally:
+        client.close()
+
+    log_dir = (
+        Path("logs/run_evaluation") / run_id / model_name / entry["instance_id"]
+    )
+    instance_log = log_dir / "run_instance.log"
+    if result is None:
+        log = instance_log.read_text() if instance_log.exists() else ""
+        if APPLY_PATCH_FAIL in log:
+            print(VERDICT_RESULT_PREFIX + json.dumps({"kind": "patch_apply_failed"}))
+            return 0
+        tail = log[-3000:] if log else "no run_instance.log was produced"
+        raise RuntimeError(
+            f"official SWE-bench {mode} evaluator returned no report for "
+            f"{entry['instance_id']}; log={instance_log}\n{tail}"
+        )
+
+    _, report = result
+    eval_script = (log_dir / "eval.sh").read_text()
+    test_output = (log_dir / "test_output.txt").read_text()
+    hidden_names = entry.get("fail_to_pass", [])
+    hidden_in_eval = any(name in eval_script for name in hidden_names)
+    hidden_in_log = any(name in test_output for name in hidden_names)
+    # The eval script is the agent-facing boundary: hidden names or test
+    # content there would change what the public run asks the container to
+    # execute. The test log is internal scoring output that this machinery is
+    # explicitly allowed to read. A public test module can necessarily
+    # re-execute a pre-existing hidden test when public and hidden tests share
+    # a file, so a log match is diagnostic rather than leakage.
+    if public and hidden_in_eval:
+        raise RuntimeError(
+            f"public SWE-bench evaluation leaked hidden test data for "
+            f"{entry['instance_id']}: eval={hidden_in_eval}, log={hidden_in_log}"
+        )
+
+    print(
+        VERDICT_RESULT_PREFIX
+        + json.dumps(
+            {
+                "kind": "verdict",
+                "resolved": bool(report[entry["instance_id"]]["resolved"]),
+                "hidden_in_eval": hidden_in_eval,
+                "hidden_in_log": hidden_in_log,
+                "eval_script": str(log_dir / "eval.sh"),
+                "test_log": str(log_dir / "test_output.txt"),
+            }
+        )
+    )
+    return 0
 
 
 # ── C1-coding: the gate as a real oracle ─────────────────────────────────────
@@ -430,6 +722,14 @@ def main() -> int:
     g.add_argument("--instance", required=True)
     g.add_argument("--run-id", default="asop-eval")
 
+    t = sub.add_parser("trial", help="run one C1-coding patch-class trial")
+    t.add_argument("--manifest", type=Path, required=True)
+    t.add_argument("--instance", required=True)
+    t.add_argument("--patch-class", choices=PATCH_CLASSES, required=True)
+
+    h = sub.add_parser("_verdict-helper", help=argparse.SUPPRESS)
+    h.add_argument("--request", type=Path, required=True)
+
     s = sub.add_parser("score", help="recall by defect class, from a trials file")
     s.add_argument("--trials", type=Path, required=True,
                    help="JSON list of {instance_id, patch_class, public_passed, hidden_resolved}")
@@ -439,6 +739,22 @@ def main() -> int:
         return prepare(a.count, a.out, a.seed)
     if a.cmd == "gate":
         return gate(a.manifest, a.instance, a.run_id)
+    if a.cmd == "trial":
+        entries = {e["instance_id"]: e for e in json.loads(a.manifest.read_text())}
+        entry = entries.get(a.instance)
+        if entry is None:
+            print(f"trial: {a.instance} not in manifest", file=sys.stderr)
+            return 2
+        patch = synthesize_patch(entry, a.patch_class)
+        print(json.dumps({
+            "instance_id": a.instance,
+            "patch_class": a.patch_class,
+            "public_passed": public_passed(entry, patch),
+            "hidden_resolved": hidden_resolved(entry, patch),
+        }))
+        return 0
+    if a.cmd == "_verdict-helper":
+        return _verdict_helper(a.request)
     if a.cmd == "score":
         by_class = score_trials(json.loads(a.trials.read_text()))
         print(format_score(by_class))
