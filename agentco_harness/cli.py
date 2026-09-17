@@ -2878,7 +2878,14 @@ def tasks_approve_verify(ctx, task_id: str, approver: str | None, reason: str | 
 
 @tasks.command("reject-verify")
 @click.argument("task_id")
-@click.option("-m", "--message", "reason", default=None, help="Why it was rejected")
+@click.option(
+    "-m",
+    "--message",
+    "reason",
+    default=None,
+    help="The verdict: what you found false. Required — a rejection without one "
+         "records that a party was named, not that a party looked (ASOP.md §5.3).",
+)
 @click.option("--approver", default=None, help="Who rejected (defaults to $USER)")
 @click.pass_context
 def tasks_reject_verify(ctx, task_id: str, reason: str | None, approver: str | None):

@@ -298,6 +298,25 @@ def test_reject_verify_lands_in_verify_failed(tmp_path):
     assert "wrong address" in rejected.metadata["verify_rejection"]["reason"]
 
 
+def test_rejection_without_a_verdict_is_refused(tmp_path):
+    """ASOP.md §5.3: rejecting a claim is still a verdict about the work.
+
+    Without this write-boundary check, a verifier could record only a name and
+    timestamp while silently losing the reason the claim was found false.
+    """
+    beads = _store(tmp_path)
+    task = beads.create(
+        "x", "d", metadata={"verify": {"class": "human", "check": "confirm"}}
+    )
+    beads.complete(task.id)
+
+    with pytest.raises(ValueError, match="a verdict needs a reason"):
+        beads.reject_verify(task.id, approver="alex")
+    with pytest.raises(ValueError, match="a verdict needs a reason"):
+        beads.reject_verify(task.id, approver="alex", reason="   ")
+    assert beads.get(task.id).status == TaskStatus.AWAITING_VERIFY
+
+
 def test_approve_verify_refuses_a_bead_that_never_reached_the_gate(tmp_path):
     beads = _store(tmp_path)
     task = beads.create(
@@ -812,6 +831,32 @@ def test_cli_approve_and_reject_verify_roundtrip(tmp_path, monkeypatch):
     )
     assert result.exit_code == 0, result.output
     assert beads.get(task.id).status == TaskStatus.DONE
+
+
+def test_cli_reject_verify_requires_and_surfaces_the_reason(tmp_path, monkeypatch):
+    """The CLI must expose the rejection verdict requirement instead of
+    swallowing the write-boundary refusal as an unexplained command failure.
+    """
+    monkeypatch.setenv("USER", "dana")
+    runner = CliRunner()
+    root = tmp_path / "node"
+    _config(root)
+    monkeypatch.chdir(root)
+    beads = Beads(root / "tasks.jsonl")
+    task = beads.create(
+        "x", "d", metadata={"verify": {"class": "human", "check": "confirm"}}
+    )
+    beads.complete(task.id)
+
+    result = runner.invoke(main, ["tasks", "reject-verify", task.id])
+    assert result.exit_code == 1
+    assert "Cannot reject" in result.output
+    assert "a verdict needs a reason" in result.output
+    assert beads.get(task.id).status == TaskStatus.AWAITING_VERIFY
+
+    help_result = runner.invoke(main, ["tasks", "reject-verify", "--help"])
+    assert help_result.exit_code == 0
+    assert "Required" in help_result.output
 
 
 def test_cli_list_accepts_the_new_statuses(tmp_path, monkeypatch):

@@ -2685,6 +2685,29 @@ class Beads:
         """
         return self.update(task_id, status=TaskStatus.DONE, result=result)
 
+    @staticmethod
+    def _attest_verdict(
+        *, approver: str, passed: bool, reason: str | None
+    ) -> dict[str, object]:
+        """Build the one structured local verdict accepted at the write boundary.
+
+        ASOP.md §5.3 makes the reason the verdict itself: a name and timestamp
+        identify a party, but they do not say what that party found true or
+        false. Keeping that refusal and the record shape here prevents approval
+        and rejection from drifting into two subtly different attestations.
+        """
+        normalized_reason = (reason or "").strip()
+        if not normalized_reason:
+            raise ValueError(
+                "a verdict needs a reason: which part of the gate did you find "
+                "true or false? A name and a timestamp are not a verdict."
+            )
+        return {
+            "approver": approver,
+            "approved_at": datetime.now(timezone.utc).isoformat(),
+            "verdict": {"passed": passed, "reason": normalized_reason},
+        }
+
     def approve_verify(
         self, task_id: str, approver: str, reason: str | None = None
     ) -> Task | None:
@@ -2742,15 +2765,6 @@ class Beads:
                 f"the same actor the gate exists to check (executor: "
                 f"{executor!r}). Approval must come from a distinct route."
             )
-        if not (reason or "").strip():
-            # ASOP.md §5.3: a judged/human attestation carries a verdict saying
-            # WHAT was found, not just who looked. A name and a timestamp show
-            # a party was named; they do not show a party looked.
-            raise ValueError(
-                f"approving {task_id} needs a reason: which part of "
-                f"{verify_check_text(task.metadata.get('verify'))!r} did you "
-                f"find true? A name and a timestamp are not a verdict."
-            )
         # The attestation travels as an ARGUMENT, never inside metadata.
         #
         # Metadata is transport-reachable: `HubClient.mirror` copies a plane's
@@ -2769,13 +2783,9 @@ class Beads:
         # every one of them (authenticated verifier, distinct from the executor,
         # non-empty verdict) in `_approval_answers_gate`. What changed is who
         # can put an approval in front of that check.
-        attestation = {
-            "approver": approver,
-            "approved_at": datetime.now(timezone.utc).isoformat(),
-            # The contract's shape (schema/v1/attestation.yaml), emitted here
-            # so the record is already the one a plane will accept.
-            "verdict": {"passed": True, "reason": reason.strip()},
-        }
+        attestation = self._attest_verdict(
+            approver=approver, passed=True, reason=reason
+        )
         metadata = dict(task.metadata)
         result = dict(metadata.get("verify_result") or {})
         if result:
@@ -2806,16 +2816,20 @@ class Beads:
         # open would mean anyone could fail a gate they were never permitted to
         # answer — denial of a claim is a verdict about the work too.
         declarations.authenticate(approver, declarations.verifiers(), role="verifier")
+        attestation = self._attest_verdict(
+            approver=approver, passed=False, reason=reason
+        )
+        verdict = attestation["verdict"]
         metadata = dict(task.metadata)
         metadata["verify_rejection"] = {
-            "approver": approver,
-            "rejected_at": datetime.now(timezone.utc).isoformat(),
-            "reason": reason or "",
+            "approver": attestation["approver"],
+            "rejected_at": attestation["approved_at"],
+            "reason": verdict["reason"],
         }
         result = dict(metadata.get("verify_result") or {})
         result.update(
             passed=False,
-            output_tail=f"rejected by {approver}: {reason or 'no reason given'}",
+            output_tail=f"rejected by {approver}: {verdict['reason']}",
         )
         metadata["verify_result"] = result
         return self.update(
