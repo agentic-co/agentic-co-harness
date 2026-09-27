@@ -1,0 +1,279 @@
+{
+  "per_precondition": {
+    "room_type_available_for_dates": {
+      "gradable_rows": 215,
+      "decided": 215,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 2,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 213,
+      "pred_pass_wrong": 0
+    },
+    "sufficient_amount_for_booking": {
+      "gradable_rows": 90,
+      "decided": 90,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 89,
+      "pred_pass_wrong": 0
+    },
+    "has_overlapping_booking_for_booking": {
+      "gradable_rows": 14,
+      "decided": 14,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 13,
+      "pred_pass_wrong": 0
+    },
+    "is_booking_date_within_lead_time_range": {
+      "gradable_rows": 42,
+      "decided": 42,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 6,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 36,
+      "pred_pass_wrong": 0
+    },
+    "has_confirmed_reservation": {
+      "gradable_rows": 215,
+      "decided": 215,
+      "coverage": 1.0,
+      "accuracy_on_decided": 0.442,
+      "abstain": 0,
+      "wrong": 120,
+      "pred_block_correct": 54,
+      "pred_block_wrong": 41,
+      "pred_pass_correct": 41,
+      "pred_pass_wrong": 79
+    },
+    "before_modification_deadline": {
+      "gradable_rows": 27,
+      "decided": 27,
+      "coverage": 1.0,
+      "accuracy_on_decided": 0.926,
+      "abstain": 0,
+      "wrong": 2,
+      "pred_block_correct": 3,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 22,
+      "pred_pass_wrong": 2
+    },
+    "sufficient_amount_for_reservation_modification": {
+      "gradable_rows": 207,
+      "decided": 207,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 0,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 207,
+      "pred_pass_wrong": 0
+    },
+    "has_overlapping_booking_for_modification": {
+      "gradable_rows": 131,
+      "decided": 131,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 20,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 111,
+      "pred_pass_wrong": 0
+    },
+    "sufficient_payment_for_room_service": {
+      "gradable_rows": 2,
+      "decided": 0,
+      "coverage": 0.0,
+      "accuracy_on_decided": null,
+      "abstain": 2,
+      "wrong": 0,
+      "pred_block_correct": 0,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 0,
+      "pred_pass_wrong": 0
+    },
+    "valid_identification": {
+      "gradable_rows": 2,
+      "decided": 2,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 1,
+      "pred_pass_wrong": 0
+    },
+    "after_check_in_time": {
+      "gradable_rows": 3,
+      "decided": 3,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 2,
+      "pred_pass_wrong": 0
+    },
+    "guest_already_checked_in": {
+      "gradable_rows": 4,
+      "decided": 4,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 0,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 4,
+      "pred_pass_wrong": 0
+    },
+    "before_check_out_time": {
+      "gradable_rows": 1,
+      "decided": 1,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 0,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 1,
+      "pred_pass_wrong": 0
+    },
+    "internal_is_loyalty_member": {
+      "gradable_rows": 2,
+      "decided": 2,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 1,
+      "pred_pass_wrong": 0
+    },
+    "internal_valid_room_change_reason": {
+      "gradable_rows": 3,
+      "decided": 3,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 2,
+      "pred_pass_wrong": 0
+    }
+  },
+  "aggregate": {
+    "gradable_rows": 958,
+    "decided": 956,
+    "coverage": 0.998,
+    "accuracy_on_decided": 0.872,
+    "blocks": 132,
+    "blocks_correct": 91,
+    "blocks_wrong": 41,
+    "passes": 824,
+    "passes_wrong_let_through": 81,
+    "TPR": 0.529,
+    "FPR": 0.052,
+    "lift": 0.477,
+    "ungradable_reasons": {},
+    "no_task_key": 0
+  },
+  "jev_comparison": {
+    "jev_blocks": 250,
+    "jev_blocks_wrong": 81,
+    "jev_passes_wrong_let_through": 3,
+    "jev_lift": 0.88,
+    "s0_blocks": 132,
+    "s0_blocks_wrong": 41,
+    "s0_passes_wrong_let_through": 81,
+    "s0_lift": 0.477
+  },
+  "worst_3_preconditions": [
+    "has_confirmed_reservation",
+    "before_modification_deadline"
+  ],
+  "zero_coverage_preconditions": [
+    "sufficient_payment_for_room_service"
+  ],
+  "worst_examples": {
+    "has_confirmed_reservation": [
+      {
+        "task_key": "21eda90e44f5356b",
+        "goal": "modify_reservation",
+        "polarity": true,
+        "predicted": false,
+        "truth": true,
+        "condition": "The guest \"guest_name\" must have a reservation from \"old_check_in_date\" to \"old_check_out_date\" with status marked as \"confirmed\"."
+      },
+      {
+        "task_key": "21eda90e44f5356b",
+        "goal": "modify_reservation",
+        "polarity": true,
+        "predicted": false,
+        "truth": true,
+        "condition": "The guest \"guest_name\" must have a reservation from \"old_check_in_date\" to \"old_check_out_date\" with status marked as \"confirmed\"."
+      },
+      {
+        "task_key": "5ffd00a77f5d92df",
+        "goal": "modify_reservation",
+        "polarity": true,
+        "predicted": false,
+        "truth": true,
+        "condition": "The guest \"guest_name\" must have a reservation from \"old_check_in_date\" to \"old_check_out_date\" with status marked as \"confirmed\"."
+      },
+      {
+        "task_key": "5ffd00a77f5d92df",
+        "goal": "modify_reservation",
+        "polarity": true,
+        "predicted": false,
+        "truth": true,
+        "condition": "The guest \"guest_name\" must have a reservation from \"old_check_in_date\" to \"old_check_out_date\" with status marked as \"confirmed\"."
+      },
+      {
+        "task_key": "96eaefa20154f348",
+        "goal": "modify_reservation",
+        "polarity": false,
+        "predicted": true,
+        "truth": false,
+        "condition": "The guest \"guest_name\" must not have any reservation from \"old_check_in_date\" to \"old_check_out_date\" with status marked as \"confirmed\"."
+      }
+    ],
+    "before_modification_deadline": [
+      {
+        "task_key": "86d3729051777130",
+        "goal": "modify_reservation",
+        "polarity": true,
+        "predicted": true,
+        "truth": false,
+        "condition": "The current interaction time must be **no later than** 240 hours before 15:00 on \"old_check_in_date\"."
+      },
+      {
+        "task_key": "86d3729051777130",
+        "goal": "modify_reservation",
+        "polarity": true,
+        "predicted": true,
+        "truth": false,
+        "condition": "The current interaction time must be **no later than** 240 hours before 15:00 on \"old_check_in_date\"."
+      }
+    ]
+  }
+}

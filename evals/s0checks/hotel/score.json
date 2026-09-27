@@ -1,0 +1,217 @@
+{
+  "per_precondition": {
+    "room_type_available_for_dates": {
+      "gradable_rows": 215,
+      "decided": 215,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 2,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 213,
+      "pred_pass_wrong": 0
+    },
+    "sufficient_amount_for_booking": {
+      "gradable_rows": 90,
+      "decided": 90,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 89,
+      "pred_pass_wrong": 0
+    },
+    "has_overlapping_booking_for_booking": {
+      "gradable_rows": 14,
+      "decided": 14,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 13,
+      "pred_pass_wrong": 0
+    },
+    "is_booking_date_within_lead_time_range": {
+      "gradable_rows": 42,
+      "decided": 42,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 6,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 36,
+      "pred_pass_wrong": 0
+    },
+    "has_confirmed_reservation": {
+      "gradable_rows": 215,
+      "decided": 215,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 133,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 82,
+      "pred_pass_wrong": 0
+    },
+    "before_modification_deadline": {
+      "gradable_rows": 27,
+      "decided": 27,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 5,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 22,
+      "pred_pass_wrong": 0
+    },
+    "sufficient_amount_for_reservation_modification": {
+      "gradable_rows": 207,
+      "decided": 207,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 0,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 207,
+      "pred_pass_wrong": 0
+    },
+    "has_overlapping_booking_for_modification": {
+      "gradable_rows": 131,
+      "decided": 131,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 20,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 111,
+      "pred_pass_wrong": 0
+    },
+    "sufficient_payment_for_room_service": {
+      "gradable_rows": 2,
+      "decided": 0,
+      "coverage": 0.0,
+      "accuracy_on_decided": null,
+      "abstain": 2,
+      "wrong": 0,
+      "pred_block_correct": 0,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 0,
+      "pred_pass_wrong": 0
+    },
+    "valid_identification": {
+      "gradable_rows": 2,
+      "decided": 2,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 1,
+      "pred_pass_wrong": 0
+    },
+    "after_check_in_time": {
+      "gradable_rows": 3,
+      "decided": 3,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 2,
+      "pred_pass_wrong": 0
+    },
+    "guest_already_checked_in": {
+      "gradable_rows": 4,
+      "decided": 4,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 0,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 4,
+      "pred_pass_wrong": 0
+    },
+    "before_check_out_time": {
+      "gradable_rows": 1,
+      "decided": 1,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 0,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 1,
+      "pred_pass_wrong": 0
+    },
+    "internal_is_loyalty_member": {
+      "gradable_rows": 2,
+      "decided": 2,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 1,
+      "pred_pass_wrong": 0
+    },
+    "internal_valid_room_change_reason": {
+      "gradable_rows": 3,
+      "decided": 3,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 2,
+      "pred_pass_wrong": 0
+    }
+  },
+  "aggregate": {
+    "gradable_rows": 958,
+    "decided": 956,
+    "coverage": 0.998,
+    "accuracy_on_decided": 1.0,
+    "blocks": 172,
+    "blocks_correct": 172,
+    "blocks_wrong": 0,
+    "passes": 784,
+    "passes_wrong_let_through": 0,
+    "TPR": 1.0,
+    "FPR": 0.0,
+    "lift": 1.0,
+    "ungradable_reasons": {},
+    "no_task_key": 0
+  },
+  "jev_comparison": {
+    "jev_blocks": 250,
+    "jev_blocks_wrong": 81,
+    "jev_passes_wrong_let_through": 3,
+    "jev_lift": 0.88,
+    "s0_blocks": 172,
+    "s0_blocks_wrong": 0,
+    "s0_passes_wrong_let_through": 0,
+    "s0_lift": 1.0
+  },
+  "worst_3_preconditions": [
+    "sufficient_payment_for_room_service"
+  ],
+  "zero_coverage_preconditions": [
+    "sufficient_payment_for_room_service"
+  ],
+  "worst_examples": {}
+}

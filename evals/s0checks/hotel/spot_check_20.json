@@ -1,0 +1,2187 @@
+[
+  {
+    "task_key": "f947887522d740a1",
+    "goal": "book_room",
+    "constraint": "room_type_available_for_dates",
+    "polarity": true,
+    "condition": "The \"room_type\" must have at least one specific room available for every date from \"check_in_date\" up to (but not including) \"check_out_date\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "102": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "108": [
+              "2024-12-02",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK001": {
+          "guest": "John Doe",
+          "room_type": "single",
+          "check_in_date": "2024-12-02",
+          "check_out_date": "2024-12-04",
+          "booking_time": "2024-11-20T12:26:39",
+          "status": "checked-in",
+          "loyalty_points_to_add": 20,
+          "room_change": 0,
+          "room_service": {
+            "2024-12-02": 1
+          }
+        },
+        "BK002": {
+          "guest": "Jane Smith",
+          "room_type": "double",
+          "check_in_date": "2024-12-03",
+          "check_out_date": "2024-12-06",
+          "booking_time": "2024-11-25T09:30:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        }
+      },
+      "book_room": true
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 10,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "room_type": "double",
+      "check_in_date": "2024-12-02",
+      "check_out_date": "2024-12-05"
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": true,
+    "sopbench_truth_of": true,
+    "match": true
+  },
+  {
+    "task_key": "b29ae74af49d0b59",
+    "goal": "book_room",
+    "constraint": "sufficient_amount_for_booking",
+    "polarity": true,
+    "condition": "The \"amount\" must be **greater than or equal to** the total booking cost for the selected \"room_type\" from \"check_in_date\" to \"check_out_date\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "102": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "108": [
+              "2024-12-02",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK001": {
+          "guest": "John Doe",
+          "room_type": "single",
+          "check_in_date": "2024-12-02",
+          "check_out_date": "2024-12-04",
+          "booking_time": "2024-11-20T12:26:39",
+          "status": "checked-in",
+          "loyalty_points_to_add": 20,
+          "room_change": 0,
+          "room_service": {
+            "2024-12-02": 1
+          }
+        },
+        "BK002": {
+          "guest": "Jane Smith",
+          "room_type": "double",
+          "check_in_date": "2024-12-03",
+          "check_out_date": "2024-12-06",
+          "booking_time": "2024-11-25T09:30:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        }
+      },
+      "internal_get_interaction_time": "2024-12-02T20:04:31",
+      "book_room": true
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 10,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "room_type": "suite",
+      "check_in_date": "2024-12-03",
+      "check_out_date": "2024-12-05",
+      "amount": 320.0
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": true,
+    "sopbench_truth_of": true,
+    "match": true
+  },
+  {
+    "task_key": "4e83020f4a22c70a",
+    "goal": "book_room",
+    "constraint": "sufficient_amount_for_booking",
+    "polarity": true,
+    "condition": "The \"amount\" must be **greater than or equal to** the total booking cost for the selected \"room_type\" from \"check_in_date\" to \"check_out_date\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "102": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "108": [
+              "2024-12-02",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK001": {
+          "guest": "John Doe",
+          "room_type": "single",
+          "check_in_date": "2024-12-02",
+          "check_out_date": "2024-12-04",
+          "booking_time": "2024-11-20T12:26:39",
+          "status": "checked-in",
+          "loyalty_points_to_add": 20,
+          "room_change": 0,
+          "room_service": {
+            "2024-12-02": 1
+          }
+        },
+        "BK002": {
+          "guest": "Jane Smith",
+          "room_type": "double",
+          "check_in_date": "2024-12-03",
+          "check_out_date": "2024-12-06",
+          "booking_time": "2024-11-25T09:30:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        },
+        "BK003": {
+          "guest": "John Doe",
+          "room_type": "single",
+          "check_in_date": "2024-12-03",
+          "check_out_date": "2024-12-05",
+          "booking_time": "2024-12-01T15:15:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 10,
+          "room_change": 0,
+          "room_service": {}
+        }
+      }
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 10,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "room_type": "single",
+      "check_in_date": "2024-12-03",
+      "check_out_date": "2024-12-05",
+      "amount": 160
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": true,
+    "sopbench_truth_of": true,
+    "match": true
+  },
+  {
+    "task_key": "a6f99b6e22291a78",
+    "goal": "modify_reservation",
+    "constraint": "has_overlapping_booking_for_modification",
+    "polarity": false,
+    "condition": "The guest \"guest_name\" **must not** have any existing booking, excluding the one from \"old_check_in_date\" to \"old_check_out_date\", that overlaps with the new date range from \"check_in_date\" to \"check_out_date\" when modifying their reservation.",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12"
+            ],
+            "102": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12"
+            ],
+            "108": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK1001": {
+          "guest": "Emily Carter",
+          "room_type": "single",
+          "check_in_date": "2024-12-05",
+          "check_out_date": "2024-12-08",
+          "booking_time": "2024-11-25T14:00:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        },
+        "BK1002": {
+          "guest": "Emily Carter",
+          "room_type": "double",
+          "check_in_date": "2024-12-10",
+          "check_out_date": "2024-12-12",
+          "booking_time": "2024-12-01T10:00:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        },
+        "BK1003": {
+          "guest": "Emily Carter",
+          "room_type": "suite",
+          "check_in_date": "2024-12-11",
+          "check_out_date": "2024-12-13",
+          "booking_time": "2024-12-03T09:00:00",
+          "status": "cancelled",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        },
+        "BK2001": {
+          "guest": "Michael Lee",
+          "room_type": "double",
+          "check_in_date": "2024-12-10",
+          "check_out_date": "2024-12-12",
+          "booking_time": "2024-12-01T10:05:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        }
+      },
+      "find_booking_info": {
+        "guest": "Emily Carter",
+        "room_type": "single",
+        "check_in_date": "2024-12-05",
+        "check_out_date": "2024-12-08",
+        "booking_time": "2024-11-25T14:00:00",
+        "status": "confirmed",
+        "loyalty_points_to_add": 0,
+        "room_change": 0,
+        "room_service": {}
+      }
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 10,
+      "max_stays": 5,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "guest_name": "Emily Carter",
+      "check_in_date": "2024-12-10",
+      "check_out_date": "2024-12-12",
+      "old_check_in_date": "2024-12-05",
+      "old_check_out_date": "2024-12-08"
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": false,
+    "sopbench_truth_of": false,
+    "match": true
+  },
+  {
+    "task_key": "39d798a9edf4f3ad",
+    "goal": "modify_reservation",
+    "constraint": "room_type_available_for_dates",
+    "polarity": true,
+    "condition": "The \"room_type\" must have at least one specific room available for every date from \"check_in_date\" up to (but not including) \"check_out_date\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "102": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "108": [
+              "2024-12-02",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK001": {
+          "guest": "John Doe",
+          "room_type": "single",
+          "check_in_date": "2024-12-02",
+          "check_out_date": "2024-12-04",
+          "booking_time": "2024-11-20T12:26:39",
+          "status": "confirmed",
+          "loyalty_points_to_add": 20,
+          "room_change": 0,
+          "room_service": {
+            "2024-12-02": 1
+          }
+        },
+        "BK002": {
+          "guest": "Jane Smith",
+          "room_type": "double",
+          "check_in_date": "2024-12-03",
+          "check_out_date": "2024-12-06",
+          "booking_time": "2024-11-25T09:30:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        },
+        "BK003": {
+          "guest": "John Doe",
+          "room_type": "suite",
+          "check_in_date": "2024-12-03",
+          "check_out_date": "2024-12-05",
+          "booking_time": "2024-11-29T10:00:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        }
+      }
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 10,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "room_type": "suite",
+      "check_in_date": "2024-12-03",
+      "check_out_date": "2024-12-05"
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": true,
+    "sopbench_truth_of": true,
+    "match": true
+  },
+  {
+    "task_key": "7fca87cb5d3e8cf9",
+    "goal": "modify_reservation",
+    "constraint": "has_overlapping_booking_for_modification",
+    "polarity": false,
+    "condition": "The guest \"guest_name\" **must not** have any existing booking, excluding the one from \"old_check_in_date\" to \"old_check_out_date\", that overlaps with the new date range from \"check_in_date\" to \"check_out_date\" when modifying their reservation.",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14",
+              "2024-12-15"
+            ],
+            "102": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14",
+              "2024-12-15"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14",
+              "2024-12-15"
+            ],
+            "108": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14",
+              "2024-12-15"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14",
+              "2024-12-15"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK010": {
+          "guest": "Sakana Inoue",
+          "room_type": "single",
+          "check_in_date": "2024-12-10",
+          "check_out_date": "2024-12-12",
+          "booking_time": "2024-11-25T10:00:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 40,
+          "room_change": 0,
+          "room_service": {}
+        }
+      }
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 10,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 3,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "guest_name": "Sakana Inoue",
+      "check_in_date": "2024-12-10",
+      "check_out_date": "2024-12-15",
+      "old_check_in_date": "2024-12-10",
+      "old_check_out_date": "2024-12-12"
+    },
+    "check_raw_output": false,
+    "check_predicted_stated_condition": true,
+    "sopbench_truth_of": true,
+    "match": true
+  },
+  {
+    "task_key": "a8102cd2fd872de1",
+    "goal": "modify_reservation",
+    "constraint": "has_confirmed_reservation",
+    "polarity": false,
+    "condition": "The guest \"guest_name\" must not have any reservation from \"old_check_in_date\" to \"old_check_out_date\" with status marked as \"confirmed\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ],
+            "102": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ],
+            "108": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK001": {
+          "guest": "John Doe",
+          "room_type": "single",
+          "check_in_date": "2024-12-02",
+          "check_out_date": "2024-12-04",
+          "booking_time": "2024-11-20T12:26:39",
+          "status": "checked-in",
+          "loyalty_points_to_add": 20,
+          "room_change": 0,
+          "room_service": {
+            "2024-12-02": 1
+          }
+        },
+        "BK002": {
+          "guest": "Jane Smith",
+          "room_type": "double",
+          "check_in_date": "2024-12-03",
+          "check_out_date": "2024-12-06",
+          "booking_time": "2024-11-25T09:30:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        }
+      },
+      "internal_get_interaction_time": "2024-12-02T20:04:31",
+      "modify_reservation": true
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 4,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 10,
+      "modification_deadline_hours": 15,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "guest_name": "Jane Smith",
+      "check_in_date": "2024-12-03",
+      "check_out_date": "2024-12-06"
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": false,
+    "sopbench_truth_of": false,
+    "match": true
+  },
+  {
+    "task_key": "c7f3fa082dc4d810",
+    "goal": "modify_reservation",
+    "constraint": "has_overlapping_booking_for_modification",
+    "polarity": false,
+    "condition": "The guest \"guest_name\" **must not** have any existing booking, excluding the one from \"old_check_in_date\" to \"old_check_out_date\", that overlaps with the new date range from \"check_in_date\" to \"check_out_date\" when modifying their reservation.",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13"
+            ],
+            "102": [
+              "2024-12-09",
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-09",
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13"
+            ],
+            "108": [
+              "2024-12-09",
+              "2024-12-13"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-09",
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK001": {
+          "guest": "Jane Smith",
+          "room_type": "single",
+          "check_in_date": "2024-12-09",
+          "check_out_date": "2024-12-11",
+          "booking_time": "2024-11-25T09:30:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        },
+        "BK002": {
+          "guest": "Jane Smith",
+          "room_type": "double",
+          "check_in_date": "2024-12-10",
+          "check_out_date": "2024-12-13",
+          "booking_time": "2024-11-29T10:00:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        }
+      },
+      "find_booking_info": {
+        "guest": "Jane Smith",
+        "room_type": "single",
+        "check_in_date": "2024-12-09",
+        "check_out_date": "2024-12-11",
+        "booking_time": "2024-11-25T09:30:00",
+        "status": "confirmed",
+        "loyalty_points_to_add": 0,
+        "room_change": 0,
+        "room_service": {}
+      }
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 5,
+      "modification_deadline_hours": 24,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "guest_name": "Jane Smith",
+      "check_in_date": "2024-12-10",
+      "check_out_date": "2024-12-13",
+      "old_check_in_date": "2024-12-09",
+      "old_check_out_date": "2024-12-11"
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": false,
+    "sopbench_truth_of": false,
+    "match": true
+  },
+  {
+    "task_key": "a829f5177193967f",
+    "goal": "book_room",
+    "constraint": "sufficient_amount_for_booking",
+    "polarity": true,
+    "condition": "The \"amount\" must be **greater than or equal to** the total booking cost for the selected \"room_type\" from \"check_in_date\" to \"check_out_date\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "102": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "108": [
+              "2024-12-02",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK001": {
+          "guest": "John Doe",
+          "room_type": "single",
+          "check_in_date": "2024-12-02",
+          "check_out_date": "2024-12-04",
+          "booking_time": "2024-11-20T12:26:39",
+          "status": "checked-in",
+          "loyalty_points_to_add": 20,
+          "room_change": 0,
+          "room_service": {
+            "2024-12-02": 1
+          }
+        },
+        "BK002": {
+          "guest": "Jane Smith",
+          "room_type": "double",
+          "check_in_date": "2024-12-03",
+          "check_out_date": "2024-12-06",
+          "booking_time": "2024-11-25T09:30:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        }
+      },
+      "internal_get_interaction_time": "2024-12-02T20:04:31",
+      "internal_get_loyalty_member_info": false
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 3,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "room_type": "suite",
+      "check_in_date": "2024-12-03",
+      "check_out_date": "2024-12-07",
+      "amount": 800
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": true,
+    "sopbench_truth_of": true,
+    "match": true
+  },
+  {
+    "task_key": "20588d2fdfbd329d",
+    "goal": "modify_reservation",
+    "constraint": "has_confirmed_reservation",
+    "polarity": false,
+    "condition": "The guest \"guest_name\" must not have any reservation from \"old_check_in_date\" to \"old_check_out_date\" with status marked as \"confirmed\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14"
+            ],
+            "102": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14"
+            ],
+            "108": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK002": {
+          "guest": "Jane Smith",
+          "room_type": "double",
+          "check_in_date": "2024-12-10",
+          "check_out_date": "2024-12-12",
+          "booking_time": "2024-12-01T09:30:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        }
+      },
+      "internal_get_loyalty_member_info": false,
+      "internal_get_interaction_time": "2024-12-05T10:00:00",
+      "internal_is_loyalty_member": false
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 2,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "guest_name": "Jane Smith",
+      "check_in_date": "2024-12-10",
+      "check_out_date": "2024-12-12"
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": false,
+    "sopbench_truth_of": false,
+    "match": true
+  },
+  {
+    "task_key": "ba3a6d00d1f00ee5",
+    "goal": "book_room",
+    "constraint": "room_type_available_for_dates",
+    "polarity": true,
+    "condition": "The \"room_type\" must have at least one specific room available for every date from \"check_in_date\" up to (but not including) \"check_out_date\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "102": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "108": [
+              "2024-12-02",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "book_room": true
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 5,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "room_type": "suite",
+      "check_in_date": "2024-12-02",
+      "check_out_date": "2024-12-05"
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": true,
+    "sopbench_truth_of": true,
+    "match": true
+  },
+  {
+    "task_key": "74b30bb656b1d4f8",
+    "goal": "book_room",
+    "constraint": "is_booking_date_within_lead_time_range",
+    "polarity": true,
+    "condition": "The \"check_in_date\" must be **no earlier than** 1 days after and **no later than** 7 days after the current interaction date.",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "102": [
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "108": [
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_interaction_time": "2024-12-02T20:04:31",
+      "book_room": true
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 7,
+      "max_stays": 5,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "check_in_date": "2024-12-04"
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": true,
+    "sopbench_truth_of": true,
+    "match": true
+  },
+  {
+    "task_key": "71ad031a9e8ea865",
+    "goal": "modify_reservation",
+    "constraint": "room_type_available_for_dates",
+    "polarity": true,
+    "condition": "The \"room_type\" must have at least one specific room available for every date from \"check_in_date\" up to (but not including) \"check_out_date\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14"
+            ],
+            "102": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14"
+            ],
+            "108": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK010": {
+          "guest": "John Doe",
+          "room_type": "single",
+          "check_in_date": "2024-12-10",
+          "check_out_date": "2024-12-12",
+          "booking_time": "2024-11-30T10:00:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 20,
+          "room_change": 0,
+          "room_service": {}
+        }
+      },
+      "internal_get_loyalty_member_info": {
+        "HTL0386Y": {
+          "name": "John Doe",
+          "loyalty_points": 250,
+          "tier": "silver"
+        }
+      }
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 2,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "room_type": "double",
+      "check_in_date": "2024-12-10",
+      "check_out_date": "2024-12-14"
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": true,
+    "sopbench_truth_of": true,
+    "match": true
+  },
+  {
+    "task_key": "3361cfff2c40a20e",
+    "goal": "modify_reservation",
+    "constraint": "sufficient_amount_for_reservation_modification",
+    "polarity": true,
+    "condition": "The \"amount\" must be **greater than or equal to** the difference in booking cost when modifying from the original stay (\"old_check_in_date\" to \"old_check_out_date\") to the new stay (\"check_in_date\" to \"check_out_date\") with a new room type \"room_type\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ],
+            "102": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ],
+            "108": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK001": {
+          "guest": "John Doe",
+          "room_type": "single",
+          "check_in_date": "2024-12-07",
+          "check_out_date": "2024-12-09",
+          "booking_time": "2024-11-20T12:26:39",
+          "status": "confirmed",
+          "loyalty_points_to_add": 20,
+          "room_change": 0,
+          "room_service": {}
+        }
+      },
+      "find_booking_info": {
+        "guest": "John Doe",
+        "room_type": "single",
+        "check_in_date": "2024-12-07",
+        "check_out_date": "2024-12-09",
+        "booking_time": "2024-11-20T12:26:39",
+        "status": "confirmed",
+        "loyalty_points_to_add": 20,
+        "room_change": 0,
+        "room_service": {}
+      },
+      "internal_get_interaction_time": "2024-12-04T10:00:00",
+      "internal_is_loyalty_member": true,
+      "internal_get_loyalty_member_info": {
+        "HTL0386Y": {
+          "name": "John Doe",
+          "loyalty_points": 250,
+          "tier": "silver"
+        }
+      }
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 1,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "guest_name": "John Doe",
+      "old_check_in_date": "2024-12-07",
+      "old_check_out_date": "2024-12-09",
+      "check_in_date": "2024-12-07",
+      "check_out_date": "2024-12-09",
+      "room_type": "double",
+      "amount": 220
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": true,
+    "sopbench_truth_of": true,
+    "match": true
+  },
+  {
+    "task_key": "f5cfb716bb0e8876",
+    "goal": "modify_reservation",
+    "constraint": "room_type_available_for_dates",
+    "polarity": true,
+    "condition": "The \"room_type\" must have at least one specific room available for every date from \"check_in_date\" up to (but not including) \"check_out_date\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ],
+            "102": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ],
+            "108": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK001": {
+          "guest": "John Doe",
+          "room_type": "single",
+          "check_in_date": "2024-12-02",
+          "check_out_date": "2024-12-04",
+          "booking_time": "2024-11-20T12:26:39",
+          "status": "checked-in",
+          "loyalty_points_to_add": 20,
+          "room_change": 0,
+          "room_service": {
+            "2024-12-02": 1
+          }
+        },
+        "BK002": {
+          "guest": "Jane Smith",
+          "room_type": "double",
+          "check_in_date": "2024-12-07",
+          "check_out_date": "2024-12-09",
+          "booking_time": "2024-12-02T09:30:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        }
+      },
+      "find_booking_info": {
+        "guest": "Jane Smith",
+        "room_type": "double",
+        "check_in_date": "2024-12-07",
+        "check_out_date": "2024-12-09",
+        "booking_time": "2024-12-02T09:30:00",
+        "status": "confirmed",
+        "loyalty_points_to_add": 0,
+        "room_change": 0,
+        "room_service": {}
+      },
+      "internal_get_interaction_time": "2024-12-02T12:00:00"
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 10,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 5,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "room_type": "suite",
+      "check_in_date": "2024-12-07",
+      "check_out_date": "2024-12-09"
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": true,
+    "sopbench_truth_of": true,
+    "match": true
+  },
+  {
+    "task_key": "5e32ad23166aa5f2",
+    "goal": "modify_reservation",
+    "constraint": "room_type_available_for_dates",
+    "polarity": true,
+    "condition": "The \"room_type\" must have at least one specific room available for every date from \"check_in_date\" up to (but not including) \"check_out_date\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "102": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "108": [
+              "2024-12-02",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06",
+              "2024-12-07",
+              "2024-12-08"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "find_booking_info": {
+        "guest": "Jane Smith",
+        "room_type": "double",
+        "check_in_date": "2024-12-03",
+        "check_out_date": "2024-12-06",
+        "booking_time": "2024-11-25T09:30:00",
+        "status": "confirmed",
+        "loyalty_points_to_add": 0,
+        "room_change": 0,
+        "room_service": {}
+      },
+      "internal_get_interaction_time": "2024-12-01T10:00:00",
+      "internal_get_booking_details": {
+        "BK001": {
+          "guest": "John Doe",
+          "room_type": "single",
+          "check_in_date": "2024-12-02",
+          "check_out_date": "2024-12-04",
+          "booking_time": "2024-11-20T12:26:39",
+          "status": "checked-in",
+          "loyalty_points_to_add": 20,
+          "room_change": 0,
+          "room_service": {
+            "2024-12-02": 1
+          }
+        },
+        "BK002": {
+          "guest": "Jane Smith",
+          "room_type": "double",
+          "check_in_date": "2024-12-03",
+          "check_out_date": "2024-12-06",
+          "booking_time": "2024-11-25T09:30:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        }
+      },
+      "modify_reservation": true
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 10,
+      "modification_deadline_hours": 24,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "room_type": "suite",
+      "check_in_date": "2024-12-06",
+      "check_out_date": "2024-12-09"
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": true,
+    "sopbench_truth_of": true,
+    "match": true
+  },
+  {
+    "task_key": "7fca87cb5d3e8cf9",
+    "goal": "modify_reservation",
+    "constraint": "has_confirmed_reservation",
+    "polarity": false,
+    "condition": "The guest \"guest_name\" must not have any reservation from \"old_check_in_date\" to \"old_check_out_date\" with status marked as \"confirmed\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14",
+              "2024-12-15"
+            ],
+            "102": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14",
+              "2024-12-15"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14",
+              "2024-12-15"
+            ],
+            "108": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14",
+              "2024-12-15"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-10",
+              "2024-12-11",
+              "2024-12-12",
+              "2024-12-13",
+              "2024-12-14",
+              "2024-12-15"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK010": {
+          "guest": "Sakana Inoue",
+          "room_type": "single",
+          "check_in_date": "2024-12-10",
+          "check_out_date": "2024-12-12",
+          "booking_time": "2024-11-25T10:00:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 40,
+          "room_change": 0,
+          "room_service": {}
+        }
+      }
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 10,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 3,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "guest_name": "Sakana Inoue",
+      "check_in_date": "2024-12-10",
+      "check_out_date": "2024-12-12"
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": false,
+    "sopbench_truth_of": false,
+    "match": true
+  },
+  {
+    "task_key": "96eaefa20154f348",
+    "goal": "modify_reservation",
+    "constraint": "has_confirmed_reservation",
+    "polarity": false,
+    "condition": "The guest \"guest_name\" must not have any reservation from \"old_check_in_date\" to \"old_check_out_date\" with status marked as \"confirmed\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "102": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "108": [
+              "2024-12-02",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK001": {
+          "guest": "John Doe",
+          "room_type": "single",
+          "check_in_date": "2024-12-02",
+          "check_out_date": "2024-12-04",
+          "booking_time": "2024-11-20T12:26:39",
+          "status": "confirmed",
+          "loyalty_points_to_add": 20,
+          "room_change": 0,
+          "room_service": {
+            "2024-12-02": 1
+          }
+        },
+        "BK002": {
+          "guest": "Jane Smith",
+          "room_type": "double",
+          "check_in_date": "2024-12-03",
+          "check_out_date": "2024-12-06",
+          "booking_time": "2024-11-25T09:30:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        }
+      },
+      "find_booking_info": {
+        "guest": "John Doe",
+        "room_type": "single",
+        "check_in_date": "2024-12-02",
+        "check_out_date": "2024-12-04",
+        "booking_time": "2024-11-20T12:26:39",
+        "status": "confirmed",
+        "loyalty_points_to_add": 20,
+        "room_change": 0,
+        "room_service": {
+          "2024-12-02": 1
+        }
+      },
+      "modify_reservation": true
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 10,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "guest_name": "John Doe",
+      "check_in_date": "2024-12-02",
+      "check_out_date": "2024-12-04"
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": false,
+    "sopbench_truth_of": false,
+    "match": true
+  },
+  {
+    "task_key": "d0e2100fc9d2e099",
+    "goal": "book_room",
+    "constraint": "sufficient_amount_for_booking",
+    "polarity": true,
+    "condition": "The \"amount\" must be **greater than or equal to** the total booking cost for the selected \"room_type\" from \"check_in_date\" to \"check_out_date\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-05",
+              "2024-12-06",
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ],
+            "102": [
+              "2024-12-05",
+              "2024-12-06",
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-05",
+              "2024-12-06",
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ],
+            "108": [
+              "2024-12-05",
+              "2024-12-06",
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-05",
+              "2024-12-06",
+              "2024-12-07",
+              "2024-12-08",
+              "2024-12-09"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_interaction_time": "2024-12-02T20:04:31",
+      "internal_get_loyalty_member_info": false,
+      "internal_is_loyalty_member": false
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 2,
+      "max_booking_lead_time_days": 10,
+      "max_stays": 3,
+      "modification_deadline_hours": 48,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "room_type": "double",
+      "check_in_date": "2024-12-05",
+      "check_out_date": "2024-12-09",
+      "amount": 440.0
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": true,
+    "sopbench_truth_of": true,
+    "match": true
+  },
+  {
+    "task_key": "53dd338e7bf473c7",
+    "goal": "modify_reservation",
+    "constraint": "sufficient_amount_for_reservation_modification",
+    "polarity": true,
+    "condition": "The \"amount\" must be **greater than or equal to** the difference in booking cost when modifying from the original stay (\"old_check_in_date\" to \"old_check_out_date\") to the new stay (\"check_in_date\" to \"check_out_date\") with a new room type \"room_type\".",
+    "tool_results_seen": {
+      "show_available_rooms": {
+        "single": {
+          "availability": {
+            "101": [
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "102": [
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 80
+        },
+        "double": {
+          "availability": {
+            "107": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ],
+            "108": [
+              "2024-12-02",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 110
+        },
+        "suite": {
+          "availability": {
+            "110": [
+              "2024-12-02",
+              "2024-12-03",
+              "2024-12-04",
+              "2024-12-05",
+              "2024-12-06"
+            ]
+          },
+          "price_per_night": 160
+        }
+      },
+      "internal_get_booking_details": {
+        "BK001": {
+          "guest": "John Doe",
+          "room_type": "single",
+          "check_in_date": "2024-12-02",
+          "check_out_date": "2024-12-04",
+          "booking_time": "2024-11-20T12:26:39",
+          "status": "checked-in",
+          "loyalty_points_to_add": 20,
+          "room_change": 0,
+          "room_service": {
+            "2024-12-02": 1
+          }
+        },
+        "BK002": {
+          "guest": "Jane Smith",
+          "room_type": "double",
+          "check_in_date": "2024-12-03",
+          "check_out_date": "2024-12-06",
+          "booking_time": "2024-11-25T09:30:00",
+          "status": "confirmed",
+          "loyalty_points_to_add": 0,
+          "room_change": 0,
+          "room_service": {}
+        }
+      },
+      "internal_get_interaction_time": "2024-12-03T10:00:00"
+    },
+    "resolved_params_seen": {
+      "min_booking_lead_time_days": 1,
+      "max_booking_lead_time_days": 30,
+      "max_stays": 3,
+      "modification_deadline_hours": 24,
+      "min_age": 18,
+      "valid_document_types": [
+        "driver_license",
+        "passport",
+        "state_id",
+        "military_id"
+      ],
+      "check_in_time": "15:00",
+      "check_out_time": "11:00",
+      "max_room_changes": 1,
+      "room_service_start": "8:00",
+      "room_service_end": "22:00",
+      "max_room_service_orders_per_day": 3,
+      "guest_name": "Jane Smith",
+      "old_check_in_date": "2024-12-03",
+      "old_check_out_date": "2024-12-06",
+      "check_in_date": "2024-12-03",
+      "check_out_date": "2024-12-06",
+      "room_type": "suite",
+      "amount": 480
+    },
+    "check_raw_output": true,
+    "check_predicted_stated_condition": true,
+    "sopbench_truth_of": true,
+    "match": true
+  }
+]

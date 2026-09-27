@@ -1,0 +1,759 @@
+{
+  "action_descriptions": {
+    "login_user": "Logs in the user to authenticate the user to access their account.",
+    "logout_user": "Logs out the user if the user was previously logged in.",
+    "show_available_book": "Retrieves a list of books available for borrowing.",
+    "borrow_book": "Allows a user to borrow a book and sets its return date.",
+    "return_book": "Allows a user to return a borrowed book and updates their late count if the book is overdue.",
+    "check_return_date": "Retrieves the return date for the user's specified borrowed book.",
+    "get_account_balance": "Retrieves the current balance of the user's account.",
+    "credit_balance": "Adds a specified amount to the user's account balance.",
+    "pay_late_fee": "Deducts the total late fee from the user's account balance.",
+    "update_membership": "Updates the user's restricted access status and deducts the monthly fee from their balance.",
+    "add_book": "Adds a new book to the library database.",
+    "remove_book": "Removes a book from the library database.",
+    "show_available_rooms": "Retrieves a dictionary of rooms with their available slots to reserve.",
+    "reserve_room": "Reserves the specified room for the user on the specified date for a list of specified slots.",
+    "internal_get_database": "Shows the full database of the Library system, including all profiles and details.",
+    "internal_check_username_exist": "Checks if a specific username exists in the Library database.",
+    "internal_convert_book_title_to_id": "Converts a book title to the corresponding book id.",
+    "internal_check_book_exist": "Checks if a book title exists in the library database.",
+    "internal_check_book_available": "Checks if a book is available for borrowing.",
+    "internal_get_user_borrowed": "Retrieves a list of user's borrowed books.",
+    "internal_get_user_num_borrowed": "Retrieves the number of books the user has borrowed.",
+    "internal_calculate_late_fee": "Calculates the user's late fee based on their number of late returns.",
+    "internal_get_membership_fee": "Retrieves the restricted access monthly fee from the database.",
+    "internal_is_restricted": "Checks if a book is marked as restricted.",
+    "internal_get_membership_status": "Retrieves the restricted access status of a user.",
+    "internal_is_admin": "Checks if a user has admin privileges.",
+    "internal_get_num_reserved_slots": "Counts the number of the user's reserved slots based on their current reservation.",
+    "internal_check_room_exist": "Checks if a specified room id exists in the database.",
+    "internal_check_date_available_for_the_room": "Checks if the specified date is available for the room.",
+    "internal_all_slots_available_for_the_room_on_the_date": "Checks if the provided slots are alll available for the specified room on the specified date.",
+    "internal_get_interaction_date": "Retrieves the current interaction date from the database.",
+    "internal_convert_human_date_to_iso": "Converts a verbalized date string to an ISO 8601 formatted date string ('YYYY-MM-DD').",
+    "internal_convert_iso_to_human_date": "Converts an ISO 8601 formatted date string ('YYYY-MM-DD') to a verbalized date string."
+  },
+  "action_returns": {
+    "login_user": "Returns true or false for login success or failure.",
+    "logout_user": "Returns true always because of successful logout.",
+    "show_available_book": "Returns a list of books available for borrowing.",
+    "borrow_book": "Returns true or false for successful book borrowing.",
+    "return_book": "Returns true or false for successful book return.",
+    "check_return_date": "Returns the return date for the user's specified borrowed book.",
+    "get_account_balance": "Returns the float account balance or None if retrieval conditions are not met.",
+    "credit_balance": "Returns true or false for successful addition of funds to the user's account balance.",
+    "pay_late_fee": "Returns true or false for successful deduction of late fees from the user's account balance.",
+    "update_membership": "Returns the new expiration date of the restricted access or None if the update condition is not met.",
+    "add_book": "Returns true or false for successful addition of a new book to the library database.",
+    "remove_book": "Returns true or false for successful removal of a book from the library database.",
+    "show_available_rooms": "Returns a dictionary of a dictionary of rooms with their available slots to reserve.",
+    "reserve_room": "Returns true or false for successful room reservation.",
+    "internal_get_database": "Returns the json of the entire database.",
+    "internal_check_username_exist": "Returns true if the inputted username of the account does exist in the database.",
+    "internal_convert_book_title_to_id": "Returns a string representing the book id.",
+    "internal_check_book_exist": "Returns true or false based on the existence of the book title in the library database.",
+    "internal_check_book_available": "Returns true or false based on the availability of a book for borrowing.",
+    "internal_get_user_borrowed": "Returns a list of user's borrowed books' ids.",
+    "internal_get_user_num_borrowed": "Returns an integer of the number of books the user has borrowed.",
+    "internal_calculate_late_fee": "Returns a float of the late fee the user has to pay.",
+    "internal_get_membership_fee": "Returns a floar representing the restricted access monthly fee.",
+    "internal_is_restricted": "Returns true or false based on whether a book is marked as restricted.",
+    "internal_get_membership_status": "Returns a string representing the expiration date of the user's restricted access status or none if the user don't have a restricted access.",
+    "internal_is_admin": "Returns true or false based on whether the user has admin privileges.",
+    "internal_get_num_reserved_slots": "Returns an integer of the number of reserved slots in the user's current reservation",
+    "internal_check_room_exist": "Returns true or false based on the existence of the specified room id in the database.",
+    "internal_check_date_available_for_the_room": "Returns true or false based on the availability of the specified date for the specified room.",
+    "internal_all_slots_available_for_the_room_on_the_date": "Returns true or false based on the availability of time slots for the specified room on the specified date.",
+    "internal_get_interaction_date": "Returns the current interaction date recorded in the database.",
+    "internal_convert_human_date_to_iso": "Returns an ISO 8601 formatted date string ('YYYY-MM-DD').",
+    "internal_convert_iso_to_human_date": "Returns a verbalized date string."
+  },
+  "actions": [
+    {
+      "name": "login_user",
+      "description": "Logs in the user to authenticate the user to access their account. Returns true or false for login success or failure.",
+      "strict": false,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          },
+          "password": {
+            "type": "string",
+            "description": "the password to their account"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username",
+          "password"
+        ]
+      }
+    },
+    {
+      "name": "logout_user",
+      "description": "Logs out the user if the user was previously logged in. Returns true always because of successful logout.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username"
+        ]
+      }
+    },
+    {
+      "name": "show_available_book",
+      "description": "Retrieves a list of books available for borrowing. Returns a list of books available for borrowing.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username"
+        ]
+      }
+    },
+    {
+      "name": "borrow_book",
+      "description": "Allows a user to borrow a book and sets its return date. Returns true or false for successful book borrowing.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          },
+          "book_title": {
+            "type": "string",
+            "description": "the title of the book to be borrowed, returned, or managed."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username",
+          "book_title"
+        ]
+      }
+    },
+    {
+      "name": "return_book",
+      "description": "Allows a user to return a borrowed book and updates their late count if the book is overdue. Returns true or false for successful book return.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          },
+          "book_title": {
+            "type": "string",
+            "description": "the title of the book to be borrowed, returned, or managed."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username",
+          "book_title"
+        ]
+      }
+    },
+    {
+      "name": "check_return_date",
+      "description": "Retrieves the return date for the user's specified borrowed book. Returns the return date for the user's specified borrowed book.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          },
+          "book_title": {
+            "type": "string",
+            "description": "the title of the book to be borrowed, returned, or managed."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username",
+          "book_title"
+        ]
+      }
+    },
+    {
+      "name": "get_account_balance",
+      "description": "Retrieves the current balance of the user's account. Returns the float account balance or None if retrieval conditions are not met.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username"
+        ]
+      }
+    },
+    {
+      "name": "credit_balance",
+      "description": "Adds a specified amount to the user's account balance. Returns true or false for successful addition of funds to the user's account balance.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          },
+          "amount": {
+            "type": "number",
+            "description": "the amount of money specified by the function description."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username",
+          "amount"
+        ]
+      }
+    },
+    {
+      "name": "pay_late_fee",
+      "description": "Deducts the total late fee from the user's account balance. Returns true or false for successful deduction of late fees from the user's account balance.",
+      "strict": false,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username"
+        ]
+      }
+    },
+    {
+      "name": "update_membership",
+      "description": "Updates the user's restricted access status and deducts the monthly fee from their balance. Returns the new expiration date of the restricted access or None if the update condition is not met.",
+      "strict": false,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username"
+        ]
+      }
+    },
+    {
+      "name": "add_book",
+      "description": "Adds a new book to the library database. Returns true or false for successful addition of a new book to the library database.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          },
+          "book_title": {
+            "type": "string",
+            "description": "the title of the book to be borrowed, returned, or managed."
+          },
+          "count": {
+            "type": "number",
+            "description": "the number of copies of a book to add or remove from the library's database."
+          },
+          "restricted": {
+            "type": "boolean",
+            "description": "a boolean indicating whether a book is restricted."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username",
+          "book_title",
+          "count",
+          "restricted"
+        ]
+      }
+    },
+    {
+      "name": "remove_book",
+      "description": "Removes a book from the library database. Returns true or false for successful removal of a book from the library database.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          },
+          "book_title": {
+            "type": "string",
+            "description": "the title of the book to be borrowed, returned, or managed."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username",
+          "book_title"
+        ]
+      }
+    },
+    {
+      "name": "show_available_rooms",
+      "description": "Retrieves a dictionary of rooms with their available slots to reserve. Returns a dictionary of a dictionary of rooms with their available slots to reserve.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username"
+        ]
+      }
+    },
+    {
+      "name": "reserve_room",
+      "description": "Retrieves a dictionary of rooms with their available slots to reserve. Returns a dictionary of a dictionary of rooms with their available slots to reserve.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          },
+          "room_id": {
+            "type": "string",
+            "description": "a string representing the id of a library room to reserve"
+          },
+          "resv_date": {
+            "type": "string",
+            "description": "a string representing the date when the user want to reserve a room."
+          },
+          "slots": {
+            "type": "array",
+            "description": "a list of time slots that the user want to reserve a certain room on a specified day.",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username",
+          "room_id",
+          "resv_date",
+          "slots"
+        ]
+      }
+    },
+    {
+      "name": "internal_get_database",
+      "description": "Shows the full database of the Library system, including all profiles and details. Returns the json of the entire database.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "required": []
+      }
+    },
+    {
+      "name": "internal_check_username_exist",
+      "description": "Checks if a specific username exists in the Library database. Returns true if the inputted username of the account does exist in the database.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username"
+        ]
+      }
+    },
+    {
+      "name": "internal_convert_book_title_to_id",
+      "description": "Converts a book title to the corresponding book id. Returns a string representing the book id.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "book_title": {
+            "type": "string",
+            "description": "the title of the book to be borrowed, returned, or managed."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "book_title"
+        ]
+      }
+    },
+    {
+      "name": "internal_check_book_exist",
+      "description": "Checks if a book title exists in the library database. Returns true or false based on the existence of the book title in the library database.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "book_title": {
+            "type": "string",
+            "description": "the title of the book to be borrowed, returned, or managed."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "book_title"
+        ]
+      }
+    },
+    {
+      "name": "internal_check_book_available",
+      "description": "Checks if a book is available for borrowing. Returns true or false based on the availability of a book for borrowing.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "book_title": {
+            "type": "string",
+            "description": "the title of the book to be borrowed, returned, or managed."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "book_title"
+        ]
+      }
+    },
+    {
+      "name": "internal_get_user_borrowed",
+      "description": "Retrieves a list of user's borrowed books. Returns a list of user's borrowed books' ids.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username"
+        ]
+      }
+    },
+    {
+      "name": "internal_get_user_num_borrowed",
+      "description": "Retrieves the number of books the user has borrowed. Returns an integer of the number of books the user has borrowed.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username"
+        ]
+      }
+    },
+    {
+      "name": "internal_calculate_late_fee",
+      "description": "Calculates the user's late fee based on their number of late returns. Returns a float of the late fee the user has to pay.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username"
+        ]
+      }
+    },
+    {
+      "name": "internal_get_membership_fee",
+      "description": "Retrieves the restricted access monthly fee from the database. Returns a floar representing the restricted access monthly fee.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false,
+        "required": []
+      }
+    },
+    {
+      "name": "internal_is_restricted",
+      "description": "Checks if a book is marked as restricted. Returns true or false based on whether a book is marked as restricted.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "book_title": {
+            "type": "string",
+            "description": "the title of the book to be borrowed, returned, or managed."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "book_title"
+        ]
+      }
+    },
+    {
+      "name": "internal_get_membership_status",
+      "description": "Retrieves the restricted access status of a user. Returns a string representing the expiration date of the user's restricted access status or none if the user don't have a restricted access.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username"
+        ]
+      }
+    },
+    {
+      "name": "internal_is_admin",
+      "description": "Checks if a user has admin privileges. Returns true or false based on whether the user has admin privileges.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username"
+        ]
+      }
+    },
+    {
+      "name": "internal_get_num_reserved_slots",
+      "description": "Counts the number of the user's reserved slots based on their current reservation. Returns an integer of the number of reserved slots in the user's current reservation",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "a string of letters, numbers, and symbols to represent their username"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "username"
+        ]
+      }
+    },
+    {
+      "name": "internal_check_room_exist",
+      "description": "Checks if a specified room id exists in the database. Returns true or false based on the existence of the specified room id in the database.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "room_id": {
+            "type": "string",
+            "description": "a string representing the id of a library room to reserve"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "room_id"
+        ]
+      }
+    },
+    {
+      "name": "internal_check_date_available_for_the_room",
+      "description": "Checks if the specified date is available for the room. Returns true or false based on the availability of the specified date for the specified room.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "room_id": {
+            "type": "string",
+            "description": "a string representing the id of a library room to reserve"
+          },
+          "resv_date": {
+            "type": "string",
+            "description": "a string representing the date when the user want to reserve a room."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "room_id",
+          "resv_date"
+        ]
+      }
+    },
+    {
+      "name": "internal_all_slots_available_for_the_room_on_the_date",
+      "description": "Checks if the provided slots are alll available for the specified room on the specified date. Returns true or false based on the availability of time slots for the specified room on the specified date.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "room_id": {
+            "type": "string",
+            "description": "a string representing the id of a library room to reserve"
+          },
+          "resv_date": {
+            "type": "string",
+            "description": "a string representing the date when the user want to reserve a room."
+          },
+          "slots": {
+            "type": "array",
+            "description": "a list of time slots that the user want to reserve a certain room on a specified day.",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "room_id",
+          "resv_date",
+          "slots"
+        ]
+      }
+    },
+    {
+      "name": "internal_convert_human_date_to_iso",
+      "description": "Converts a verbalized date string to an ISO 8601 formatted date string ('YYYY-MM-DD'). Returns an ISO 8601 formatted date string ('YYYY-MM-DD').",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "date_string": {
+            "type": "string",
+            "description": "the date in a human-readable string format,where the month is an English word (e.g., 'January'), the day is a number followed by a proper suffix (e.g., '1st', '2nd', '4th'), and the year is a four-digit number (e.g., '2024'). Example: 'January 25th, 2024'."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "date_string"
+        ]
+      }
+    },
+    {
+      "name": "internal_convert_iso_to_human_date",
+      "description": "Converts an ISO 8601 formatted date string ('YYYY-MM-DD') to a verbalized date string. Returns a verbalized date string.",
+      "strict": true,
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "iso_date": {
+            "type": "string",
+            "description": "an ISO date string ('YYYY-MM-DD')."
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "iso_date"
+        ]
+      }
+    }
+  ],
+  "positive_constraint_descriptions": {
+    "logged_in_user": "The user with \"{username}\" is logged in previously with the correct credentials to perform this action.",
+    "user_book_borrowed": "The book's ID (retrieved using \"{book_title}\" from the \"book_title_to_id\" section) exists in the \"borrowed\" of the user \"{username}\".",
+    "user_book_not_borrowed": "The book's ID (retrieved using \"{book_title}\" from the \"book_title_to_id\" section) **must not exist** in the \"borrowed\" of the user \"{username}\".",
+    "database_book_not_borrowed": "The book's ID, retrieved using the \"{book_title}\" from the \"book_title_to_id\" section, **must NOT appear** as a key in the \"borrowed\" dictionaries of any users listed in the \"accounts\" section of the database.",
+    "sufficient_account_balance_for_late_fee": "The user \"{username}\" does have more account balance \"balance\" than the late fee,  which is the product of the user's \"late_book_count\" in their account and late_fee_per_book in the database.",
+    "sufficient_account_balance_for_membership": "The user \"{username}\" does have more account balance \"balance\" than the monthly resitrcted access fee,  which is the membership_monthly_fee in the database.",
+    "amount_positive_restr": "The user parameter key \"{amount}\" is more than zero.",
+    "valid_membership": "The user \"{username}\" must have a 'membership' field that is a date on or after the interaction_time. ",
+    "within_borrow_limit": "The user \"{username}\" must have less than {borrow_limit} books in their \"borrowed\".",
+    "within_max_reservation_slots": "The user \"{username}\" must have a total number of reserved slots less than or equal to {max_reservation_slots}, calculated as the sum of their currently reserved slots in 'room_reservation' and the newly requested slots \"{slots}\".",
+    "login_user": "The user \"{username}\" must be able to login with the correct password \"{password}\" to perform this action.",
+    "internal_check_username_exist": "The user parameter key \"{username}\" must exist as a top-level key in the accounts section of the database.",
+    "internal_check_book_exist": "The book's title \"{book_title}\" exists in the \"book_title_to_id\" section of the database and the book's ID (retrieved using \"{book_title}\") exists in the books.",
+    "internal_check_book_available": "The book \"{book_title}\" has a count value of **more than 0**.",
+    "internal_is_restricted": "The book \"{book_title}\" has its restricted status set to **true**.",
+    "internal_is_admin": "The user \"{username}\" has an \"admin\" of **true** in the database.",
+    "internal_check_room_exist": "The specified room ID \"{room_id}\" must exist in the database under the 'rooms' section.",
+    "internal_check_date_available_for_the_room": "The specified reservation date \"{resv_date}\" must be listed under the 'rooms' section for the given room ID \"{room_id}\".",
+    "internal_all_slots_available_for_the_room_on_the_date": "All requested slots \"{slots}\" for the specified reservation date \"{resv_date}\" in the room \"{room_id}\" must be available in the database."
+  },
+  "negative_constraint_descriptions": {
+    "logged_in_user": "The user with \"{username}\" **must not be logged in previously with the correct credentials** to perform this action.",
+    "user_book_borrowed": "The book's ID, retrieved using its \"{book_title}\" from the \"book_title_to_id\" section, **must not exist**  as a key in the \"borrowed\" dictionary of **at least one user** in the \"accounts\" section of the database.",
+    "user_book_not_borrowed": "The book's ID (retrieved using \"{book_title}\" from the \"book_title_to_id\" section) **must exist** in the \"borrowed\" of the user \"{username}\".",
+    "database_book_not_borrowed": "The book's ID, retrieved using the \"{book_title}\" from the \"book_title_to_id\" section, **must appear** as a key in the \"borrowed\" dictionaries of **at least 1 user** listed in the \"accounts\" section of the database.",
+    "sufficient_account_balance_for_late_fee": "The user \"{username}\" **does not have** more account balance \"balance\" than the late fee,  which is the product of the user's \"late_book_count\" in their account and late_fee_per_book in the database.",
+    "sufficient_account_balance_for_membership": "The user \"{username}\" **does not have** more account balance \"balance\" than the monthly resitrcted access fee,  which is the membership_monthly_fee in the database.",
+    "amount_positive_restr": "The user parameter key \"{amount}\" **must be less than or equal to zero**.",
+    "valid_membership": "The user \"{username}\" must have a 'membership' field that is **EITHER null OR** a date that is **before** the interaction_time.",
+    "within_borrow_limit": "The user \"{username}\" must have **more than or equal to** {borrow_limit} books in their \"borrowed\".",
+    "within_max_reservation_slots": "The user \"{username}\" must have a total number of reserved slots **more than** {max_reservation_slots}, calculated as the sum of their currently reserved slots in 'room_reservation' and the newly requested slots \"{slots}\".",
+    "login_user": "The user \"{username}\" **must not be able to login** with the **incorrect password** \"{password}\" to perform this action.",
+    "internal_check_username_exist": "The user parameter key \"{username}\" **MUST NOT EXIST** as a top-level key in the accounts section of the database.",
+    "internal_check_book_exist": "The book's title \"{book_title}\" **does not exist** in the \"book_title_to_id\" section of the database or the book's ID (retrieved using \"{book_title}\") **does not exist** in the books.",
+    "internal_check_book_available": "The book \"{book_title}\" has a count value of **less than 1**.",
+    "internal_is_restricted": "The book \"{book_title}\" has its restricted status set to **false**.",
+    "internal_is_admin": "The user \"{username}\" has an \"admin\" of **false** in the database.",
+    "internal_check_room_exist": "The specified room ID \"{room_id}\" **must not** exist in the database under the 'rooms' section.",
+    "internal_check_date_available_for_the_room": "The specified reservation date \"{resv_date}\" **must not** be listed under the 'rooms' section for the given room ID \"{room_id}\".",
+    "internal_all_slots_available_for_the_room_on_the_date": "**NOT** all requested slots \"{slots}\" for the specified reservation date \"{resv_date}\" in the room \"{room_id}\" are available in the database."
+  }
+}

@@ -1,0 +1,1325 @@
+{
+  "8f6e5ebfe3d58eec": {
+    "user_goal": "add_book",
+    "params": {
+      "borrow_limit": 5,
+      "max_reservation_slots": 4,
+      "book_title": "The Great Gatsby",
+      "count": 3,
+      "username": "new_admin",
+      "restricted": false,
+      "password": "secureP@ssw0rd"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_is_admin": true,
+      "add_book": true
+    }
+  },
+  "a359450bfb4354ef": {
+    "user_goal": "add_book",
+    "params": {
+      "borrow_limit": 5,
+      "max_reservation_slots": 5,
+      "book_title": "The Great Gatsby",
+      "count": 0,
+      "username": "libAdmin",
+      "restricted": false,
+      "password": "secureAdminPass123"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_is_admin": true,
+      "add_book": false,
+      "internal_check_username_exist": true
+    }
+  },
+  "ec73305ea01809c0": {
+    "user_goal": "add_book",
+    "params": {
+      "borrow_limit": 5,
+      "max_reservation_slots": 4,
+      "book_title": "rlednPBweFSqcudrEvA",
+      "count": 3,
+      "username": "booklover",
+      "restricted": false,
+      "password": "modUBPGqOaDalVsmGqa"
+    },
+    "tool_results": {
+      "login_user": false
+    }
+  },
+  "486042f4683faa6a": {
+    "user_goal": "add_book",
+    "params": {
+      "borrow_limit": 5,
+      "max_reservation_slots": 3,
+      "book_title": "The Great Gatsby",
+      "count": 3,
+      "username": "pepperoni",
+      "restricted": false,
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_is_admin": false
+    }
+  },
+  "1223934dcb35f0e8": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "borrow_book": true,
+      "internal_check_username_exist": true
+    }
+  },
+  "23a2d1a207633d26": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "username": "KGVGIrMGUwmEsVqBOip",
+      "book_title": "Beloved"
+    },
+    "tool_results": {
+      "login_user": false
+    }
+  },
+  "93d83aa8b84730fd": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "dJPxuZHKpJRTogCsOvI"
+    },
+    "tool_results": {
+      "login_user": false,
+      "internal_check_username_exist": true
+    }
+  },
+  "db862eb69a9fa209": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "The Great Gatsby",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_book_exist": false,
+      "internal_check_book_available": false
+    }
+  },
+  "5ce44ddbf03781b3": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "internal_check_username_exist": true,
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": false
+    }
+  },
+  "74d5860eb9e89cff": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 4,
+      "book_title": "Beloved",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_get_user_borrowed": [],
+      "borrow_book": true
+    }
+  },
+  "2aa1250fbb852908": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_get_user_borrowed": [
+        "93TC00Q"
+      ],
+      "internal_convert_book_title_to_id": "93TC00Q",
+      "borrow_book": true
+    }
+  },
+  "4d1b6bfb8a3273e0": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_is_restricted": true,
+      "internal_get_membership_status": "October 15th, 2024",
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found.",
+      "borrow_book": true
+    }
+  },
+  "7b81af444289a1c1": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "One Hundred Years of Solitude",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "internal_check_username_exist": true,
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_is_restricted": false,
+      "internal_get_membership_status": "October 9th, 2024",
+      "borrow_book": true,
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found."
+    }
+  },
+  "aa6854996448bb2f": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_is_restricted": true,
+      "internal_get_membership_status": "October 9th, 2024",
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found.",
+      "borrow_book": true
+    }
+  },
+  "45620aa20beeb2ff": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_get_user_num_borrowed": 1,
+      "borrow_book": true
+    }
+  },
+  "e68128f3727a9c73": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "Grimoire",
+      "password": "gr1m01re_libAdmin"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_get_user_num_borrowed": 3,
+      "borrow_book": true
+    }
+  },
+  "480ab2ab837d24e7": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_get_user_borrowed": [],
+      "internal_is_restricted": true,
+      "internal_get_membership_status": "November 10th, 2024",
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found.",
+      "borrow_book": true
+    }
+  },
+  "e01638c78f4582c4": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "One Hundred Years of Solitude",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_get_user_borrowed": [],
+      "internal_is_restricted": false,
+      "borrow_book": true,
+      "internal_get_membership_status": null,
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found."
+    }
+  },
+  "325a96c73b73a9b9": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_is_restricted": true,
+      "internal_check_book_exist": true,
+      "internal_check_username_exist": true,
+      "borrow_book": true,
+      "internal_check_book_available": true,
+      "internal_get_user_borrowed": [
+        "93TC00Q"
+      ]
+    }
+  },
+  "b86fe51c8168387a": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 5,
+      "max_reservation_slots": 3,
+      "book_title": "Pride and Prejudice",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_get_user_borrowed": [
+        "81G3WP0"
+      ],
+      "internal_convert_book_title_to_id": "81G3WP0",
+      "borrow_book": true,
+      "internal_get_membership_status": null,
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found."
+    }
+  },
+  "5adb00201313bc10": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_get_user_borrowed": [],
+      "internal_is_restricted": true,
+      "internal_get_membership_status": null,
+      "borrow_book": true
+    }
+  },
+  "79166444b3eec311": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_get_user_borrowed": [],
+      "internal_get_user_num_borrowed": 0,
+      "borrow_book": true
+    }
+  },
+  "52d53cee91618b94": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "Pride and Prejudice",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_get_user_borrowed": [
+        "81G3WP0"
+      ],
+      "internal_convert_book_title_to_id": "81G3WP0",
+      "borrow_book": true
+    }
+  },
+  "7392d4ee64543864": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 0,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "borrow_book": true,
+      "internal_check_book_available": true,
+      "internal_get_user_borrowed": [],
+      "internal_check_book_exist": true,
+      "internal_get_user_num_borrowed": 0
+    }
+  },
+  "a6d92a04d425d640": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_get_user_num_borrowed": 1,
+      "internal_check_book_available": true,
+      "internal_is_restricted": true,
+      "internal_get_membership_status": "October 11th, 2024",
+      "borrow_book": true,
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found."
+    }
+  },
+  "d6261aab4c23ada6": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 1,
+      "max_reservation_slots": 3,
+      "book_title": "One Hundred Years of Solitude",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "internal_check_username_exist": true,
+      "internal_check_book_exist": true,
+      "login_user": true,
+      "borrow_book": true,
+      "internal_check_book_available": true,
+      "internal_get_user_num_borrowed": 0,
+      "internal_get_membership_status": null,
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found.",
+      "internal_is_restricted": false
+    }
+  },
+  "4c20682eca574dba": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_is_restricted": true,
+      "internal_get_membership_status": "October 9th, 2024",
+      "internal_get_user_num_borrowed": 1,
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found.",
+      "borrow_book": true
+    }
+  },
+  "2864ad03132d8253": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "internal_check_username_exist": true,
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_get_user_num_borrowed": 2,
+      "internal_is_restricted": true,
+      "internal_get_membership_status": "October 12th, 2024",
+      "borrow_book": true
+    }
+  },
+  "36335d8c683e1b57": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_get_membership_status": null,
+      "internal_is_restricted": false,
+      "internal_get_user_num_borrowed": 3,
+      "internal_check_username_exist": true
+    }
+  },
+  "2551fd5f0145a81f": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_get_user_borrowed": [],
+      "internal_is_restricted": true,
+      "internal_get_membership_status": "October 10th, 2024",
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found.",
+      "borrow_book": true
+    }
+  },
+  "ede2be7d1a79230d": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "One Hundred Years of Solitude",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_convert_book_title_to_id": "02Y6GFA",
+      "internal_get_user_borrowed": [],
+      "internal_get_user_num_borrowed": 0,
+      "internal_is_restricted": false,
+      "borrow_book": true,
+      "internal_get_membership_status": null,
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found."
+    }
+  },
+  "a861f89423d97d3a": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_check_username_exist": true,
+      "internal_get_user_borrowed": [
+        "93TC00Q"
+      ],
+      "internal_convert_book_title_to_id": "93TC00Q",
+      "borrow_book": true,
+      "internal_get_membership_status": "October 11th, 2024",
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found.",
+      "internal_convert_human_date_to_iso": "2026-09-24"
+    }
+  },
+  "6e5f861ca15cb8d8": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 5,
+      "max_reservation_slots": 3,
+      "book_title": "Pride and Prejudice",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_is_restricted": false,
+      "internal_get_user_borrowed": [
+        "81G3WP0"
+      ],
+      "internal_convert_book_title_to_id": "81G3WP0",
+      "internal_get_user_num_borrowed": 1,
+      "borrow_book": true
+    }
+  },
+  "b98a5b5e10bf9966": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_check_book_exist": true,
+      "internal_check_book_available": true,
+      "internal_get_user_borrowed": [],
+      "internal_is_restricted": true,
+      "internal_get_membership_status": null,
+      "borrow_book": true,
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found."
+    }
+  },
+  "d4e6d94216f8f75b": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 0,
+      "max_reservation_slots": 3,
+      "book_title": "One Hundred Years of Solitude",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_check_book_exist": true,
+      "borrow_book": true,
+      "internal_check_book_available": true,
+      "internal_is_restricted": true,
+      "internal_get_membership_status": "November 10th, 2024"
+    }
+  },
+  "cfaee98295c766d6": {
+    "user_goal": "borrow_book",
+    "params": {
+      "borrow_limit": 0,
+      "max_reservation_slots": 3,
+      "book_title": "One Hundred Years of Solitude",
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_book_available": true,
+      "borrow_book": true,
+      "internal_check_book_exist": true,
+      "internal_get_user_borrowed": [
+        "02Y6GFA"
+      ],
+      "internal_is_restricted": false,
+      "internal_get_membership_status": null,
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found."
+    }
+  },
+  "2a3e5d248fbe6498": {
+    "user_goal": "check_return_date",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_check_book_exist": true,
+      "internal_convert_book_title_to_id": "93TC00Q",
+      "internal_get_user_borrowed": [
+        "93TC00Q"
+      ],
+      "check_return_date": "October 10th, 2024"
+    }
+  },
+  "c0d735bb0db27310": {
+    "user_goal": "check_return_date",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "Pride and Prejudice",
+      "username": "Grimoire",
+      "password": "pWImWWbThxuiauPDwQV"
+    },
+    "tool_results": {
+      "login_user": false,
+      "internal_check_username_exist": true
+    }
+  },
+  "6b54c6f35dc02f96": {
+    "user_goal": "check_return_date",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_convert_book_title_to_id": null,
+      "internal_check_book_exist": false,
+      "check_return_date": "KeyError: None"
+    }
+  },
+  "25ead1706349ded3": {
+    "user_goal": "check_return_date",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "The Great Gatsby",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "check_return_date": "KeyError: 'A1B2C3D4'",
+      "internal_check_username_exist": true,
+      "internal_convert_book_title_to_id": "A1B2C3D4",
+      "internal_get_user_borrowed": [
+        "93TC00Q"
+      ],
+      "internal_check_book_exist": true
+    }
+  },
+  "e8f45f1b152435d1": {
+    "user_goal": "pay_late_fee",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_calculate_late_fee": 6.0,
+      "get_account_balance": 30,
+      "pay_late_fee": true,
+      "internal_check_username_exist": true,
+      "internal_get_account_balance": "Error: Tool internal_get_account_balance not found."
+    }
+  },
+  "1e6b074f5d5eda9a": {
+    "user_goal": "pay_late_fee",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_calculate_late_fee": 6.0,
+      "get_account_balance": 5,
+      "pay_late_fee": true
+    }
+  },
+  "da9827d95b5cf739": {
+    "user_goal": "remove_book",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "One Hundred Years of Solitude",
+      "username": "Grimoire",
+      "password": "gr1m01re_libAdmin"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_is_admin": true,
+      "remove_book": true,
+      "internal_check_book_exist": false,
+      "internal_get_user_borrowed": []
+    }
+  },
+  "e3aa49900f8d38ab": {
+    "user_goal": "remove_book",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "One Hundred Years of Solitude",
+      "username": "Grimoire",
+      "password": "gr1m01re_libAdmin"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_is_admin": true,
+      "remove_book": true,
+      "internal_check_book_exist": true,
+      "internal_get_user_borrowed": [
+        "02Y6GFA",
+        "81G3WP0"
+      ]
+    }
+  },
+  "3ff2d10f236de28e": {
+    "user_goal": "reserve_room",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 4,
+      "room_id": "LB002",
+      "username": "pepperoni",
+      "resv_date": "October 10th, 2024",
+      "slots": [
+        "10:00",
+        "16:00"
+      ],
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_convert_human_date_to_iso": "2024-10-10",
+      "internal_check_username_exist": true,
+      "internal_check_room_exist": true,
+      "internal_check_date_available_for_the_room": false,
+      "internal_all_slots_available_for_the_room_on_the_date": false,
+      "reserve_room": "KeyError: '2024-10-10'"
+    }
+  },
+  "70aabbdc3cb4f83a": {
+    "user_goal": "reserve_room",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "room_id": "LB002",
+      "username": "pepperoni",
+      "resv_date": "October 12th, 2024",
+      "slots": [
+        "9:00",
+        "10:00"
+      ],
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_convert_human_date_to_iso": "2024-10-12",
+      "internal_check_room_exist": true,
+      "internal_all_slots_available_for_the_room_on_the_date": false,
+      "internal_check_date_available_for_the_room": false
+    }
+  },
+  "4d33823a8ef27795": {
+    "user_goal": "reserve_room",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "room_id": "LB001",
+      "username": "mario",
+      "resv_date": "October 10th, 2024",
+      "slots": [
+        "11:00",
+        "12:00"
+      ],
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_convert_human_date_to_iso": "2024-10-10",
+      "internal_check_room_exist": true,
+      "internal_all_slots_available_for_the_room_on_the_date": false,
+      "reserve_room": true,
+      "internal_check_date_available_for_the_room": false
+    }
+  },
+  "b4681e1554604eff": {
+    "user_goal": "reserve_room",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 5,
+      "room_id": "LB001",
+      "username": "mario",
+      "resv_date": "October 10th, 2024",
+      "slots": [
+        "11:00",
+        "13:00"
+      ],
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_room_exist": true,
+      "internal_convert_human_date_to_iso": "2024-10-10",
+      "internal_check_date_available_for_the_room": false,
+      "internal_get_num_reserved_slots": 3,
+      "internal_get_membership_status": "October 9th, 2024",
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found."
+    }
+  },
+  "aa24c6c8451e99bd": {
+    "user_goal": "reserve_room",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 2,
+      "room_id": "LB001",
+      "username": "mario",
+      "resv_date": "October 10th, 2024",
+      "slots": [
+        "11:00"
+      ],
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_get_membership_status": "October 10th, 2024",
+      "internal_check_room_exist": true,
+      "internal_check_date_available_for_the_room": false,
+      "internal_convert_human_date_to_iso": "2024-10-10",
+      "reserve_room": "KeyError: '2024-10-10'",
+      "internal_get_num_reserved_slots": 3
+    }
+  },
+  "e8a0c0b61e41f7db": {
+    "user_goal": "reserve_room",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 1,
+      "room_id": "LB001",
+      "username": "pepperoni",
+      "resv_date": "October 10th, 2024",
+      "slots": [
+        "11:00",
+        "13:00"
+      ],
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_room_exist": true,
+      "internal_convert_human_date_to_iso": "2024-10-10",
+      "reserve_room": "KeyError: '2024-10-10'",
+      "internal_check_date_available_for_the_room": false,
+      "internal_get_membership_status": null,
+      "internal_get_num_reserved_slots": 2,
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found."
+    }
+  },
+  "fa197513933cb793": {
+    "user_goal": "reserve_room",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 5,
+      "room_id": "LB001",
+      "username": "mario",
+      "resv_date": "October 10th, 2024",
+      "slots": [
+        "11:00",
+        "13:00"
+      ],
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_convert_human_date_to_iso": "2024-10-10",
+      "internal_check_room_exist": true,
+      "internal_get_membership_status": "October 9th, 2024",
+      "internal_get_num_reserved_slots": 3,
+      "internal_all_slots_available_for_the_room_on_the_date": false
+    }
+  },
+  "53c9a374a203c093": {
+    "user_goal": "reserve_room",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 2,
+      "room_id": "LB001",
+      "username": "mario",
+      "resv_date": "October 11th, 2024",
+      "slots": [
+        "10:00",
+        "11:00"
+      ],
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "internal_convert_human_date_to_iso": "2024-10-11",
+      "login_user": true,
+      "internal_check_room_exist": true,
+      "internal_all_slots_available_for_the_room_on_the_date": false,
+      "internal_get_membership_status": "October 11th, 2024",
+      "internal_check_date_available_for_the_room": false
+    }
+  },
+  "6491b02f6399e70f": {
+    "user_goal": "reserve_room",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "room_id": "LB001",
+      "username": "pepperoni",
+      "resv_date": "October 12th, 2024",
+      "slots": [
+        "11:00",
+        "12:00"
+      ],
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_room_exist": true,
+      "internal_convert_human_date_to_iso": "2024-10-12",
+      "internal_check_date_available_for_the_room": false,
+      "internal_all_slots_available_for_the_room_on_the_date": false
+    }
+  },
+  "8bce844437c3846e": {
+    "user_goal": "reserve_room",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "room_id": "LB001",
+      "username": "mario",
+      "resv_date": "October 12th, 2024",
+      "slots": [
+        "10:00",
+        "11:00"
+      ],
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "internal_check_username_exist": true,
+      "login_user": true,
+      "internal_check_room_exist": true,
+      "internal_convert_human_date_to_iso": "2024-10-12",
+      "internal_check_date_available_for_the_room": false,
+      "internal_all_slots_available_for_the_room_on_the_date": false
+    }
+  },
+  "aadc17ec0760a0aa": {
+    "user_goal": "reserve_room",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 5,
+      "room_id": "LB001",
+      "username": "mario",
+      "resv_date": "October 10th, 2024",
+      "slots": [
+        "11:00",
+        "12:00"
+      ],
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "internal_convert_human_date_to_iso": "2024-10-10",
+      "login_user": true,
+      "internal_check_room_exist": true,
+      "internal_check_date_available_for_the_room": false,
+      "internal_all_slots_available_for_the_room_on_the_date": false
+    }
+  },
+  "989733391850f141": {
+    "user_goal": "reserve_room",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "room_id": "LB001",
+      "username": "mario",
+      "resv_date": "October 10th, 2024",
+      "slots": [
+        "11:00",
+        "12:00"
+      ],
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "internal_check_username_exist": true,
+      "login_user": true,
+      "internal_convert_human_date_to_iso": "2024-10-10",
+      "internal_check_room_exist": true,
+      "internal_get_membership_status": "October 10th, 2024",
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found.",
+      "internal_all_slots_available_for_the_room_on_the_date": false,
+      "internal_check_date_available_for_the_room": true
+    }
+  },
+  "8d51cc655fe4440e": {
+    "user_goal": "reserve_room",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 1,
+      "room_id": "LB002",
+      "username": "pepperoni",
+      "resv_date": "October 11th, 2024",
+      "slots": [
+        "12:00",
+        "13:00"
+      ],
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_check_username_exist": true,
+      "internal_convert_human_date_to_iso": "2024-10-11",
+      "internal_all_slots_available_for_the_room_on_the_date": false,
+      "internal_get_interaction_date": "Error: Tool internal_get_interaction_date not found.",
+      "internal_check_room_exist": true,
+      "internal_check_date_available_for_the_room": false
+    }
+  },
+  "58fe230b3d57f1a1": {
+    "user_goal": "return_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 5,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "internal_check_username_exist": true,
+      "login_user": true,
+      "internal_check_book_exist": true,
+      "internal_get_user_borrowed": [
+        "93TC00Q"
+      ],
+      "internal_convert_book_title_to_id": "93TC00Q",
+      "return_book": true
+    }
+  },
+  "9e15f2477ef83260": {
+    "user_goal": "return_book",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "HHyicGJCEmPosy"
+    },
+    "tool_results": {
+      "login_user": false,
+      "internal_check_username_exist": true
+    }
+  },
+  "a15cf6971587b6f0": {
+    "user_goal": "return_book",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "Beloved",
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_convert_book_title_to_id": null,
+      "return_book": "KeyError: None",
+      "internal_check_book_exist": false,
+      "internal_check_username_exist": true
+    }
+  },
+  "cfaf0e1430c9df7f": {
+    "user_goal": "return_book",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "book_title": "One Hundred Years of Solitude",
+      "username": "Grimoire",
+      "password": "gr1m01re_libAdmin"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_convert_book_title_to_id": "02Y6GFA",
+      "internal_get_user_borrowed": [
+        "81G3WP0"
+      ],
+      "return_book": "KeyError: '02Y6GFA'",
+      "internal_check_book_exist": true,
+      "check_return_date": "KeyError: '02Y6GFA'"
+    }
+  },
+  "e0a33f3dbeac1647": {
+    "user_goal": "show_available_rooms",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "username": "mario",
+      "password": "m@rio37T73"
+    },
+    "tool_results": {
+      "login_user": true,
+      "show_available_rooms": {
+        "LB001": {
+          "October 10th, 2024": [
+            "11:00",
+            "13:00",
+            "14:00"
+          ],
+          "October 11th, 2024": [
+            "10:00",
+            "11:00",
+            "12:00",
+            "13:00",
+            "15:00"
+          ]
+        },
+        "LB002": {
+          "October 10th, 2024": [
+            "10:00",
+            "12:00",
+            "16:00"
+          ],
+          "October 11th, 2024": [
+            "12:00",
+            "13:00",
+            "14:00"
+          ]
+        }
+      }
+    }
+  },
+  "1954e5695f965c5f": {
+    "user_goal": "show_available_rooms",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "username": "NoDzKJcLrDezjsjCgjA"
+    },
+    "tool_results": {
+      "show_available_rooms": {
+        "LB001": {
+          "October 10th, 2024": [
+            "11:00",
+            "13:00",
+            "14:00"
+          ],
+          "October 11th, 2024": [
+            "10:00",
+            "11:00",
+            "12:00",
+            "13:00",
+            "15:00"
+          ]
+        },
+        "LB002": {
+          "October 10th, 2024": [
+            "10:00",
+            "12:00",
+            "16:00"
+          ],
+          "October 11th, 2024": [
+            "12:00",
+            "13:00",
+            "14:00"
+          ]
+        }
+      }
+    }
+  },
+  "27d82fbd3abaa483": {
+    "user_goal": "show_available_rooms",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "username": "pepperoni",
+      "password": "ttUsuQnrOMeKbcEjuNc"
+    },
+    "tool_results": {
+      "login_user": false,
+      "internal_check_username_exist": true
+    }
+  },
+  "9fcc8eadb372c77e": {
+    "user_goal": "update_membership",
+    "params": {
+      "borrow_limit": 3,
+      "max_reservation_slots": 3,
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_get_membership_fee": 5.0,
+      "get_account_balance": 30,
+      "update_membership": "November 9th, 2024"
+    }
+  },
+  "72815009545966b0": {
+    "user_goal": "update_membership",
+    "params": {
+      "borrow_limit": 2,
+      "max_reservation_slots": 3,
+      "username": "pepperoni",
+      "password": "paikzmzhaa991"
+    },
+    "tool_results": {
+      "login_user": true,
+      "internal_get_membership_fee": 5.0,
+      "get_account_balance": 3,
+      "update_membership": "November 9th, 2024"
+    }
+  }
+}

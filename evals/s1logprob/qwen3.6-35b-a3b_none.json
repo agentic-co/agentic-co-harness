@@ -1,0 +1,4009 @@
+{
+  "model": "lmstudio-community/Qwen3.6-35B-A3B-GGUF (llama-server)",
+  "variant": "none",
+  "budget": null,
+  "n": 400,
+  "aborted_low_memory": false,
+  "decisions": [
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t82/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.811130803195915,
+      "p_yes": 0.18886919680408495,
+      "p_no": 0.811130803195915,
+      "latency_s": 0.3411130905151367,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t98/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.583982978716837,
+      "p_yes": 0.41601702128316304,
+      "p_no": 0.583982978716837,
+      "latency_s": 0.047364234924316406,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t58/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.998679965888172,
+      "p_yes": 0.0013200341118280133,
+      "p_no": 0.998679965888172,
+      "latency_s": 0.04151511192321777,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t141/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8443202776438679,
+      "p_yes": 0.1556797223561321,
+      "p_no": 0.8443202776438679,
+      "latency_s": 0.04462385177612305,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t115/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9993109023023989,
+      "p_yes": 0.0006890976976009954,
+      "p_no": 0.9993109023023989,
+      "latency_s": 0.04801678657531738,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t33/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8390600232034384,
+      "p_yes": 0.8390600232034384,
+      "p_no": 0.16093997679656158,
+      "latency_s": 1.067288875579834,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t17/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9930494388354018,
+      "p_yes": 0.9930494388354018,
+      "p_no": 0.006950561164598222,
+      "latency_s": 0.9317309856414795,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t3/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9732094066451726,
+      "p_yes": 0.9732094066451726,
+      "p_no": 0.026790593354827492,
+      "latency_s": 0.8633527755737305,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t178/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7747967851343358,
+      "p_yes": 0.7747967851343358,
+      "p_no": 0.2252032148656642,
+      "latency_s": 0.8603360652923584,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t11/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999806891417401,
+      "p_yes": 0.00019310858259906754,
+      "p_no": 0.999806891417401,
+      "latency_s": 0.6726467609405518,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t144/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9950362291662918,
+      "p_yes": 0.00496377083370822,
+      "p_no": 0.9950362291662918,
+      "latency_s": 1.113029956817627,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t61/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8413206086229401,
+      "p_yes": 0.8413206086229401,
+      "p_no": 0.15867939137706003,
+      "latency_s": 0.9854719638824463,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t171/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9982700072562183,
+      "p_yes": 0.0017299927437817218,
+      "p_no": 0.9982700072562183,
+      "latency_s": 0.3373560905456543,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t63/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6219544731115066,
+      "p_yes": 0.37804552688849336,
+      "p_no": 0.6219544731115066,
+      "latency_s": 1.2338340282440186,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t145/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6015222416872112,
+      "p_yes": 0.3984777583127887,
+      "p_no": 0.6015222416872112,
+      "latency_s": 1.4353241920471191,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t83/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.998891293075715,
+      "p_yes": 0.001108706924284952,
+      "p_no": 0.998891293075715,
+      "latency_s": 1.4532880783081055,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t131/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7367692118392014,
+      "p_yes": 0.7367692118392014,
+      "p_no": 0.2632307881607986,
+      "latency_s": 1.0902609825134277,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t63/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8577701992800817,
+      "p_yes": 0.14222980071991828,
+      "p_no": 0.8577701992800817,
+      "latency_s": 1.5530171394348145,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t69/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9954014933327664,
+      "p_yes": 0.004598506667233636,
+      "p_no": 0.9954014933327664,
+      "latency_s": 0.7837960720062256,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t105/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8154297769018408,
+      "p_yes": 0.18457022309815918,
+      "p_no": 0.8154297769018408,
+      "latency_s": 1.2719311714172363,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t191/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9927108399406845,
+      "p_yes": 0.007289160059315489,
+      "p_no": 0.9927108399406845,
+      "latency_s": 0.9988999366760254,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t167/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9887843085969491,
+      "p_yes": 0.9887843085969491,
+      "p_no": 0.011215691403051009,
+      "latency_s": 0.5521893501281738,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t149/i0/c8",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9094668303354675,
+      "p_yes": 0.09053316966453255,
+      "p_no": 0.9094668303354675,
+      "latency_s": 0.8675329685211182,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t140/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5160610237257915,
+      "p_yes": 0.5160610237257915,
+      "p_no": 0.4839389762742085,
+      "latency_s": 1.312223196029663,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t23/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7302526584903654,
+      "p_yes": 0.7302526584903654,
+      "p_no": 0.2697473415096346,
+      "latency_s": 0.8193132877349854,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t127/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998949165051491,
+      "p_yes": 0.00010508349485094848,
+      "p_no": 0.9998949165051491,
+      "latency_s": 0.9796590805053711,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t92/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.998468765138259,
+      "p_yes": 0.001531234861740909,
+      "p_no": 0.998468765138259,
+      "latency_s": 0.9686980247497559,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t187/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9997916846885695,
+      "p_yes": 0.00020831531143046552,
+      "p_no": 0.9997916846885695,
+      "latency_s": 0.49477195739746094,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t70/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999527846765559,
+      "p_yes": 4.721532344411641e-05,
+      "p_no": 0.9999527846765559,
+      "latency_s": 0.5853760242462158,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t54/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5916421245345698,
+      "p_yes": 0.5916421245345698,
+      "p_no": 0.4083578754654303,
+      "latency_s": 1.119927167892456,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t165/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9527274444251388,
+      "p_yes": 0.9527274444251388,
+      "p_no": 0.04727255557486133,
+      "latency_s": 0.5470747947692871,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t91/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9961087348335863,
+      "p_yes": 0.0038912651664136295,
+      "p_no": 0.9961087348335863,
+      "latency_s": 1.0647706985473633,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t111/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5337629872746805,
+      "p_yes": 0.5337629872746805,
+      "p_no": 0.4662370127253194,
+      "latency_s": 1.1249971389770508,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t0/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9948441264856509,
+      "p_yes": 0.9948441264856509,
+      "p_no": 0.005155873514349187,
+      "latency_s": 0.6011521816253662,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t23/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6093221398148099,
+      "p_yes": 0.6093221398148099,
+      "p_no": 0.39067786018519,
+      "latency_s": 0.8042681217193604,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t30/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998479545820909,
+      "p_yes": 0.000152045417909127,
+      "p_no": 0.9998479545820909,
+      "latency_s": 0.6570959091186523,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t192/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7822907514818112,
+      "p_yes": 0.21770924851818893,
+      "p_no": 0.7822907514818112,
+      "latency_s": 1.0583388805389404,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t14/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999281077252188,
+      "p_yes": 7.18922747812648e-05,
+      "p_no": 0.9999281077252188,
+      "latency_s": 0.735598087310791,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t67/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8882739816965832,
+      "p_yes": 0.1117260183034168,
+      "p_no": 0.8882739816965832,
+      "latency_s": 1.3057730197906494,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t100/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9993203178707554,
+      "p_yes": 0.0006796821292447039,
+      "p_no": 0.9993203178707554,
+      "latency_s": 0.9875431060791016,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t87/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999827130165382,
+      "p_yes": 1.728698346171591e-05,
+      "p_no": 0.9999827130165382,
+      "latency_s": 0.5967118740081787,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t109/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9778441064388581,
+      "p_yes": 0.022155893561141976,
+      "p_no": 0.9778441064388581,
+      "latency_s": 1.1091139316558838,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t23/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999299856297973,
+      "p_yes": 7.001437020282851e-05,
+      "p_no": 0.9999299856297973,
+      "latency_s": 0.6517019271850586,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t79/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998727380073578,
+      "p_yes": 0.00012726199264209673,
+      "p_no": 0.9998727380073578,
+      "latency_s": 1.0546739101409912,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t78/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.7180965634267676,
+      "p_yes": 0.28190343657323236,
+      "p_no": 0.7180965634267676,
+      "latency_s": 0.8939089775085449,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t65/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.7202203388956435,
+      "p_yes": 0.2797796611043564,
+      "p_no": 0.7202203388956435,
+      "latency_s": 1.0899238586425781,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t4/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998281739452453,
+      "p_yes": 0.00017182605475467403,
+      "p_no": 0.9998281739452453,
+      "latency_s": 0.6016101837158203,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t72/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8839986191418722,
+      "p_yes": 0.11600138085812793,
+      "p_no": 0.8839986191418722,
+      "latency_s": 1.108323097229004,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t127/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8219530934019641,
+      "p_yes": 0.8219530934019641,
+      "p_no": 0.17804690659803588,
+      "latency_s": 1.1346960067749023,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t139/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.991301174558061,
+      "p_yes": 0.00869882544193909,
+      "p_no": 0.991301174558061,
+      "latency_s": 1.1547431945800781,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t123/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9197346686223845,
+      "p_yes": 0.9197346686223845,
+      "p_no": 0.08026533137761556,
+      "latency_s": 0.9725918769836426,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t142/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9985905785257752,
+      "p_yes": 0.0014094214742247152,
+      "p_no": 0.9985905785257752,
+      "latency_s": 1.0448009967803955,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t80/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9911170132982704,
+      "p_yes": 0.008882986701729595,
+      "p_no": 0.9911170132982704,
+      "latency_s": 0.9620296955108643,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t190/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.860676823276475,
+      "p_yes": 0.13932317672352507,
+      "p_no": 0.860676823276475,
+      "latency_s": 0.8333272933959961,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t141/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.720775337885595,
+      "p_yes": 0.720775337885595,
+      "p_no": 0.2792246621144051,
+      "latency_s": 1.1366043090820312,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t139/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9224018323966734,
+      "p_yes": 0.07759816760332654,
+      "p_no": 0.9224018323966734,
+      "latency_s": 0.9193968772888184,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t15/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9966503729978803,
+      "p_yes": 0.0033496270021195515,
+      "p_no": 0.9966503729978803,
+      "latency_s": 0.8046190738677979,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t98/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8145900981480089,
+      "p_yes": 0.8145900981480089,
+      "p_no": 0.18540990185199113,
+      "latency_s": 1.2195560932159424,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t81/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9937281688780307,
+      "p_yes": 0.006271831121969195,
+      "p_no": 0.9937281688780307,
+      "latency_s": 0.8393242359161377,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t94/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8474319311182048,
+      "p_yes": 0.8474319311182048,
+      "p_no": 0.15256806888179517,
+      "latency_s": 0.9723279476165771,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t50/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.994906594422571,
+      "p_yes": 0.0050934055774290825,
+      "p_no": 0.994906594422571,
+      "latency_s": 0.6571698188781738,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t116/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9383607363939086,
+      "p_yes": 0.061639263606091406,
+      "p_no": 0.9383607363939086,
+      "latency_s": 1.079375982284546,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t60/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9993792131503297,
+      "p_yes": 0.0006207868496703416,
+      "p_no": 0.9993792131503297,
+      "latency_s": 0.8927898406982422,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t55/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8358149135363567,
+      "p_yes": 0.16418508646364335,
+      "p_no": 0.8358149135363567,
+      "latency_s": 1.050981044769287,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t16/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.9190471160903904,
+      "p_yes": 0.0809528839096095,
+      "p_no": 0.9190471160903904,
+      "latency_s": 0.9323818683624268,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t30/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7228412320646793,
+      "p_yes": 0.7228412320646793,
+      "p_no": 0.27715876793532074,
+      "latency_s": 0.5204877853393555,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t124/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.724526634114028,
+      "p_yes": 0.724526634114028,
+      "p_no": 0.27547336588597204,
+      "latency_s": 1.0682199001312256,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t112/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7527310959898686,
+      "p_yes": 0.24726890401013127,
+      "p_no": 0.7527310959898686,
+      "latency_s": 1.255096673965454,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t121/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9188930169224435,
+      "p_yes": 0.9188930169224435,
+      "p_no": 0.08110698307755661,
+      "latency_s": 1.0968132019042969,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t122/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9823690553406668,
+      "p_yes": 0.017630944659333223,
+      "p_no": 0.9823690553406668,
+      "latency_s": 0.7513847351074219,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t97/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8937035981628181,
+      "p_yes": 0.10629640183718184,
+      "p_no": 0.8937035981628181,
+      "latency_s": 1.1643552780151367,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t102/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.7838159353590872,
+      "p_yes": 0.2161840646409128,
+      "p_no": 0.7838159353590872,
+      "latency_s": 1.1699261665344238,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t125/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999529436161149,
+      "p_yes": 0.0004705638388510626,
+      "p_no": 0.999529436161149,
+      "latency_s": 0.9033870697021484,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t92/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6129542303924168,
+      "p_yes": 0.3870457696075833,
+      "p_no": 0.6129542303924168,
+      "latency_s": 1.739387035369873,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t171/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9993222648265723,
+      "p_yes": 0.0006777351734277681,
+      "p_no": 0.9993222648265723,
+      "latency_s": 0.2847280502319336,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t65/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5790675816997605,
+      "p_yes": 0.4209324183002396,
+      "p_no": 0.5790675816997605,
+      "latency_s": 1.4038808345794678,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t47/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999943260205064,
+      "p_yes": 5.673979493535733e-06,
+      "p_no": 0.9999943260205064,
+      "latency_s": 0.3629307746887207,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t75/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6913923853730215,
+      "p_yes": 0.3086076146269786,
+      "p_no": 0.6913923853730215,
+      "latency_s": 1.4871020317077637,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t27/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999073556274998,
+      "p_yes": 9.26443725003423e-05,
+      "p_no": 0.9999073556274998,
+      "latency_s": 0.6573429107666016,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t8/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999681605611463,
+      "p_yes": 0.00031839438853686853,
+      "p_no": 0.999681605611463,
+      "latency_s": 0.6159758567810059,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t97/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5118448026916669,
+      "p_yes": 0.488155197308333,
+      "p_no": 0.5118448026916669,
+      "latency_s": 0.9744088649749756,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t149/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9921839646921529,
+      "p_yes": 0.007816035307847078,
+      "p_no": 0.9921839646921529,
+      "latency_s": 0.60807204246521,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t170/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.707398371982235,
+      "p_yes": 0.707398371982235,
+      "p_no": 0.29260162801776507,
+      "latency_s": 0.601639986038208,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t104/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9935595310757415,
+      "p_yes": 0.006440468924258632,
+      "p_no": 0.9935595310757415,
+      "latency_s": 1.4691457748413086,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t133/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999554204391071,
+      "p_yes": 4.457956089299346e-05,
+      "p_no": 0.9999554204391071,
+      "latency_s": 0.9669289588928223,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t26/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8972603983088108,
+      "p_yes": 0.8972603983088108,
+      "p_no": 0.10273960169118922,
+      "latency_s": 0.8142962455749512,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t41/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9990877463796993,
+      "p_yes": 0.0009122536203006559,
+      "p_no": 0.9990877463796993,
+      "latency_s": 0.8944237232208252,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t174/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9993132334078392,
+      "p_yes": 0.0006867665921608976,
+      "p_no": 0.9993132334078392,
+      "latency_s": 0.34548521041870117,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t47/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998008558744438,
+      "p_yes": 0.00019914412555615274,
+      "p_no": 0.9998008558744438,
+      "latency_s": 0.6061129570007324,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t133/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999829841739221,
+      "p_yes": 0.00017015826077912974,
+      "p_no": 0.999829841739221,
+      "latency_s": 0.778540849685669,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t126/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9990145374060461,
+      "p_yes": 0.0009854625939539282,
+      "p_no": 0.9990145374060461,
+      "latency_s": 1.1201248168945312,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t75/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999062686948964,
+      "p_yes": 9.373130510347082e-05,
+      "p_no": 0.9999062686948964,
+      "latency_s": 0.6273651123046875,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t131/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9996598840790925,
+      "p_yes": 0.0003401159209075013,
+      "p_no": 0.9996598840790925,
+      "latency_s": 1.1523771286010742,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t88/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999504873591628,
+      "p_yes": 4.95126408371301e-05,
+      "p_no": 0.9999504873591628,
+      "latency_s": 0.8926041126251221,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t176/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6103423389270333,
+      "p_yes": 0.3896576610729667,
+      "p_no": 0.6103423389270333,
+      "latency_s": 0.6473772525787354,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t79/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7277412075058337,
+      "p_yes": 0.7277412075058337,
+      "p_no": 0.2722587924941662,
+      "latency_s": 1.1506898403167725,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t108/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.7249349256966654,
+      "p_yes": 0.27506507430333454,
+      "p_no": 0.7249349256966654,
+      "latency_s": 1.2223873138427734,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t20/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.99996332340383,
+      "p_yes": 3.667659617005259e-05,
+      "p_no": 0.99996332340383,
+      "latency_s": 0.614224910736084,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t119/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9981568135190708,
+      "p_yes": 0.0018431864809292102,
+      "p_no": 0.9981568135190708,
+      "latency_s": 1.0975849628448486,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t58/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.9288945953034651,
+      "p_yes": 0.07110540469653494,
+      "p_no": 0.9288945953034651,
+      "latency_s": 0.8997490406036377,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t52/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7525833826050703,
+      "p_yes": 0.7525833826050703,
+      "p_no": 0.2474166173949298,
+      "latency_s": 0.9499447345733643,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t108/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9664552345267778,
+      "p_yes": 0.03354476547322213,
+      "p_no": 0.9664552345267778,
+      "latency_s": 1.234635829925537,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t124/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5408513891742277,
+      "p_yes": 0.5408513891742277,
+      "p_no": 0.45914861082577224,
+      "latency_s": 1.0900311470031738,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t24/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998454331322916,
+      "p_yes": 0.00015456686770857984,
+      "p_no": 0.9998454331322916,
+      "latency_s": 0.641139030456543,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t37/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9997575541027276,
+      "p_yes": 0.0002424458972723613,
+      "p_no": 0.9997575541027276,
+      "latency_s": 0.9118599891662598,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t170/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8873324185695872,
+      "p_yes": 0.8873324185695872,
+      "p_no": 0.11266758143041287,
+      "latency_s": 0.3550848960876465,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t9/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998336058463784,
+      "p_yes": 0.00016639415362172552,
+      "p_no": 0.9998336058463784,
+      "latency_s": 0.6086030006408691,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t76/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6981458117385945,
+      "p_yes": 0.6981458117385945,
+      "p_no": 0.3018541882614055,
+      "latency_s": 0.8884580135345459,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t90/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999517363633881,
+      "p_yes": 4.826363661201505e-05,
+      "p_no": 0.9999517363633881,
+      "latency_s": 0.6597020626068115,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t101/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999902471054864,
+      "p_yes": 9.752894513587683e-05,
+      "p_no": 0.999902471054864,
+      "latency_s": 0.9474070072174072,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t137/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.6991304569424398,
+      "p_yes": 0.3008695430575601,
+      "p_no": 0.6991304569424398,
+      "latency_s": 1.132249116897583,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t93/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7424822434160995,
+      "p_yes": 0.7424822434160995,
+      "p_no": 0.25751775658390047,
+      "latency_s": 0.9209539890289307,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t57/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8782765304799744,
+      "p_yes": 0.8782765304799744,
+      "p_no": 0.12172346952002568,
+      "latency_s": 1.0929479598999023,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t110/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.810444323855299,
+      "p_yes": 0.189555676144701,
+      "p_no": 0.810444323855299,
+      "latency_s": 1.4581098556518555,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t173/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9997779847960988,
+      "p_yes": 0.00022201520390124896,
+      "p_no": 0.9997779847960988,
+      "latency_s": 0.4340391159057617,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t81/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999805618476003,
+      "p_yes": 1.9438152399550684e-05,
+      "p_no": 0.9999805618476003,
+      "latency_s": 0.5866997241973877,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t31/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.918023091472001,
+      "p_yes": 0.918023091472001,
+      "p_no": 0.08197690852799888,
+      "latency_s": 1.0840351581573486,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t68/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.902022360634304,
+      "p_yes": 0.902022360634304,
+      "p_no": 0.09797763936569606,
+      "latency_s": 1.0677602291107178,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t127/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9207001823737689,
+      "p_yes": 0.9207001823737689,
+      "p_no": 0.0792998176262312,
+      "latency_s": 1.0892198085784912,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t172/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999166084074491,
+      "p_yes": 8.33915925509124e-05,
+      "p_no": 0.9999166084074491,
+      "latency_s": 0.2684609889984131,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t67/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.6810426961740734,
+      "p_yes": 0.31895730382592646,
+      "p_no": 0.6810426961740734,
+      "latency_s": 0.9638931751251221,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t132/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5769088597208273,
+      "p_yes": 0.42309114027917266,
+      "p_no": 0.5769088597208273,
+      "latency_s": 1.1639471054077148,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t48/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9994534025858631,
+      "p_yes": 0.0005465974141369669,
+      "p_no": 0.9994534025858631,
+      "latency_s": 0.6043612957000732,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t39/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.956005824532975,
+      "p_yes": 0.956005824532975,
+      "p_no": 0.04399417546702502,
+      "latency_s": 0.98284912109375,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t95/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5006465759249515,
+      "p_yes": 0.49935342407504857,
+      "p_no": 0.5006465759249515,
+      "latency_s": 1.220217227935791,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t89/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999063439010771,
+      "p_yes": 9.365609892297813e-05,
+      "p_no": 0.9999063439010771,
+      "latency_s": 0.6583609580993652,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t126/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.772694200745864,
+      "p_yes": 0.772694200745864,
+      "p_no": 0.22730579925413588,
+      "latency_s": 0.980471134185791,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t80/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999460330761799,
+      "p_yes": 5.396692382008262e-05,
+      "p_no": 0.9999460330761799,
+      "latency_s": 0.7136509418487549,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t41/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9585810693645982,
+      "p_yes": 0.9585810693645982,
+      "p_no": 0.04141893063540173,
+      "latency_s": 1.102787971496582,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t115/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.5380788185752513,
+      "p_yes": 0.4619211814247487,
+      "p_no": 0.5380788185752513,
+      "latency_s": 1.143711805343628,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t120/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8364567397334792,
+      "p_yes": 0.1635432602665208,
+      "p_no": 0.8364567397334792,
+      "latency_s": 1.6215980052947998,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t112/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.7063843086650227,
+      "p_yes": 0.2936156913349773,
+      "p_no": 0.7063843086650227,
+      "latency_s": 1.2734570503234863,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t119/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6013146500947437,
+      "p_yes": 0.6013146500947437,
+      "p_no": 0.3986853499052564,
+      "latency_s": 1.0846891403198242,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t31/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9995729239149995,
+      "p_yes": 0.0004270760850005394,
+      "p_no": 0.9995729239149995,
+      "latency_s": 0.8433730602264404,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t88/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9997967777272924,
+      "p_yes": 0.00020322227270748046,
+      "p_no": 0.9997967777272924,
+      "latency_s": 0.9164049625396729,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t27/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999053639010074,
+      "p_yes": 9.463609899249222e-05,
+      "p_no": 0.9999053639010074,
+      "latency_s": 0.6452450752258301,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t75/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8883731445715373,
+      "p_yes": 0.8883731445715373,
+      "p_no": 0.11162685542846272,
+      "latency_s": 1.2215240001678467,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t184/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9855902281421425,
+      "p_yes": 0.01440977185785756,
+      "p_no": 0.9855902281421425,
+      "latency_s": 0.6191561222076416,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t58/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999812089204624,
+      "p_yes": 0.00018791079537598877,
+      "p_no": 0.999812089204624,
+      "latency_s": 0.8992006778717041,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t68/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8271229094859985,
+      "p_yes": 0.8271229094859985,
+      "p_no": 0.17287709051400146,
+      "latency_s": 1.0839331150054932,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t93/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8222724936868795,
+      "p_yes": 0.8222724936868795,
+      "p_no": 0.1777275063131205,
+      "latency_s": 0.9174859523773193,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t88/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999792977668398,
+      "p_yes": 2.070223316015531e-05,
+      "p_no": 0.9999792977668398,
+      "latency_s": 0.8802168369293213,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t125/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9957101184474743,
+      "p_yes": 0.0042898815525256725,
+      "p_no": 0.9957101184474743,
+      "latency_s": 1.152942180633545,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t51/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9625799209491661,
+      "p_yes": 0.9625799209491661,
+      "p_no": 0.03742007905083389,
+      "latency_s": 1.2089159488677979,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t10/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998177834459323,
+      "p_yes": 0.0001822165540677236,
+      "p_no": 0.9998177834459323,
+      "latency_s": 0.6359500885009766,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t94/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8803722710123151,
+      "p_yes": 0.8803722710123151,
+      "p_no": 0.11962772898768492,
+      "latency_s": 0.7895748615264893,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t119/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9995802713960861,
+      "p_yes": 0.00041972860391389444,
+      "p_no": 0.9995802713960861,
+      "latency_s": 0.9885978698730469,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t67/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9887378047769243,
+      "p_yes": 0.011262195223075712,
+      "p_no": 0.9887378047769243,
+      "latency_s": 1.6889259815216064,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t51/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5265001802557838,
+      "p_yes": 0.5265001802557838,
+      "p_no": 0.4734998197442162,
+      "latency_s": 1.0894811153411865,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t172/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9984548096356869,
+      "p_yes": 0.0015451903643131522,
+      "p_no": 0.9984548096356869,
+      "latency_s": 0.318418025970459,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t0/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9948441264856509,
+      "p_yes": 0.9948441264856509,
+      "p_no": 0.005155873514349187,
+      "latency_s": 0.5887279510498047,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t120/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6956733176777816,
+      "p_yes": 0.3043266823222184,
+      "p_no": 0.6956733176777816,
+      "latency_s": 1.2362439632415771,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t138/i0/c8",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8913092766016845,
+      "p_yes": 0.1086907233983155,
+      "p_no": 0.8913092766016845,
+      "latency_s": 1.4107770919799805,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t12/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9693963689956435,
+      "p_yes": 0.9693963689956435,
+      "p_no": 0.030603631004356435,
+      "latency_s": 0.9124488830566406,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t128/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6526198643256155,
+      "p_yes": 0.6526198643256155,
+      "p_no": 0.34738013567438464,
+      "latency_s": 0.8986890316009521,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t50/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8840377152085682,
+      "p_yes": 0.8840377152085682,
+      "p_no": 0.11596228479143184,
+      "latency_s": 0.8505799770355225,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t22/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9889399475721703,
+      "p_yes": 0.9889399475721703,
+      "p_no": 0.011060052427829571,
+      "latency_s": 0.9194912910461426,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t75/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7622796287587003,
+      "p_yes": 0.7622796287587003,
+      "p_no": 0.23772037124129974,
+      "latency_s": 1.1956679821014404,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t9/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998336058463784,
+      "p_yes": 0.00016639415362172552,
+      "p_no": 0.9998336058463784,
+      "latency_s": 0.601377010345459,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t117/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9988136411720179,
+      "p_yes": 0.001186358827982042,
+      "p_no": 0.9988136411720179,
+      "latency_s": 1.0791699886322021,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t60/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9736194265398168,
+      "p_yes": 0.026380573460183264,
+      "p_no": 0.9736194265398168,
+      "latency_s": 0.7603170871734619,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t101/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9991910015516567,
+      "p_yes": 0.000808998448343184,
+      "p_no": 0.9991910015516567,
+      "latency_s": 1.0891048908233643,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t91/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9955174076464113,
+      "p_yes": 0.004482592353588662,
+      "p_no": 0.9955174076464113,
+      "latency_s": 0.9322299957275391,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t44/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9199228673269292,
+      "p_yes": 0.9199228673269292,
+      "p_no": 0.08007713267307072,
+      "latency_s": 0.5092360973358154,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t181/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8462849192629313,
+      "p_yes": 0.15371508073706872,
+      "p_no": 0.8462849192629313,
+      "latency_s": 0.6587419509887695,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t142/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.760147102553649,
+      "p_yes": 0.239852897446351,
+      "p_no": 0.760147102553649,
+      "latency_s": 1.3764939308166504,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t166/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7867271852409751,
+      "p_yes": 0.7867271852409751,
+      "p_no": 0.21327281475902485,
+      "latency_s": 0.5889859199523926,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t191/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7428103615390359,
+      "p_yes": 0.25718963846096404,
+      "p_no": 0.7428103615390359,
+      "latency_s": 0.6431379318237305,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t15/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9361137762390753,
+      "p_yes": 0.9361137762390753,
+      "p_no": 0.0638862237609246,
+      "latency_s": 0.9455099105834961,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t71/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5476237878694643,
+      "p_yes": 0.4523762121305357,
+      "p_no": 0.5476237878694643,
+      "latency_s": 1.146536111831665,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t83/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6459552713435216,
+      "p_yes": 0.6459552713435216,
+      "p_no": 0.35404472865647835,
+      "latency_s": 1.0304136276245117,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t169/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9915103321875397,
+      "p_yes": 0.9915103321875397,
+      "p_no": 0.00848966781246025,
+      "latency_s": 0.5494480133056641,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t95/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6550205921774441,
+      "p_yes": 0.6550205921774441,
+      "p_no": 0.3449794078225559,
+      "latency_s": 1.047504186630249,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t186/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999111379981764,
+      "p_yes": 8.886200182356977e-05,
+      "p_no": 0.9999111379981764,
+      "latency_s": 0.34046316146850586,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t123/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9484480666245829,
+      "p_yes": 0.9484480666245829,
+      "p_no": 0.05155193337541709,
+      "latency_s": 1.041295051574707,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t123/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9214893723755869,
+      "p_yes": 0.9214893723755869,
+      "p_no": 0.07851062762441308,
+      "latency_s": 0.9584219455718994,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t48/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8841641621209206,
+      "p_yes": 0.8841641621209206,
+      "p_no": 0.11583583787907938,
+      "latency_s": 0.8553440570831299,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t36/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999932284820405,
+      "p_yes": 6.771517959496508e-06,
+      "p_no": 0.9999932284820405,
+      "latency_s": 0.6565971374511719,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t99/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6898298672322473,
+      "p_yes": 0.3101701327677527,
+      "p_no": 0.6898298672322473,
+      "latency_s": 1.159019947052002,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t90/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.922224723436603,
+      "p_yes": 0.922224723436603,
+      "p_no": 0.07777527656339706,
+      "latency_s": 0.9735081195831299,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t129/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9992669474728461,
+      "p_yes": 0.0007330525271538659,
+      "p_no": 0.9992669474728461,
+      "latency_s": 1.173609972000122,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t165/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9527274444251388,
+      "p_yes": 0.9527274444251388,
+      "p_no": 0.04727255557486133,
+      "latency_s": 0.5306010246276855,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t105/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5204825152058133,
+      "p_yes": 0.5204825152058133,
+      "p_no": 0.47951748479418665,
+      "latency_s": 1.1953480243682861,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t147/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9918918278712423,
+      "p_yes": 0.008108172128757665,
+      "p_no": 0.9918918278712423,
+      "latency_s": 0.7514927387237549,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t5/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9881421450802679,
+      "p_yes": 0.9881421450802679,
+      "p_no": 0.011857854919732127,
+      "latency_s": 0.6461522579193115,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t59/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.951090872716604,
+      "p_yes": 0.951090872716604,
+      "p_no": 0.048909127283395956,
+      "latency_s": 0.9034156799316406,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t110/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7609012802464681,
+      "p_yes": 0.7609012802464681,
+      "p_no": 0.23909871975353206,
+      "latency_s": 1.1295130252838135,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t6/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.988949186034383,
+      "p_yes": 0.988949186034383,
+      "p_no": 0.011050813965616997,
+      "latency_s": 0.6305952072143555,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t33/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999912041868626,
+      "p_yes": 8.795813137302853e-06,
+      "p_no": 0.9999912041868626,
+      "latency_s": 0.6586298942565918,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t98/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5458668925189231,
+      "p_yes": 0.45413310748107694,
+      "p_no": 0.5458668925189231,
+      "latency_s": 1.1065011024475098,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t96/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5714770582378459,
+      "p_yes": 0.428522941762154,
+      "p_no": 0.5714770582378459,
+      "latency_s": 1.068319320678711,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t5/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9955239396800755,
+      "p_yes": 0.9955239396800755,
+      "p_no": 0.004476060319924489,
+      "latency_s": 0.6331460475921631,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t10/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6770445966500785,
+      "p_yes": 0.32295540334992145,
+      "p_no": 0.6770445966500785,
+      "latency_s": 0.6536779403686523,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t8/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999681605611463,
+      "p_yes": 0.00031839438853686853,
+      "p_no": 0.999681605611463,
+      "latency_s": 0.6114082336425781,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t96/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7807777579221965,
+      "p_yes": 0.2192222420778035,
+      "p_no": 0.7807777579221965,
+      "latency_s": 1.7261817455291748,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t150/i0/c8",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9962597442466389,
+      "p_yes": 0.0037402557533611773,
+      "p_no": 0.9962597442466389,
+      "latency_s": 0.866706132888794,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t64/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8259738686477114,
+      "p_yes": 0.17402613135228864,
+      "p_no": 0.8259738686477114,
+      "latency_s": 1.2238779067993164,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t3/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9997815918357955,
+      "p_yes": 0.0002184081642045072,
+      "p_no": 0.9997815918357955,
+      "latency_s": 0.634606122970581,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t107/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9979097732388758,
+      "p_yes": 0.002090226761124395,
+      "p_no": 0.9979097732388758,
+      "latency_s": 1.1118600368499756,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t133/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999590796205039,
+      "p_yes": 4.092037949608981e-05,
+      "p_no": 0.9999590796205039,
+      "latency_s": 1.145462989807129,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t138/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.842795434872118,
+      "p_yes": 0.15720456512788206,
+      "p_no": 0.842795434872118,
+      "latency_s": 2.0484070777893066,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t135/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7700090822731537,
+      "p_yes": 0.7700090822731537,
+      "p_no": 0.2299909177268462,
+      "latency_s": 2.0841708183288574,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t130/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999072428533432,
+      "p_yes": 9.275714665671773e-05,
+      "p_no": 0.9999072428533432,
+      "latency_s": 1.37845778465271,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t85/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9989791256329783,
+      "p_yes": 0.0010208743670217047,
+      "p_no": 0.9989791256329783,
+      "latency_s": 0.9523429870605469,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t141/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5405297906714858,
+      "p_yes": 0.4594702093285142,
+      "p_no": 0.5405297906714858,
+      "latency_s": 1.1277492046356201,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t87/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999634532675419,
+      "p_yes": 3.6546732458081904e-05,
+      "p_no": 0.9999634532675419,
+      "latency_s": 0.5358350276947021,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t97/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.792095715335154,
+      "p_yes": 0.20790428466484595,
+      "p_no": 0.792095715335154,
+      "latency_s": 0.8835420608520508,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t43/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998321776391317,
+      "p_yes": 0.0001678223608683071,
+      "p_no": 0.9998321776391317,
+      "latency_s": 0.2721278667449951,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t61/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9970646739163046,
+      "p_yes": 0.002935326083695339,
+      "p_no": 0.9970646739163046,
+      "latency_s": 0.8762061595916748,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t131/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5719281955264572,
+      "p_yes": 0.5719281955264572,
+      "p_no": 0.4280718044735427,
+      "latency_s": 0.9706528186798096,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t71/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8775720979456934,
+      "p_yes": 0.8775720979456934,
+      "p_no": 0.12242790205430673,
+      "latency_s": 1.2924597263336182,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t84/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8755857786266245,
+      "p_yes": 0.8755857786266245,
+      "p_no": 0.1244142213733757,
+      "latency_s": 1.2193849086761475,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t193/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9357613139252144,
+      "p_yes": 0.06423868607478556,
+      "p_no": 0.9357613139252144,
+      "latency_s": 1.0579071044921875,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t32/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999756491352249,
+      "p_yes": 2.4350864775253853e-05,
+      "p_no": 0.9999756491352249,
+      "latency_s": 0.8619141578674316,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t25/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998377047957597,
+      "p_yes": 0.00016229520424037683,
+      "p_no": 0.9998377047957597,
+      "latency_s": 0.5703587532043457,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t48/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.813518382866522,
+      "p_yes": 0.813518382866522,
+      "p_no": 0.1864816171334779,
+      "latency_s": 0.8720829486846924,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t181/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9209279756187437,
+      "p_yes": 0.07907202438125618,
+      "p_no": 0.9209279756187437,
+      "latency_s": 0.9119210243225098,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t40/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9322108345230361,
+      "p_yes": 0.06778916547696398,
+      "p_no": 0.9322108345230361,
+      "latency_s": 0.9408948421478271,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t129/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999383744449526,
+      "p_yes": 6.162555504733288e-05,
+      "p_no": 0.9999383744449526,
+      "latency_s": 0.7421257495880127,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t24/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6462413627397567,
+      "p_yes": 0.6462413627397567,
+      "p_no": 0.3537586372602433,
+      "latency_s": 0.6557369232177734,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t116/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.872350779636011,
+      "p_yes": 0.12764922036398907,
+      "p_no": 0.872350779636011,
+      "latency_s": 1.3809008598327637,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t135/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999929071019378,
+      "p_yes": 7.092898062208466e-05,
+      "p_no": 0.999929071019378,
+      "latency_s": 0.7874360084533691,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t42/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999838211566322,
+      "p_yes": 0.00016178843367804186,
+      "p_no": 0.999838211566322,
+      "latency_s": 0.2732968330383301,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t95/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5124195445585821,
+      "p_yes": 0.487580455441418,
+      "p_no": 0.5124195445585821,
+      "latency_s": 1.5539119243621826,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t56/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.712947834238268,
+      "p_yes": 0.2870521657617321,
+      "p_no": 0.712947834238268,
+      "latency_s": 1.512333869934082,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t45/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.977537294252419,
+      "p_yes": 0.977537294252419,
+      "p_no": 0.022462705747580965,
+      "latency_s": 0.5761919021606445,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t111/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7283152697423074,
+      "p_yes": 0.7283152697423074,
+      "p_no": 0.27168473025769263,
+      "latency_s": 0.9329559803009033,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t132/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.6389404573260759,
+      "p_yes": 0.3610595426739242,
+      "p_no": 0.6389404573260759,
+      "latency_s": 1.1940789222717285,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t142/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.7814264133147856,
+      "p_yes": 0.21857358668521448,
+      "p_no": 0.7814264133147856,
+      "latency_s": 1.1242170333862305,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t5/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9955236581313234,
+      "p_yes": 0.9955236581313234,
+      "p_no": 0.004476341868676509,
+      "latency_s": 0.04220318794250488,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t143/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5885094913048489,
+      "p_yes": 0.41149050869515114,
+      "p_no": 0.5885094913048489,
+      "latency_s": 1.4599056243896484,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t37/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9419470990985781,
+      "p_yes": 0.9419470990985781,
+      "p_no": 0.058052900901421824,
+      "latency_s": 1.1513869762420654,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t42/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9688318154771127,
+      "p_yes": 0.9688318154771127,
+      "p_no": 0.031168184522887245,
+      "latency_s": 0.5304770469665527,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t73/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9111523867885872,
+      "p_yes": 0.9111523867885872,
+      "p_no": 0.08884761321141274,
+      "latency_s": 1.226646900177002,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t67/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7377150619151251,
+      "p_yes": 0.26228493808487485,
+      "p_no": 0.7377150619151251,
+      "latency_s": 1.0810868740081787,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t62/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8087280873807883,
+      "p_yes": 0.19127191261921186,
+      "p_no": 0.8087280873807883,
+      "latency_s": 1.0507612228393555,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t189/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.876323387160147,
+      "p_yes": 0.876323387160147,
+      "p_no": 0.12367661283985296,
+      "latency_s": 0.6573598384857178,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t189/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9066757229524489,
+      "p_yes": 0.0933242770475511,
+      "p_no": 0.9066757229524489,
+      "latency_s": 0.6253538131713867,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t138/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8878775640582798,
+      "p_yes": 0.1121224359417201,
+      "p_no": 0.8878775640582798,
+      "latency_s": 1.2912120819091797,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t153/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9978260102033645,
+      "p_yes": 0.002173989796635622,
+      "p_no": 0.9978260102033645,
+      "latency_s": 0.7626240253448486,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t85/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5471535820583464,
+      "p_yes": 0.5471535820583464,
+      "p_no": 0.4528464179416536,
+      "latency_s": 0.9383039474487305,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t42/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9986712295074652,
+      "p_yes": 0.9986712295074652,
+      "p_no": 0.0013287704925348642,
+      "latency_s": 0.46756815910339355,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t130/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.7474366701613621,
+      "p_yes": 0.252563329838638,
+      "p_no": 0.7474366701613621,
+      "latency_s": 1.116744041442871,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t117/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8321186500728326,
+      "p_yes": 0.16788134992716736,
+      "p_no": 0.8321186500728326,
+      "latency_s": 1.2547681331634521,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t169/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8507379151509644,
+      "p_yes": 0.8507379151509644,
+      "p_no": 0.14926208484903544,
+      "latency_s": 0.5984058380126953,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t192/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9987329258236584,
+      "p_yes": 0.001267074176341724,
+      "p_no": 0.9987329258236584,
+      "latency_s": 0.7206840515136719,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t53/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9817043018484798,
+      "p_yes": 0.018295698151520108,
+      "p_no": 0.9817043018484798,
+      "latency_s": 0.9435949325561523,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t163/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9969987174782874,
+      "p_yes": 0.003001282521712553,
+      "p_no": 0.9969987174782874,
+      "latency_s": 0.510066032409668,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t111/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9806921658753878,
+      "p_yes": 0.019307834124612188,
+      "p_no": 0.9806921658753878,
+      "latency_s": 1.1244361400604248,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t180/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9994547671312043,
+      "p_yes": 0.0005452328687958073,
+      "p_no": 0.9994547671312043,
+      "latency_s": 0.2417769432067871,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t55/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8397141973473472,
+      "p_yes": 0.16028580265265288,
+      "p_no": 0.8397141973473472,
+      "latency_s": 1.1887307167053223,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t7/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8803811139868717,
+      "p_yes": 0.8803811139868717,
+      "p_no": 0.11961888601312837,
+      "latency_s": 0.7514340877532959,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t95/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8488063172127633,
+      "p_yes": 0.15119368278723658,
+      "p_no": 0.8488063172127633,
+      "latency_s": 1.2544400691986084,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t181/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999359227745833,
+      "p_yes": 6.407722541671615e-05,
+      "p_no": 0.9999359227745833,
+      "latency_s": 0.6598961353302002,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t44/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9199228673269292,
+      "p_yes": 0.9199228673269292,
+      "p_no": 0.08007713267307072,
+      "latency_s": 0.5116689205169678,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t95/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7776826299005793,
+      "p_yes": 0.7776826299005793,
+      "p_no": 0.2223173700994206,
+      "latency_s": 1.1974601745605469,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t71/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6259348434634662,
+      "p_yes": 0.6259348434634662,
+      "p_no": 0.3740651565365339,
+      "latency_s": 1.1443839073181152,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t95/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5794919742192215,
+      "p_yes": 0.42050802578077845,
+      "p_no": 0.5794919742192215,
+      "latency_s": 1.2457308769226074,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t81/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9944602478250313,
+      "p_yes": 0.005539752174968599,
+      "p_no": 0.9944602478250313,
+      "latency_s": 1.0683808326721191,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t12/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9837130082831078,
+      "p_yes": 0.9837130082831078,
+      "p_no": 0.016286991716892307,
+      "latency_s": 0.9123570919036865,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t63/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.7851274825410391,
+      "p_yes": 0.21487251745896085,
+      "p_no": 0.7851274825410391,
+      "latency_s": 1.2041337490081787,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t186/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.6677623964016083,
+      "p_yes": 0.33223760359839183,
+      "p_no": 0.6677623964016083,
+      "latency_s": 0.6147260665893555,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t60/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9996467351379035,
+      "p_yes": 0.00035326486209649277,
+      "p_no": 0.9996467351379035,
+      "latency_s": 0.644428014755249,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t134/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.5371585319067005,
+      "p_yes": 0.4628414680932996,
+      "p_no": 0.5371585319067005,
+      "latency_s": 1.1477560997009277,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t76/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6957645643928172,
+      "p_yes": 0.6957645643928172,
+      "p_no": 0.30423543560718275,
+      "latency_s": 0.8758559226989746,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t174/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999829326368102,
+      "p_yes": 0.00017067363189791167,
+      "p_no": 0.999829326368102,
+      "latency_s": 0.28354501724243164,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t128/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9991653998706155,
+      "p_yes": 0.0008346001293844909,
+      "p_no": 0.9991653998706155,
+      "latency_s": 0.8983826637268066,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t87/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.7187999235655105,
+      "p_yes": 0.2812000764344894,
+      "p_no": 0.7187999235655105,
+      "latency_s": 1.3781888484954834,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t56/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5261677808058097,
+      "p_yes": 0.47383221919419016,
+      "p_no": 0.5261677808058097,
+      "latency_s": 1.1445140838623047,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t110/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7423451304980189,
+      "p_yes": 0.2576548695019811,
+      "p_no": 0.7423451304980189,
+      "latency_s": 1.1622703075408936,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t118/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999304388428977,
+      "p_yes": 6.956115710233774e-05,
+      "p_no": 0.9999304388428977,
+      "latency_s": 0.7624650001525879,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t179/i0/c1",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6707751009955244,
+      "p_yes": 0.32922489900447555,
+      "p_no": 0.6707751009955244,
+      "latency_s": 0.25540804862976074,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t8/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999681605611463,
+      "p_yes": 0.00031839438853686853,
+      "p_no": 0.999681605611463,
+      "latency_s": 0.6134541034698486,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t55/i0/c8",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5078109108376524,
+      "p_yes": 0.49218908916234766,
+      "p_no": 0.5078109108376524,
+      "latency_s": 1.8543510437011719,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t116/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5526825753401584,
+      "p_yes": 0.44731742465984153,
+      "p_no": 0.5526825753401584,
+      "latency_s": 1.117901086807251,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t112/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999658731037755,
+      "p_yes": 3.4126896224531706e-05,
+      "p_no": 0.9999658731037755,
+      "latency_s": 0.5835049152374268,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t15/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9492870102131357,
+      "p_yes": 0.9492870102131357,
+      "p_no": 0.05071298978686429,
+      "latency_s": 0.9637088775634766,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t25/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999318531134284,
+      "p_yes": 6.81468865716628e-05,
+      "p_no": 0.9999318531134284,
+      "latency_s": 0.6672849655151367,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t102/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.7591012567497498,
+      "p_yes": 0.24089874325025018,
+      "p_no": 0.7591012567497498,
+      "latency_s": 1.1711511611938477,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t114/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9991482323494649,
+      "p_yes": 0.0008517676505351146,
+      "p_no": 0.9991482323494649,
+      "latency_s": 0.898859977722168,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t64/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.796657627631283,
+      "p_yes": 0.203342372368717,
+      "p_no": 0.796657627631283,
+      "latency_s": 1.1546680927276611,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t184/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9170374946391849,
+      "p_yes": 0.08296250536081504,
+      "p_no": 0.9170374946391849,
+      "latency_s": 0.9486792087554932,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t66/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8714342648906066,
+      "p_yes": 0.12856573510939354,
+      "p_no": 0.8714342648906066,
+      "latency_s": 1.1093120574951172,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t113/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.984019758069807,
+      "p_yes": 0.015980241930192964,
+      "p_no": 0.984019758069807,
+      "latency_s": 0.8531630039215088,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t189/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9727498380462631,
+      "p_yes": 0.027250161953736845,
+      "p_no": 0.9727498380462631,
+      "latency_s": 0.9593930244445801,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t41/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999988691584466,
+      "p_yes": 1.1308415533873182e-05,
+      "p_no": 0.999988691584466,
+      "latency_s": 0.978262186050415,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t21/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9427753678224489,
+      "p_yes": 0.05722463217755109,
+      "p_no": 0.9427753678224489,
+      "latency_s": 0.9031839370727539,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t39/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999752627021358,
+      "p_yes": 2.4737297864194668e-05,
+      "p_no": 0.9999752627021358,
+      "latency_s": 0.7587449550628662,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t38/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999901979892031,
+      "p_yes": 9.802010796903065e-06,
+      "p_no": 0.9999901979892031,
+      "latency_s": 0.6102352142333984,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t124/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5948050262259751,
+      "p_yes": 0.5948050262259751,
+      "p_no": 0.4051949737740249,
+      "latency_s": 1.0948970317840576,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t40/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5248432605689122,
+      "p_yes": 0.5248432605689122,
+      "p_no": 0.4751567394310878,
+      "latency_s": 0.8542721271514893,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t45/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9103228327133484,
+      "p_yes": 0.9103228327133484,
+      "p_no": 0.08967716728665166,
+      "latency_s": 0.43467211723327637,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t77/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6257517246044261,
+      "p_yes": 0.374248275395574,
+      "p_no": 0.6257517246044261,
+      "latency_s": 1.0118300914764404,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t14/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9892812710751677,
+      "p_yes": 0.9892812710751677,
+      "p_no": 0.010718728924832369,
+      "latency_s": 0.9001410007476807,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t7/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8803811139868717,
+      "p_yes": 0.8803811139868717,
+      "p_no": 0.11961888601312837,
+      "latency_s": 0.7454900741577148,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t77/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999234206171523,
+      "p_yes": 7.657938284777344e-05,
+      "p_no": 0.9999234206171523,
+      "latency_s": 0.572598934173584,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t10/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998177834459323,
+      "p_yes": 0.0001822165540677236,
+      "p_no": 0.9998177834459323,
+      "latency_s": 0.6319160461425781,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t102/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6977420807257689,
+      "p_yes": 0.3022579192742311,
+      "p_no": 0.6977420807257689,
+      "latency_s": 1.1562159061431885,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t130/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9996252347486139,
+      "p_yes": 0.0003747652513861101,
+      "p_no": 0.9996252347486139,
+      "latency_s": 0.9782898426055908,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t80/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998611639504068,
+      "p_yes": 0.00013883604959327869,
+      "p_no": 0.9998611639504068,
+      "latency_s": 0.5087800025939941,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t19/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999671125329423,
+      "p_yes": 3.2887467057649967e-05,
+      "p_no": 0.9999671125329423,
+      "latency_s": 0.6436772346496582,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t13/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998734758742007,
+      "p_yes": 0.00012652412579921865,
+      "p_no": 0.9998734758742007,
+      "latency_s": 0.7331790924072266,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t33/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9458587285503354,
+      "p_yes": 0.9458587285503354,
+      "p_no": 0.0541412714496646,
+      "latency_s": 1.0702459812164307,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t74/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.7907812875948838,
+      "p_yes": 0.20921871240511614,
+      "p_no": 0.7907812875948838,
+      "latency_s": 1.193986177444458,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t99/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8444312975292663,
+      "p_yes": 0.8444312975292663,
+      "p_no": 0.1555687024707337,
+      "latency_s": 1.3782799243927002,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t31/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8657889080516499,
+      "p_yes": 0.8657889080516499,
+      "p_no": 0.13421109194835013,
+      "latency_s": 1.0662908554077148,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t185/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999842758450561,
+      "p_yes": 1.572415494382948e-05,
+      "p_no": 0.9999842758450561,
+      "latency_s": 0.30979371070861816,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t167/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.904247188411916,
+      "p_yes": 0.904247188411916,
+      "p_no": 0.09575281158808402,
+      "latency_s": 0.5956408977508545,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t114/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9994450229810374,
+      "p_yes": 0.0005549770189624266,
+      "p_no": 0.9994450229810374,
+      "latency_s": 1.0408527851104736,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t45/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.910323922046303,
+      "p_yes": 0.910323922046303,
+      "p_no": 0.08967607795369692,
+      "latency_s": 0.04190492630004883,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t54/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5780667654786456,
+      "p_yes": 0.4219332345213544,
+      "p_no": 0.5780667654786456,
+      "latency_s": 1.2071852684020996,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t72/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8337369246780354,
+      "p_yes": 0.16626307532196466,
+      "p_no": 0.8337369246780354,
+      "latency_s": 1.1053669452667236,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t132/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9791417409272876,
+      "p_yes": 0.020858259072712396,
+      "p_no": 0.9791417409272876,
+      "latency_s": 1.1147377490997314,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t26/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7209822206379444,
+      "p_yes": 0.7209822206379444,
+      "p_no": 0.27901777936205563,
+      "latency_s": 0.8282051086425781,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t121/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6052363912214833,
+      "p_yes": 0.6052363912214833,
+      "p_no": 0.3947636087785166,
+      "latency_s": 1.128937005996704,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t2/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9954107653576819,
+      "p_yes": 0.9954107653576819,
+      "p_no": 0.004589234642318014,
+      "latency_s": 0.5879437923431396,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t144/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5155003306225407,
+      "p_yes": 0.5155003306225407,
+      "p_no": 0.4844996693774593,
+      "latency_s": 1.2376880645751953,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t106/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.9303928120371736,
+      "p_yes": 0.0696071879628264,
+      "p_no": 0.9303928120371736,
+      "latency_s": 1.2011997699737549,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t49/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.857545962516737,
+      "p_yes": 0.14245403748326302,
+      "p_no": 0.857545962516737,
+      "latency_s": 1.1243340969085693,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t122/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999417472851425,
+      "p_yes": 5.8252714857464826e-05,
+      "p_no": 0.9999417472851425,
+      "latency_s": 0.6586847305297852,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t184/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999554716956564,
+      "p_yes": 4.452830434359119e-05,
+      "p_no": 0.9999554716956564,
+      "latency_s": 0.3448479175567627,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t87/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9008920969963682,
+      "p_yes": 0.9008920969963682,
+      "p_no": 0.09910790300363179,
+      "latency_s": 1.0912320613861084,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t167/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9042435486809719,
+      "p_yes": 0.9042435486809719,
+      "p_no": 0.09575645131902805,
+      "latency_s": 0.042231082916259766,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t143/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8492625022791314,
+      "p_yes": 0.1507374977208686,
+      "p_no": 0.8492625022791314,
+      "latency_s": 1.2841002941131592,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t54/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8487691186747999,
+      "p_yes": 0.8487691186747999,
+      "p_no": 0.15123088132520005,
+      "latency_s": 1.1322071552276611,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t106/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9946329095873593,
+      "p_yes": 0.005367090412640745,
+      "p_no": 0.9946329095873593,
+      "latency_s": 1.270090103149414,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t100/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9995639029529879,
+      "p_yes": 0.0004360970470120197,
+      "p_no": 0.9995639029529879,
+      "latency_s": 1.110612154006958,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t109/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7687430109016822,
+      "p_yes": 0.23125698909831782,
+      "p_no": 0.7687430109016822,
+      "latency_s": 1.0710391998291016,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t44/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7846879297641547,
+      "p_yes": 0.7846879297641547,
+      "p_no": 0.21531207023584534,
+      "latency_s": 0.4922327995300293,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t187/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9554516520996097,
+      "p_yes": 0.0445483479003904,
+      "p_no": 0.9554516520996097,
+      "latency_s": 0.6303539276123047,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t6/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9884981217794824,
+      "p_yes": 0.9884981217794824,
+      "p_no": 0.011501878220517688,
+      "latency_s": 0.630687952041626,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t62/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9313956271118999,
+      "p_yes": 0.06860437288810001,
+      "p_no": 0.9313956271118999,
+      "latency_s": 0.965569019317627,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t138/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9146448803020912,
+      "p_yes": 0.9146448803020912,
+      "p_no": 0.08535511969790874,
+      "latency_s": 1.1627509593963623,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t170/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9982415261827998,
+      "p_yes": 0.0017584738172001138,
+      "p_no": 0.9982415261827998,
+      "latency_s": 0.3152928352355957,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t120/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9985440553077299,
+      "p_yes": 0.0014559446922699116,
+      "p_no": 0.9985440553077299,
+      "latency_s": 1.0554590225219727,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t38/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999909917026182,
+      "p_yes": 9.00829738185343e-06,
+      "p_no": 0.9999909917026182,
+      "latency_s": 0.8409562110900879,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t131/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.7956590182742002,
+      "p_yes": 0.20434098172579984,
+      "p_no": 0.7956590182742002,
+      "latency_s": 1.2732031345367432,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t114/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9926050123280802,
+      "p_yes": 0.0073949876719197356,
+      "p_no": 0.9926050123280802,
+      "latency_s": 1.080854892730713,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t77/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9989217948003439,
+      "p_yes": 0.0010782051996561439,
+      "p_no": 0.9989217948003439,
+      "latency_s": 0.7972829341888428,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t55/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6808015517488952,
+      "p_yes": 0.3191984482511048,
+      "p_no": 0.6808015517488952,
+      "latency_s": 1.6041440963745117,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t118/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9566163125961978,
+      "p_yes": 0.04338368740380208,
+      "p_no": 0.9566163125961978,
+      "latency_s": 1.1280572414398193,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t91/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999559948178639,
+      "p_yes": 0.00044005182136111135,
+      "p_no": 0.999559948178639,
+      "latency_s": 0.8719038963317871,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t179/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9996438322261503,
+      "p_yes": 0.0003561677738496831,
+      "p_no": 0.9996438322261503,
+      "latency_s": 0.2465052604675293,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t116/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7895206848827304,
+      "p_yes": 0.21047931511726964,
+      "p_no": 0.7895206848827304,
+      "latency_s": 1.1310651302337646,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t64/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5089182633042008,
+      "p_yes": 0.5089182633042008,
+      "p_no": 0.49108173669579924,
+      "latency_s": 1.301640272140503,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t101/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6543509339848056,
+      "p_yes": 0.34564906601519435,
+      "p_no": 0.6543509339848056,
+      "latency_s": 1.1468379497528076,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t74/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999303796146705,
+      "p_yes": 6.962038532963745e-05,
+      "p_no": 0.9999303796146705,
+      "latency_s": 0.9178111553192139,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t143/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.7557662260439312,
+      "p_yes": 0.24423377395606877,
+      "p_no": 0.7557662260439312,
+      "latency_s": 1.4381771087646484,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t99/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7849591392562828,
+      "p_yes": 0.7849591392562828,
+      "p_no": 0.21504086074371717,
+      "latency_s": 1.1621880531311035,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t55/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.87498199669258,
+      "p_yes": 0.87498199669258,
+      "p_no": 0.12501800330742,
+      "latency_s": 0.9399499893188477,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t146/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9979266093343193,
+      "p_yes": 0.0020733906656806985,
+      "p_no": 0.9979266093343193,
+      "latency_s": 0.79498291015625,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t118/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9042425687322749,
+      "p_yes": 0.09575743126772507,
+      "p_no": 0.9042425687322749,
+      "latency_s": 1.0950727462768555,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t163/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9969987174782874,
+      "p_yes": 0.003001282521712553,
+      "p_no": 0.9969987174782874,
+      "latency_s": 0.5124828815460205,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t18/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9955530736735533,
+      "p_yes": 0.004446926326446599,
+      "p_no": 0.9955530736735533,
+      "latency_s": 0.845383882522583,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t24/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998724982348056,
+      "p_yes": 0.00012750176519438504,
+      "p_no": 0.9998724982348056,
+      "latency_s": 0.6448910236358643,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t163/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9845342582433838,
+      "p_yes": 0.015465741756616146,
+      "p_no": 0.9845342582433838,
+      "latency_s": 0.4926319122314453,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t97/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5285272395577799,
+      "p_yes": 0.47147276044222003,
+      "p_no": 0.5285272395577799,
+      "latency_s": 0.9776089191436768,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t78/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5784221331656233,
+      "p_yes": 0.4215778668343767,
+      "p_no": 0.5784221331656233,
+      "latency_s": 0.9503738880157471,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t129/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998130065375553,
+      "p_yes": 0.00018699346244456814,
+      "p_no": 0.9998130065375553,
+      "latency_s": 0.9344511032104492,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t68/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9316442003940921,
+      "p_yes": 0.9316442003940921,
+      "p_no": 0.06835579960590785,
+      "latency_s": 1.238839864730835,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t14/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9909315469066381,
+      "p_yes": 0.9909315469066381,
+      "p_no": 0.009068453093361921,
+      "latency_s": 0.908764123916626,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t57/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9993898778994655,
+      "p_yes": 0.0006101221005343396,
+      "p_no": 0.9993898778994655,
+      "latency_s": 1.3499650955200195,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t176/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999850911281796,
+      "p_yes": 0.0001490887182039188,
+      "p_no": 0.999850911281796,
+      "latency_s": 0.3925900459289551,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t64/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7158176082473868,
+      "p_yes": 0.7158176082473868,
+      "p_no": 0.28418239175261306,
+      "latency_s": 1.0624160766601562,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t61/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999374611888343,
+      "p_yes": 6.253881116554827e-05,
+      "p_no": 0.9999374611888343,
+      "latency_s": 0.6616401672363281,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t38/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999909915136163,
+      "p_yes": 9.00848638373416e-06,
+      "p_no": 0.9999909915136163,
+      "latency_s": 0.044081926345825195,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t179/i0/c1",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6707751009955244,
+      "p_yes": 0.32922489900447555,
+      "p_no": 0.6707751009955244,
+      "latency_s": 0.2535429000854492,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t16/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999791684815004,
+      "p_yes": 2.0831518499563042e-05,
+      "p_no": 0.9999791684815004,
+      "latency_s": 0.8869812488555908,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t108/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6326955830608106,
+      "p_yes": 0.36730441693918936,
+      "p_no": 0.6326955830608106,
+      "latency_s": 1.0925750732421875,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t53/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7721607495342628,
+      "p_yes": 0.7721607495342628,
+      "p_no": 0.22783925046573725,
+      "latency_s": 0.9118568897247314,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t57/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9797414111932644,
+      "p_yes": 0.020258588806735655,
+      "p_no": 0.9797414111932644,
+      "latency_s": 0.8766157627105713,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t113/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8325713975145372,
+      "p_yes": 0.16742860248546287,
+      "p_no": 0.8325713975145372,
+      "latency_s": 1.1630668640136719,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t117/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9981423731269039,
+      "p_yes": 0.0018576268730962147,
+      "p_no": 0.9981423731269039,
+      "latency_s": 1.1855359077453613,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t166/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9608942665892968,
+      "p_yes": 0.9608942665892968,
+      "p_no": 0.0391057334107031,
+      "latency_s": 0.5304739475250244,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t1/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7171058920344189,
+      "p_yes": 0.7171058920344189,
+      "p_no": 0.28289410796558107,
+      "latency_s": 0.7548248767852783,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t3/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9824533621379254,
+      "p_yes": 0.9824533621379254,
+      "p_no": 0.017546637862074603,
+      "latency_s": 0.8570630550384521,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t0/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9948441264856509,
+      "p_yes": 0.9948441264856509,
+      "p_no": 0.005155873514349187,
+      "latency_s": 0.5885651111602783,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t95/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.673477386826976,
+      "p_yes": 0.3265226131730239,
+      "p_no": 0.673477386826976,
+      "latency_s": 1.077821969985962,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t175/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5296691831364884,
+      "p_yes": 0.4703308168635117,
+      "p_no": 0.5296691831364884,
+      "latency_s": 0.8148460388183594,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t135/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7772777389217994,
+      "p_yes": 0.7772777389217994,
+      "p_no": 0.2227222610782005,
+      "latency_s": 1.4525821208953857,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t109/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9988444868334195,
+      "p_yes": 0.0011555131665804625,
+      "p_no": 0.9988444868334195,
+      "latency_s": 1.1106650829315186,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t106/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6988740309004358,
+      "p_yes": 0.6988740309004358,
+      "p_no": 0.30112596909956435,
+      "latency_s": 0.9574189186096191,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t76/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8399381815630634,
+      "p_yes": 0.8399381815630634,
+      "p_no": 0.1600618184369366,
+      "latency_s": 0.8778560161590576,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t74/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8864601480514114,
+      "p_yes": 0.11353985194858869,
+      "p_no": 0.8864601480514114,
+      "latency_s": 0.9631738662719727,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t92/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5616149578014822,
+      "p_yes": 0.4383850421985178,
+      "p_no": 0.5616149578014822,
+      "latency_s": 1.0913960933685303,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t51/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6573622967780236,
+      "p_yes": 0.6573622967780236,
+      "p_no": 0.3426377032219764,
+      "latency_s": 1.0899670124053955,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t83/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.860766453370426,
+      "p_yes": 0.139233546629574,
+      "p_no": 0.860766453370426,
+      "latency_s": 1.2262561321258545,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t84/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9166279423513792,
+      "p_yes": 0.9166279423513792,
+      "p_no": 0.08337205764862082,
+      "latency_s": 1.075962781906128,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t65/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8526778530925756,
+      "p_yes": 0.8526778530925756,
+      "p_no": 0.14732214690742443,
+      "latency_s": 1.238461971282959,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t166/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9608896050196164,
+      "p_yes": 0.9608896050196164,
+      "p_no": 0.039110394980383566,
+      "latency_s": 0.04286384582519531,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t90/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5841618195338498,
+      "p_yes": 0.5841618195338498,
+      "p_no": 0.4158381804661502,
+      "latency_s": 1.1005592346191406,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t32/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.999724749898945,
+      "p_yes": 0.00027525010105493715,
+      "p_no": 0.999724749898945,
+      "latency_s": 0.6319968700408936,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t56/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5163415859245418,
+      "p_yes": 0.4836584140754582,
+      "p_no": 0.5163415859245418,
+      "latency_s": 1.2270662784576416,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t186/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.6677623964016083,
+      "p_yes": 0.33223760359839183,
+      "p_no": 0.6677623964016083,
+      "latency_s": 0.613814115524292,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t185/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9907042031321396,
+      "p_yes": 0.009295796867860352,
+      "p_no": 0.9907042031321396,
+      "latency_s": 0.8980967998504639,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t114/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9998438896108471,
+      "p_yes": 0.00015611038915281744,
+      "p_no": 0.9998438896108471,
+      "latency_s": 0.962874174118042,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t77/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5932963546478734,
+      "p_yes": 0.5932963546478734,
+      "p_no": 0.4067036453521266,
+      "latency_s": 0.9990499019622803,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t17/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9999302024423055,
+      "p_yes": 6.979755769460933e-05,
+      "p_no": 0.9999302024423055,
+      "latency_s": 0.8925199508666992,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4.1/t40/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.767737807786305,
+      "p_yes": 0.767737807786305,
+      "p_no": 0.232262192213695,
+      "latency_s": 0.9594671726226807,
+      "n_reasoning_tokens": 0
+    },
+    {
+      "id": "hotel/gpt-4o/t26/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9042854980743474,
+      "p_yes": 0.9042854980743474,
+      "p_no": 0.09571450192565252,
+      "latency_s": 0.8276710510253906,
+      "n_reasoning_tokens": 0
+    }
+  ]
+}

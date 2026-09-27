@@ -1,0 +1,346 @@
+{
+  "per_precondition": {
+    "logged_in_user": {
+      "gradable_rows": 66,
+      "decided": 65,
+      "coverage": 0.985,
+      "accuracy_on_decided": 0.092,
+      "abstain": 1,
+      "wrong": 59,
+      "pred_block_correct": 6,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 0,
+      "pred_pass_wrong": 59
+    },
+    "internal_check_username_exist": {
+      "gradable_rows": 55,
+      "decided": 31,
+      "coverage": 0.564,
+      "accuracy_on_decided": 1.0,
+      "abstain": 24,
+      "wrong": 0,
+      "pred_block_correct": 0,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 31,
+      "pred_pass_wrong": 0
+    },
+    "internal_is_admin": {
+      "gradable_rows": 6,
+      "decided": 5,
+      "coverage": 0.833,
+      "accuracy_on_decided": 1.0,
+      "abstain": 1,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 4,
+      "pred_pass_wrong": 0
+    },
+    "internal_check_book_exist": {
+      "gradable_rows": 62,
+      "decided": 58,
+      "coverage": 0.935,
+      "accuracy_on_decided": 0.983,
+      "abstain": 4,
+      "wrong": 1,
+      "pred_block_correct": 23,
+      "pred_block_wrong": 1,
+      "pred_pass_correct": 34,
+      "pred_pass_wrong": 0
+    },
+    "internal_check_book_available": {
+      "gradable_rows": 32,
+      "decided": 30,
+      "coverage": 0.938,
+      "accuracy_on_decided": 1.0,
+      "abstain": 2,
+      "wrong": 0,
+      "pred_block_correct": 2,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 28,
+      "pred_pass_wrong": 0
+    },
+    "user_book_not_borrowed": {
+      "gradable_rows": 17,
+      "decided": 6,
+      "coverage": 0.353,
+      "accuracy_on_decided": 1.0,
+      "abstain": 11,
+      "wrong": 0,
+      "pred_block_correct": 5,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 1,
+      "pred_pass_wrong": 0
+    },
+    "internal_is_restricted": {
+      "gradable_rows": 20,
+      "decided": 18,
+      "coverage": 0.9,
+      "accuracy_on_decided": 1.0,
+      "abstain": 2,
+      "wrong": 0,
+      "pred_block_correct": 11,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 7,
+      "pred_pass_wrong": 0
+    },
+    "valid_membership": {
+      "gradable_rows": 30,
+      "decided": 9,
+      "coverage": 0.3,
+      "accuracy_on_decided": 1.0,
+      "abstain": 21,
+      "wrong": 0,
+      "pred_block_correct": 9,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 0,
+      "pred_pass_wrong": 0
+    },
+    "within_borrow_limit": {
+      "gradable_rows": 17,
+      "decided": 16,
+      "coverage": 0.941,
+      "accuracy_on_decided": 1.0,
+      "abstain": 1,
+      "wrong": 0,
+      "pred_block_correct": 5,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 11,
+      "pred_pass_wrong": 0
+    },
+    "user_book_borrowed": {
+      "gradable_rows": 8,
+      "decided": 4,
+      "coverage": 0.5,
+      "accuracy_on_decided": 1.0,
+      "abstain": 4,
+      "wrong": 0,
+      "pred_block_correct": 2,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 2,
+      "pred_pass_wrong": 0
+    },
+    "sufficient_account_balance_for_late_fee": {
+      "gradable_rows": 2,
+      "decided": 2,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 1,
+      "pred_pass_wrong": 0
+    },
+    "database_book_not_borrowed": {
+      "gradable_rows": 2,
+      "decided": 0,
+      "coverage": 0.0,
+      "accuracy_on_decided": null,
+      "abstain": 2,
+      "wrong": 0,
+      "pred_block_correct": 0,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 0,
+      "pred_pass_wrong": 0
+    },
+    "internal_check_room_exist": {
+      "gradable_rows": 10,
+      "decided": 10,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 0,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 10,
+      "pred_pass_wrong": 0
+    },
+    "internal_check_date_available_for_the_room": {
+      "gradable_rows": 10,
+      "decided": 9,
+      "coverage": 0.9,
+      "accuracy_on_decided": 0.444,
+      "abstain": 1,
+      "wrong": 5,
+      "pred_block_correct": 3,
+      "pred_block_wrong": 5,
+      "pred_pass_correct": 1,
+      "pred_pass_wrong": 0
+    },
+    "internal_all_slots_available_for_the_room_on_the_date": {
+      "gradable_rows": 10,
+      "decided": 10,
+      "coverage": 1.0,
+      "accuracy_on_decided": 0.6,
+      "abstain": 0,
+      "wrong": 4,
+      "pred_block_correct": 6,
+      "pred_block_wrong": 4,
+      "pred_pass_correct": 0,
+      "pred_pass_wrong": 0
+    },
+    "within_max_reservation_slots": {
+      "gradable_rows": 10,
+      "decided": 4,
+      "coverage": 0.4,
+      "accuracy_on_decided": 1.0,
+      "abstain": 6,
+      "wrong": 0,
+      "pred_block_correct": 2,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 2,
+      "pred_pass_wrong": 0
+    },
+    "sufficient_account_balance_for_membership": {
+      "gradable_rows": 2,
+      "decided": 2,
+      "coverage": 1.0,
+      "accuracy_on_decided": 1.0,
+      "abstain": 0,
+      "wrong": 0,
+      "pred_block_correct": 1,
+      "pred_block_wrong": 0,
+      "pred_pass_correct": 1,
+      "pred_pass_wrong": 0
+    }
+  },
+  "aggregate": {
+    "gradable_rows": 359,
+    "decided": 279,
+    "coverage": 0.777,
+    "accuracy_on_decided": 0.753,
+    "blocks": 87,
+    "blocks_correct": 77,
+    "blocks_wrong": 10,
+    "passes": 192,
+    "passes_wrong_let_through": 59,
+    "TPR": 0.566,
+    "FPR": 0.07,
+    "lift": 0.496,
+    "ungradable_reasons": {}
+  },
+  "worst_3_preconditions": [
+    "logged_in_user",
+    "internal_check_date_available_for_the_room",
+    "internal_all_slots_available_for_the_room_on_the_date"
+  ],
+  "zero_coverage_preconditions": [
+    "database_book_not_borrowed"
+  ],
+  "worst_examples": {
+    "logged_in_user": [
+      {
+        "task_key": "8f6e5ebfe3d58eec",
+        "goal": "add_book",
+        "polarity": true,
+        "predicted": true,
+        "truth": false
+      },
+      {
+        "task_key": "a359450bfb4354ef",
+        "goal": "add_book",
+        "polarity": true,
+        "predicted": true,
+        "truth": false
+      },
+      {
+        "task_key": "486042f4683faa6a",
+        "goal": "add_book",
+        "polarity": true,
+        "predicted": true,
+        "truth": false
+      },
+      {
+        "task_key": "1223934dcb35f0e8",
+        "goal": "borrow_book",
+        "polarity": true,
+        "predicted": true,
+        "truth": false
+      },
+      {
+        "task_key": "db862eb69a9fa209",
+        "goal": "borrow_book",
+        "polarity": true,
+        "predicted": true,
+        "truth": false
+      }
+    ],
+    "internal_check_book_exist": [
+      {
+        "task_key": "da9827d95b5cf739",
+        "goal": "remove_book",
+        "polarity": true,
+        "predicted": false,
+        "truth": true
+      }
+    ],
+    "internal_check_date_available_for_the_room": [
+      {
+        "task_key": "3ff2d10f236de28e",
+        "goal": "reserve_room",
+        "polarity": true,
+        "predicted": false,
+        "truth": true
+      },
+      {
+        "task_key": "4d33823a8ef27795",
+        "goal": "reserve_room",
+        "polarity": true,
+        "predicted": false,
+        "truth": true
+      },
+      {
+        "task_key": "53c9a374a203c093",
+        "goal": "reserve_room",
+        "polarity": true,
+        "predicted": false,
+        "truth": true
+      },
+      {
+        "task_key": "aadc17ec0760a0aa",
+        "goal": "reserve_room",
+        "polarity": true,
+        "predicted": false,
+        "truth": true
+      },
+      {
+        "task_key": "8d51cc655fe4440e",
+        "goal": "reserve_room",
+        "polarity": true,
+        "predicted": false,
+        "truth": true
+      }
+    ],
+    "internal_all_slots_available_for_the_room_on_the_date": [
+      {
+        "task_key": "3ff2d10f236de28e",
+        "goal": "reserve_room",
+        "polarity": true,
+        "predicted": false,
+        "truth": true
+      },
+      {
+        "task_key": "fa197513933cb793",
+        "goal": "reserve_room",
+        "polarity": true,
+        "predicted": false,
+        "truth": true
+      },
+      {
+        "task_key": "53c9a374a203c093",
+        "goal": "reserve_room",
+        "polarity": true,
+        "predicted": false,
+        "truth": true
+      },
+      {
+        "task_key": "8d51cc655fe4440e",
+        "goal": "reserve_room",
+        "polarity": true,
+        "predicted": false,
+        "truth": true
+      }
+    ]
+  }
+}
