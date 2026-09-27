@@ -105,6 +105,28 @@ and `forge` must be a registered backend. `claude`, `zai`, `forge` and
 `planner` are built in; registering another makes it dispatchable, known to
 `doctor`, and gated by egress under the route it declared.
 
+`agentco_harness.ext` ships opt-in source factories that name a vendor rather
+than a company, so they live in the package instead of a company's own
+extension module. `agentco_harness.ext.github_source` polls one or more
+GitHub repos (issues, pull requests, releases) via `gh api` or a bare token,
+with a per-repo poll interval and a seen-id cursor so an unchanged item is
+not re-classified every cycle:
+
+```yaml
+extensions:
+  - agentco_harness.ext.github_source
+extension_settings:
+  github_source:
+    repo: "owner/name"            # or: repos: ["owner/a", "owner/b"]
+    events: ["issues", "pull_requests", "releases"]   # default: all three
+    poll_interval: "15m"          # default: every cycle
+```
+
+Opting in like this — rather than the retired `sources:` config block — is
+what `agentco_harness.extensions`' loader and `register_source_factory` are
+for; see that module's docstring for why an unregistered source used to be
+silently absent.
+
 ## ASOPs
 
 The runtime keeps procedures in `asops.jsonl` beside the queue, versioned,
@@ -129,6 +151,45 @@ the people — where it is declared, `--by`/`--author` decide the kind and the
 
 Automated escalations (an RCA loop that exhausts its cycles) land on
 `humans.escalate_to` in `config.yaml` (`human:<name>`; default `human:operator`).
+
+**The ASOP router** (`agentco_harness.asop_router`, `asop_router:` in
+config, OFF by default) is a second classification step: after a polled
+event becomes a plain bead, it asks whether the bead is actually an
+instance of one of this node's ACTIVE procedures. A confident MATCH pins a
+run to that procedure's current version (the same path `sop run` uses) and
+retires the plain bead onto it; a near-miss with no confident match but a
+history of similar completed work is tagged CANDIDATE for a human to
+consider drafting a procedure for; anything else is PLAIN — unrouted,
+exactly as if the router were off. A wrong match is worse than none, so
+every failure mode (low confidence, an unbound role, a missing input, an
+LM error) degrades to PLAIN or leaves the match unfiled rather than
+guessing:
+
+```yaml
+asop_router:
+  enabled: true
+  confidence_threshold: 0.7
+  candidate_min_similar: 3
+  bindings:
+    implementer: forge
+    validator: claude
+```
+
+**Intake approval** (`intake.require_approval`, OFF by default) is the
+"inverse shadow" execution mode: nothing a polled event turns into a bead
+runs on its own. A bead is born `PENDING_APPROVAL` on its first append
+(never `PENDING`-then-flipped) and `agentco doctor`'s existing
+defense-in-depth guard covers it exactly as it already covers a
+planner-proposed subtask. The ASOP router respects it too — a MATCH found
+while approval is held is decided and recorded (`asop_route.held: true`) but
+never filed; `approve task` (or `approve all`) is what actually files the
+run, promoting an unrouted bead to `pending` exactly as before and retiring
+a routed one onto its new run:
+
+```yaml
+intake:
+  require_approval: true
+```
 
 ## Two-machine lane
 

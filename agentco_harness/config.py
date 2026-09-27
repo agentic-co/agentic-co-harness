@@ -154,7 +154,7 @@ class EgressConfig:
 CONSUMED_AGENT_KEYS = {"model", "use_claude_code", "context", "description"}
 
 # Top-level config keys the loader understands.
-KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress", "hub", "completion", "extensions", "extension_settings"}
+KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress", "hub", "completion", "extensions", "extension_settings", "asop_router", "intake"}
 
 #: Blocks the v1 hub consumed that this runtime deliberately does not. They
 #: configured pipelines that belonged to one operator — a feeds ingester
@@ -336,6 +336,30 @@ class TiersConfig:
 
 
 @dataclass
+class IntakeConfig:
+    """Should a freshly classified bead be able to run on its own, or does a
+    human have to say so first?
+
+    OFF by default: `Classifier.process` creates a PENDING, agent-assigned
+    bead exactly as it always has, and the next cycle dispatches it. ON
+    (`require_approval: true`) is the "inverse shadow" execution mode
+    (principal, 2026-09-25) — nothing this node observes executes without an
+    explicit `approve task` first. The bead is born `PENDING_APPROVAL` on its
+    first append (`create`'s `status` kwarg — no PENDING window a concurrent
+    cycle could dispatch against), carrying `metadata.requires_approval` so
+    the existing dispatch-time defense-in-depth guard
+    (`Orchestrator._execute_cycle_task`, "approval_gate_bypassed") covers it
+    for free, exactly as a planner-proposed subtask already is.
+
+    The ASOP router (`asop_router.py`) reads this too: a MATCH found while
+    intake is held is never filed there and then — see that module's
+    `finalize_held_match`, run at `approve task` time.
+    """
+
+    require_approval: bool = False
+
+
+@dataclass
 class HumansConfig:
     """People as first-class executors (delegation layer, Stage 1).
 
@@ -409,6 +433,40 @@ class BackoffConfig:
 
 
 @dataclass
+class AsopRouterConfig:
+    """Should a freshly classified bead be checked against this node's ASOP
+    library before it dispatches as a plain bead? (ac-3de1dd9d)
+
+    OFF by default, and deliberately so: a wrong match files a whole run tree
+    pinned to the wrong procedure, and a bead pointed at the wrong procedure is
+    a worse outcome than the same bead running unrouted — the plain path at
+    least gets a human or an agent looking at the actual request. An operator
+    turns this on once they trust their library's coverage for the events this
+    node classifies.
+
+    ``bindings`` is a flat role -> actor map applied to whatever roles the
+    MATCHED procedure declares (the router has no other source of "who does
+    this" — it is not authoring the procedure, only deciding one applies). A
+    role the matched ASOP declares that is missing here refuses the run
+    (``role_unbound``, ASOP.md's own code) rather than guessing an actor; the
+    match is still recorded on the bead, with the refusal reason, and the bead
+    is left to run its ordinary plain path. See `agentco_harness.asop_router`.
+    """
+
+    enabled: bool = False
+    #: Below this, the router's own best guess is treated as no match at all —
+    #: a low-confidence auto-route is exactly the "wrong match" risk above.
+    confidence_threshold: float = 0.7
+    #: How many COMPLETED beads must look like this one (same category, similar
+    #: title) before a non-matching bead is flagged as a candidate procedure.
+    candidate_min_similar: int = 3
+    #: Token-Jaccard threshold two titles must clear to count as "similar" for
+    #: the candidate check above.
+    candidate_similarity_threshold: float = 0.5
+    bindings: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass
 class ExecutorConfig:
     """Subprocess-boundary behaviour for worked agents.
 
@@ -474,6 +532,8 @@ class Config:
     tiers: TiersConfig = field(default_factory=TiersConfig)
     backoff: BackoffConfig = field(default_factory=BackoffConfig)
     executor: ExecutorConfig = field(default_factory=ExecutorConfig)
+    asop_router: AsopRouterConfig = field(default_factory=AsopRouterConfig)
+    intake: IntakeConfig = field(default_factory=IntakeConfig)
     # --- capability manifest (ac-39d4dbc8) ----------------------------------
     # What THIS node can do — the lane declaration matched against a bead's
     # `requires` at claim time. Empty (the default) means the node declares
@@ -706,6 +766,32 @@ class Config:
                 ,
                     file=sys.stderr,
                 )
+
+        if "asop_router" in data:
+            ar = data["asop_router"] or {}
+            _warn_unknown_nested(
+                "asop_router", ar,
+                {"enabled", "confidence_threshold", "candidate_min_similar",
+                 "candidate_similarity_threshold", "bindings"},
+                path,
+            )
+            bindings = ar.get("bindings") or {}
+            if not isinstance(bindings, dict):
+                raise ValueError("`asop_router.bindings:` must be a mapping of role name to actor")
+            config.asop_router = AsopRouterConfig(
+                enabled=bool(ar.get("enabled", False)),
+                confidence_threshold=float(ar.get("confidence_threshold", AsopRouterConfig.confidence_threshold)),
+                candidate_min_similar=int(ar.get("candidate_min_similar", AsopRouterConfig.candidate_min_similar)),
+                candidate_similarity_threshold=float(
+                    ar.get("candidate_similarity_threshold", AsopRouterConfig.candidate_similarity_threshold)
+                ),
+                bindings={str(k): str(v) for k, v in bindings.items()},
+            )
+
+        if "intake" in data:
+            intake = data["intake"] or {}
+            _warn_unknown_nested("intake", intake, {"require_approval"}, path)
+            config.intake = IntakeConfig(require_approval=bool(intake.get("require_approval", False)))
 
         if "executor" in data:
             executor = data["executor"] or {}

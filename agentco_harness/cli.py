@@ -3147,6 +3147,37 @@ def approve(ctx):
         )
 
 
+def _approve_one(config: Config, beads, store: AsopStore, task_id: str) -> str | None:
+    """Approve one task, finalizing a HELD ASOP match first if it carries one.
+
+    Returns the message to print, or None if `task_id` does not exist (the
+    caller decides how to report that — same split `beads.approve` itself
+    used to leave to its callers). Raises ValueError for the same reason
+    `beads.approve` would (task is not pending_approval).
+
+    `finalize_held_match` returns None when there is nothing of the kind to
+    finalize, in which case this falls straight through to the ordinary
+    promotion — same as if the router had never touched the bead.
+    """
+    from .asop_router import finalize_held_match
+
+    task = beads.get(task_id)
+    if task is None:
+        return None
+
+    routed = finalize_held_match(task, store=store, beads=beads, config=config.asop_router)
+    if routed is not None and routed.run_id:
+        return f"Approved: {task.id} — routed to run {routed.run_id} ({routed.asop_id} v{routed.version})"
+
+    approved = beads.approve(task_id)  # may raise ValueError: not pending_approval
+    if routed is not None and routed.run_error:
+        return (
+            f"Approved: {approved.id} — {approved.title} "
+            f"(NOTE: the held ASOP match could not be filed: {routed.run_error})"
+        )
+    return f"Approved: {approved.id} — {approved.title}"
+
+
 @approve.command("task")
 @click.argument("task_id")
 @click.pass_context
@@ -3155,14 +3186,14 @@ def approve_task(ctx, task_id: str):
     config = Config.load(ctx.obj["config_path"])
     beads = open_lifecycle(config.tasks_path)
     try:
-        task = beads.approve(task_id)
+        message = _approve_one(config, beads, AsopStore(config.asops_path), task_id)
     except ValueError as e:
         click.echo(f"Error: {e}", err=True)
         sys.exit(1)
-    if not task:
+    if message is None:
         click.echo(f"Task not found: {task_id}", err=True)
         sys.exit(1)
-    click.echo(f"Approved: {task.id} — {task.title}")
+    click.echo(message)
 
 
 @approve.command("all")
@@ -3171,13 +3202,13 @@ def approve_all(ctx):
     """Approve ALL pending_approval tasks."""
     config = Config.load(ctx.obj["config_path"])
     beads = open_lifecycle(config.tasks_path)
+    store = AsopStore(config.asops_path)
     waiting = beads.pending_approval()
     if not waiting:
         click.echo("No tasks awaiting approval.")
         return
     for t in waiting:
-        beads.approve(t.id)
-        click.echo(f"Approved: {t.id} — {t.title}")
+        click.echo(_approve_one(config, beads, store, t.id) or f"Skipped {t.id}: no longer found")
     click.echo(f"\nApproved {len(waiting)} task(s).")
 
 

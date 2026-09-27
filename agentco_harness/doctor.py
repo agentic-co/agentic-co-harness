@@ -626,7 +626,12 @@ def collect(config_path: str) -> DoctorReport:
     # FAIL: a registered child with no verify_child def is silently
     # unmonitored — the portfolio-scale Umbrella defect.
     _sec("children.registry_sync")
-    from .children import ChildRegistry, child_heartbeat_path, verify_child as _verify
+    from .children import (
+        ChildRegistry,
+        child_heartbeat_path,
+        resolve_child_config_path,
+        verify_child as _verify,
+    )
 
     registry = ChildRegistry(config.children_registry_path)
     children = registry.list()
@@ -693,9 +698,10 @@ def collect(config_path: str) -> DoctorReport:
                     f"child '{child.name}' path {child_dir} does not exist "
                     f"— it is registered as monitored and cannot be verified"
                 )
-            elif not (child_dir / "config.yaml").exists():
+            elif resolve_child_config_path(child_dir) is None:
                 _broken(
                     f"child '{child.name}' at {child_dir} has no config.yaml "
+                    f"(checked {child_dir}/config.yaml and {child_dir}/.agentco/config.yaml) "
                     f"— is it an AgentCo instance? Its liveness is unobservable."
                 )
             else:

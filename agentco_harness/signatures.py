@@ -33,6 +33,39 @@ class ClassifyEvent(dspy.Signature):
 
 
 # ============================================================
+# ASOP ROUTER (ac-3de1dd9d — a second classification step)
+# ============================================================
+
+
+class RouteToAsop(dspy.Signature):
+    """Decide whether a freshly classified bead is actually an instance of one
+    of this node's existing ASOPs (documented, versioned procedures) — not
+    merely related to one, but genuinely the same recurring piece of work.
+
+    A wrong match is worse than none: it pins the bead to a run for a
+    procedure that does not fit, ahead of the plain path a human or agent
+    would otherwise have looked at directly. When no candidate is a clear,
+    confident fit, say so — do not pick the closest one anyway.
+    """
+
+    category: str = dspy.InputField(desc="Classifier category (bug, feature_request, ...)")
+    title: str = dspy.InputField(desc="Bead title")
+    description: str = dspy.InputField(desc="Bead description")
+    candidates: str = dspy.InputField(
+        desc="JSON list of this node's ACTIVE procedures, each "
+        "{asop_id, title, task_type, purpose}. '[]' if the library is empty — "
+        "in that case there is nothing to match."
+    )
+
+    matched_asop_id: str = dspy.OutputField(
+        desc="The asop_id of the single best-fitting candidate, or the empty "
+        "string '' if none of them is genuinely this bead's procedure."
+    )
+    confidence: float = dspy.OutputField(desc="0.0-1.0 confidence in the match; 0.0 when matched_asop_id is empty")
+    reason: str = dspy.OutputField(desc="One sentence: why this ASOP fits, or why none of them do")
+
+
+# ============================================================
 # TRIAGE (heartbeat cycle)
 # ============================================================
 

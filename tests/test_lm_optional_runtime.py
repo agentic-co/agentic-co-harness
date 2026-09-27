@@ -75,7 +75,7 @@ def test_it_is_built_once_and_reused(tmp_path, monkeypatch):
     calls = []
 
     class FakeClassifier:
-        def __init__(self, beads):
+        def __init__(self, beads, *, require_approval=False):
             calls.append(beads)
 
     class FakeAgents:

@@ -510,6 +510,30 @@ def verify_remote_child(
     }
 
 
+def resolve_child_config_path(instance_dir: Path | str) -> Path | None:
+    """Where a child's config.yaml actually lives, or None if neither does.
+
+    Two real conventions coexist among today's children: a flat instance
+    (config.yaml at the root — Feeds) and a company node (config.yaml under
+    `.agentco/` — every company node, including each one this migration
+    produces). The flat form is checked first only because it predates the
+    other, not because it is preferred; a child could not have both, since a
+    config.yaml at the root would itself be the flat form. Both branches of
+    `verify_child`'s caller — the heartbeat lookup below and doctor's own
+    existence check — must agree on this or a healthy company node reads as
+    "not an AgentCo instance", which is what the parent's `children.instances`
+    check did for three of four real children before this existed.
+    """
+    instance_dir = Path(instance_dir)
+    flat = instance_dir / "config.yaml"
+    if flat.exists():
+        return flat
+    nested = instance_dir / ".agentco" / "config.yaml"
+    if nested.exists():
+        return nested
+    return None
+
+
 def child_heartbeat_path(instance_dir: Path | str) -> Path:
     """Locate a child instance's heartbeat file.
 
@@ -519,8 +543,8 @@ def child_heartbeat_path(instance_dir: Path | str) -> Path:
     falls back to `<instance_dir>/heartbeat.json`.
     """
     instance_dir = Path(instance_dir)
-    config_path = instance_dir / "config.yaml"
-    if config_path.exists():
+    config_path = resolve_child_config_path(instance_dir)
+    if config_path is not None:
         from .config import Config
 
         config = Config.load(config_path)

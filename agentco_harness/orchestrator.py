@@ -15,6 +15,8 @@ from pathlib import Path
 from typing import Callable
 
 from . import __version__
+from .asop_router import route as _asop_router_route
+from .asop_store import AsopStore
 from .beads import (
     DISPATCH_REFUSAL_KEY,
     Beads,
@@ -538,6 +540,9 @@ class Orchestrator:
         # The classifier is reached from exactly one place: classifying events
         # a polled source produced. A node with no sources never touches it.
         self._classifier = None
+        # Cheap (append-only file, no LM) — built eagerly like `children`
+        # below, unlike the classifier, which needs the optional `lm` extra.
+        self.asop_store = AsopStore(config.asops_path)
         self.recurring = Recurring(config.recurring_path)
         self.children = ChildRegistry(config.children_registry_path)
         self._state_path = Path(config.tasks_path).parent / ".agentco-heartbeat.json"
@@ -631,7 +636,9 @@ class Orchestrator:
         which, in practice, means a node that polls sources.
         """
         if self._classifier is None:
-            self._classifier = _lm.agents("The event classifier").Classifier(self.beads)
+            self._classifier = _lm.agents("The event classifier").Classifier(
+                self.beads, require_approval=self.config.intake.require_approval
+            )
         return self._classifier
 
     def _heartbeat(self, **fields) -> None:
@@ -2134,11 +2141,30 @@ class Orchestrator:
                     if task:
                         created_tasks.append(task)
                         print(f"[observe] Created task: {task.id} - {task.title}")
+                        if self.config.asop_router.enabled:
+                            self._route_to_asop(task)
             except Exception as e:
                 print(f"[observe] Error polling {source.name}: {e}")
 
         self._heartbeat(last_observe_at=datetime.now().astimezone().isoformat())
         return created_tasks
+
+    def _route_to_asop(self, task: Task) -> None:
+        """The second classification step (ac-3de1dd9d) — off by default, and
+        never allowed to take the bead `observe()` just created down with it.
+        `asop_router.route` itself already degrades an LM failure to PLAIN;
+        this only guards against a bug in the routing/filing plumbing (a
+        store I/O error, a malformed bead) doing the same for the whole
+        source's remaining events, exactly as a polling error already does
+        one line up.
+        """
+        try:
+            _asop_router_route(
+                task, store=self.asop_store, beads=self.beads, config=self.config.asop_router,
+                require_approval=self.config.intake.require_approval,
+            )
+        except Exception as e:
+            print(f"[observe] ASOP router error on {task.id}: {e}")
 
     def work(self, agent_name: str | None = None, limit: int = 10) -> list[Task]:
         """Execute ready tasks."""

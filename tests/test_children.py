@@ -10,7 +10,12 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from agentco_harness.children import ChildRef, ChildRegistry, verify_child
+from agentco_harness.children import (
+    ChildRef,
+    ChildRegistry,
+    resolve_child_config_path,
+    verify_child,
+)
 
 NOW = datetime(2026, 6, 9, 12, 0, 0, tzinfo=timezone.utc)
 
@@ -21,6 +26,21 @@ def _child_instance(tmp_path, name="acme", heartbeat: dict | None = None) -> Chi
     (inst / "config.yaml").write_text("tasks_path: tasks.jsonl\n")
     if heartbeat is not None:
         (inst / "heartbeat.json").write_text(json.dumps(heartbeat))
+    return ChildRef(name=name, path=str(inst), expected_interval="1h")
+
+
+def _company_child_instance(tmp_path, name="umbrella", heartbeat: dict | None = None) -> ChildRef:
+    """The OTHER real convention: config.yaml nested under `.agentco/` —
+    every real company node migrated to this shape, not the flat one
+    `_child_instance` builds. Found in review: the parent's liveness check
+    only ever looked at the flat path, so three of four real children read as
+    'not an AgentCo instance' the moment they were linked."""
+    inst = tmp_path / name
+    nested = inst / ".agentco"
+    nested.mkdir(parents=True)
+    (nested / "config.yaml").write_text("tasks_path: tasks.jsonl\n")
+    if heartbeat is not None:
+        (nested / "heartbeat.json").write_text(json.dumps(heartbeat))
     return ChildRef(name=name, path=str(inst), expected_interval="1h")
 
 
@@ -359,3 +379,39 @@ def test_no_recent_outage_leaves_the_loud_path_untouched(tmp_path):
             parent_recent_outage_s=value,
         )
         assert result["level"] == "fail"
+
+
+# --------------------------------------------------------------------------- #
+# resolve_child_config_path — two real conventions, found under-covered when
+# linking real company children to a portfolio node.
+# --------------------------------------------------------------------------- #
+
+
+def test_resolve_finds_the_flat_convention(tmp_path):
+    inst = tmp_path / "feeds"
+    inst.mkdir()
+    (inst / "config.yaml").write_text("tasks_path: tasks.jsonl\n")
+    assert resolve_child_config_path(inst) == inst / "config.yaml"
+
+
+def test_resolve_finds_the_nested_company_convention(tmp_path):
+    inst = tmp_path / "umbrella"
+    (inst / ".agentco").mkdir(parents=True)
+    (inst / ".agentco" / "config.yaml").write_text("tasks_path: tasks.jsonl\n")
+    assert resolve_child_config_path(inst) == inst / ".agentco" / "config.yaml"
+
+
+def test_resolve_returns_none_for_neither(tmp_path):
+    inst = tmp_path / "not-an-instance"
+    inst.mkdir()
+    assert resolve_child_config_path(inst) is None
+
+
+def test_a_company_style_child_verifies_healthy(tmp_path):
+    """The actual regression: a fresh nested-config child used to verify as
+    'no config.yaml — is it an AgentCo instance?' even though it plainly is."""
+    child = _company_child_instance(
+        tmp_path, heartbeat=_heartbeat(NOW - timedelta(minutes=10))
+    )
+    result = verify_child(child, now=NOW)
+    assert result["level"] == "ok"

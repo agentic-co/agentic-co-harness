@@ -27,7 +27,7 @@ from .beads import (
     TaskResult,
     TaskStatus,
 )
-from .children import ChildRegistry, verify_child
+from .children import ChildRegistry, resolve_child_config_path, verify_child
 from .config import Config
 from .tempo import Schedule, explain, is_pin, schedule, temporal_score
 from .lifecycle import open_lifecycle
@@ -365,7 +365,7 @@ def collect(
         # the walk is skipped by declaration rather than by whether a stat()
         # happens to succeed.
         local = child.path and not child.is_remote
-        child_config = Path(child.path) / "config.yaml" if local else None
+        child_config = resolve_child_config_path(child.path) if local else None
         child_priority = getattr(child, "priority", 2)
 
         health = verify_child(child, now=now)
@@ -476,7 +476,7 @@ def portfolio_tasks(
         # skipped input must err, per this function's contract above.
         if child.is_remote or not child.path:
             continue
-        child_config = Path(child.path) / "config.yaml"
-        if child_config.is_file():
+        child_config = resolve_child_config_path(child.path)
+        if child_config is not None:
             tasks.extend(portfolio_tasks(str(child_config), _seen=seen))
     return tasks

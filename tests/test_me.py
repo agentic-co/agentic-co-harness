@@ -250,3 +250,27 @@ def test_priority_is_read_from_the_bead(tmp_path):
     cfg.write_text("instance: t\ntasks_path: tasks.jsonl\n")
     items = [i for i in collect(str(cfg)) if i.task_id == t.id]
     assert items and items[0].priority == 0
+
+
+def test_a_company_style_childs_queue_is_not_invisible(tmp_path, capsys):
+    """Regression: `me` hardcoded <child>/config.yaml, same bug as doctor's
+    children.instances check — a real child whose config lives at
+    <child>/.agentco/config.yaml (every real company node's actual shape)
+    read as having 'no config.yaml', silently dropping its whole queue out
+    of the portfolio-wide brief StandUp reads."""
+    parent = tmp_path / "parent"
+    child = tmp_path / "umbrella"
+    _write_config(parent)
+    _fresh_heartbeat(parent)
+    (child / ".agentco").mkdir(parents=True)
+    (child / ".agentco" / "config.yaml").write_text("tasks_path: tasks.jsonl\n")
+    _fresh_heartbeat(child / ".agentco")
+    _register_child(parent, "umbrella", child)
+
+    cb = Beads(str(child / ".agentco" / "tasks.jsonl"))
+    ct = cb.create("umbrella failure", "x")
+    cb.update(ct.id, status=TaskStatus.FAILED)
+
+    items = collect(str(parent / "config.yaml"))
+    assert any(i.company == "umbrella" for i in items)
+    assert "no config.yaml" not in capsys.readouterr().err

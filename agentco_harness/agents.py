@@ -9,7 +9,7 @@ from typing import Any
 
 import dspy
 
-from .beads import Beads, Task, TaskPriority
+from .beads import Beads, Task, TaskPriority, TaskStatus
 from .signatures import (
     AnalystReport,
     ClassifyEvent,
@@ -89,10 +89,22 @@ def _slugify(text: str) -> str:
 
 
 class Classifier:
-    """Classifies incoming events and creates tasks."""
+    """Classifies incoming events and creates tasks.
 
-    def __init__(self, beads: Beads):
+    `require_approval` is the "inverse shadow" intake gate (`config.intake`,
+    principal 2026-09-25, off by default): held True, a bead this creates is
+    born `PENDING_APPROVAL` on its first append rather than `PENDING` — the
+    same "no PENDING window" idiom `Orchestrator._plan_subtasks` already uses
+    for proposal subtasks (`status` is `create()`'s own kwarg, not a
+    create-then-flip) — carrying `metadata.requires_approval` so the existing
+    dispatch-time defense-in-depth guard covers it too. Nothing downstream
+    (the ASOP router, dispatch) treats a classifier-created bead any
+    differently from a planner-created one once it is PENDING_APPROVAL.
+    """
+
+    def __init__(self, beads: Beads, *, require_approval: bool = False):
         self.beads = beads
+        self.require_approval = require_approval
         self.classify = dspy.ChainOfThought(ClassifyEvent)
 
     def process(self, source: str, content: str, context: str, source_id: str) -> Task | None:
@@ -106,6 +118,12 @@ class Classifier:
         if not result.should_create_task:
             return None
 
+        metadata = {"category": result.category}
+        status = TaskStatus.PENDING
+        if self.require_approval:
+            status = TaskStatus.PENDING_APPROVAL
+            metadata["requires_approval"] = True
+
         task = self.beads.create(
             title=result.title,
             description=result.description,
@@ -113,7 +131,8 @@ class Classifier:
             assigned_agent=result.assigned_agent,
             source=source,
             source_id=source_id,
-            metadata={"category": result.category},
+            status=status,
+            metadata=metadata,
         )
         return task
 
