@@ -383,6 +383,32 @@ def test_dropping_the_gate_is_also_refused(tmp_path):
     assert beads.get(task.id).metadata["verify"]["kind"] == "human"
 
 
+def test_a_legacy_shape_gate_does_not_block_unrelated_metadata_writes(tmp_path):
+    """A gate stored raw in the pre-unification `class` shape (v1 writers) is
+    the same gate as its normalised form. Treating the normalisation as a swap
+    refused every annotate() on the bead — refuse_dispatch raised mid-cycle and
+    took a live node's heartbeat down (2026-09-27)."""
+    store = tmp_path / "tasks.jsonl"
+    beads = _store(tmp_path)
+    task = beads.create("x", "d")
+    legacy = {"class": "deterministic", "check": "cd frontend-v2 && npm test -- --run"}
+    record = json.loads(store.read_text().splitlines()[0])
+    record["metadata"] = {"verify": legacy}
+    store.write_text(json.dumps(record) + "\n")
+
+    out = beads.refuse_dispatch(task.id, "NO_EXECUTOR", "nothing can run it")
+    assert out.metadata["dispatch_refusal"]["code"] == "NO_EXECUTOR"
+    assert out.metadata["verify"]["kind"] == "deterministic"
+    assert out.metadata["verify"]["check"] == legacy["check"]
+
+    # And a real swap on a legacy-shape gate is still refused.
+    with pytest.raises(VerifyContractError, match="pinned to the bead"):
+        beads.update(
+            task.id,
+            metadata={"verify": {"class": "deterministic", "check": "true"}},
+        )
+
+
 def test_allow_gate_change_is_the_deliberate_door(tmp_path):
     beads = _store(tmp_path)
     task = beads.create(

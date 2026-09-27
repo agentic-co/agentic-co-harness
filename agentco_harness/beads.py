@@ -2056,6 +2056,17 @@ class Beads:
                         pinned = (task.metadata or {}).get("verify")
                         if pinned is not None:
                             incoming = (kwargs["metadata"] or {}).get("verify")
+                            # `incoming` was normalised above; a gate stored in
+                            # the legacy `class` shape (v1 writers, records
+                            # older than the unified schema) was not. Compare
+                            # like with like, or every metadata write on such a
+                            # bead reads as a gate swap — the 2026-09-27 node
+                            # outage, where refuse_dispatch raised
+                            # inside the cycle and no heartbeat was written.
+                            try:
+                                pinned = validate_verify(pinned)
+                            except VerifyContractError:
+                                pass
                             if incoming != pinned:
                                 raise VerifyContractError(
                                     f"refusing to change the verify gate on {task_id}: "
