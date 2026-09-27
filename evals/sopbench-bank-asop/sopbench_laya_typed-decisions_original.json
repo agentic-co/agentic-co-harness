@@ -1,0 +1,2423 @@
+{
+  "summary": {
+    "judge": "laya:typed-decisions",
+    "n": 400,
+    "errors": 0,
+    "n_not_held": 200,
+    "n_held": 200,
+    "TP": 3,
+    "FP": 12,
+    "FN": 197,
+    "TN": 188,
+    "recall_TPR": 0.015,
+    "FPR": 0.06,
+    "lift": -0.045,
+    "precision": 0.2,
+    "accuracy": 0.4775,
+    "refusal_rate": 0.0375,
+    "avg_confidence": 0.08542575,
+    "order": "original"
+  },
+  "decisions": [
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t24/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1768
+    },
+    {
+      "id": "bank/o4-mini/t58/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0991
+    },
+    {
+      "id": "bank/o4-mini/t53/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0163
+    },
+    {
+      "id": "bank/gpt-4o/t14/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0487
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t61/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0568
+    },
+    {
+      "id": "bank/o4-mini/t47/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0727
+    },
+    {
+      "id": "bank/o4-mini/t6/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0345
+    },
+    {
+      "id": "bank/o4-mini/t40/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1186
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t81/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0669
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t44/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1073
+    },
+    {
+      "id": "bank/o4-mini/t119/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0996
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t46/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.076
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t131/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0964
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t54/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0028
+    },
+    {
+      "id": "bank/gpt-4o/t15/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0091
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t57/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1084
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t102/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2397
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t83/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2015
+    },
+    {
+      "id": "bank/gpt-4.1/t102/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0494
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t110/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.095
+    },
+    {
+      "id": "bank/gpt-4.1/t94/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0454
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t119/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1009
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t102/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2397
+    },
+    {
+      "id": "bank/gpt-4o/t49/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0663
+    },
+    {
+      "id": "bank/gpt-4o/t45/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0897
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t60/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.085
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t70/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1177
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t9/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0008
+    },
+    {
+      "id": "bank/gpt-4.1/t83/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1916
+    },
+    {
+      "id": "bank/gpt-4o/t95/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0502
+    },
+    {
+      "id": "bank/o4-mini/t30/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0982
+    },
+    {
+      "id": "bank/o4-mini/t91/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1203
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t78/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0938
+    },
+    {
+      "id": "bank/gpt-4o/t0/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1223
+    },
+    {
+      "id": "bank/gpt-4o/t12/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0334
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t12/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0651
+    },
+    {
+      "id": "bank/gpt-4o/t119/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0934
+    },
+    {
+      "id": "bank/gpt-4.1/t89/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1212
+    },
+    {
+      "id": "bank/o4-mini/t16/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1323
+    },
+    {
+      "id": "bank/gpt-4.1/t124/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0664
+    },
+    {
+      "id": "bank/gpt-4o/t23/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0863
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t88/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1282
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t34/i0/c1",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0054
+    },
+    {
+      "id": "bank/gpt-4.1/t16/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0805
+    },
+    {
+      "id": "bank/gpt-4.1/t121/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0927
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t74/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0561
+    },
+    {
+      "id": "bank/gpt-4.1/t92/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1907
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t115/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1718
+    },
+    {
+      "id": "bank/gpt-4.1/t120/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1088
+    },
+    {
+      "id": "bank/gpt-4.1/t16/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.094
+    },
+    {
+      "id": "bank/o4-mini/t11/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1837
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t69/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0145
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t29/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0229
+    },
+    {
+      "id": "bank/gpt-4.1/t132/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.149
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t19/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0121
+    },
+    {
+      "id": "bank/gpt-4.1/t18/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0304
+    },
+    {
+      "id": "bank/gpt-4o/t41/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.052
+    },
+    {
+      "id": "bank/o4-mini/t23/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0178
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t40/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0955
+    },
+    {
+      "id": "bank/gpt-4o/t44/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0914
+    },
+    {
+      "id": "bank/gpt-4o/t126/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0614
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t98/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0973
+    },
+    {
+      "id": "bank/gpt-4o/t57/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0731
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t92/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0667
+    },
+    {
+      "id": "bank/o4-mini/t92/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1996
+    },
+    {
+      "id": "bank/gpt-4.1/t39/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0998
+    },
+    {
+      "id": "bank/gpt-4.1/t110/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1469
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t78/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1429
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t2/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1044
+    },
+    {
+      "id": "bank/gpt-4.1/t53/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0533
+    },
+    {
+      "id": "bank/o4-mini/t33/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1574
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t92/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.106
+    },
+    {
+      "id": "bank/gpt-4.1/t43/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0524
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t25/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0365
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t105/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.08
+    },
+    {
+      "id": "bank/gpt-4o/t66/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0389
+    },
+    {
+      "id": "bank/gpt-4o/t62/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0555
+    },
+    {
+      "id": "bank/gpt-4o/t6/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0826
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t93/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0204
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t59/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0701
+    },
+    {
+      "id": "bank/gpt-4.1/t67/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0104
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t23/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0374
+    },
+    {
+      "id": "bank/o4-mini/t115/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.039
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t105/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0581
+    },
+    {
+      "id": "bank/gpt-4o/t13/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1477
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t56/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0943
+    },
+    {
+      "id": "bank/gpt-4o/t66/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1139
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t117/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0649
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t110/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1335
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t64/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0291
+    },
+    {
+      "id": "bank/o4-mini/t22/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0032
+    },
+    {
+      "id": "bank/gpt-4o/t61/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.044
+    },
+    {
+      "id": "bank/gpt-4.1/t66/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1401
+    },
+    {
+      "id": "bank/o4-mini/t68/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1351
+    },
+    {
+      "id": "bank/o4-mini/t95/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0468
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t29/i0/c1",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0001
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t122/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0969
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t44/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0386
+    },
+    {
+      "id": "bank/gpt-4.1/t81/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0535
+    },
+    {
+      "id": "bank/gpt-4o/t50/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0615
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t63/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0366
+    },
+    {
+      "id": "bank/o4-mini/t106/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.035
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t68/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0604
+    },
+    {
+      "id": "bank/gpt-4.1/t96/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2184
+    },
+    {
+      "id": "bank/o4-mini/t44/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0948
+    },
+    {
+      "id": "bank/o4-mini/t43/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0524
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t69/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0549
+    },
+    {
+      "id": "bank/gpt-4.1/t25/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0071
+    },
+    {
+      "id": "bank/gpt-4.1/t26/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1135
+    },
+    {
+      "id": "bank/gpt-4o/t105/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0592
+    },
+    {
+      "id": "bank/o4-mini/t55/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0535
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t27/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0503
+    },
+    {
+      "id": "bank/o4-mini/t44/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0097
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t92/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1907
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t74/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2256
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t120/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0622
+    },
+    {
+      "id": "bank/gpt-4o/t109/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1236
+    },
+    {
+      "id": "bank/o4-mini/t12/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0719
+    },
+    {
+      "id": "bank/o4-mini/t16/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1148
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t28/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0708
+    },
+    {
+      "id": "bank/o4-mini/t131/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0907
+    },
+    {
+      "id": "bank/gpt-4.1/t0/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2047
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t80/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1192
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t12/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0943
+    },
+    {
+      "id": "bank/o4-mini/t133/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1762
+    },
+    {
+      "id": "bank/gpt-4.1/t33/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1574
+    },
+    {
+      "id": "bank/gpt-4o/t59/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1401
+    },
+    {
+      "id": "bank/gpt-4o/t62/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0222
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t22/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1771
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t133/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.108
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t28/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1412
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t97/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0933
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t39/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0794
+    },
+    {
+      "id": "bank/gpt-4.1/t127/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0334
+    },
+    {
+      "id": "bank/gpt-4o/t110/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0824
+    },
+    {
+      "id": "bank/gpt-4.1/t133/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0265
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t33/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0955
+    },
+    {
+      "id": "bank/gpt-4.1/t95/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0232
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t49/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0745
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t119/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2065
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t90/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0742
+    },
+    {
+      "id": "bank/gpt-4.1/t95/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1507
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t96/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.2917
+    },
+    {
+      "id": "bank/gpt-4o/t102/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0876
+    },
+    {
+      "id": "bank/o4-mini/t117/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1113
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t63/i0/c7",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0366
+    },
+    {
+      "id": "bank/o4-mini/t54/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0028
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t11/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1837
+    },
+    {
+      "id": "bank/gpt-4.1/t19/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1687
+    },
+    {
+      "id": "bank/gpt-4o/t94/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0769
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t63/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0366
+    },
+    {
+      "id": "bank/gpt-4o/t11/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0131
+    },
+    {
+      "id": "bank/gpt-4.1/t11/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1806
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t22/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1771
+    },
+    {
+      "id": "bank/o4-mini/t98/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0447
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t25/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1694
+    },
+    {
+      "id": "bank/gpt-4.1/t26/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1601
+    },
+    {
+      "id": "bank/gpt-4o/t127/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0698
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t4/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0416
+    },
+    {
+      "id": "bank/gpt-4.1/t67/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1237
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t116/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0787
+    },
+    {
+      "id": "bank/o4-mini/t124/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0435
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t77/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0725
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t101/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0528
+    },
+    {
+      "id": "bank/gpt-4o/t68/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1181
+    },
+    {
+      "id": "bank/gpt-4.1/t73/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0663
+    },
+    {
+      "id": "bank/gpt-4o/t67/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1079
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t14/i0/c9",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0037
+    },
+    {
+      "id": "bank/gpt-4.1/t39/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.089
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t106/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.069
+    },
+    {
+      "id": "bank/o4-mini/t61/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0568
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t3/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0356
+    },
+    {
+      "id": "bank/gpt-4.1/t107/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2283
+    },
+    {
+      "id": "bank/gpt-4.1/t23/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0706
+    },
+    {
+      "id": "bank/o4-mini/t62/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0906
+    },
+    {
+      "id": "bank/gpt-4o/t40/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0955
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t39/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.089
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t39/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0998
+    },
+    {
+      "id": "bank/gpt-4.1/t58/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1083
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t125/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0445
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t132/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2364
+    },
+    {
+      "id": "bank/o4-mini/t107/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0732
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t95/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0786
+    },
+    {
+      "id": "bank/gpt-4.1/t6/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0307
+    },
+    {
+      "id": "bank/gpt-4o/t108/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0549
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t131/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1709
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t19/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.1541
+    },
+    {
+      "id": "bank/gpt-4.1/t64/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0109
+    },
+    {
+      "id": "bank/gpt-4o/t39/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0748
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t27/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0034
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t107/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0688
+    },
+    {
+      "id": "bank/gpt-4o/t94/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0413
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t28/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1187
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t73/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0805
+    },
+    {
+      "id": "bank/o4-mini/t87/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1396
+    },
+    {
+      "id": "bank/o4-mini/t45/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0054
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t53/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0533
+    },
+    {
+      "id": "bank/gpt-4.1/t58/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1229
+    },
+    {
+      "id": "bank/gpt-4.1/t105/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1948
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t44/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0738
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t0/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0454
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t73/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0805
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t102/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.058
+    },
+    {
+      "id": "bank/gpt-4.1/t40/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1186
+    },
+    {
+      "id": "bank/gpt-4o/t70/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1177
+    },
+    {
+      "id": "bank/gpt-4.1/t22/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0033
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t25/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1772
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t53/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1056
+    },
+    {
+      "id": "bank/o4-mini/t92/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0668
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t61/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0793
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t50/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0586
+    },
+    {
+      "id": "bank/gpt-4o/t12/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0325
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t14/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0329
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t109/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0606
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t40/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1186
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t83/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2015
+    },
+    {
+      "id": "bank/o4-mini/t105/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2057
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t66/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1071
+    },
+    {
+      "id": "bank/gpt-4.1/t15/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1717
+    },
+    {
+      "id": "bank/gpt-4.1/t68/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1351
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t32/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0196
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t13/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0389
+    },
+    {
+      "id": "bank/o4-mini/t46/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1428
+    },
+    {
+      "id": "bank/o4-mini/t101/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0418
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t52/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0434
+    },
+    {
+      "id": "bank/gpt-4.1/t54/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0028
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t107/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1883
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t127/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0349
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t35/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0736
+    },
+    {
+      "id": "bank/o4-mini/t84/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1243
+    },
+    {
+      "id": "bank/gpt-4o/t9/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0202
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t30/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1398
+    },
+    {
+      "id": "bank/gpt-4o/t64/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.016
+    },
+    {
+      "id": "bank/o4-mini/t129/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1169
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t129/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0437
+    },
+    {
+      "id": "bank/gpt-4o/t106/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0976
+    },
+    {
+      "id": "bank/gpt-4.1/t14/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0176
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t39/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0744
+    },
+    {
+      "id": "bank/gpt-4.1/t14/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0423
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t111/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0414
+    },
+    {
+      "id": "bank/gpt-4o/t106/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0602
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t49/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0803
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t47/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0485
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t121/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0443
+    },
+    {
+      "id": "bank/gpt-4o/t44/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.046
+    },
+    {
+      "id": "bank/o4-mini/t83/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1916
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t18/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.032
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t55/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1227
+    },
+    {
+      "id": "bank/gpt-4.1/t68/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1465
+    },
+    {
+      "id": "bank/gpt-4o/t67/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1004
+    },
+    {
+      "id": "bank/gpt-4.1/t84/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1273
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t62/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1211
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t127/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.05
+    },
+    {
+      "id": "bank/gpt-4o/t24/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0088
+    },
+    {
+      "id": "bank/o4-mini/t88/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0522
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t129/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0712
+    },
+    {
+      "id": "bank/gpt-4.1/t74/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2256
+    },
+    {
+      "id": "bank/gpt-4o/t131/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0643
+    },
+    {
+      "id": "bank/o4-mini/t41/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0668
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t84/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0654
+    },
+    {
+      "id": "bank/o4-mini/t29/i0/c1",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.001
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t44/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0577
+    },
+    {
+      "id": "bank/o4-mini/t88/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1331
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t109/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1236
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t107/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.084
+    },
+    {
+      "id": "bank/o4-mini/t24/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0434
+    },
+    {
+      "id": "bank/o4-mini/t81/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2064
+    },
+    {
+      "id": "bank/gpt-4.1/t12/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0559
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t127/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0716
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t45/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0535
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t39/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1561
+    },
+    {
+      "id": "bank/gpt-4.1/t35/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0706
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t9/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0106
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t133/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1762
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t77/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1153
+    },
+    {
+      "id": "bank/gpt-4o/t66/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.103
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t67/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0007
+    },
+    {
+      "id": "bank/gpt-4.1/t68/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0918
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t59/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0206
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t115/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1168
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t117/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2112
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t1/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0003
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t124/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1021
+    },
+    {
+      "id": "bank/o4-mini/t78/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0868
+    },
+    {
+      "id": "bank/gpt-4o/t61/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0603
+    },
+    {
+      "id": "bank/gpt-4o/t120/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1142
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t70/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0447
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t13/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0589
+    },
+    {
+      "id": "bank/gpt-4o/t115/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1384
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t23/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1738
+    },
+    {
+      "id": "bank/o4-mini/t2/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0909
+    },
+    {
+      "id": "bank/gpt-4.1/t44/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0948
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t4/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0838
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t88/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0684
+    },
+    {
+      "id": "bank/o4-mini/t53/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0533
+    },
+    {
+      "id": "bank/o4-mini/t76/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.095
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t87/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1637
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t18/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0118
+    },
+    {
+      "id": "bank/gpt-4.1/t123/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.113
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t57/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.147
+    },
+    {
+      "id": "bank/o4-mini/t21/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1749
+    },
+    {
+      "id": "bank/o4-mini/t73/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0744
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t19/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0212
+    },
+    {
+      "id": "bank/o4-mini/t133/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0323
+    },
+    {
+      "id": "bank/gpt-4.1/t61/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0568
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t85/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0796
+    },
+    {
+      "id": "bank/gpt-4o/t107/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0271
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t7/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0234
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t12/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0559
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t47/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.104
+    },
+    {
+      "id": "bank/gpt-4.1/t19/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.04
+    },
+    {
+      "id": "bank/gpt-4.1/t63/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0387
+    },
+    {
+      "id": "bank/gpt-4.1/t55/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0535
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t9/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0805
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t100/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0547
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t70/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0262
+    },
+    {
+      "id": "bank/gpt-4.1/t30/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1151
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t104/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1892
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t33/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1556
+    },
+    {
+      "id": "bank/gpt-4o/t85/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0796
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t25/i0/c7",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0001
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t123/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0173
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t11/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.104
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t108/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1623
+    },
+    {
+      "id": "bank/o4-mini/t53/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0001
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t12/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0182
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t75/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0238
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t55/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0535
+    },
+    {
+      "id": "bank/gpt-4o/t120/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.101
+    },
+    {
+      "id": "bank/gpt-4o/t39/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0781
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t44/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0137
+    },
+    {
+      "id": "bank/gpt-4o/t73/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0503
+    },
+    {
+      "id": "bank/gpt-4.1/t77/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0644
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t120/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1438
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t113/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0572
+    },
+    {
+      "id": "bank/gpt-4.1/t21/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1749
+    },
+    {
+      "id": "bank/o4-mini/t54/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0049
+    },
+    {
+      "id": "bank/gpt-4.1/t84/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0654
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t63/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0366
+    },
+    {
+      "id": "bank/gpt-4o/t22/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0181
+    },
+    {
+      "id": "bank/gpt-4o/t23/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0109
+    },
+    {
+      "id": "bank/o4-mini/t23/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0706
+    },
+    {
+      "id": "bank/gpt-4.1/t102/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2397
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t28/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1091
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t72/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0549
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t105/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1398
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t19/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0191
+    },
+    {
+      "id": "bank/o4-mini/t126/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.07
+    },
+    {
+      "id": "bank/gpt-4o/t81/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0628
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t16/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0361
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t23/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1104
+    },
+    {
+      "id": "bank/o4-mini/t63/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0415
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t114/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0886
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t76/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0617
+    },
+    {
+      "id": "bank/gpt-4o/t12/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.073
+    },
+    {
+      "id": "bank/gpt-4.1/t92/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0719
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t11/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1578
+    },
+    {
+      "id": "bank/gpt-4.1/t115/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0467
+    },
+    {
+      "id": "bank/o4-mini/t124/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0601
+    },
+    {
+      "id": "bank/o4-mini/t12/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0808
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t19/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0054
+    },
+    {
+      "id": "bank/gpt-4o/t123/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0946
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t6/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0462
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t58/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1229
+    },
+    {
+      "id": "bank/o4-mini/t29/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.1009
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t115/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1343
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t64/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0157
+    },
+    {
+      "id": "bank/gpt-4o/t58/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1438
+    },
+    {
+      "id": "bank/o4-mini/t131/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1709
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t23/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0067
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t109/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0797
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t60/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0592
+    },
+    {
+      "id": "bank/gpt-4o/t9/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0446
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t61/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0474
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t2/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1067
+    },
+    {
+      "id": "bank/gpt-4.1/t85/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.057
+    },
+    {
+      "id": "bank/gpt-4.1/t23/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1647
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t91/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0477
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t67/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0357
+    },
+    {
+      "id": "bank/gpt-4.1/t131/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0613
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t81/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1842
+    },
+    {
+      "id": "bank/o4-mini/t33/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.035
+    },
+    {
+      "id": "bank/gpt-4.1/t81/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2064
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t94/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1301
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t97/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.155
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t84/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1273
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t76/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1052
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t56/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1219
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t94/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0806
+    },
+    {
+      "id": "bank/gpt-4o/t121/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0488
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t100/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0555
+    },
+    {
+      "id": "bank/gpt-4.1/t127/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0686
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t131/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0828
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t24/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.014
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t102/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0559
+    },
+    {
+      "id": "bank/gpt-4.1/t61/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0218
+    },
+    {
+      "id": "bank/gpt-4.1/t105/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0789
+    },
+    {
+      "id": "bank/gpt-4.1/t66/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1048
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t63/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0366
+    },
+    {
+      "id": "bank/o4-mini/t41/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0631
+    }
+  ]
+}

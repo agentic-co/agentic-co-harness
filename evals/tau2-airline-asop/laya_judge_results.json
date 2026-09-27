@@ -1,0 +1,498 @@
+{
+  "summary": {
+    "n": 68,
+    "n_truth_not_held": 58,
+    "n_truth_held": 10,
+    "TP": 5,
+    "FP": 5,
+    "FN": 53,
+    "TN": 5,
+    "recall_TPR": 0.08620689655172414,
+    "FPR": 0.5,
+    "lift": -0.41379310344827586,
+    "precision": 0.5,
+    "accuracy": 0.14705882352941177,
+    "avg_confidence": 0.2432176470588235,
+    "checkpoint": "laya",
+    "order": "evidence-first",
+    "max_len": 512
+  },
+  "decisions": [
+    {
+      "id": 42,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.3284,
+      "llm_passed": false
+    },
+    {
+      "id": 51,
+      "truth": "not_held",
+      "laya_choice": "not_held",
+      "laya_confidence": 0.1996,
+      "llm_passed": true
+    },
+    {
+      "id": 52,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.2986,
+      "llm_passed": true
+    },
+    {
+      "id": 53,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.1302,
+      "llm_passed": true
+    },
+    {
+      "id": 58,
+      "truth": "held",
+      "laya_choice": "not_held",
+      "laya_confidence": 0.6034,
+      "llm_passed": true
+    },
+    {
+      "id": 62,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.2185,
+      "llm_passed": true
+    },
+    {
+      "id": 63,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.5472,
+      "llm_passed": true
+    },
+    {
+      "id": 64,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.1524,
+      "llm_passed": true
+    },
+    {
+      "id": 67,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.0434,
+      "llm_passed": true
+    },
+    {
+      "id": 70,
+      "truth": "held",
+      "laya_choice": "not_held",
+      "laya_confidence": 0.3137,
+      "llm_passed": true
+    },
+    {
+      "id": 77,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.296,
+      "llm_passed": true
+    },
+    {
+      "id": 81,
+      "truth": "not_held",
+      "laya_choice": "not_held",
+      "laya_confidence": 0.0041,
+      "llm_passed": false
+    },
+    {
+      "id": 82,
+      "truth": "held",
+      "laya_choice": "held",
+      "laya_confidence": 0.5295,
+      "llm_passed": false
+    },
+    {
+      "id": 84,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.2413,
+      "llm_passed": false
+    },
+    {
+      "id": 88,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.0002,
+      "llm_passed": false
+    },
+    {
+      "id": 89,
+      "truth": "not_held",
+      "laya_choice": "not_held",
+      "laya_confidence": 0.0001,
+      "llm_passed": false
+    },
+    {
+      "id": 90,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.163,
+      "llm_passed": false
+    },
+    {
+      "id": 94,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.0434,
+      "llm_passed": false
+    },
+    {
+      "id": 95,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.0023,
+      "llm_passed": false
+    },
+    {
+      "id": 96,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.1326,
+      "llm_passed": false
+    },
+    {
+      "id": 103,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.0387,
+      "llm_passed": false
+    },
+    {
+      "id": 104,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.163,
+      "llm_passed": false
+    },
+    {
+      "id": 105,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.1485,
+      "llm_passed": false
+    },
+    {
+      "id": 106,
+      "truth": "not_held",
+      "laya_choice": "not_held",
+      "laya_confidence": 0.0065,
+      "llm_passed": false
+    },
+    {
+      "id": 107,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.1155,
+      "llm_passed": false
+    },
+    {
+      "id": 113,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.2192,
+      "llm_passed": false
+    },
+    {
+      "id": 114,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.1155,
+      "llm_passed": false
+    },
+    {
+      "id": 118,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.031,
+      "llm_passed": false
+    },
+    {
+      "id": 119,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.5472,
+      "llm_passed": false
+    },
+    {
+      "id": 120,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.1302,
+      "llm_passed": true
+    },
+    {
+      "id": 123,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.2986,
+      "llm_passed": true
+    },
+    {
+      "id": 124,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.5472,
+      "llm_passed": true
+    },
+    {
+      "id": 125,
+      "truth": "held",
+      "laya_choice": "not_held",
+      "laya_confidence": 0.3137,
+      "llm_passed": true
+    },
+    {
+      "id": 127,
+      "truth": "held",
+      "laya_choice": "not_held",
+      "laya_confidence": 0.6034,
+      "llm_passed": true
+    },
+    {
+      "id": 128,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.0434,
+      "llm_passed": true
+    },
+    {
+      "id": 130,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.296,
+      "llm_passed": true
+    },
+    {
+      "id": 131,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.3004,
+      "llm_passed": true
+    },
+    {
+      "id": 132,
+      "truth": "not_held",
+      "laya_choice": "not_held",
+      "laya_confidence": 0.1996,
+      "llm_passed": true
+    },
+    {
+      "id": 134,
+      "truth": "held",
+      "laya_choice": "not_held",
+      "laya_confidence": 0.6034,
+      "llm_passed": true
+    },
+    {
+      "id": 135,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.1524,
+      "llm_passed": true
+    },
+    {
+      "id": 136,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.2185,
+      "llm_passed": true
+    },
+    {
+      "id": 138,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.3284,
+      "llm_passed": true
+    },
+    {
+      "id": 153,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.0337,
+      "llm_passed": false
+    },
+    {
+      "id": 190,
+      "truth": "held",
+      "laya_choice": "held",
+      "laya_confidence": 0.5687,
+      "llm_passed": true
+    },
+    {
+      "id": 192,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.2883,
+      "llm_passed": true
+    },
+    {
+      "id": 196,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.2624,
+      "llm_passed": true
+    },
+    {
+      "id": 197,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.0434,
+      "llm_passed": true
+    },
+    {
+      "id": 203,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.3379,
+      "llm_passed": true
+    },
+    {
+      "id": 204,
+      "truth": "held",
+      "laya_choice": "held",
+      "laya_confidence": 0.5687,
+      "llm_passed": true
+    },
+    {
+      "id": 205,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.3379,
+      "llm_passed": true
+    },
+    {
+      "id": 212,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.0434,
+      "llm_passed": false
+    },
+    {
+      "id": 213,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.2138,
+      "llm_passed": false
+    },
+    {
+      "id": 215,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.439,
+      "llm_passed": false
+    },
+    {
+      "id": 216,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.1296,
+      "llm_passed": false
+    },
+    {
+      "id": 217,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.1879,
+      "llm_passed": false
+    },
+    {
+      "id": 219,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.439,
+      "llm_passed": false
+    },
+    {
+      "id": 223,
+      "truth": "held",
+      "laya_choice": "held",
+      "laya_confidence": 0.5687,
+      "llm_passed": true
+    },
+    {
+      "id": 224,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.2883,
+      "llm_passed": true
+    },
+    {
+      "id": 225,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.2661,
+      "llm_passed": true
+    },
+    {
+      "id": 226,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.0525,
+      "llm_passed": true
+    },
+    {
+      "id": 227,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.0434,
+      "llm_passed": true
+    },
+    {
+      "id": 228,
+      "truth": "held",
+      "laya_choice": "held",
+      "laya_confidence": 0.5687,
+      "llm_passed": true
+    },
+    {
+      "id": 229,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.0258,
+      "llm_passed": true
+    },
+    {
+      "id": 230,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.3379,
+      "llm_passed": true
+    },
+    {
+      "id": 231,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.0337,
+      "llm_passed": true
+    },
+    {
+      "id": 232,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.1915,
+      "llm_passed": true
+    },
+    {
+      "id": 233,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.2624,
+      "llm_passed": true
+    },
+    {
+      "id": 235,
+      "truth": "not_held",
+      "laya_choice": "held",
+      "laya_confidence": 0.3379,
+      "llm_passed": true
+    }
+  ]
+}

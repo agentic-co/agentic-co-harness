@@ -1,0 +1,40 @@
+diff --git a/env/evaluator.py b/env/evaluator.py
+index 535a634..7f8a8a8 100644
+--- a/env/evaluator.py
++++ b/env/evaluator.py
+@@ -237,6 +237,13 @@ def evaluator_function_directed_graph(domain_str:str, task:dict, log_msg_fcall:l
+     successful_funccalls = {} # {"action1": [("param1", "param2"), {('a', 1), ('b', 2)}]}
+     evaluation_result["action_successfully_called"] = False
+     evaluation_result["dirgraph_satisfied"] = True
++    # ---- agentco-harness patch (additive, 2026-09-23) -------------------------
++    # The per-call prerequisite verdict already exists internally as
++    # `all_prev_func_called` below, but is collapsed into the single aggregate
++    # `dirgraph_satisfied`. Record it per call so it can be used as per-decision
++    # ground truth. Pure data capture: nothing below reads this back.
++    evaluation_result["dirgraph_per_call"] = []
++    # --------------------------------------------------------------------------
+     # Check if the first function call is the target action directly
+     evaluation_result["did_not_call_target_action_directly"] = True
+     if func_calls and len(func_calls) > 0:
+@@ -275,6 +282,21 @@ def evaluator_function_directed_graph(domain_str:str, task:dict, log_msg_fcall:l
+         func_param_mapping = {nodes[node_ind][1][key]: func_args[key] if key in func_args else None for key in nodes[node_ind][1]} # maps the dep func param values to the act func param values
+         all_prev_func_called = dfscheck_called_functions(list(node_inds_to_check)[0], func_param_mapping, nodes, connections, successful_funccalls)\
+             if node_inds_to_check else True
++        # ---- agentco-harness patch (additive, 2026-09-23) --------------------
++        # One row per function call that the directed action graph actually
++        # constrains. `has_prereq` distinguishes a genuine precondition check
++        # from a call whose node has no predecessors (trivially satisfied).
++        evaluation_result["dirgraph_per_call"].append({
++            "call_index": i,
++            "tool_name": func_name,
++            "has_prereq": bool(node_inds_to_check),
++            "prereqs_satisfied": bool(all_prev_func_called),
++            "prereq_root": list(node_inds_to_check)[0] if node_inds_to_check else None,
++            "nodes": copy.deepcopy(nodes),
++            "connections": copy.deepcopy(connections),
++            "func_param_mapping": copy.deepcopy(func_param_mapping),
++        })
++        # ----------------------------------------------------------------------
+         # record the result, update the functions successfully called based on the innate dependencies
+         if all_prev_func_called:
+             if func_name not in successful_funccalls: successful_funccalls[func_name] = [tuple(sorted(list(nodes[node_ind][1].keys()))), set()]
