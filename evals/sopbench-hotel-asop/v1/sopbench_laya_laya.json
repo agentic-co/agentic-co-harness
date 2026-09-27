@@ -1,0 +1,2429 @@
+{
+  "summary": {
+    "judge": "laya:laya",
+    "n": 400,
+    "errors": 0,
+    "n_not_held": 200,
+    "n_held": 200,
+    "TP": 93,
+    "FP": 117,
+    "FN": 107,
+    "TN": 83,
+    "recall_TPR": 0.465,
+    "FPR": 0.585,
+    "lift": -0.11999999999999994,
+    "lift_se": 0.04957569969249047,
+    "lift_ci95": [
+      -0.21716837139728126,
+      -0.022831628602718618
+    ],
+    "lift_z": -2.4205407234661194,
+    "precision": 0.44285714285714284,
+    "accuracy": 0.44,
+    "refusal_rate": 0.525,
+    "avg_confidence": 0.049786250000000004,
+    "order": "evidence-first"
+  },
+  "decisions": [
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t82/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0145
+    },
+    {
+      "id": "hotel/gpt-4.1/t98/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0124
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t58/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.001
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t141/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0125
+    },
+    {
+      "id": "hotel/gpt-4o/t115/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0374
+    },
+    {
+      "id": "hotel/gpt-4o/t33/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0082
+    },
+    {
+      "id": "hotel/gpt-4.1/t17/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0749
+    },
+    {
+      "id": "hotel/gpt-4o/t3/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0229
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t178/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0263
+    },
+    {
+      "id": "hotel/gpt-4.1/t11/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.2026
+    },
+    {
+      "id": "hotel/gpt-4o/t144/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0716
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t61/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0156
+    },
+    {
+      "id": "hotel/gpt-4.1/t171/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.1016
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t63/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0605
+    },
+    {
+      "id": "hotel/gpt-4.1/t145/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0521
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t83/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0579
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t131/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0239
+    },
+    {
+      "id": "hotel/gpt-4.1/t63/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0008
+    },
+    {
+      "id": "hotel/gpt-4o/t69/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0246
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t105/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0001
+    },
+    {
+      "id": "hotel/gpt-4.1/t191/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t167/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.1012
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t149/i0/c8",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0624
+    },
+    {
+      "id": "hotel/gpt-4o/t140/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0044
+    },
+    {
+      "id": "hotel/gpt-4o/t23/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0163
+    },
+    {
+      "id": "hotel/gpt-4o/t127/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0822
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t92/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0205
+    },
+    {
+      "id": "hotel/gpt-4.1/t187/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0165
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t70/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0469
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t54/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.015
+    },
+    {
+      "id": "hotel/gpt-4.1/t165/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0309
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t91/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0675
+    },
+    {
+      "id": "hotel/gpt-4.1/t111/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0092
+    },
+    {
+      "id": "hotel/gpt-4o/t0/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.4774
+    },
+    {
+      "id": "hotel/gpt-4.1/t23/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0317
+    },
+    {
+      "id": "hotel/gpt-4o/t30/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0004
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t192/i0/c7",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0001
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t14/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1658
+    },
+    {
+      "id": "hotel/gpt-4o/t67/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0059
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t100/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0002
+    },
+    {
+      "id": "hotel/gpt-4o/t87/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0242
+    },
+    {
+      "id": "hotel/gpt-4.1/t109/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0017
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t23/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0548
+    },
+    {
+      "id": "hotel/gpt-4o/t79/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0153
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t78/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0363
+    },
+    {
+      "id": "hotel/gpt-4o/t65/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0016
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t4/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.5226
+    },
+    {
+      "id": "hotel/gpt-4o/t72/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0078
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t127/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0208
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t139/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0011
+    },
+    {
+      "id": "hotel/gpt-4o/t123/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0021
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t142/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.001
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t80/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0109
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t190/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0031
+    },
+    {
+      "id": "hotel/gpt-4o/t141/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0842
+    },
+    {
+      "id": "hotel/gpt-4.1/t139/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0387
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t15/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0482
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t98/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0118
+    },
+    {
+      "id": "hotel/gpt-4.1/t81/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0009
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t94/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.001
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t50/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0599
+    },
+    {
+      "id": "hotel/gpt-4.1/t116/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0036
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t60/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0716
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t55/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0131
+    },
+    {
+      "id": "hotel/gpt-4.1/t16/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0
+    },
+    {
+      "id": "hotel/gpt-4.1/t30/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0834
+    },
+    {
+      "id": "hotel/gpt-4.1/t124/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0244
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t112/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0042
+    },
+    {
+      "id": "hotel/gpt-4.1/t121/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0003
+    },
+    {
+      "id": "hotel/gpt-4.1/t122/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0017
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t97/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.2328
+    },
+    {
+      "id": "hotel/gpt-4.1/t102/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0479
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t125/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.1076
+    },
+    {
+      "id": "hotel/gpt-4o/t92/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0877
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t171/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0416
+    },
+    {
+      "id": "hotel/gpt-4.1/t65/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0711
+    },
+    {
+      "id": "hotel/gpt-4.1/t47/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1667
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t75/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0654
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t27/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0571
+    },
+    {
+      "id": "hotel/gpt-4o/t8/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1296
+    },
+    {
+      "id": "hotel/gpt-4.1/t97/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0005
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t149/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0537
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t170/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0077
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t104/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1412
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t133/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0064
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t26/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0002
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t41/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.4246
+    },
+    {
+      "id": "hotel/gpt-4.1/t174/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0428
+    },
+    {
+      "id": "hotel/gpt-4o/t47/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0116
+    },
+    {
+      "id": "hotel/gpt-4o/t133/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0293
+    },
+    {
+      "id": "hotel/gpt-4o/t126/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0013
+    },
+    {
+      "id": "hotel/gpt-4o/t75/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0258
+    },
+    {
+      "id": "hotel/gpt-4o/t131/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.2025
+    },
+    {
+      "id": "hotel/gpt-4o/t88/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0312
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t176/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0013
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t79/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0013
+    },
+    {
+      "id": "hotel/gpt-4.1/t108/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0535
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t20/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1043
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t119/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0001
+    },
+    {
+      "id": "hotel/gpt-4.1/t58/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0431
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t52/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t108/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0245
+    },
+    {
+      "id": "hotel/gpt-4o/t124/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0021
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t24/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0211
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t37/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.3433
+    },
+    {
+      "id": "hotel/gpt-4o/t170/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0181
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t9/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.4164
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t76/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0015
+    },
+    {
+      "id": "hotel/gpt-4o/t90/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0163
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t101/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0003
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t137/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1467
+    },
+    {
+      "id": "hotel/gpt-4.1/t93/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0094
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t57/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0021
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t110/i0/c7",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0081
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t173/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0057
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t81/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.3117
+    },
+    {
+      "id": "hotel/gpt-4.1/t31/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0173
+    },
+    {
+      "id": "hotel/gpt-4o/t68/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0008
+    },
+    {
+      "id": "hotel/gpt-4.1/t127/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0025
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t172/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0548
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t67/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0073
+    },
+    {
+      "id": "hotel/gpt-4.1/t132/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0017
+    },
+    {
+      "id": "hotel/gpt-4o/t48/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0452
+    },
+    {
+      "id": "hotel/gpt-4.1/t39/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0301
+    },
+    {
+      "id": "hotel/gpt-4o/t95/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0076
+    },
+    {
+      "id": "hotel/gpt-4o/t89/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0031
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t126/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0056
+    },
+    {
+      "id": "hotel/gpt-4o/t80/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0022
+    },
+    {
+      "id": "hotel/gpt-4.1/t41/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0011
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t115/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.009
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t120/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0906
+    },
+    {
+      "id": "hotel/gpt-4o/t112/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0136
+    },
+    {
+      "id": "hotel/gpt-4.1/t119/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0023
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t31/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1257
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t88/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0032
+    },
+    {
+      "id": "hotel/gpt-4.1/t27/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0005
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t75/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0654
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t184/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0053
+    },
+    {
+      "id": "hotel/gpt-4o/t58/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0701
+    },
+    {
+      "id": "hotel/gpt-4.1/t68/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0002
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t93/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0266
+    },
+    {
+      "id": "hotel/gpt-4.1/t88/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0006
+    },
+    {
+      "id": "hotel/gpt-4o/t125/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.015
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t51/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0059
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t10/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.3226
+    },
+    {
+      "id": "hotel/gpt-4.1/t94/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0665
+    },
+    {
+      "id": "hotel/gpt-4o/t119/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.092
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t67/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0265
+    },
+    {
+      "id": "hotel/gpt-4o/t51/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0247
+    },
+    {
+      "id": "hotel/gpt-4.1/t172/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0477
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t0/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.4774
+    },
+    {
+      "id": "hotel/gpt-4.1/t120/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.4618
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t138/i0/c8",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0365
+    },
+    {
+      "id": "hotel/gpt-4o/t12/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0038
+    },
+    {
+      "id": "hotel/gpt-4.1/t128/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0003
+    },
+    {
+      "id": "hotel/gpt-4.1/t50/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0073
+    },
+    {
+      "id": "hotel/gpt-4.1/t22/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0112
+    },
+    {
+      "id": "hotel/gpt-4.1/t75/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0005
+    },
+    {
+      "id": "hotel/gpt-4o/t9/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.4164
+    },
+    {
+      "id": "hotel/gpt-4o/t117/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0
+    },
+    {
+      "id": "hotel/gpt-4.1/t60/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0527
+    },
+    {
+      "id": "hotel/gpt-4o/t101/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0026
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t91/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0045
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t44/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0004
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t181/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0266
+    },
+    {
+      "id": "hotel/gpt-4.1/t142/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0333
+    },
+    {
+      "id": "hotel/gpt-4o/t166/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0383
+    },
+    {
+      "id": "hotel/gpt-4o/t191/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.008
+    },
+    {
+      "id": "hotel/gpt-4.1/t15/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0566
+    },
+    {
+      "id": "hotel/gpt-4o/t71/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0008
+    },
+    {
+      "id": "hotel/gpt-4.1/t83/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0144
+    },
+    {
+      "id": "hotel/gpt-4.1/t169/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.1205
+    },
+    {
+      "id": "hotel/gpt-4o/t95/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0004
+    },
+    {
+      "id": "hotel/gpt-4o/t186/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0014
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t123/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0052
+    },
+    {
+      "id": "hotel/gpt-4.1/t123/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0578
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t48/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0041
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t36/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1594
+    },
+    {
+      "id": "hotel/gpt-4.1/t99/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.077
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t90/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0048
+    },
+    {
+      "id": "hotel/gpt-4.1/t129/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0032
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t165/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0309
+    },
+    {
+      "id": "hotel/gpt-4.1/t105/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0161
+    },
+    {
+      "id": "hotel/gpt-4o/t147/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.007
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t5/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0324
+    },
+    {
+      "id": "hotel/gpt-4.1/t59/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0006
+    },
+    {
+      "id": "hotel/gpt-4.1/t110/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0014
+    },
+    {
+      "id": "hotel/gpt-4.1/t6/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.1024
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t33/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1613
+    },
+    {
+      "id": "hotel/gpt-4o/t98/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0196
+    },
+    {
+      "id": "hotel/gpt-4o/t96/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0164
+    },
+    {
+      "id": "hotel/gpt-4.1/t5/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0271
+    },
+    {
+      "id": "hotel/gpt-4.1/t10/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0518
+    },
+    {
+      "id": "hotel/gpt-4.1/t8/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1296
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t96/i0/c7",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0266
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t150/i0/c8",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.1016
+    },
+    {
+      "id": "hotel/gpt-4o/t64/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0185
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t3/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1392
+    },
+    {
+      "id": "hotel/gpt-4o/t107/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0055
+    },
+    {
+      "id": "hotel/gpt-4.1/t133/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0283
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t138/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0365
+    },
+    {
+      "id": "hotel/gpt-4.1/t135/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0456
+    },
+    {
+      "id": "hotel/gpt-4o/t130/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0005
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t85/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.009
+    },
+    {
+      "id": "hotel/gpt-4.1/t141/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.197
+    },
+    {
+      "id": "hotel/gpt-4.1/t87/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0011
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t97/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.138
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t43/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0005
+    },
+    {
+      "id": "hotel/gpt-4.1/t61/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0019
+    },
+    {
+      "id": "hotel/gpt-4.1/t131/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0672
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t71/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0039
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t84/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0047
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t193/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0
+    },
+    {
+      "id": "hotel/gpt-4o/t32/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0463
+    },
+    {
+      "id": "hotel/gpt-4.1/t25/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1373
+    },
+    {
+      "id": "hotel/gpt-4.1/t48/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0751
+    },
+    {
+      "id": "hotel/gpt-4.1/t181/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0326
+    },
+    {
+      "id": "hotel/gpt-4o/t40/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0633
+    },
+    {
+      "id": "hotel/gpt-4o/t129/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.1477
+    },
+    {
+      "id": "hotel/gpt-4.1/t24/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0301
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t116/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0037
+    },
+    {
+      "id": "hotel/gpt-4o/t135/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.1744
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t42/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0004
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t95/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0109
+    },
+    {
+      "id": "hotel/gpt-4.1/t56/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.1087
+    },
+    {
+      "id": "hotel/gpt-4o/t45/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0215
+    },
+    {
+      "id": "hotel/gpt-4o/t111/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0667
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t132/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0278
+    },
+    {
+      "id": "hotel/gpt-4o/t142/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0336
+    },
+    {
+      "id": "hotel/gpt-4o/t5/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0271
+    },
+    {
+      "id": "hotel/gpt-4o/t143/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.076
+    },
+    {
+      "id": "hotel/gpt-4.1/t37/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0072
+    },
+    {
+      "id": "hotel/gpt-4o/t42/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2669
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t73/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0007
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t67/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0265
+    },
+    {
+      "id": "hotel/gpt-4o/t62/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0006
+    },
+    {
+      "id": "hotel/gpt-4o/t189/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0082
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t189/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0136
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t138/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0365
+    },
+    {
+      "id": "hotel/gpt-4o/t153/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0334
+    },
+    {
+      "id": "hotel/gpt-4.1/t85/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0019
+    },
+    {
+      "id": "hotel/gpt-4.1/t42/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.2106
+    },
+    {
+      "id": "hotel/gpt-4.1/t130/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0594
+    },
+    {
+      "id": "hotel/gpt-4.1/t117/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0039
+    },
+    {
+      "id": "hotel/gpt-4o/t169/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0367
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t192/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0024
+    },
+    {
+      "id": "hotel/gpt-4o/t53/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0032
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t163/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0294
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t111/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.148
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t180/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0068
+    },
+    {
+      "id": "hotel/gpt-4o/t55/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0323
+    },
+    {
+      "id": "hotel/gpt-4.1/t7/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.283
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t95/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0109
+    },
+    {
+      "id": "hotel/gpt-4o/t181/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.036
+    },
+    {
+      "id": "hotel/gpt-4.1/t44/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0004
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t95/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0109
+    },
+    {
+      "id": "hotel/gpt-4.1/t71/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0031
+    },
+    {
+      "id": "hotel/gpt-4.1/t95/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0162
+    },
+    {
+      "id": "hotel/gpt-4o/t81/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0095
+    },
+    {
+      "id": "hotel/gpt-4.1/t12/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0365
+    },
+    {
+      "id": "hotel/gpt-4o/t63/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0078
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t186/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0028
+    },
+    {
+      "id": "hotel/gpt-4o/t60/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0165
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t134/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0576
+    },
+    {
+      "id": "hotel/gpt-4.1/t76/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0109
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t174/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0554
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t128/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0335
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t87/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0035
+    },
+    {
+      "id": "hotel/gpt-4o/t56/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0051
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t110/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0081
+    },
+    {
+      "id": "hotel/gpt-4o/t118/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0001
+    },
+    {
+      "id": "hotel/gpt-4.1/t179/i0/c1",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.1594
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t8/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1296
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t55/i0/c8",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0131
+    },
+    {
+      "id": "hotel/gpt-4o/t116/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0686
+    },
+    {
+      "id": "hotel/gpt-4.1/t112/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0068
+    },
+    {
+      "id": "hotel/gpt-4o/t15/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0012
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t25/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0129
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t102/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.007
+    },
+    {
+      "id": "hotel/gpt-4.1/t114/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1041
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t64/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0788
+    },
+    {
+      "id": "hotel/gpt-4.1/t184/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0344
+    },
+    {
+      "id": "hotel/gpt-4o/t66/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0007
+    },
+    {
+      "id": "hotel/gpt-4o/t113/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0017
+    },
+    {
+      "id": "hotel/gpt-4.1/t189/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0034
+    },
+    {
+      "id": "hotel/gpt-4o/t41/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.026
+    },
+    {
+      "id": "hotel/gpt-4.1/t21/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0816
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t39/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0869
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t38/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0784
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t124/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0239
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t40/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0048
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t45/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0015
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t77/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.008
+    },
+    {
+      "id": "hotel/gpt-4.1/t14/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0117
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t7/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.283
+    },
+    {
+      "id": "hotel/gpt-4o/t77/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0508
+    },
+    {
+      "id": "hotel/gpt-4o/t10/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.3226
+    },
+    {
+      "id": "hotel/gpt-4o/t102/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0757
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t130/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0004
+    },
+    {
+      "id": "hotel/gpt-4.1/t80/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1181
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t19/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.2922
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t13/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0787
+    },
+    {
+      "id": "hotel/gpt-4.1/t33/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.002
+    },
+    {
+      "id": "hotel/gpt-4o/t74/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0191
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t99/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0324
+    },
+    {
+      "id": "hotel/gpt-4o/t31/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0195
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t185/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0002
+    },
+    {
+      "id": "hotel/gpt-4o/t167/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0701
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t114/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0866
+    },
+    {
+      "id": "hotel/gpt-4.1/t45/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0015
+    },
+    {
+      "id": "hotel/gpt-4o/t54/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0031
+    },
+    {
+      "id": "hotel/gpt-4.1/t72/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0098
+    },
+    {
+      "id": "hotel/gpt-4o/t132/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0096
+    },
+    {
+      "id": "hotel/gpt-4.1/t26/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.12
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t121/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0
+    },
+    {
+      "id": "hotel/gpt-4.1/t2/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.4006
+    },
+    {
+      "id": "hotel/gpt-4.1/t144/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0607
+    },
+    {
+      "id": "hotel/gpt-4.1/t106/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0095
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t49/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0162
+    },
+    {
+      "id": "hotel/gpt-4o/t122/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0124
+    },
+    {
+      "id": "hotel/gpt-4o/t184/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0068
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t87/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0035
+    },
+    {
+      "id": "hotel/gpt-4.1/t167/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0701
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t143/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.013
+    },
+    {
+      "id": "hotel/gpt-4.1/t54/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0012
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t106/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0009
+    },
+    {
+      "id": "hotel/gpt-4o/t100/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0272
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t109/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0014
+    },
+    {
+      "id": "hotel/gpt-4o/t44/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0367
+    },
+    {
+      "id": "hotel/gpt-4o/t187/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0142
+    },
+    {
+      "id": "hotel/gpt-4o/t6/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0062
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t62/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.1338
+    },
+    {
+      "id": "hotel/gpt-4o/t138/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0043
+    },
+    {
+      "id": "hotel/gpt-4.1/t170/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.023
+    },
+    {
+      "id": "hotel/gpt-4o/t120/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0058
+    },
+    {
+      "id": "hotel/gpt-4.1/t38/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0216
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t131/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0239
+    },
+    {
+      "id": "hotel/gpt-4o/t114/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0285
+    },
+    {
+      "id": "hotel/gpt-4o/t77/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0662
+    },
+    {
+      "id": "hotel/gpt-4.1/t55/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.1059
+    },
+    {
+      "id": "hotel/gpt-4.1/t118/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0042
+    },
+    {
+      "id": "hotel/gpt-4.1/t91/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0057
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t179/i0/c0",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0031
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t116/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0037
+    },
+    {
+      "id": "hotel/gpt-4.1/t64/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0496
+    },
+    {
+      "id": "hotel/gpt-4.1/t101/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.034
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t74/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0032
+    },
+    {
+      "id": "hotel/gpt-4.1/t143/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0539
+    },
+    {
+      "id": "hotel/gpt-4o/t99/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0245
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t55/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.012
+    },
+    {
+      "id": "hotel/gpt-4o/t146/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0771
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t118/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0324
+    },
+    {
+      "id": "hotel/gpt-4.1/t163/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0294
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t18/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0364
+    },
+    {
+      "id": "hotel/gpt-4o/t24/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0005
+    },
+    {
+      "id": "hotel/gpt-4o/t163/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0355
+    },
+    {
+      "id": "hotel/gpt-4o/t97/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0517
+    },
+    {
+      "id": "hotel/gpt-4.1/t78/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.007
+    },
+    {
+      "id": "hotel/gpt-4o/t129/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0302
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t68/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0005
+    },
+    {
+      "id": "hotel/gpt-4o/t14/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0156
+    },
+    {
+      "id": "hotel/gpt-4o/t57/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0354
+    },
+    {
+      "id": "hotel/gpt-4.1/t176/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0843
+    },
+    {
+      "id": "hotel/gpt-4o/t64/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0002
+    },
+    {
+      "id": "hotel/gpt-4o/t61/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0025
+    },
+    {
+      "id": "hotel/gpt-4o/t38/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0216
+    },
+    {
+      "id": "hotel/gpt-4o/t179/i0/c1",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.1594
+    },
+    {
+      "id": "hotel/gpt-4o/t16/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.1645
+    },
+    {
+      "id": "hotel/gpt-4o/t108/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.127
+    },
+    {
+      "id": "hotel/gpt-4.1/t53/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0004
+    },
+    {
+      "id": "hotel/gpt-4.1/t57/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0318
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t113/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.021
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t117/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0023
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t166/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0072
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t1/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.032
+    },
+    {
+      "id": "hotel/gpt-4.1/t3/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0602
+    },
+    {
+      "id": "hotel/gpt-4.1/t0/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.4774
+    },
+    {
+      "id": "hotel/gpt-4.1/t95/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0578
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t175/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0022
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t135/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0018
+    },
+    {
+      "id": "hotel/gpt-4o/t109/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0137
+    },
+    {
+      "id": "hotel/gpt-4.1/t106/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0075
+    },
+    {
+      "id": "hotel/gpt-4o/t76/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0532
+    },
+    {
+      "id": "hotel/gpt-4.1/t74/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0585
+    },
+    {
+      "id": "hotel/gpt-4.1/t92/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0574
+    },
+    {
+      "id": "hotel/gpt-4.1/t51/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0071
+    },
+    {
+      "id": "hotel/gpt-4o/t83/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.0004
+    },
+    {
+      "id": "hotel/gpt-4.1/t84/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0009
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t65/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0011
+    },
+    {
+      "id": "hotel/gpt-4.1/t166/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0072
+    },
+    {
+      "id": "hotel/gpt-4.1/t90/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.0134
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t32/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0001
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t56/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0471
+    },
+    {
+      "id": "hotel/gpt-4.1/t186/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0028
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t185/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0091
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t114/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.002
+    },
+    {
+      "id": "hotel/gpt-4.1/t77/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.0367
+    },
+    {
+      "id": "hotel/gpt-4o/t17/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.0024
+    },
+    {
+      "id": "hotel/gpt-4.1/t40/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.017
+    },
+    {
+      "id": "hotel/gpt-4o/t26/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.1789
+    }
+  ]
+}

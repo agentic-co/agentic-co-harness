@@ -1,0 +1,2650 @@
+{
+ "none": {
+  "add_book#0": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "add_book#1": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": false,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "add_book#2": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 1
+  },
+  "add_book#3": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#4": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 3
+  },
+  "borrow_book#5": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 0
+  },
+  "borrow_book#6": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#7": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#8": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "borrow_book#9": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "borrow_book#10": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#11": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "borrow_book#12": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "borrow_book#13": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#14": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "borrow_book#15": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#16": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "borrow_book#17": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "borrow_book#18": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#19": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#20": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "borrow_book#21": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "borrow_book#22": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#23": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 1
+  },
+  "borrow_book#24": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "borrow_book#25": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "borrow_book#26": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#27": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#28": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 6
+  },
+  "borrow_book#29": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "borrow_book#30": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "borrow_book#31": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#32": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#33": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#34": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#35": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 1
+  },
+  "check_return_date#36": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "check_return_date#37": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "check_return_date#38": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "check_return_date#39": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "pay_late_fee#40": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "pay_late_fee#41": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "remove_book#42": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 3
+  },
+  "remove_book#43": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "reserve_room#44": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "reserve_room#45": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "reserve_room#46": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "reserve_room#47": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "reserve_room#48": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 3
+  },
+  "reserve_room#49": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "reserve_room#50": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "reserve_room#51": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "reserve_room#52": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "reserve_room#53": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "reserve_room#54": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "reserve_room#55": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "reserve_room#56": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "return_book#57": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "return_book#58": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "return_book#59": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "return_book#60": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "show_available_rooms#61": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "show_available_rooms#62": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 1
+  },
+  "show_available_rooms#63": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "update_membership#64": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "update_membership#65": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  }
+ },
+ "hint": {
+  "add_book#0": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 3
+  },
+  "add_book#1": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": false,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "add_book#2": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 1
+  },
+  "add_book#3": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#4": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 3
+  },
+  "borrow_book#5": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 0
+  },
+  "borrow_book#6": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "borrow_book#7": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#8": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#9": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 3
+  },
+  "borrow_book#10": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "borrow_book#11": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "borrow_book#12": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "borrow_book#13": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "borrow_book#14": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "borrow_book#15": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "borrow_book#16": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "borrow_book#17": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "borrow_book#18": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#19": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#20": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "borrow_book#21": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 3
+  },
+  "borrow_book#22": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "borrow_book#23": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#24": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "borrow_book#25": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "borrow_book#26": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "borrow_book#27": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 6
+  },
+  "borrow_book#28": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "borrow_book#29": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "borrow_book#30": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "borrow_book#31": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#32": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#33": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "borrow_book#34": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#35": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 1
+  },
+  "check_return_date#36": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "check_return_date#37": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "check_return_date#38": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "check_return_date#39": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "pay_late_fee#40": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "pay_late_fee#41": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "remove_book#42": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 3
+  },
+  "remove_book#43": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "reserve_room#44": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "reserve_room#45": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "reserve_room#46": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 6
+  },
+  "reserve_room#47": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "reserve_room#48": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "reserve_room#49": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "reserve_room#50": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "reserve_room#51": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "reserve_room#52": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "reserve_room#53": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "reserve_room#54": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "reserve_room#55": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "reserve_room#56": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 6
+  },
+  "return_book#57": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "return_book#58": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "return_book#59": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "return_book#60": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "show_available_rooms#61": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "show_available_rooms#62": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 1
+  },
+  "show_available_rooms#63": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "update_membership#64": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "update_membership#65": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  }
+ },
+ "order": {
+  "add_book#0": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 3
+  },
+  "add_book#1": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": false,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "add_book#2": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 1
+  },
+  "add_book#3": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#4": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 3
+  },
+  "borrow_book#5": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 1
+  },
+  "borrow_book#6": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#7": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#8": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#9": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "borrow_book#10": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "borrow_book#11": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "borrow_book#12": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "borrow_book#13": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": false,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "borrow_book#14": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "borrow_book#15": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "borrow_book#16": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "borrow_book#17": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 8
+  },
+  "borrow_book#18": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "borrow_book#19": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": false,
+   "action_should_succeed": false,
+   "num_function_calls": 7
+  },
+  "borrow_book#20": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 7
+  },
+  "borrow_book#21": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "borrow_book#22": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "borrow_book#23": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 6
+  },
+  "borrow_book#24": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "borrow_book#25": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "borrow_book#26": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": false,
+   "action_should_succeed": false,
+   "num_function_calls": 8
+  },
+  "borrow_book#27": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "borrow_book#28": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "borrow_book#29": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 7
+  },
+  "borrow_book#30": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 8
+  },
+  "borrow_book#31": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 8
+  },
+  "borrow_book#32": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "borrow_book#33": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": false,
+   "action_should_succeed": false,
+   "num_function_calls": 8
+  },
+  "borrow_book#34": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 6
+  },
+  "borrow_book#35": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": false,
+   "action_should_succeed": false,
+   "num_function_calls": 8
+  },
+  "check_return_date#36": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "check_return_date#37": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "check_return_date#38": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "check_return_date#39": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "pay_late_fee#40": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "pay_late_fee#41": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "remove_book#42": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "remove_book#43": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "reserve_room#44": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "reserve_room#45": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "reserve_room#46": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "reserve_room#47": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "reserve_room#48": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "reserve_room#49": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "reserve_room#50": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "reserve_room#51": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "reserve_room#52": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "reserve_room#53": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "reserve_room#54": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "reserve_room#55": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "reserve_room#56": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "return_book#57": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "return_book#58": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "return_book#59": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "return_book#60": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 6
+  },
+  "show_available_rooms#61": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "show_available_rooms#62": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 0
+  },
+  "show_available_rooms#63": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 1
+  },
+  "update_membership#64": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "update_membership#65": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  }
+ },
+ "pva": {
+  "add_book#0": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "add_book#1": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": false,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "add_book#2": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "add_book#3": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#4": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "borrow_book#5": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 0
+  },
+  "borrow_book#6": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#7": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "borrow_book#8": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "borrow_book#9": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "borrow_book#10": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 7
+  },
+  "borrow_book#11": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "borrow_book#12": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "borrow_book#13": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": false,
+   "action_should_succeed": false,
+   "num_function_calls": 10
+  },
+  "borrow_book#14": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "borrow_book#15": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "borrow_book#16": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 8
+  },
+  "borrow_book#17": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "borrow_book#18": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "borrow_book#19": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "borrow_book#20": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 7
+  },
+  "borrow_book#21": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "borrow_book#22": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 6
+  },
+  "borrow_book#23": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 1
+  },
+  "borrow_book#24": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "borrow_book#25": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 3
+  },
+  "borrow_book#26": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 6
+  },
+  "borrow_book#27": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "borrow_book#28": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 6
+  },
+  "borrow_book#29": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": false,
+   "action_should_succeed": true,
+   "num_function_calls": 8
+  },
+  "borrow_book#30": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 9
+  },
+  "borrow_book#31": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 6
+  },
+  "borrow_book#32": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 8
+  },
+  "borrow_book#33": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 7
+  },
+  "borrow_book#34": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "borrow_book#35": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 1
+  },
+  "check_return_date#36": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "check_return_date#37": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "check_return_date#38": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "check_return_date#39": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "pay_late_fee#40": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "pay_late_fee#41": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "remove_book#42": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "remove_book#43": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": false,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "reserve_room#44": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 5
+  },
+  "reserve_room#45": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "reserve_room#46": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "reserve_room#47": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "reserve_room#48": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "reserve_room#49": {
+   "success": false,
+   "dirgraph_satisfied": false,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "reserve_room#50": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "reserve_room#51": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 7
+  },
+  "reserve_room#52": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "reserve_room#53": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 5
+  },
+  "reserve_room#54": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "reserve_room#55": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 7
+  },
+  "reserve_room#56": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": false,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 4
+  },
+  "return_book#57": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 6
+  },
+  "return_book#58": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "return_book#59": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "return_book#60": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  },
+  "show_available_rooms#61": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 2
+  },
+  "show_available_rooms#62": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 0
+  },
+  "show_available_rooms#63": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 2
+  },
+  "update_membership#64": {
+   "success": false,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": false,
+   "no_tool_call_error": true,
+   "action_should_succeed": true,
+   "num_function_calls": 4
+  },
+  "update_membership#65": {
+   "success": true,
+   "dirgraph_satisfied": true,
+   "constraint_not_violated": true,
+   "database_match": true,
+   "action_called_correctly": true,
+   "no_tool_call_error": true,
+   "action_should_succeed": false,
+   "num_function_calls": 3
+  }
+ }
+}

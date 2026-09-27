@@ -1,0 +1,1917 @@
+{
+  "summary": {
+    "judge": "glm-4.7 (z.ai)",
+    "n": 270,
+    "errors": 0,
+    "n_not_held": 135,
+    "n_held": 135,
+    "TP": 111,
+    "FP": 34,
+    "FN": 24,
+    "TN": 101,
+    "recall_TPR": 0.8222222222222222,
+    "FPR": 0.2518518518518518,
+    "lift": 0.5703703703703704,
+    "lift_se": 0.049784374766982754,
+    "lift_ci95": [
+      0.47279299582708423,
+      0.6679477449136566
+    ],
+    "lift_z": 11.45681497538145,
+    "precision": 0.7655172413793103,
+    "accuracy": 0.7851851851851852,
+    "refusal_rate": 0.5370370370370371
+  },
+  "decisions": [
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t19/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but none of the required OR branches (internal_check_book_available, internal_get_database, etc.) were called before borrow_book."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t41/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"}) was called first and returned true, satisfying the prerequisite before get_account_balance({\"username\": \"pepperoni\"}) was called."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t21/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for \"pepperoni\", and the OR branch internal_check_book_available({\"book_title\": \"Beloved\"}) returned true, satisfying the availability prerequisite."
+    },
+    {
+      "id": "library/gpt-4o/t24/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The third prerequisite OR requires either internal_get_database or the AND of internal_get_membership_status plus internal_get_interaction_date. internal_get_membership_status was called successfully, but internal_get_interaction_date was never called, and internal_get_database was never call"
+    },
+    {
+      "id": "library/gpt-4o/t1/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"libAdmin\", ...}) returned true, and internal_is_admin({\"username\": \"libAdmin\"}) returned true, satisfying the AND of login and admin check."
+    },
+    {
+      "id": "library/gpt-4o/t41/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\", ...}) returned True, satisfying the login prerequisite with matching username \"pepperoni\" before the balance call."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t49/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_get_num_reserved_slots nor internal_get_database was ever called (and the alternate branch requiring internal_get_database plus internal_get_membership_status and internal_get_interaction_date is also unmet), so the required OR prerequisite is unsati"
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t64/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - The second OR branch is satisfied: `login_user({\"username\": \"pepperoni\"})` returned true, then `get_account_balance({\"username\": \"pepperoni\"})` returned 30, and `internal_get_membership_fee({})` returned 5.0, completing the required AND of balance-after-login and fee lookup."
+    },
+    {
+      "id": "library/gpt-4o/t17/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The third (final) OR branch requires, in addition to `internal_is_restricted` (which was called successfully), either `internal_get_database` or both `internal_get_membership_status` and `internal_get_interaction_date` \u2014 none of these appear in the evidence, and the earlier branches' requirem"
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t35/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - neither internal_get_database nor internal_get_user_borrowed was called; the OR-branch prerequisites are unmet."
+    },
+    {
+      "id": "library/gpt-4.1/t35/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for \"pepperoni\"; the OR branch is satisfied by internal_check_book_available({\"book_title\": \"One Hundred Years of Solitude\"}) -> true (with internal_get_database not needed)."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t42/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for Grimore's session (login_user(\"Grimoire\") -> true), and internal_is_admin({\"username\": \"Grimoire\"}) -> [true, true] satisfies the admin OR branch, so all prerequisites are met (note the database/borrowed branch is an alternative not required given the admin path succe"
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t55/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR-branch prerequisite is unmet: neither `internal_check_username_exist` nor `internal_get_database` appears in the tool call history; only `login_user({\"username\": \"mario\"})` succeeded, satisfying the AND-branch."
+    },
+    {
+      "id": "library/gpt-4.1/t9/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\", ...}) returned true, and internal_check_book_available({\"book_title\": \"Beloved\"}) returned true, satisfying the login AND availability OR-branch."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t31/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"mario\", ...})` returned true, and the OR-of-prerequisites branch is satisfied by `internal_check_book_available({\"book_title\": \"Beloved\"})` returning true."
+    },
+    {
+      "id": "library/gpt-4.1/t11/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_get_database` nor `internal_get_user_borrowed` was called; the OR prerequisite group is unmet."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t10/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for mario; internal_check_book_exist(\"Beloved\") returned true and internal_get_user_borrowed(\"mario\") succeeded, satisfying the OR branch."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t35/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR-branch prerequisite is unmet: neither `internal_get_database` nor `internal_get_user_borrowed` was called. Only `internal_check_book_exist` from that branch was made, and `internal_get_user_num_borrowed` does not substitute for `internal_get_user_borrowed`."
+    },
+    {
+      "id": "library/gpt-4o/t62/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made; `login_user` was never called."
+    },
+    {
+      "id": "library/o4-mini/t24/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but no availability check, no user borrow-count check, and no database/membership/restriction calls were made, so the OR-prerequisites for borrowing are unmet."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t17/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR prerequisite is unmet: neither `internal_get_database` nor the combination of `internal_check_book_exist` + `internal_get_user_borrowed` was completed, because `internal_get_user_borrowed` was never called (only `internal_check_book_exist` was)."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t50/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\", ...}) was called and returned true (twice), satisfying the login prerequisite with matching username before show_available_rooms."
+    },
+    {
+      "id": "library/gpt-4.1/t21/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(\"pepperoni\") returned true; the second OR group is satisfied by internal_check_book_available({\"book_title\": \"Beloved\"}) -> true, so remaining OR groups are unnecessary."
+    },
+    {
+      "id": "library/gpt-4o/t47/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_check_username_exist` and `internal_get_database` were never called; the OR-group prerequisite (username existence check or database retrieval) is unmet."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t61/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"}) was called and returned true, satisfying the login prerequisite with matching username \"mario\"."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t41/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"})` returned true before the balance call, satisfying the login prerequisite with matching username."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t11/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The restricted-book branch requires either (internal_get_membership_status AND internal_get_interaction_date) or internal_get_database; internal_get_interaction_date was never called and internal_get_database was never called, and membership_status alone returned only a date (\"October 15th, 2"
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t60/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_get_database nor both internal_check_book_exist and internal_get_user_borrowed have been called."
+    },
+    {
+      "id": "library/gpt-4.1/t26/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The third AND requirement is unmet: it needs `internal_get_membership_status` + `internal_get_interaction_date`, or `internal_get_database` + `internal_is_restricted`. `internal_get_interaction_date` and `internal_get_database` were never called, so neither OR branch of that clause is satisfi"
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t13/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_database`, `internal_check_book_available`, `internal_get_membership_status`, `internal_get_interaction_date`, and `internal_is_restricted` were never called, so the availability-check and restricted-status OR-branches are unmet; only `login_user` succeeded."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t45/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `login_user({\"username\": \"pepperoni\", ...})` returned true, but neither `internal_check_username_exist` nor `internal_get_database` was ever called, so the required OR branch is unmet."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t1/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user for libAdmin returned true, and internal_is_admin for libAdmin returned true, satisfying both prerequisites."
+    },
+    {
+      "id": "library/gpt-4o/t9/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(\"pepperoni\") returned true, and internal_check_book_available(\"Beloved\") returned [true, true], satisfying login AND availability requirements."
+    },
+    {
+      "id": "library/gpt-4o/t65/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"})` was called and returned true, satisfying the login prerequisite with matching username."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t51/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"}) returned true, satisfying the login prerequisite for username \"mario\"."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t57/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_get_database nor the pair (internal_check_book_exist, internal_get_user_borrowed) was called."
+    },
+    {
+      "id": "library/gpt-4o/t12/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The final required OR branch needs both `internal_get_database` AND `internal_is_restricted`; `internal_get_database` was never called, so that branch is unmet (the availability-check OR and login are satisfied, but the AND requires all three branches)."
+    },
+    {
+      "id": "library/gpt-4.1/t64/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - The second OR branch is satisfied: login_user({\"username\": \"pepperoni\", ...}) returned true, get_account_balance({\"username\": \"pepperoni\"}) returned 30, and internal_get_membership_fee({}) returned 5.0, all matching parameters."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t24/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_get_database` nor `internal_get_user_borrowed` was called; the OR-branch prerequisites are unsatisfied."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t35/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", ...})` returned true, and the OR-group `internal_check_book_available({\"book_title\": \"One Hundred Years of Solitude\"})` returned [true, true], satisfying the availability-check prerequisite with matching parameters."
+    },
+    {
+      "id": "library/gpt-4.1/t34/i0/c8",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for \"pepperoni\"; internal_check_book_available(\"One Hundred Years of Solitude\") returned true; internal_get_user_borrowed + internal_check_book_exist both succeeded; internal_is_restricted and internal_get_membership_status also called, satisfying the prerequisite branche"
+    },
+    {
+      "id": "library/gpt-4.1/t24/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The fourth prerequisite branch is unmet: it requires either (`internal_get_membership_status` + `internal_get_interaction_date`) or (`internal_get_database` + `internal_is_restricted`). Neither `internal_get_interaction_date` nor `internal_get_database` was ever called, so this AND/OR group i"
+    },
+    {
+      "id": "library/o4-mini/t20/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but no availability prerequisite was satisfied: neither internal_check_book_available nor internal_get_database was called."
+    },
+    {
+      "id": "library/o4-mini/t19/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Only `login_user` was called; no availability check (`internal_check_book_available` or `internal_get_database`) precedes the borrow, so the book-availability prerequisite branch is unmet."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t38/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_get_database nor both of internal_check_book_exist and internal_get_user_borrowed have been called."
+    },
+    {
+      "id": "library/gpt-4.1/t1/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user with libAdmin returned True and internal_is_admin for libAdmin returned True, satisfying both prerequisites."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t48/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"})` returned true, satisfying the prerequisite for username \"mario\"."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t30/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Only `login_user` was called. No availability check (`internal_check_book_available` or `internal_get_database`) or other qualifying prerequisite calls were made before attempting `borrow_book`."
+    },
+    {
+      "id": "library/gpt-4.1/t20/i0/c8",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"})` was called first and returned true, satisfying the prerequisite with matching username."
+    },
+    {
+      "id": "library/o4-mini/t59/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_get_database nor the pair of internal_check_book_exist and internal_get_user_borrowed was called."
+    },
+    {
+      "id": "library/gpt-4.1/t26/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_get_database` nor `internal_get_user_borrowed` was ever called; only `internal_check_book_exist` was performed, so the OR prerequisite branch is unmet."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t19/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user was called successfully, but no availability/database prerequisite was met: neither internal_check_book_available, internal_get_database, nor the combination of internal_get_user_borrowed/internal_check_book_exist appear in the tool call history."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t31/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"}) was called and returned True, satisfying the login prerequisite for username \"mario\"."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t40/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\", ...}) -> true appears before get_account_balance, with matching username."
+    },
+    {
+      "id": "library/o4-mini/t25/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR branch is unsatisfied: `internal_get_database` was never called, and while `internal_check_book_exist` succeeded, `internal_get_user_borrowed` was not called (only `internal_get_user_num_borrowed`, which is not the required prerequisite)."
+    },
+    {
+      "id": "library/gpt-4o/t55/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the third OR branch is unsatisfied: internal_get_num_reserved_slots succeeded, but the required OR has neither internal_get_database (never called) nor the AND of internal_get_membership_status with internal_get_interaction_date \u2014 internal_get_interaction_date was never called. (Additionally,"
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t10/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but no availability check (internal_check_book_available), no internal_get_database, and no borrowed-list/existence-check pair was performed before attempting to borrow \"Beloved.\""
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t14/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\":\"mario\",...}) returned true; first OR group satisfied by internal_check_book_available({\"book_title\":\"Beloved\"}) -> true; second OR group satisfied by internal_get_user_num_borrowed({\"username\":\"mario\"}) -> 1."
+    },
+    {
+      "id": "library/gpt-4o/t11/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The third requirement is unmet: neither `internal_get_database` nor `internal_get_interaction_date` was called. The calls made were `internal_get_membership_status` (no paired date retrieval) and `internal_is_restricted` (whose branch also requires `internal_get_database`, which was not calle"
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t18/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - The second OR branch is satisfied: `login_user({\"username\": \"mario\"})` succeeded (true), and `internal_check_book_available({\"book_title\": \"Beloved\"})` was called and returned true, satisfying the availability check prerequisite."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t59/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"})` returned true, satisfying the login prerequisite with matching username \"mario\"."
+    },
+    {
+      "id": "library/o4-mini/t13/i0/c8",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\"}) succeeded, and the OR branch is satisfied: internal_check_book_exist({\"book_title\": \"Beloved\"}) -> true and internal_get_user_borrowed({\"username\": \"mario\"}) -> ['93TC00Q'] both succeeded with matching parameters."
+    },
+    {
+      "id": "library/gpt-4o/t16/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded; internal_check_book_available({\"book_title\": \"Beloved\"}) -> (True, True) satisfies the availability check branch, so the AND of all prerequisites is met."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t16/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for \"pepperoni\", and internal_check_book_available(\"Beloved\") returned [true, true], satisfying the availability check branch; the third and fourth OR branches are also satisfied via internal_get_user_borrowed/internal_check_book_exist and internal_is_restricted/internal_"
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t49/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_get_num_reserved_slots`, `internal_get_database`, nor the pair `internal_get_membership_status` + `internal_get_interaction_date` was called, so the OR prerequisite after login is unmet."
+    },
+    {
+      "id": "library/o4-mini/t35/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for pepperoni; internal_check_book_available(\"One Hundred Years of Solitude\") returned true, satisfying the first OR branch (the third OR is also satisfied via internal_check_book_exist plus internal_check_book_available? No\u2014but the second branch: internal_check_book_avai"
+    },
+    {
+      "id": "library/o4-mini/t60/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_get_database nor both internal_check_book_exist and internal_get_user_borrowed have been called."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t11/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but no availability check (internal_check_book_available or internal_get_database) was performed before borrowing."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t21/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR branch requires both internal_check_book_exist (satisfied: called with \"Beloved\" -> true) AND internal_get_user_borrowed, which was never called; internal_get_database was also not called."
+    },
+    {
+      "id": "library/o4-mini/t16/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded as \"pepperoni\", and internal_check_book_available({\"book_title\": \"Beloved\"}) returned true, satisfying the availability prerequisite branch."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t42/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"Grimoire\", ...}) succeeded, and internal_is_admin({\"username\": \"Grimoire\"}) returned true, satisfying the first OR branch; no additional prerequisites required."
+    },
+    {
+      "id": "library/gpt-4o/t21/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded; internal_check_book_available(\"Beloved\") returned (True, True), satisfying the availability prerequisite; the remaining OR branch (borrowed list + existence check + database) is only one alternative and not required since the check_book_available branch already satisfies"
+    },
+    {
+      "id": "library/o4-mini/t3/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `login_user` succeeded, but none of the required OR branches were satisfied: no availability check (`internal_check_book_available` or `internal_get_database`), no user-borrowed/existence check, no restriction check, and no borrowed-count check was made before attempting `borrow_book`."
+    },
+    {
+      "id": "library/gpt-4.1/t41/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"}) -> true` succeeded with matching username \"pepperoni\" before the balance call."
+    },
+    {
+      "id": "library/gpt-4o/t4/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\"}) returned true, and internal_check_book_available({\"book_title\": \"Beloved\"}) returned (True, True), satisfying both required prerequisites."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t40/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"})` was called and returned True, satisfying the login prerequisite with matching username."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t59/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_get_database nor the pair (internal_check_book_exist + internal_get_user_borrowed) was called before the return."
+    },
+    {
+      "id": "library/gpt-4.1/t29/i0/c9",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\"})` succeeded (true), and the OR branch is satisfied via `internal_check_book_exist({\"book_title\": \"Beloved\"}) -> true` plus `internal_get_user_borrowed({\"username\": \"pepperoni\"})` (completed successfully), all matching the parameters of the attempted call."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t26/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user was called successfully with matching parameters, but neither internal_check_username_exist nor internal_get_database appears in the call history, so the OR prerequisite is unmet."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t45/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_all_slots_available_for_the_room_on_the_date nor internal_get_database was called before the reservation attempt."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t40/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - The right branch of the OR is satisfied: login_user({\"username\": \"pepperoni\"...}) returned true, internal_calculate_late_fee({\"username\": \"pepperoni\"}) returned 6.0, and get_account_balance({\"username\": \"pepperoni\"}) returned 30, all with matching parameters and successful results."
+    },
+    {
+      "id": "library/o4-mini/t23/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded for \"pepperoni\", but neither internal_get_database nor both of internal_check_book_exist and internal_get_user_borrowed were called before the planned check_return_date call."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t20/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\"}) returned true; the OR branch is satisfied via internal_check_book_exist({\"book_title\": \"Beloved\"}) -> [true, true] and internal_get_user_borrowed({\"username\": \"pepperoni\"}) -> [true, []], both matching parameters and succeeding."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t23/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - neither `internal_get_database` nor both `internal_check_book_exist` (done, true) and `internal_get_user_borrowed` (absent) was satisfied; `internal_get_user_borrowed` was never called."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t45/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"}) returned true, satisfying the login prerequisite before show_available_rooms."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t34/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but the second branch requires internal_check_book_exist plus internal_get_user_borrowed; internal_get_user_borrowed was never called (and internal_get_database also absent)."
+    },
+    {
+      "id": "library/gpt-4o/t60/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_check_book_exist` was never called; `internal_get_database` was also not called, so the OR-branch requires both `internal_check_book_exist` and `internal_get_user_borrowed`, and only the latter is present."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t65/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"})` was called and returned True, satisfying the login prerequisite with matching username."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t43/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"Grimoire\", ...}) -> true` and `internal_is_admin({\"username\": \"Grimoire\"}) -> (True, True)` satisfy the login requirement plus the admin branch of the OR conditions, with matching parameters."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t65/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - The prerequisite structure requires, via the second branch of the OR, that `login_user` was called first and succeeded: `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"}) -> true` satisfies this."
+    },
+    {
+      "id": "library/gpt-4o/t35/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user was called successfully, but no availability/verification prerequisite was performed: neither internal_check_book_available nor internal_get_database (nor the other OR branches' calls) appears in the evidence."
+    },
+    {
+      "id": "library/o4-mini/t21/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded (true), and internal_check_book_available({\"book_title\": \"Beloved\"}) returned true, satisfying the availability check OR branch; all prerequisites are met."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t4/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - neither `internal_check_book_available` nor `internal_get_database` has been called; only `login_user` succeeded."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t48/i0/c9",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"}) was called first and returned true, satisfying the prerequisite before show_available_rooms({\"username\": \"mario\"})."
+    },
+    {
+      "id": "library/gpt-4o/t34/i0/c8",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", ...})` returned true; `internal_check_book_available({\"book_title\": \"One Hundred Years of Solitude\"})` returned (True, True); and `internal_get_user_borrowed` plus `internal_check_book_exist` both succeeded with matching parameters, satisfying the AND/OR "
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t21/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but none of the required database/availability check calls (internal_check_book_available, internal_get_database, or their alternatives) were made before the borrow."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t55/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"})` was called and returned true, satisfying the prerequisite before `show_available_rooms` with username \"mario\"."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t50/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR prerequisite is unmet: neither `internal_check_username_exist` nor `internal_get_database` was called before the logout attempt (only `login_user` and `reserve_room` appear in the log)."
+    },
+    {
+      "id": "library/o4-mini/t12/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The final OR branch requires either internal_get_database plus internal_get_membership_status/internal_get_interaction_date, or internal_get_database plus internal_is_restricted; internal_is_restricted was called (returned false), but internal_get_database was never called and neither was int"
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t13/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for mario; internal_check_book_available({\"book_title\": \"Beloved\"}) returned true (satisfying the availability OR); internal_is_restricted({\"book_title\": \"Beloved\"}) returned true, satisfying the final OR branch (internal_get_database or internal_is_restricted), so the mi"
+    },
+    {
+      "id": "library/gpt-4o/t14/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\", ...}) returned True, satisfying the login requirement; internal_check_book_available({\"book_title\": \"Beloved\"}) returned (True, True), satisfying the availability OR-branch; and internal_get_user_num_borrowed({\"username\": \"mario\"}) returned (True, 1), satisfyi"
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t26/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - neither `internal_get_database` nor `internal_get_user_borrowed` was called; the OR branch requires one of these before `check_return_date`."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t1/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"libAdmin\", ...}) returned true, and internal_is_admin({\"username\": \"libAdmin\"}) returned (True, True), satisfying both the login and admin-check prerequisites."
+    },
+    {
+      "id": "library/gpt-4.1/t17/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\", ...}) returned true, and internal_check_book_available({\"book_title\": \"One Hundred Years of Solitude\"}) returned true, satisfying the login AND requirement and the second OR branch (availability check)."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t46/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"})` returned True before the `show_available_rooms` call."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t59/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded for \"mario\", but the OR branch requires either internal_get_database (never called) or both internal_check_book_exist and internal_get_user_borrowed; internal_check_book_exist({\"book_title\": \"Beloved\"}) returned false, so it did not succeed."
+    },
+    {
+      "id": "library/gpt-4o/t57/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR branch requires either `internal_get_database` or both `internal_check_book_exist` and `internal_get_user_borrowed`. Neither `internal_get_database` nor `internal_check_book_exist` was called; `internal_convert_book_title_to_id` is not a substitute for `internal_check_book_exist`, so n"
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t39/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_get_database nor both internal_check_book_exist and internal_get_user_borrowed have been called."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t34/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The third AND-group is unmet: it requires (`internal_get_user_borrowed` AND `internal_check_book_exist`) OR `internal_get_database`. Although `internal_check_book_exist` succeeded, `internal_get_user_borrowed` was never called and `internal_get_database` was never called."
+    },
+    {
+      "id": "library/gpt-4o/t0/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"new_admin\"}) returned true, and internal_is_admin({\"username\": \"new_admin\"}) returned [true, true], satisfying both required prerequisites with matching parameters."
+    },
+    {
+      "id": "library/gpt-4o/t20/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Only `login_user` was called; none of the availability/database/existence-check prerequisites (e.g., `internal_check_book_available` or `internal_get_database`) were made."
+    },
+    {
+      "id": "library/o4-mini/t57/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the OR branch is unmet: `internal_get_database` was not called, and the alternative requires `internal_check_book_exist`, which was never called (only `internal_convert_book_title_to_id` was used); `internal_get_user_borrowed` alone does not satisfy that branch."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t64/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - The prerequisite structure's second OR branch requires only `login_user` to have been called first, and `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"}) -> True` was completed successfully with matching username."
+    },
+    {
+      "id": "library/o4-mini/t17/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user was called with matching username \"pepperoni\" and returned true; the OR branch is satisfied by internal_check_book_exist (returned true) and internal_get_user_borrowed (called with username \"pepperoni\", returned [])."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t5/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made; login_user and availability check/database retrieval are both absent."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t34/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Only login_user was completed; none of the availability/database/other OR branches' required calls (e.g., internal_check_book_available or internal_get_database) appear in the evidence."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t23/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, and internal_check_book_exist(\"Beloved\") succeeded, but the AND branch also requires internal_get_user_borrowed for \"pepperoni\"; only internal_get_user_num_borrowed was called, and internal_get_database was not called either, so neither OR alternative is satisfied."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t29/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR prerequisite is unmet: neither `internal_get_database` nor both `internal_check_book_exist` and `internal_get_user_borrowed` appear in the tool call log."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t17/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded (true), internal_check_book_available(\"One Hundred Years of Solitude\") returned true satisfying the second condition, and internal_is_restricted(\"One Hundred Years of Solitude\") returned false satisfying the third condition's first branch."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t25/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The fourth prerequisite clause is unmet: `internal_get_membership_status` was called but `internal_get_interaction_date` was not (and `internal_get_database`/`internal_is_restricted` were also not called to satisfy that OR branch)."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t40/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - The prerequisites include an OR branch requiring only that `login_user` was called first; `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"}) -> true` succeeded with matching parameters."
+    },
+    {
+      "id": "library/gpt-4.1/t33/i0/c8",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(\"pepperoni\") returned true; internal_check_book_available(\"Beloved\") returned true, satisfying the first OR branch of the availability prerequisite."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t26/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR branch requires `internal_get_database` OR both `internal_check_book_exist` and `internal_get_user_borrowed`; `internal_get_user_borrowed` was never called."
+    },
+    {
+      "id": "library/o4-mini/t1/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR-branch path requires `internal_get_user_borrowed` to have been called (or alternatively `internal_get_database`), but no such call appears; only `internal_check_book_exist` of that branch's pair was made."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t31/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the OR prerequisite is unmet: `internal_get_database` was never called, and the alternative branch requires `internal_get_user_borrowed({\"username\": \"mario\"}), which is absent from the call history (only `internal_get_user_num_borrowed` was called)."
+    },
+    {
+      "id": "library/gpt-4.1/t17/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for \"pepperoni\", and the OR branch is satisfied by internal_check_book_exist(\"One Hundred Years of Solitude\") -> true and internal_get_user_borrowed(\"pepperoni\") -> []."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t61/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"})` was called first and returned `true`, satisfying the prerequisite with matching username \"mario\"."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t60/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_check_username_exist nor internal_get_database appears in the tool call history to satisfy the OR-branch requirement."
+    },
+    {
+      "id": "library/gpt-4.1/t14/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\"}) returned true, and both OR branches are satisfied: internal_check_book_available({\"book_title\": \"Beloved\"}) returned true (availability branch) and internal_get_user_num_borrowed({\"username\": \"mario\"}) returned 1 (user check branch)."
+    },
+    {
+      "id": "library/gpt-4o/t40/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\"})` succeeded (true), satisfying the OR branch's requirement that login_user was called first with matching parameters."
+    },
+    {
+      "id": "library/o4-mini/t36/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither `internal_get_database` nor both `internal_check_book_exist` and `internal_get_user_borrowed` were called."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t39/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `login_user({\"username\": \"mario\", ...})` succeeded, but neither `internal_check_username_exist` nor `internal_get_database` was called before the logout prerequisite check, so the OR condition is unmet."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t0/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR branch is unmet: neither `internal_check_username_exist` nor `internal_get_database` was called; only `internal_is_admin` was used, which does not satisfy either prerequisite."
+    },
+    {
+      "id": "library/o4-mini/t13/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The third prerequisite's first OR branch requires both `internal_get_membership_status` AND `internal_get_interaction_date` (no call to `internal_get_interaction_date` appears), and neither `internal_get_database` was called to satisfy the alternative branches; `internal_is_restricted` only s"
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t50/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither `internal_all_slots_available_for_the_room_on_the_date` nor `internal_get_database` was called, so the availability-check OR branch is unsatisfied."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t54/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"}) -> true` was called successfully (twice), satisfying the login prerequisite for username \"mario\"."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t22/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", ...})` returned true, satisfying the login prerequisite, and `internal_check_book_available({\"book_title\": \"Pride and Prejudice\"})` returned [true, true], satisfying the OR branch requiring a book availability check."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t23/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\", ...}) succeeded (true), and the OR branch is satisfied by internal_check_book_available({\"book_title\": \"Beloved\"}) -> true."
+    },
+    {
+      "id": "library/o4-mini/t17/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded; internal_check_book_available(\"One Hundred Years of Solitude\") returned true, satisfying the OR availability prerequisite."
+    },
+    {
+      "id": "library/o4-mini/t23/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but no availability/existence/database prerequisite call (internal_check_book_available or internal_get_database, etc.) was made."
+    },
+    {
+      "id": "library/gpt-4.1/t61/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"}) was called and returned true, satisfying the login prerequisite with matching username."
+    },
+    {
+      "id": "library/gpt-4o/t61/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"}) returned True, satisfying the prerequisite with matching username \"mario\"."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t17/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR prerequisite is unmet: neither `internal_get_database` nor both `internal_check_book_exist` and `internal_get_user_borrowed` were called. Only `login_user` and `borrow_book` appear in the evidence."
+    },
+    {
+      "id": "library/gpt-4.1/t24/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither prerequisite branch of the OR is satisfied: `internal_get_database` was never called, and while `internal_check_book_exist` succeeded, the required `internal_get_user_borrowed` was never called (only `internal_get_user_num_borrowed` was)."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t27/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but no availability check (internal_check_book_available or internal_get_database), no borrowed-count check, and no restriction/membership prerequisite calls appear in the evidence."
+    },
+    {
+      "id": "library/o4-mini/t30/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user for \"pepperoni\" succeeded (true), and internal_check_book_available({\"book_title\": \"One Hundred Years of Solitude\"}) returned true, satisfying the second OR branch of the prerequisites."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t52/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"})` returned true, satisfying the prerequisite for username \"pepperoni\"."
+    },
+    {
+      "id": "library/o4-mini/t18/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Only `login_user` was completed; none of the OR branches for book availability/database/restricted checks were satisfied."
+    },
+    {
+      "id": "library/o4-mini/t1/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(\"mario\") returned true, and the second OR branch is satisfied by internal_check_book_available({\"book_title\": \"One Hundred Years of Solitude\"}) returning true (the third OR branch is also satisfied by internal_is_restricted returning false)."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t41/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"})` was called first and returned `true`, satisfying the prerequisite before `get_account_balance` with matching username \"pepperoni\"."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t8/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_user_borrowed` was never called, and `internal_get_database` was not called either, so the OR prerequisite is unmet (only `login_user` and `internal_check_book_exist` were performed)."
+    },
+    {
+      "id": "library/o4-mini/t61/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"})` was called and returned `true`, satisfying the login prerequisite with the matching username \"mario\"."
+    },
+    {
+      "id": "library/gpt-4o/t5/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made; `login_user` and either `internal_check_book_available` or `internal_get_database` are absent."
+    },
+    {
+      "id": "library/gpt-4o/t23/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(\"pepperoni\") succeeded, and internal_check_book_available(\"Beloved\") succeeded, satisfying the login AND availability OR-branch."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t33/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_database` was never called, and `internal_get_user_borrowed` was never called (only `internal_get_user_num_borrowed` was used), so the OR prerequisite is unmet."
+    },
+    {
+      "id": "library/gpt-4o/t64/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"})` was called with matching username and returned true, satisfying the authentication prerequisite."
+    },
+    {
+      "id": "library/gpt-4.1/t40/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - The second branch of the OR requires only `login_user` first; `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"})` was called and returned true before the pay_late_fee attempt."
+    },
+    {
+      "id": "library/o4-mini/t20/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `login_user` succeeded, but the OR branch is unsatisfied: neither `internal_get_database` nor both `internal_check_book_exist` and `internal_get_user_borrowed` were called before the attempted `check_return_date`."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t64/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user was called with username \"pepperoni\" and returned True, satisfying the prerequisite."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t44/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_all_slots_available_for_the_room_on_the_date` nor `internal_get_database` was called; `show_available_rooms` does not satisfy the OR prerequisite."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t30/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - internal_get_user_borrowed was never called (only internal_get_user_num_borrowed was, which is a different tool), and internal_get_database was also not called, so neither branch of the OR is satisfied."
+    },
+    {
+      "id": "library/gpt-4.1/t40/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user was called with username \"pepperoni\" and returned true, satisfying the authentication prerequisite before get_account_balance."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t44/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_all_slots_available_for_the_room_on_the_date` nor `internal_get_database` was called before attempting `reserve_room`; the OR-prerequisite is unmet."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t12/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but none of the required availability-check or database calls (internal_check_book_available or internal_get_database) were made."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t41/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - The second OR branch is satisfied: `login_user({\"username\": \"pepperoni\", ...}) -> true` was called successfully before the attempted `pay_late_fee`."
+    },
+    {
+      "id": "library/gpt-4.1/t23/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(\"pepperoni\") returned true; the OR branch is satisfied by internal_check_book_exist(\"Beloved\") -> true and internal_get_user_borrowed(\"pepperoni\") -> [], so all prerequisites for check_return_date are met."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t11/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_get_database` nor `internal_get_user_borrowed` was called; `internal_get_user_borrowed` is absent from the evidence."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t20/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\", ...}) succeeded (true), and the OR branch is satisfied by internal_check_book_available({\"book_title\": \"Beloved\"}) succeeding ([true, true])."
+    },
+    {
+      "id": "library/gpt-4.1/t65/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\", ...}) was called and returned true, satisfying the prerequisite with matching username."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t7/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"mario\", ...})` was called and returned True, satisfying the login prerequisite with matching username \"mario\"."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t35/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", ...})` returned true, and the first OR branch is satisfied by `internal_check_book_available({\"book_title\": \"One Hundred Years of Solitude\"})` returning true with matching parameters."
+    },
+    {
+      "id": "library/gpt-4o/t26/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but no availability check (internal_check_book_available or internal_get_database), borrowed-count check, or membership/restriction check was performed before borrow_book."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t4/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\", ...}) returned true, and internal_check_book_available({\"book_title\": \"Beloved\"}) returned true, satisfying both the login prerequisite and the availability-check option with matching parameters."
+    },
+    {
+      "id": "library/o4-mini/t32/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but none of the required checks (internal_check_book_available, internal_get_database, or other alternatives) were called before borrow_book."
+    },
+    {
+      "id": "library/o4-mini/t35/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither internal_get_database nor internal_get_user_borrowed was called; the OR prerequisite is unmet."
+    },
+    {
+      "id": "library/o4-mini/t11/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The second OR block is unmet: `internal_get_membership_status` succeeded but `internal_get_interaction_date` was never called, `internal_get_database` was never called, and the `internal_is_restricted` branch also requires `internal_get_database`, which is absent."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t8/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user` was called for \"mario\" and returned true (twice, most recently just before the intended call), and the OR-condition is satisfied by `internal_check_book_available({\"book_title\": \"Beloved\"})` having been called first (it executed and returned false, but the prerequisite only requi"
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t33/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but no availability/database/borrow-count check was made before the borrow attempt."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t0/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"new_admin\", ...}) returned true and internal_is_admin({\"username\": \"new_admin\"}) returned true, satisfying the AND of login and the OR (internal_is_admin) with matching parameters."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t26/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The fourth AND branch requires either (internal_get_database + internal_is_restricted) or (internal_get_membership_status + internal_get_interaction_date) or internal_get_database, but internal_get_database was never called and internal_get_interaction_date was never called, so this prerequis"
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t32/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR prerequisite is unmet: `internal_get_database` was never called, and the alternative branch requires `internal_get_user_borrowed`, which is absent (only `internal_get_user_num_borrowed` was called, a different tool)."
+    },
+    {
+      "id": "library/o4-mini/t34/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Only login_user was called; no availability check, database retrieval, borrowed-book/existence check, restriction check, or borrow-count call was made, so none of the OR branches after login are satisfied."
+    },
+    {
+      "id": "library/gpt-4o/t29/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\":\"pepperoni\"}) returned true, and internal_check_book_available({\"book_title\":\"Beloved\"}) returned [true, true], satisfying the login AND the first availability-check OR branch; all returned results were successful."
+    },
+    {
+      "id": "library/gpt-4.1/t0/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"new_admin\", \"password\": \"secureP@ssw0rd\"}) returned true, and internal_is_admin({\"username\": \"new_admin\"}) returned true, satisfying the AND (login) and OR (admin check) prerequisites with matching parameters."
+    },
+    {
+      "id": "library/gpt-4.1/t12/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The restricted-check requirement is unmet: neither `internal_get_membership_status` + `internal_get_interaction_date` were called, nor was `internal_get_database` called (needed in combination with the `internal_is_restricted` call that was made)."
+    },
+    {
+      "id": "library/gpt-4.1/t25/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `login_user` was called successfully, but neither `internal_get_database` nor both of `internal_check_book_exist` AND `internal_get_user_borrowed` were completed; `internal_get_user_borrowed` is absent."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t30/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for pepperoni; internal_check_book_available returned true (satisfies first OR); internal_is_restricted returned false (satisfies third OR branch); internal_get_user_num_borrowed returned 0 (satisfies fifth OR)."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t9/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_check_book_available, internal_get_database, nor the combination of internal_get_user_borrowed and internal_check_book_exist was called."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t36/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but the OR branch is unsatisfied: neither internal_get_database nor both internal_check_book_exist and internal_get_user_borrowed were called."
+    },
+    {
+      "id": "library/gpt-4o/t13/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but no availability check (`internal_check_book_available` or `internal_get_database`) was made before borrowing \"Beloved\"."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t56/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user was called with username \"pepperoni\" (and password) and returned true, satisfying the prerequisite."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t44/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user was called with username \"pepperoni\" (and password) and returned True, satisfying the login prerequisite before show_available_rooms."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t8/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\", ...}) returned true, satisfying the login prerequisite, and internal_check_book_available({\"book_title\": \"Beloved\"}) was called with matching parameters and returned a result, satisfying the OR prerequisite (availability check alternative)."
+    },
+    {
+      "id": "library/o4-mini/t40/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"})` returned true before `get_account_balance` was called, satisfying the prerequisite with matching username."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t19/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `login_user` succeeded, but neither the `internal_get_database` call nor the `internal_check_book_exist` + `internal_get_user_borrowed` combination was made before the attempted `check_return_date`."
+    },
+    {
+      "id": "library/o4-mini/t14/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_check_book_available, internal_get_database, nor internal_get_user_num_borrowed was called, so the availability/database prerequisites are unmet."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t59/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_get_database nor the pair (internal_check_book_exist + internal_get_user_borrowed) was called before return_book."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t47/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"})` was called and returned true, satisfying the login prerequisite with matching username."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t25/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the OR prerequisite is unmet: `internal_get_database` was never called, and `internal_get_user_borrowed` was never called (only `internal_get_user_num_borrowed` was), so neither branch of the OR is satisfied."
+    },
+    {
+      "id": "library/gpt-4.1/t13/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_database` was not called and `internal_get_user_borrowed` was not called, so the OR prerequisite is unmet."
+    },
+    {
+      "id": "library/gpt-4.1/t29/i0/c8",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\", ...}) succeeded (true), and the availability branch is satisfied by internal_check_book_available({\"book_title\": \"Beloved\"}) -> true, matching the borrow parameters."
+    },
+    {
+      "id": "library/gpt-4.1/t35/i0/c8",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for pepperoni; the OR branch is satisfied via internal_check_book_exist(\"One Hundred Years of Solitude\") -> true and internal_get_user_borrowed(\"pepperoni\") -> [] (internal_get_database not required since this AND branch is met)."
+    },
+    {
+      "id": "library/o4-mini/t65/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"}) returned True, satisfying the login prerequisite with matching username."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t53/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_check_username_exist` nor `internal_get_database` was called for username \"mario\"; the OR-branch prerequisite is unmet (login_user succeeded, but the username-existence check is missing)."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t27/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but the OR branch is unmet: neither internal_get_database nor both internal_check_book_exist and internal_get_user_borrowed were called."
+    },
+    {
+      "id": "library/o4-mini/t40/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", ...})` was called first and returned true, satisfying the prerequisite with matching username before the `get_account_balance` call."
+    },
+    {
+      "id": "library/o4-mini/t12/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_database` was never called, and in the alternate path `internal_check_book_exist` succeeded but `internal_get_user_borrowed` was never called."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t62/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made; `login_user` was never called."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t38/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `login_user` succeeded with matching username \"mario\", but neither `internal_get_database` nor both `internal_check_book_exist` and `internal_get_user_borrowed` have been called."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t31/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but no prerequisite for the OR-of branches is present: internal_check_book_available and internal_get_database were never called (show_available_book does not match either required tool), and the other branches' required calls are also absent."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t49/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"})` was called first and returned true, satisfying the login prerequisite with matching username \"pepperoni\"."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t14/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_check_book_available nor internal_get_database (nor internal_get_user_num_borrowed) was called before the borrow attempt."
+    },
+    {
+      "id": "library/gpt-4o/t40/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", ...})` was called first and returned true, matching the username \"pepperoni\"."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t16/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR prerequisite is unmet: neither `internal_get_database` was called, nor both `internal_check_book_exist` AND `internal_get_user_borrowed`; `internal_get_user_borrowed` is absent."
+    },
+    {
+      "id": "library/gpt-4.1/t11/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The third prerequisite group is unmet: it requires either (internal_get_membership_status AND internal_get_interaction_date) or internal_get_database. internal_get_interaction_date was never called, and internal_get_database was never called, even though internal_get_membership_status and int"
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t29/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but no availability check (internal_check_book_available), database lookup, or other prerequisite calls for the OR branches were made before borrow_book."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t0/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"new_admin\", ...})` returned true, and `internal_is_admin({\"username\": \"new_admin\"})` returned true, satisfying the AND-of login and OR-of admin-check prerequisites with matching parameters."
+    },
+    {
+      "id": "library/o4-mini/t4/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\"}) returned true, and internal_check_book_available({\"book_title\": \"Beloved\"}) returned true, satisfying both required prerequisites."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t12/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user was called with matching username \"mario\" and returned true; internal_check_book_available for \"One Hundred Years of Solitude\" returned true; and the restriction-check branch is satisfied by internal_is_restricted returning false."
+    },
+    {
+      "id": "library/o4-mini/t33/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Only `login_user` was called and succeeded; none of the required pre-borrow checks (internal_check_book_available, internal_get_database, or equivalent alternative branches) were made."
+    },
+    {
+      "id": "library/o4-mini/t8/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_check_book_available nor internal_get_database was called before attempting to borrow \"Beloved\"."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t10/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR branch is unmet: `internal_get_database` was never called, and neither `internal_check_book_exist` nor `internal_get_user_borrowed` appears in the tool call history. Only `login_user` (satisfied) and `borrow_book` were made."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t53/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"}) returned true, satisfying the prerequisite before calling show_available_rooms with username \"mario\"."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t36/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_check_username_exist` nor `internal_get_database` was called; the OR branch is unmet (login_user succeeded, but that satisfies only the AND requirement)."
+    },
+    {
+      "id": "library/gpt-4o/t36/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_get_database nor both of internal_check_book_exist and internal_get_user_borrowed have been called."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t32/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded with matching username \"pepperoni\"; the OR branch internal_check_book_available was called first and returned true, and the final OR branch internal_get_user_num_borrowed was also satisfied."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t47/i0/c9",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\", \"password\": \"m@rio37T73\"}) -> true, called before show_available_rooms with matching username \"mario\"."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t7/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The AND/OR prerequisites include neither `internal_check_book_available` nor `internal_get_database` having been called; only `login_user` succeeded."
+    },
+    {
+      "id": "library/gpt-4.1/t30/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", ...})` returned true, satisfying the login requirement; the second requirement (OR) is satisfied by `internal_check_book_available({\"book_title\": \"One Hundred Years of Solitude\"})` returning true, matching the book_title in the borrow call."
+    },
+    {
+      "id": "library/gpt-4.1/t20/i0/c9",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\", ...}) returned true, satisfying the OR's second branch; additionally get_account_balance -> 30 and internal_get_membership_fee -> 5.0 satisfy the nested AND on the first branch."
+    },
+    {
+      "id": "library/o4-mini/t64/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The `OR` branch via `internal_get_database` is absent; and even in the `login_user` branch, both `get_account_balance` and `internal_get_membership_fee` have not been called."
+    },
+    {
+      "id": "library/o4-mini/t25/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded; internal_check_book_available returned true; internal_get_user_num_borrowed returned 0; internal_is_restricted(\"One Hundred Years of Solitude\") returned false, satisfying the third OR branch."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t41/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"}) returned true, satisfying the alternative \"login_user must be called first\" branch of the prerequisites, with matching username \"pepperoni\"."
+    },
+    {
+      "id": "library/gpt-4.1/t64/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user was called with username \"pepperoni\" and returned true, satisfying the prerequisite."
+    },
+    {
+      "id": "library/o4-mini/t41/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - The right branch of the top-level OR requires only `login_user` to have been called; `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"})` returned true."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t57/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but the OR branch requires either internal_get_database or both internal_check_book_exist and internal_get_user_borrowed; none of these calls were made."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t13/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR prerequisite is unmet: neither `internal_get_database` nor both of `internal_check_book_exist` and `internal_get_user_borrowed` were called before the (attempted) `check_return_date`. Only `login_user` and `borrow_book` appear in the evidence."
+    },
+    {
+      "id": "library/gpt-4.1/t42/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(\"Grimoire\") returned true, and internal_is_admin(\"Grimoire\") returned true, satisfying the first OR branch; the second OR branch (get_database AND borrowed/exist) is not required since only one needed to hold."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t54/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `login_user` succeeded, but neither `internal_all_slots_available_for_the_room_on_the_date` nor `internal_get_database` was called, so the slot-availability prerequisite is unmet."
+    },
+    {
+      "id": "library/gpt-4.1/t16/i0/c8",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(\"pepperoni\") returned true, and internal_check_book_available({\"book_title\": \"Beloved\"}) returned true, satisfying the first OR branch; additionally internal_is_restricted and internal_get_membership_status were called, and internal_get_user_borrowed and internal_check_book_exist s"
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t12/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_check_username_exist` nor `internal_get_database` was called before the `logout_user` prerequisite point."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t32/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - only login_user was performed; no availability check (internal_check_book_available or internal_get_database) or any other satisfying OR branch exists."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t29/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but no availability/existence/database prerequisite call (e.g., internal_check_book_available or internal_get_database) was made before borrowing \"Beloved\"."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t12/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_get_database` nor `internal_get_user_borrowed` was called; the OR prerequisite branch is unsatisfied (only `internal_check_book_exist` was completed)."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t54/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR-branch prerequisite is unmet: neither `internal_check_username_exist` nor `internal_get_database` was ever called. (`login_user` for mario did succeed, but both the AND's branches must be satisfied.)"
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t9/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR branch requires either internal_get_database or both internal_check_book_exist and internal_get_user_borrowed. internal_check_book_exist(\"Beloved\") succeeded, but internal_get_user_borrowed({\"username\": \"pepperoni\"}) was never called and internal_get_database was not called either."
+    },
+    {
+      "id": "library/gpt-4.1/t13/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The third required OR group is unsatisfied: `internal_get_membership_status` was called but `internal_get_interaction_date` was not, and no `internal_get_database` call exists to satisfy either alternative branch."
+    },
+    {
+      "id": "library/o4-mini/t29/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `login_user` succeeded, but no availability/database/borrowed-list/restriction/num-borrowed prerequisite was called, so none of the OR branches is satisfied."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t25/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The fourth prerequisite block is unmet: `internal_is_restricted` was called (true result obtained), but it requires pairing with `internal_get_database` (not called), and the alternative branches (`internal_get_membership_status` + `internal_get_interaction_date`, or `internal_get_database` a"
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t9/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user for \"pepperoni\" returned true, and internal_check_book_available({\"book_title\": \"Beloved\"}) returned true, satisfying the login requirement and the availability-check OR branch."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t24/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The third prerequisite OR-branch is unmet: it requires either `internal_get_membership_status` AND `internal_get_interaction_date` (both called), or `internal_get_database`. `internal_get_interaction_date` was never called and `internal_get_database` was never called."
+    },
+    {
+      "id": "library/o4-mini/t40/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - The second branch is satisfied: login_user({\"username\": \"pepperoni\", ...}) succeeded, internal_calculate_late_fee({\"username\": \"pepperoni\"}) returned 6.0, and get_account_balance({\"username\": \"pepperoni\"}) returned 30, covering all AND/OR requirements for username \"pepperoni\"."
+    },
+    {
+      "id": "library/gpt-4o/t64/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - The second OR branch is satisfied: `login_user({\"username\": \"pepperoni\", \"password\": \"paikzmzhaa991\"})` was called and returned true before the `update_membership` call."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t42/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_check_username_exist` nor `internal_get_database` was called; only `internal_is_admin` and `internal_check_book_exist` appear, so the OR requirement for logout_user is unmet."
+    },
+    {
+      "id": "library/gpt-4.1/t4/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"mario\", ...}) returned true, and internal_check_book_available({\"book_title\": \"Beloved\"}) returned true, satisfying both required prerequisites."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t39/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_get_database nor both of internal_check_book_exist and internal_get_user_borrowed were called to satisfy the OR branch."
+    },
+    {
+      "id": "library/gpt-4o/t30/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - only login_user was completed; none of the book-availability/database prerequisites were called."
+    },
+    {
+      "id": "library/gpt-4o/t25/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The fourth required OR branch is unmet: no `internal_get_database` call was made, and the alternative path requiring `internal_get_interaction_date` (needed alongside `internal_get_membership_status`) was also not called."
+    },
+    {
+      "id": "library/o4-mini/t26/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_get_database` nor the pair `internal_check_book_exist` + `internal_get_user_borrowed` was called before `check_return_date`; only `login_user` and `borrow_book` appear."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t26/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The fourth requirement (restricted-status branch) is unmet: `internal_is_restricted` was called, but it requires `internal_get_database` first, which was never called, and `internal_get_membership_status` + `internal_get_interaction_date` were also not called."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t11/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the OR prerequisite is unmet: `internal_get_database` was never called, and neither was the AND branch (`internal_check_book_exist` and `internal_get_user_borrowed`). Only `login_user` and `borrow_book` appear in the evidence."
+    },
+    {
+      "id": "library/gpt-4.1/t23/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for \"pepperoni\", and the second requirement is satisfied via internal_check_book_available({\"book_title\": \"Beloved\"}) -> true (first OR branch); alternatively the AND branch (internal_get_user_borrowed + internal_check_book_exist) also succeeded."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t12/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR prerequisite is unmet: neither `internal_get_database` was called, nor the pair `internal_check_book_exist` and `internal_get_user_borrowed`; only `login_user` and `borrow_book` appear in the evidence."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t24/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The third prerequisite OR-branch is unmet: it requires either (internal_get_membership_status AND internal_get_interaction_date) with internal_get_database, or internal_get_database AND internal_is_restricted. internal_get_interaction_date was never called and internal_get_database was never "
+    },
+    {
+      "id": "library/o4-mini/t62/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made, so `login_user` was never called before attempting `show_available_rooms`."
+    },
+    {
+      "id": "library/claude-3-7-sonnet-20250219/t22/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"pepperoni\", ...})` returned true, and `internal_check_book_available({\"book_title\": \"Pride and Prejudice\"})` returned true, satisfying the login AND availability branch."
+    },
+    {
+      "id": "library/qwen2.5-72b-it-fireworks/t35/i0/c7",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_check_username_exist` nor `internal_get_database` was called before the attempted `logout_user`."
+    },
+    {
+      "id": "library/gpt-4.1/t25/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The fourth prerequisite group is unmet: neither `internal_get_membership_status` + `internal_get_interaction_date` nor `internal_get_database` appears in the call history, so the requirement satisfied only via `internal_get_database` (or the membership/date pair) is not satisfied \u2014 `internal_"
+    },
+    {
+      "id": "library/gpt-4o/t38/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_get_database nor both internal_check_book_exist and internal_get_user_borrowed have been called, so the OR-branch prerequisite is unmet."
+    },
+    {
+      "id": "library/gpt-4.1/t19/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"pepperoni\"}) returned true, and the OR branch is satisfied: internal_check_book_exist({\"book_title\": \"Pride and Prejudice\"}) returned true and internal_get_user_borrowed({\"username\": \"pepperoni\"}) returned ['81G3WP0'] (confirming the book ID matches the converted titl"
+    }
+  ]
+}

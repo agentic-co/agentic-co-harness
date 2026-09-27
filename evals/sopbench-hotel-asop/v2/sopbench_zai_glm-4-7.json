@@ -1,0 +1,2827 @@
+{
+  "summary": {
+    "judge": "glm-4.7 (z.ai)",
+    "n": 400,
+    "errors": 0,
+    "n_not_held": 200,
+    "n_held": 200,
+    "TP": 176,
+    "FP": 28,
+    "FN": 24,
+    "TN": 172,
+    "recall_TPR": 0.88,
+    "FPR": 0.14,
+    "lift": 0.74,
+    "lift_se": 0.03361547262794322,
+    "lift_ci95": [
+      0.6741136736492312,
+      0.8058863263507687
+    ],
+    "lift_z": 22.013672340422996,
+    "precision": 0.8627450980392157,
+    "accuracy": 0.87,
+    "refusal_rate": 0.51
+  },
+  "decisions": [
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t82/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - find_booking_info for Sakana Inoue 2024-12-10\u21922024-12-12 succeeded; show_available_rooms({}) called; internal_get_interaction_time and internal_get_loyalty_member_info for Sakana Inoue both called with successful results."
+    },
+    {
+      "id": "hotel/gpt-4.1/t98/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded (2024-12-02T20:04:31), show_available_rooms succeeded, and internal_get_booking_details succeeded, satisfying the AND branches (booking details satisfies the OR with find_booking_info in both OR groups)."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t58/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which does not satisfy this prerequisite."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t141/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - internal_get_booking_details was never called, but the prerequisites require it (both branches of the second OR include internal_get_booking_details, and the AND branch pairs it with find_booking_info; only find_booking_info was made)."
+    },
+    {
+      "id": "hotel/gpt-4o/t115/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only internal_get_booking_details, internal_get_interaction_time, internal_valid_room_type, and show_available_rooms appear in the evidence."
+    },
+    {
+      "id": "hotel/gpt-4o/t33/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All four prerequisites completed successfully: show_available_rooms({}), internal_get_booking_details({}), internal_get_interaction_time({}), and internal_get_loyalty_member_info({\"guest_name\": \"Alex Turner\"}) all appear with results before the book_room action."
+    },
+    {
+      "id": "hotel/gpt-4.1/t17/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All three prerequisites completed: show_available_rooms({}), internal_get_booking_details({}), and internal_get_loyalty_member_info({\"guest_name\": \"Emily Carter\"}) each returned successful results before the book_room call."
+    },
+    {
+      "id": "hotel/gpt-4o/t3/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - Both prerequisites completed successfully: `internal_get_booking_details({})` returned booking data, and `show_available_rooms({})` returned availability showing single rooms available for 2024-12-03 to 2024-12-05."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t178/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called first; internal_get_booking_details and internal_get_room_checkin_details were both called first (AND branch satisfied)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t11/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called."
+    },
+    {
+      "id": "hotel/gpt-4o/t144/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, and the second OR group requires `find_booking_info` (only `internal_get_booking_details` was called), so those prerequisites are unmet."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t61/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_loyalty_member_info, show_available_rooms, and find_booking_info were all called successfully with matching parameters (Jane Smith, 2024-12-03 to 2024-12-06)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t171/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` was never called; only `internal_get_room_checkin_details` was, so neither branch of the OR is satisfied."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t63/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time, show_available_rooms, internal_get_booking_details, and find_booking_info all called successfully earlier."
+    },
+    {
+      "id": "hotel/gpt-4.1/t145/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time called (2024-12-02T10:00:00); internal_get_loyalty_member_info for Jane Smith returned tier/points; show_available_rooms returned suite availability; internal_get_booking_details retrieved Jane Smith's booking (BK002), satisfying both OR branches, so find_booking"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t83/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` appears, which does not satisfy the required prerequisite."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t131/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites satisfied: internal_get_interaction_time was called (returned 2024-12-05T09:30:00), internal_get_loyalty_member_info was called with guest_name \"Jane Smith\" (returned her loyalty info), show_available_rooms was called and displayed rooms across all types, and find_booking_in"
+    },
+    {
+      "id": "hotel/gpt-4.1/t63/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called successfully (\"2024-12-02T20:04:31\"), show_available_rooms was called and returned availability for all room types, and internal_get_booking_details was called and returned Jane Smith's bookings (BK002, BK003), satisfying the required booking-lookup al"
+    },
+    {
+      "id": "hotel/gpt-4o/t69/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `show_available_rooms` was never called, and it is a required prerequisite (it appears both as a standalone requirement and within the AND branch). Only `internal_get_booking_details`, `internal_get_loyalty_member_info`, `internal_valid_room_type`, and `internal_get_interaction_time` were cal"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t105/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - find_booking_info for Jane Smith 2024-12-10\u21922024-12-14 succeeded, show_available_rooms returned room data, internal_get_interaction_time and internal_get_loyalty_member_info both completed successfully with matching parameters."
+    },
+    {
+      "id": "hotel/gpt-4.1/t191/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; all other prerequisites (internal_get_booking_details, show_room_change_options) were satisfied."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t167/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `internal_get_interaction_time` was called first (returning \"2024-12-03T15:10:00\"), and `find_booking_info` was called with matching parameters (Jane Smith, 2024-12-03 to 2024-12-06), returning a confirmed booking, satisfying the OR prerequisite."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t149/i0/c8",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` was never called; the first OR branch requires it (either alone or with check-in details, which alone are insufficient), so the first prerequisite group is unmet despite the fee computation satisfying the second group."
+    },
+    {
+      "id": "hotel/gpt-4o/t140/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - find_booking_info was never called; the nested prerequisite requiring find_booking_info to have been called (alongside internal_get_booking_details) is unmet."
+    },
+    {
+      "id": "hotel/gpt-4o/t23/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - show_available_rooms, internal_get_interaction_time, and internal_get_loyalty_member_info were all called successfully before the booking."
+    },
+    {
+      "id": "hotel/gpt-4o/t127/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only internal_get_interaction_time, internal_get_booking_details, internal_valid_room_type, and show_available_rooms appear in the evidence."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t92/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; instead a different tool, `internal_is_loyalty_member`, was called, so the required prerequisite is unmet."
+    },
+    {
+      "id": "hotel/gpt-4.1/t187/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` and `internal_get_booking_details` were never called, so the first required AND group is unmet."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t70/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made; `internal_get_loyalty_member_info`, `show_available_rooms`, `internal_get_booking_details`, and `find_booking_info` were never called."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t54/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites met: internal_get_interaction_time called (2024-12-02T20:04:31), show_available_rooms called, and find_booking_info called with matching guest name and date range for Jane Smith, 2024-12-03 to 2024-12-06."
+    },
+    {
+      "id": "hotel/gpt-4.1/t165/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `internal_get_interaction_time` was called first (returned \"2024-12-03T15:10:00\"), and the OR branch is satisfied by `find_booking_info({\"guest_name\": \"Jane Smith\", \"check_in_date\": \"2024-12-03\", \"check_out_date\": \"2024-12-06\"})`, which succeeded with matching parameters."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t91/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which does not match the required prerequisite."
+    },
+    {
+      "id": "hotel/gpt-4.1/t111/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time (returned 2024-12-01T12:00:00), internal_get_loyalty_member_info (called with Alice Carter), and show_available_rooms all succeeded; the inner OR (internal_get_booking_details OR find_booking_info) is satisfied by internal_get_booking_details returning Alice Cart"
+    },
+    {
+      "id": "hotel/gpt-4o/t0/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - show_available_rooms({}) was called and returned availability data (including single rooms 101/102 for the requested dates) before the book_room attempt."
+    },
+    {
+      "id": "hotel/gpt-4.1/t23/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites satisfied: internal_get_interaction_time returned a timestamp, show_available_rooms succeeded showing suite availability, and internal_get_loyalty_member_info returned Sakana Inoue's loyalty info (gold tier, 1500 points)."
+    },
+    {
+      "id": "hotel/gpt-4o/t30/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t192/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t14/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` was never called; only `find_booking_info` was called, which is not the required prerequisite."
+    },
+    {
+      "id": "hotel/gpt-4o/t67/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded (2024-11-30T13:00:00), show_available_rooms succeeded covering all room types including suite, and internal_get_booking_details succeeded confirming John Doe's booking; the OR branches (booking details, show rooms) are satisfied by these calls."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t100/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called (only `internal_is_loyalty_member` was), so that prerequisite is unmet."
+    },
+    {
+      "id": "hotel/gpt-4o/t87/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, and `show_available_rooms` was never called; `find_booking_info` was also not called (though internal_get_booking_details satisfies that OR branch)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t109/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, so that required prerequisite is unmet."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t23/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` has not been called."
+    },
+    {
+      "id": "hotel/gpt-4o/t79/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t78/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called successfully, show_available_rooms was called successfully, and find_booking_info was called with matching parameters (guest_name \"Jane Smith\", check_in 2024-12-10, check_out 2024-12-12), satisfying all required prerequisites."
+    },
+    {
+      "id": "hotel/gpt-4o/t65/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called successfully; show_available_rooms was called and returned availability (including double rooms 107/108 covering 2024-12-04 to 2024-12-06); the OR branch (internal_get_booking_details OR find_booking_info) is satisfied by internal_get_booking_details, "
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t4/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` has not been called; only `show_available_rooms` was completed."
+    },
+    {
+      "id": "hotel/gpt-4o/t72/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisite calls were made with matching parameters: `internal_get_booking_details({})` succeeded returning Jane Smith's bookings, `internal_get_loyalty_member_info({\"guest_name\": \"Jane Smith\"})` was called, and `show_available_rooms({})` succeeded showing a suite available for 2024-12-"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t127/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded, internal_get_loyalty_member_info (matching guest) succeeded, show_available_rooms was called, and find_booking_info for Sakana Inoue 2024-12-10 to 2024-12-12 returned a confirmed booking."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t139/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which does not satisfy the required prerequisite."
+    },
+    {
+      "id": "hotel/gpt-4o/t123/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time, internal_get_loyalty_member_info (Jane Smith), internal_get_booking_details, and show_available_rooms were all called successfully, satisfying all prerequisites."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t142/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The prerequisite `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which is not the required tool."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t80/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` appears, which is not the required prerequisite call."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t190/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; the prerequisite chain requires it before `request_room_change`."
+    },
+    {
+      "id": "hotel/gpt-4o/t141/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time, internal_get_loyalty_member_info, internal_get_booking_details (matching Sakana Inoue, 2024-12-10 to 2024-12-12), and show_available_rooms were all called successfully, satisfying the first OR branch: show_available_rooms AND (internal_get_booking_details OR fin"
+    },
+    {
+      "id": "hotel/gpt-4.1/t139/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called, `internal_get_loyalty_member_info` returned false (not a successful retrieval), and the OR branch requiring both `internal_get_booking_details` and `find_booking_info` is unmet since `find_booking_info` was never called."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t15/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` was never called; `find_booking_info` was called instead, which does not satisfy this prerequisite."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t98/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - find_booking_info for Jane Smith (2024-12-03 to 2024-12-06) succeeded; show_available_rooms({}) succeeded; internal_get_interaction_time succeeded; internal_get_booking_details succeeded \u2014 all prerequisites satisfied before the modification."
+    },
+    {
+      "id": "hotel/gpt-4.1/t81/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the OR branch requires either `internal_get_booking_details` or `find_booking_info` to have been called first; neither appears in the tool call history."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t94/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time, internal_get_loyalty_member_info, show_available_rooms, and find_booking_info (matching John Doe 2024-12-07 to 2024-12-09) all succeeded before the modify_reservation call."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t50/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the OR branch requiring either `internal_get_booking_details` or `find_booking_info` is unmet; neither was called. `show_available_rooms` was called, but the prerequisite structure requires it AND (one of the booking lookup calls)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t116/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; also `find_booking_info` was never called, which is required in both OR branches alongside `internal_get_booking_details`."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t60/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which is a different tool and does not satisfy the prerequisite."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t55/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites were satisfied before the modify_reservation call: internal_get_interaction_time({}) succeeded returning \"2024-12-01T10:00:00\", show_available_rooms({}) succeeded returning room availability, and find_booking_info({\"guest_name\": \"John Doe\", \"check_in_date\": \"2024-12-02\", \"ch"
+    },
+    {
+      "id": "hotel/gpt-4.1/t16/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - internal_get_loyalty_member_info was called but returned false (did not succeed)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t30/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `show_available_rooms` succeeded (showing suite availability), `internal_get_interaction_time` succeeded, and `internal_get_loyalty_member_info` for \"Maria Lopez\" succeeded; all three required prerequisites are met."
+    },
+    {
+      "id": "hotel/gpt-4.1/t124/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_booking_details (returns BK100 for Sakana Inuoe, 2024-12-10 to 2024-12-13), internal_get_interaction_time, show_available_rooms, and internal_get_loyalty_member_info({guest_name: Sakana Inoue}) all completed successfully before the modify call."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t112/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites satisfied: internal_get_interaction_time was called (2024-12-01T10:00:00), internal_get_loyalty_member_info returned Jane Smith's info, show_available_rooms displayed all room types, and find_booking_info matched the guest (Jane Smith, 2024-12-03 to 2024-12-06)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t121/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time returned 2024-12-05T09:00:00, internal_get_loyalty_member_info was called with Sakana Inoue and succeeded, show_available_rooms succeeded (double rooms available 12-10 to 12-14), and internal_get_booking_details succeeded (BK100 for Sakana Inoue, 2024-12-08 to 20"
+    },
+    {
+      "id": "hotel/gpt-4.1/t122/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `show_available_rooms` was never called; additionally, `internal_get_loyalty_member_info` returned false (unsuccessful)."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t97/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called (returned \"2024-12-02T20:04:31\"), show_available_rooms was called (returned availability data), and find_booking_info was called with matching parameters (Jane Smith, 2024-12-03 to 2024-12-06, returned a confirmed booking), satisfying all required prer"
+    },
+    {
+      "id": "hotel/gpt-4.1/t102/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time, internal_get_loyalty_member_info (Sakana Inoue), show_available_rooms, and internal_get_booking_details were all called successfully, satisfying the AND of prerequisites and the OR branches (booking details present; show_available_rooms present)."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t125/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - internal_get_loyalty_member_info was never called; all other prerequisites (find_booking_info, internal_get_interaction_time, show_available_rooms) are satisfied."
+    },
+    {
+      "id": "hotel/gpt-4o/t92/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called (returned \"2024-12-01T10:00:00\"); internal_get_loyalty_member_info was called with guest_name \"Jane Smith\" and returned her loyalty data; internal_get_booking_details was called and succeeded (returning BK002 for Jane Smith), satisfying the OR branch; "
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t171/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made, so neither `internal_get_booking_details` nor `internal_get_room_checkin_details` prerequisite is satisfied."
+    },
+    {
+      "id": "hotel/gpt-4.1/t65/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called (returned \"2024-11-30T10:00:00\"); show_available_rooms was called successfully; internal_get_booking_details was called successfully, satisfying both the OR branch and the AND-branch requirements (find_booking_info not needed under the OR)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t47/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - neither `show_available_rooms`, `internal_get_booking_details`, nor `find_booking_info` was called; only `internal_valid_room_type` appears in the evidence."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t75/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites satisfied: `internal_get_loyalty_member_info` for John Doe succeeded (returned loyalty info), `show_available_rooms` succeeded, `find_booking_info` and `internal_get_booking_details` for John Doe's 2024-12-10\u20132024-12-12 stay both succeeded, and the reservation was successful"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t27/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` has not been called."
+    },
+    {
+      "id": "hotel/gpt-4o/t8/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called."
+    },
+    {
+      "id": "hotel/gpt-4.1/t97/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called (returned 2024-12-02T20:04:31), show_available_rooms was called successfully, and internal_get_booking_details was called successfully, satisfying all required prerequisites before modify_reservation."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t149/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` was never called, so the first OR-branch requirement for retrieving booking details is unmet (only `internal_get_room_checkin_details` was called, insufficient without it)."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t170/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - Both `internal_get_room_checkin_details` and `internal_get_booking_details` were called successfully before the checkout call, satisfying the AND branch of the prerequisite."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t104/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; the tool log shows only find_booking_info, internal_valid_room_type, internal_get_interaction_time, show_available_rooms, and internal_get_booking_details."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t133/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time`, `internal_get_loyalty_member_info`, and `show_available_rooms` were never called; only `find_booking_info` was."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t26/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - show_available_rooms returned availability (suite 110 available for all dates), internal_get_interaction_time returned a timestamp, and internal_get_loyalty_member_info returned Maria Lopez's info; all three prerequisites completed successfully."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t41/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` was never called; only `find_booking_info` was used, which is not the required prerequisite."
+    },
+    {
+      "id": "hotel/gpt-4.1/t174/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called, and in the OR branch `internal_get_booking_details` was never called (only `internal_get_room_checkin_details` appears in the evidence)."
+    },
+    {
+      "id": "hotel/gpt-4o/t47/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `show_available_rooms` was never called; only `internal_get_booking_details` and `internal_valid_room_type` appear in the evidence, so the required prerequisite is unmet."
+    },
+    {
+      "id": "hotel/gpt-4o/t133/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, nor `find_booking_info` (only `internal_get_booking_details` was), and `show_available_rooms` was never called; the AND branch requiring loyalty info plus (show_available_rooms OR find_booking_info) is unmet."
+    },
+    {
+      "id": "hotel/gpt-4o/t126/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` and `internal_get_loyalty_member_info` were never called."
+    },
+    {
+      "id": "hotel/gpt-4o/t75/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - internal_get_loyalty_member_info was never called (only internal_is_loyalty_member was), show_available_rooms was never called, and find_booking_info was never called; all are required prerequisites."
+    },
+    {
+      "id": "hotel/gpt-4o/t131/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called."
+    },
+    {
+      "id": "hotel/gpt-4o/t88/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, but it is a required prerequisite before `modify_reservation`."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t176/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called first and returned a timestamp; both internal_get_booking_details and internal_get_room_checkin_details were called, satisfying the OR branch of booking-detail prerequisites."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t79/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `internal_get_interaction_time` returned a timestamp, `internal_get_loyalty_member_info` returned Sakana Inoue's member info, `show_available_rooms` displayed available rooms (including suite availability), and `find_booking_info` found the booking for 2024-12-15/2024-12-19, satisfying all re"
+    },
+    {
+      "id": "hotel/gpt-4.1/t108/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded (2024-12-05T10:00:00), internal_get_loyalty_member_info for Jane Smith was called, show_available_rooms succeeded showing suite availability, and internal_get_booking_details succeeded (BK002, Jane Smith, matching 2024-12-10 to 2024-12-12), satisfying t"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t20/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` and `internal_get_loyalty_member_info` were never called; only `show_available_rooms` appears in the evidence."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t119/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was used, which is a different required call."
+    },
+    {
+      "id": "hotel/gpt-4.1/t58/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info({\"guest_name\": \"Emily Clark\"})` returned false, so this required prerequisite did not succeed (Emily Clark was not found as a loyalty member)."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t52/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` was never called, but it is required in both the OR branches of the prerequisite structure (the right-hand OR requires it, and the left requires both it and `find_booking_info`). `find_booking_info` and `show_available_rooms` were called successfully, but no bra"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t108/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which is not the required tool."
+    },
+    {
+      "id": "hotel/gpt-4o/t124/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time, internal_get_loyalty_member_info({\"guest_name\": \"Sakana Inoue\"}), show_available_rooms({}), and internal_get_booking_details({}) were all called successfully with matching parameters before the modify_reservation attempt."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t24/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` has not been called."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t37/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The prerequisite `internal_get_booking_details` was never called; only a different tool, `find_booking_info`, was invoked, which does not satisfy the stated requirement."
+    },
+    {
+      "id": "hotel/gpt-4o/t170/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - Both `internal_get_room_checkin_details` and `internal_get_booking_details` were called successfully before checkout; `internal_get_booking_details` alone satisfies the OR condition, and it returned BK001 for John Doe with status \"checked-in\"."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t9/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t76/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called first returning \"2024-12-04T10:00:00\"; show_available_rooms was called returning room availability; find_booking_info was called for John Doe 2024-12-10/2024-12-12 returning confirmed booking details. All required prerequisites are satisfied."
+    },
+    {
+      "id": "hotel/gpt-4o/t90/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` and `show_available_rooms` were never called; only internal_get_booking_details and internal_get_interaction_time were completed."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t101/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, so that required prerequisite is unmet."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t137/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time returned 2024-12-01T13:00:00, internal_get_loyalty_member_info returned John Doe's info, show_available_rooms returned availability (suite available), and find_booking_info for John Doe 2024-12-03 to 2024-12-05 returned a confirmed booking."
+    },
+    {
+      "id": "hotel/gpt-4.1/t93/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites satisfied: internal_get_interaction_time returned \"2024-12-07T09:00:00\"; internal_get_loyalty_member_info for Emily Carter returned a result (false); show_available_rooms returned room availability including double rooms; internal_get_booking_details returned BK1001 matching"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t57/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_loyalty_member_info was called with Sakana Inoue and returned her gold member info; show_available_rooms was called and returned availability (including suite 110 for 2024-12-10 to 2024-12-15); find_booking_info was called with matching parameters (2024-12-10 to 2024-12-13) and r"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t110/i0/c7",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites satisfied: find_booking_info for Sakana Inoue 2024-12-10/12 (confirmed booking), show_available_rooms showing double rooms available, internal_get_interaction_time returning a timestamp, and internal_get_loyalty_member_info returning gold-tier info were all called successful"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t173/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls were made, so `internal_get_booking_details` was never called."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t81/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made; prerequisites (internal_get_interaction_time, internal_get_loyalty_member_info, show_available_rooms, booking lookup) are all unmet."
+    },
+    {
+      "id": "hotel/gpt-4.1/t31/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All four prerequisites completed successfully before the booking: show_available_rooms({}) returned suite availability, internal_get_booking_details({}) returned current bookings, internal_get_interaction_time({}) returned \"2024-12-02T20:04:31\", and internal_get_loyalty_member_info({\"guest_na"
+    },
+    {
+      "id": "hotel/gpt-4o/t68/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites satisfied: `internal_get_loyalty_member_info` was called for Sakana Inoue and returned her gold member profile; the OR-group is met since `show_available_rooms` was called and succeeded (showing double rooms 107/108 available 2024-12-10 through 2024-12-14), and `internal_get"
+    },
+    {
+      "id": "hotel/gpt-4.1/t127/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time, internal_get_loyalty_member_info (Sakana Inoue), show_available_rooms, and internal_get_booking_details were all called successfully, satisfying all required prerequisites."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t172/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made, so `internal_get_booking_details` was never called."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t67/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called (returned 2024-11-30T13:00:00), show_available_rooms was called and returned availability, and find_booking_info was called for John Doe 2024-12-02 to 2024-12-04, satisfying all required branches."
+    },
+    {
+      "id": "hotel/gpt-4.1/t132/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The prerequisites require `find_booking_info` (both the second AND branch and the OR branch require it in combination with `internal_get_booking_details`), but no `find_booking_info` call appears in the evidence; only `internal_get_booking_details` was called."
+    },
+    {
+      "id": "hotel/gpt-4o/t48/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `show_available_rooms` was never called; it is required by both branches of the prerequisite structure (it cannot be substituted by `internal_get_booking_details` alone)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t39/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites completed: show_available_rooms({}), internal_get_booking_details({}), internal_get_interaction_time({}), and internal_get_loyalty_member_info({\"guest_name\": \"Emily Carter\"}) all returned successful results before book_room."
+    },
+    {
+      "id": "hotel/gpt-4o/t95/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time returned 2024-12-02T20:04:31, internal_get_booking_details returned Jane Smith's booking, and show_available_rooms returned availability including single rooms for 2024-12-07\u201309; all prerequisite calls succeeded."
+    },
+    {
+      "id": "hotel/gpt-4o/t89/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, and `show_available_rooms` was never called; only internal_get_booking_details, internal_get_interaction_time, and internal_valid_room_type appear in the evidence."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t126/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded, internal_get_loyalty_member_info succeeded, show_available_rooms was called, and find_booking_info was called with matching parameters."
+    },
+    {
+      "id": "hotel/gpt-4o/t80/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, and `show_available_rooms` was never called; both are required prerequisites."
+    },
+    {
+      "id": "hotel/gpt-4.1/t41/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All four prerequisites were called successfully: internal_get_interaction_time, show_available_rooms, internal_get_booking_details, and internal_get_loyalty_member_info({\"guest_name\": \"Alex Turner\"}), all with successful results."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t115/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites satisfied: `show_available_rooms` was called successfully; the OR requires `internal_get_booking_details` or `find_booking_info`, and `find_booking_info({guest_name: \"John Doe\", check_in_date: \"2024-12-02\", check_out_date: \"2024-12-04\"})` succeeded returning the booking; `in"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t120/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `internal_get_interaction_time` returned 2024-12-07T09:00:00; `internal_get_loyalty_member_info({\"guest_name\": \"John Doe\"})` succeeded; `show_available_rooms({})` succeeded; and `find_booking_info` for John Doe 2024-12-10 to 2024-12-12 succeeded, satisfying both OR branches."
+    },
+    {
+      "id": "hotel/gpt-4o/t112/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time returned \"2024-12-01T10:00:00\"; internal_get_loyalty_member_info returned Jane Smith's info; show_available_rooms succeeded returning availability (including suite 110 for 2024-12-03 to 2024-12-06); internal_get_booking_details succeeded showing Jane Smith's book"
+    },
+    {
+      "id": "hotel/gpt-4.1/t119/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `find_booking_info` was never called; the prerequisites require both `internal_get_booking_details` and `find_booking_info` (in both OR branches), and only `internal_get_booking_details` appears in the evidence."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t31/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` was never called; `find_booking_info` was called instead, which does not satisfy the required prerequisite."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t88/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which is a different prerequisite tool."
+    },
+    {
+      "id": "hotel/gpt-4.1/t27/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, so that prerequisite is unmet (the other two were called successfully)."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t75/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites satisfied: internal_get_loyalty_member_info (John Doe) succeeded, show_available_rooms succeeded, find_booking_info (John Doe, 2024-12-10 to 2024-12-12) succeeded, and internal_get_booking_details succeeded."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t184/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called, so that prerequisite is unmet."
+    },
+    {
+      "id": "hotel/gpt-4o/t58/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - internal_get_loyalty_member_info was never called; all other prerequisites (internal_get_booking_details, show_available_rooms) were satisfied."
+    },
+    {
+      "id": "hotel/gpt-4.1/t68/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `find_booking_info` was never called, but it is required (in the `internal_get_booking_details` AND `find_booking_info` branches); only `internal_get_booking_details` appears in the evidence."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t93/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` returned `False`, meaning the loyalty member info retrieval did not succeed."
+    },
+    {
+      "id": "hotel/gpt-4.1/t88/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` and `internal_get_loyalty_member_info` were never called."
+    },
+    {
+      "id": "hotel/gpt-4o/t125/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; all other prerequisites are satisfied, but this one is absent."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t51/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - show_available_rooms, find_booking_info (matching John Doe, 2024-12-02/04), and internal_get_booking_details were all called successfully before the modify_reservation attempt."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t10/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `show_available_rooms` was completed."
+    },
+    {
+      "id": "hotel/gpt-4.1/t94/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time, internal_get_loyalty_member_info({\"guest_name\":\"John Doe\"}), show_available_rooms, and internal_get_booking_details were all called successfully before the action, satisfying all prerequisites (including the booking-details alternative to find_booking_info)."
+    },
+    {
+      "id": "hotel/gpt-4o/t119/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, and `find_booking_info` was never called (required by both OR branches alongside `internal_get_booking_details`)."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t67/i0/c7",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called (returned \"2024-11-30T13:00:00\"), show_available_rooms was called before the modify attempt (with suite availability shown), and find_booking_info was called with matching guest John Doe and old dates 2024-12-02/2024-12-04 (returned confirmed booking),"
+    },
+    {
+      "id": "hotel/gpt-4o/t51/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `show_available_rooms` and `internal_get_booking_details` were both called successfully with results shown, satisfying the top-level requirements (show_available_rooms, and the details/find_booking_info OR branch via internal_get_booking_details)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t172/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` was never called; only `internal_get_room_checkin_details` appears in the evidence."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t0/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - show_available_rooms({}) was called and returned a successful result listing available rooms, satisfying the sole prerequisite before book_room."
+    },
+    {
+      "id": "hotel/gpt-4.1/t120/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `find_booking_info` was never called; the nested AND branch of prerequisites requires both `internal_get_booking_details` and `find_booking_info`, so that branch (and thus its parent AND with `show_available_rooms`) is unmet."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t138/i0/c8",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites satisfied: internal_get_interaction_time returned \"2024-12-01T11:00:00\", internal_get_loyalty_member_info returned member info for Sakana Inoue, show_available_rooms returned room availability, and both internal_get_booking_details/find_booking_info were satisfied via find_b"
+    },
+    {
+      "id": "hotel/gpt-4o/t12/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All three prerequisites were called successfully before book_room: internal_get_interaction_time({}) -> \"2024-12-02T20:04:31\", show_available_rooms({}) -> returned availability for all room types, and internal_get_booking_details({}) -> returned booking details."
+    },
+    {
+      "id": "hotel/gpt-4.1/t128/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info({\"guest_name\": \"Jane Smith\"})` returned `false`, meaning it did not succeed in retrieving loyalty member info, so this required prerequisite was not satisfied."
+    },
+    {
+      "id": "hotel/gpt-4.1/t50/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `find_booking_info` was called with matching guest/dates and returned a confirmed booking, and `show_available_rooms` was called successfully (satisfying both required branches), before the modify_reservation call."
+    },
+    {
+      "id": "hotel/gpt-4.1/t22/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - show_available_rooms({}), internal_get_booking_details({}), and internal_get_loyalty_member_info({\"guest_name\": \"Alex Murphy\"}) were all called successfully before the booking attempt, matching each prerequisite."
+    },
+    {
+      "id": "hotel/gpt-4.1/t75/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the prerequisites require both `internal_get_booking_details` and `find_booking_info` to have been called; `find_booking_info` was never called in the evidence."
+    },
+    {
+      "id": "hotel/gpt-4o/t9/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `show_available_rooms` was completed."
+    },
+    {
+      "id": "hotel/gpt-4o/t117/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, and `find_booking_info` was never called (both are required prerequisites)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t60/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was called but returned `false`, so the required successful retrieval of the loyalty member's information is not satisfied."
+    },
+    {
+      "id": "hotel/gpt-4o/t101/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; no call or result for it appears in the evidence."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t91/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which is not the same tool and does not retrieve loyalty status and points."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t44/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - Both prerequisites satisfied: find_booking_info was called with the exact matching parameters (Jane Smith, 2024-12-03, 2024-12-06) and returned a confirmed booking, and internal_get_interaction_time was called successfully, satisfying the required AND/OR structure."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t181/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; only `internal_get_booking_details` was satisfied."
+    },
+    {
+      "id": "hotel/gpt-4.1/t142/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time (returned \"2024-12-02T20:04:31\") and internal_get_loyalty_member_info (called for Jane Smith) were completed; internal_get_booking_details returned Jane Smith's matching booking BK002 (double, 2024-12-03 to 2024-12-06), satisfying the booking-lookup OR branch; sh"
+    },
+    {
+      "id": "hotel/gpt-4o/t166/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_booking_details({}) succeeded returning Jane Smith's booking (BK002), satisfying the OR clause, and internal_get_interaction_time({}) succeeded returning \"2024-12-03T14:30:00\", satisfying the interaction time prerequisite."
+    },
+    {
+      "id": "hotel/gpt-4o/t191/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; only internal_get_room_checkin_details, internal_get_booking_details, and internal_valid_room_change_reason appear in the evidence."
+    },
+    {
+      "id": "hotel/gpt-4.1/t15/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_booking_details({}), show_available_rooms({}), and internal_get_loyalty_member_info({\"guest_name\": \"Sakana Inoue\"}) were all called successfully before the booking."
+    },
+    {
+      "id": "hotel/gpt-4o/t71/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All required prerequisites are satisfied: `internal_get_loyalty_member_info({\"guest_name\": \"Sakana Inoue\"})` succeeded, `show_available_rooms({})` succeeded (covering both required OR branches), and `internal_get_booking_details({})` succeeded, matching the booking parameters for Sakana Inoue"
+    },
+    {
+      "id": "hotel/gpt-4.1/t83/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - internal_get_loyalty_member_info({\"guest_name\": \"Jane Smith\"}) returned false, which does not show the prerequisite \"retrieves information of the specified loyalty members\" was completed successfully."
+    },
+    {
+      "id": "hotel/gpt-4.1/t169/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called first, and find_booking_info was called with matching parameters (Jane Smith, 2024-12-03 to 2024-12-06), returning a confirmed booking."
+    },
+    {
+      "id": "hotel/gpt-4o/t95/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called successfully; internal_get_booking_details and show_available_rooms both succeeded, satisfying the OR branches (find_booking_info not needed given details call)."
+    },
+    {
+      "id": "hotel/gpt-4o/t186/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_get_interaction_time` nor `internal_get_booking_details` was called; instead unrelated calls (`internal_get_room_checkin_details`, `internal_valid_room_change_reason`) were made."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t123/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded, internal_get_loyalty_member_info for Jane Smith succeeded, show_available_rooms was called, and find_booking_info for Jane Smith (2024-12-10 to 2024-12-12) succeeded, satisfying all prerequisites."
+    },
+    {
+      "id": "hotel/gpt-4.1/t123/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded, internal_get_loyalty_member_info({\"guest_name\": \"Jane Smith\"}) succeeded, show_available_rooms succeeded, and internal_get_booking_details retrieved the matching booking BK010 for Jane Smith (2024-12-10 to 2024-12-12)."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t48/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - both prerequisites satisfied: `find_booking_info` was called with matching guest/dates (Jane Smith, 2024-12-03 to 2024-12-06) and returned a confirmed booking, and `show_available_rooms` was called successfully, satisfying both required occurrences."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t36/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` and `internal_get_loyalty_member_info` were never called."
+    },
+    {
+      "id": "hotel/gpt-4.1/t99/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded, internal_get_loyalty_member_info for Sakana Inoue succeeded, show_available_rooms succeeded, and the OR branch is satisfied via internal_get_booking_details (BK010 for Sakana Inoue, 2024-12-10 to 2024-12-13), so all required prerequisites were met."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t90/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites met: internal_get_interaction_time succeeded, internal_get_loyalty_member_info for Jane Smith succeeded, show_available_rooms was called, and find_booking_info found Jane Smith's booking for 2024-12-10 to 2024-12-14."
+    },
+    {
+      "id": "hotel/gpt-4.1/t129/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; required before `modify_reservation`."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t165/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - find_booking_info was called with matching parameters (Jane Smith, 2024-12-03 to 2024-12-06) and succeeded with a confirmed booking; internal_get_interaction_time was called first and returned a timestamp."
+    },
+    {
+      "id": "hotel/gpt-4.1/t105/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time, internal_get_loyalty_member_info, internal_get_booking_details, and show_available_rooms were all called successfully, satisfying the AND requirements including the (show_available_rooms AND get_booking_details) branch."
+    },
+    {
+      "id": "hotel/gpt-4o/t147/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_compute_room_service_order_fee` was never called, so the second OR branch (fee computation prerequisite) is unmet."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t5/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `show_available_rooms({})` succeeded returning room data, and `internal_get_interaction_time({})` succeeded returning a timestamp; both prerequisites were completed before the booking call."
+    },
+    {
+      "id": "hotel/gpt-4.1/t59/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_loyalty_member_info, show_available_rooms, and find_booking_info were all called successfully with matching parameters (Jane Smith, 2024-12-07 to 2024-12-09) before the modify_reservation attempt."
+    },
+    {
+      "id": "hotel/gpt-4.1/t110/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded (2024-12-07T09:00:00), internal_get_loyalty_member_info for Sakana Inoue succeeded, show_available_rooms succeeded, and internal_get_booking_details succeeded, satisfying both the booking-details and show-available-rooms prerequisites (the OR/AND branch"
+    },
+    {
+      "id": "hotel/gpt-4.1/t6/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - show_available_rooms({}) succeeded showing single room availability, and internal_get_interaction_time({}) returned \"2024-12-02T20:04:31\"; both prerequisites were called before the booking."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t33/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` and `internal_get_loyalty_member_info` were never called."
+    },
+    {
+      "id": "hotel/gpt-4o/t98/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called (2024-12-02T20:04:31), show_available_rooms was called successfully, and internal_get_booking_details succeeded (returning Jane Smith's BK002 booking), satisfying the first OR-branch (show_available_rooms AND booking_details) without needing find_booki"
+    },
+    {
+      "id": "hotel/gpt-4o/t96/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time returned \"2024-12-01T12:00:00\", show_available_rooms was called successfully, and internal_get_booking_details was called successfully (satisfying the internal_get_booking_details/find_booking_info OR); all prerequisites are present with successful results."
+    },
+    {
+      "id": "hotel/gpt-4.1/t5/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - Both prerequisites were called successfully first: `internal_get_interaction_time({})` returned a timestamp, and `show_available_rooms({})` returned availability data."
+    },
+    {
+      "id": "hotel/gpt-4.1/t10/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info({\"guest_name\": \"Alex Turner\"})` returned `false`, so the loyalty info lookup did not succeed, even though `show_available_rooms({})` was successfully called."
+    },
+    {
+      "id": "hotel/gpt-4.1/t8/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t96/i0/c7",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called immediately before (returning \"2024-12-01T12:00:00\"), show_available_rooms was called returning availability, and find_booking_info was called with the matching old date range (2024-12-04 to 2024-12-07) successfully returning Jane Smith's confirmed boo"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t150/i0/c8",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The second prerequisite OR-group requires either `internal_get_loyalty_member_info` plus `internal_compute_room_service_order_fee`, or at minimum `internal_compute_room_service_order_fee`; neither fee computation nor loyalty info calls appear anywhere in the evidence, so the order fee was nev"
+    },
+    {
+      "id": "hotel/gpt-4o/t64/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites were met before the modify_reservation attempt: internal_get_booking_details({}) succeeded returning Jane Smith's booking BK002, internal_get_interaction_time({}) returned 2024-12-02T20:04:31, and show_available_rooms({}) returned availability for all room types including su"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t3/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` was never called; only `find_booking_info` was called instead."
+    },
+    {
+      "id": "hotel/gpt-4o/t107/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - internal_get_loyalty_member_info was never called, and the second OR branch requires both internal_get_booking_details and find_booking_info, but find_booking_info was never called."
+    },
+    {
+      "id": "hotel/gpt-4.1/t133/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - internal_get_loyalty_member_info was never called; also find_booking_info and show_available_rooms are absent, so the required AND/OR branches are unsatisfied."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t138/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - find_booking_info for Sakana Inoue (2024-12-10 to 2024-12-12) returned a confirmed booking, show_available_rooms returned availability including double rooms, internal_get_interaction_time returned a timestamp, and internal_get_loyalty_member_info returned the member's status and points \u2014 all"
+    },
+    {
+      "id": "hotel/gpt-4.1/t135/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time returned 2024-12-01T12:00:00; internal_get_loyalty_member_info returned Sakana Inoue's info; internal_get_booking_details was called (satisfying the booking-details/find_booking_info OR branches) and returned matching booking BK010 for Sakana Inoue 2024-12-10 to "
+    },
+    {
+      "id": "hotel/gpt-4o/t130/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, so that required prerequisite is unmet."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t85/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called (only `internal_is_loyalty_member` was called, which is not the required prerequisite)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t141/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The second OR branch requires both `find_booking_info` and `internal_get_booking_details`; `find_booking_info` was never called anywhere in the evidence."
+    },
+    {
+      "id": "hotel/gpt-4.1/t87/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `show_available_rooms` was never called, and neither `internal_get_booking_details` nor `find_booking_info` was called."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t97/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - find_booking_info for Jane Smith 2024-12-03\u21922024-12-06 succeeded, show_available_rooms succeeded, and internal_get_interaction_time succeeded, satisfying all prerequisite branches."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t43/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls were made; neither `internal_get_booking_details` nor `find_booking_info` was called before the attempted cancellation."
+    },
+    {
+      "id": "hotel/gpt-4.1/t61/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_get_booking_details` nor `find_booking_info` was called, so the OR branch of the second AND clause is unmet."
+    },
+    {
+      "id": "hotel/gpt-4.1/t131/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time returned a timestamp, internal_get_loyalty_member_info returned Jane Smith's info, internal_get_booking_details matched her existing booking, and show_available_rooms succeeded showing suite availability for 2024-12-10 through 2024-12-13."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t71/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_loyalty_member_info was called with guest_name Sakana Inoue and returned successfully; show_available_rooms succeeded; both find_booking_info (matching guest and old dates) and internal_get_booking_details succeeded, satisfying the AND/OR prerequisites."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t84/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called (2024-12-02T20:04:31), internal_get_loyalty_member_info for John Doe succeeded, show_available_rooms was called, and find_booking_info for John Doe 2024-12-10 to 2024-12-12 returned the confirmed booking."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t193/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; the evidence shows only internal_get_room_checkin_details, internal_get_booking_details, show_available_rooms, and show_room_change_options."
+    },
+    {
+      "id": "hotel/gpt-4o/t32/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, but it is a required prerequisite before `book_room`."
+    },
+    {
+      "id": "hotel/gpt-4.1/t25/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` and `internal_get_loyalty_member_info` were never called; only `show_available_rooms` appears in the evidence."
+    },
+    {
+      "id": "hotel/gpt-4.1/t48/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - show_available_rooms was called (satisfying both required instances), and find_booking_info was called first for Jane Smith 2024-12-03 to 2024-12-06, returning a confirmed booking, satisfying the OR branch."
+    },
+    {
+      "id": "hotel/gpt-4.1/t181/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; only `internal_get_booking_details` was made."
+    },
+    {
+      "id": "hotel/gpt-4o/t40/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The prerequisite `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which is a different tool."
+    },
+    {
+      "id": "hotel/gpt-4o/t129/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, and neither `find_booking_info` (with the specified date range) nor `show_available_rooms` was called."
+    },
+    {
+      "id": "hotel/gpt-4.1/t24/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info({\"guest_name\": \"Alex Turner\"})` returned `false`, indicating the loyalty member lookup did not succeed, so that prerequisite is unmet."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t116/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites were satisfied before modify_reservation: find_booking_info for Sakana Inoue 2024-12-10\u21922024-12-12 returned a confirmed booking, show_available_rooms returned double rooms available 2024-12-10 through 2024-12-14, internal_get_interaction_time returned 2024-12-09T12:30:00, an"
+    },
+    {
+      "id": "hotel/gpt-4o/t135/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, and the required `find_booking_info` call is absent (the second OR branch requires both `internal_get_booking_details` and `find_booking_info`), and `show_available_rooms` was also never called."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t42/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls were made; neither `internal_get_booking_details` nor `find_booking_info` was called before the cancellation."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t95/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time returned \"2024-12-02T20:04:31\", show_available_rooms returned availability for all room types, find_booking_info found Jane Smith's booking matching the old dates, and internal_get_booking_details confirmed the booking \u2014 all required prerequisites satisfied befor"
+    },
+    {
+      "id": "hotel/gpt-4.1/t56/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called (returned \"2024-12-03T10:00:00\"), show_available_rooms was called, and internal_get_booking_details was called earlier, satisfying all prerequisites (booking details, show_available_rooms, and interaction time all completed successfully)."
+    },
+    {
+      "id": "hotel/gpt-4o/t45/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `internal_get_interaction_time` was called and returned \"2024-12-01T12:00:00\", and `internal_get_booking_details` was called and returned booking BK002 for Jane Smith with matching check-in 2024-12-03 and check-out 2024-12-06, satisfying both required prerequisites."
+    },
+    {
+      "id": "hotel/gpt-4o/t111/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded (2024-12-01T12:00:00), internal_get_loyalty_member_info for Alice Carter succeeded (returned false, a valid result), internal_get_booking_details succeeded showing Alice Carter's booking BK003 for 2024-12-04 to 2024-12-06, and show_available_rooms succe"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t132/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time returned \"2024-12-05T10:00:00\", internal_get_loyalty_member_info returned Sakana Inoue's info (1500 points, gold), show_available_rooms returned availability including suites, and find_booking_info returned Sakana Inoue's booking for 2024-12-10 to 2024-12-12 \u2014 al"
+    },
+    {
+      "id": "hotel/gpt-4o/t142/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites are satisfied: `internal_get_interaction_time` was called first (returned 2024-12-02T20:04:31); `internal_get_loyalty_member_info` was called with guest_name \"Jane Smith\"; `internal_get_booking_details` was called first (returning Jane Smith's booking BK002); and `show_avail"
+    },
+    {
+      "id": "hotel/gpt-4o/t5/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - Both prerequisites were called successfully first: internal_get_interaction_time returned a timestamp, and show_available_rooms returned room availability including single rooms for the requested dates."
+    },
+    {
+      "id": "hotel/gpt-4o/t143/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `find_booking_info` was never called; the prerequisites require both `internal_get_booking_details` and `find_booking_info` (in both the `show_available_rooms` OR branch and the standalone OR branch), and no such call appears in the evidence."
+    },
+    {
+      "id": "hotel/gpt-4.1/t37/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites completed successfully before book_room: show_available_rooms({}) returned availability data, internal_get_booking_details({}) returned bookings, internal_get_interaction_time({}) returned 2024-12-02T20:04:31, and internal_get_loyalty_member_info({\"guest_name\": \"Sakana Inoue"
+    },
+    {
+      "id": "hotel/gpt-4o/t42/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_booking_details was called and returned successfully, showing BK002 for Jane Smith (2024-12-03 to 2024-12-06, status confirmed), satisfying the prerequisite."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t73/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites satisfied: internal_get_loyalty_member_info was called with guest Alice Carter (returned loyalty info), show_available_rooms was called (returned room availability including double rooms), find_booking_info was called with matching parameters Alice Carter/2024-12-10/2024-12-"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t67/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time, show_available_rooms, and find_booking_info were all called successfully before modify_reservation, satisfying the prerequisites."
+    },
+    {
+      "id": "hotel/gpt-4o/t62/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `find_booking_info` was never called; both OR branches of the second AND require it in addition to `internal_get_booking_details`, which alone is insufficient."
+    },
+    {
+      "id": "hotel/gpt-4o/t189/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time and internal_get_booking_details were both called first and succeeded (\"2024-12-02T20:04:31\" and full booking details including BK001 for John Doe), satisfying all prerequisites."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t189/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; it appears nowhere in the tool call history."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t138/i0/c7",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time returned \"2024-12-01T11:00:00\"; internal_get_loyalty_member_info returned member info for Sakana Inoue; show_available_rooms succeeded; find_booking_info was called with the guest name and date range and returned the confirmed booking \u2014 all prerequisites (both OR"
+    },
+    {
+      "id": "hotel/gpt-4o/t153/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` was never called; the check-in details call alone satisfies neither OR-branch of the first prerequisite group."
+    },
+    {
+      "id": "hotel/gpt-4.1/t85/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time, internal_get_loyalty_member_info({\"guest_name\": \"Alice Carter\"}), show_available_rooms({}), and internal_get_booking_details({}) were all called with successful results, satisfying all prerequisites including the show_available_rooms + booking-details OR branch."
+    },
+    {
+      "id": "hotel/gpt-4.1/t42/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - find_booking_info was called with matching parameters ({\"guest_name\": \"Jane Smith\", \"check_in_date\": \"2024-12-03\", \"check_out_date\": \"2024-12-06\"}) and returned a successful result showing a confirmed booking."
+    },
+    {
+      "id": "hotel/gpt-4.1/t130/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info({\"guest_name\": \"Emily Carter\"})` returned `false`, so this prerequisite did not succeed."
+    },
+    {
+      "id": "hotel/gpt-4.1/t117/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites were satisfied: `internal_get_interaction_time({})` returned a timestamp; `internal_get_loyalty_member_info({\"guest_name\": \"Jane Smith\"})` was called; `show_available_rooms({})` succeeded showing suite availability; `internal_get_booking_details({})` succeeded returning Jane"
+    },
+    {
+      "id": "hotel/gpt-4o/t169/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called and returned \"2024-12-03T14:20:00\", and internal_get_booking_details was called and returned results including Jane Smith's booking BK002 matching the dates."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t192/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; it is a required prerequisite."
+    },
+    {
+      "id": "hotel/gpt-4o/t53/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called, so that prerequisite is unmet (the others\u2014`show_available_rooms` and `internal_get_booking_details`\u2014were called, but the AND requires all three)."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t163/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called, so the AND prerequisite is unmet."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t111/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which does not satisfy that prerequisite."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t180/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - no tool call has been made; `internal_is_loyalty_member` was never called before the attempted `register_loyalty_member`."
+    },
+    {
+      "id": "hotel/gpt-4o/t55/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called first (2024-12-01T10:00:00), internal_get_booking_details retrieved bookings including Jane Smith's, and show_available_rooms was called twice, satisfying all required prerequisites."
+    },
+    {
+      "id": "hotel/gpt-4.1/t7/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - show_available_rooms({}) succeeded before booking, and internal_get_loyalty_member_info({\"guest_name\": \"Sakana Inoue\"}) returned successfully with matching parameters."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t95/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time returned 2024-12-02T20:04:31; show_available_rooms returned room availability; find_booking_info located Jane Smith's booking (2024-12-03 to 2024-12-06); internal_get_booking_details retrieved all bookings including BK002. All prerequisites were satisfied before "
+    },
+    {
+      "id": "hotel/gpt-4o/t181/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_get_interaction_time` nor `internal_get_booking_details` was ever called; only `internal_get_room_checkin_details` and `show_available_rooms` appear in the evidence."
+    },
+    {
+      "id": "hotel/gpt-4.1/t44/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - find_booking_info was called with matching parameters (Jane Smith, 2024-12-03, 2024-12-06) and returned a confirmed booking; internal_get_interaction_time was called and returned a timestamp. The AND of internal_get_interaction_time plus the OR of find_booking_info is satisfied."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t95/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded (2024-12-02T20:04:31); show_available_rooms succeeded; both internal_get_booking_details and find_booking_info for Jane Smith (2024-12-03 to 2024-12-06) were called successfully, satisfying all prerequisite branches."
+    },
+    {
+      "id": "hotel/gpt-4.1/t71/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_loyalty_member_info for Sakana Inoue succeeded (returned gold member info); show_available_rooms({}) succeeded showing double rooms available for all dates 2024-12-10 through 2024-12-14; and the second OR branch is satisfied by internal_get_booking_details({}) succeeding, which a"
+    },
+    {
+      "id": "hotel/gpt-4.1/t95/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called and returned \"2024-12-02T20:04:31\"; show_available_rooms was called and succeeded returning room availability; internal_get_booking_details was called and returned bookings including Jane Smith's BK002 \u2014 all before the modify_reservation attempt."
+    },
+    {
+      "id": "hotel/gpt-4o/t81/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which does not satisfy the requirement to retrieve loyalty member status and points."
+    },
+    {
+      "id": "hotel/gpt-4.1/t12/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All three prerequisites were called successfully: show_available_rooms({}) returned availability, internal_get_booking_details({}) returned bookings, and internal_get_interaction_time({}) returned 2024-12-02T20:04:31, all before the book_room call."
+    },
+    {
+      "id": "hotel/gpt-4o/t63/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time called (2024-12-02T20:04:31), internal_get_booking_details called successfully (returned bookings including Jane Smith), and show_available_rooms called successfully with results; all prerequisites satisfied."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t186/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; only `internal_get_booking_details` was satisfied."
+    },
+    {
+      "id": "hotel/gpt-4o/t60/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_get_loyalty_member_info` nor `show_available_rooms` was called; both are required prerequisites, and `internal_get_booking_details`/`internal_is_loyalty_member` do not satisfy them."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t134/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded; internal_get_loyalty_member_info succeeded; show_available_rooms was called; find_booking_info for John Doe 2024-12-02\u20132024-12-04 succeeded; and the booking_details OR-branch is satisfied via find_booking_info plus show_available_rooms (internal_get_bo"
+    },
+    {
+      "id": "hotel/gpt-4.1/t76/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called and returned a timestamp; show_available_rooms was called and returned availability for all room types; internal_get_booking_details was called and returned John Doe's booking (BK001), satisfying the OR branch."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t174/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made; `internal_get_interaction_time`, `internal_get_booking_details`, and `internal_get_room_checkin_details` are all absent."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t128/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which does not satisfy the prerequisite."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t87/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - Before modify_reservation, all prerequisites were met: internal_get_interaction_time (returned 2024-12-07T10:00:00), internal_get_loyalty_member_info (returned Sakana Inoue's gold-tier info), show_available_rooms (showed double availability), and find_booking_info (found the 2024-12-10 to 202"
+    },
+    {
+      "id": "hotel/gpt-4o/t56/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded (returned 2024-12-03T10:00:00), show_available_rooms succeeded (full availability listing returned), and internal_get_booking_details succeeded (returned BK002 for Jane Smith), satisfying all prerequisite branches."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t110/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time returned \"2024-12-07T09:00:00\"; internal_get_loyalty_member_info returned member info; find_booking_info was called with matching guest name and dates and succeeded; show_available_rooms displayed availability including double rooms for the new date range."
+    },
+    {
+      "id": "hotel/gpt-4o/t118/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, and neither `find_booking_info` nor `show_available_rooms` appear in the evidence, so multiple required prerequisites are unmet."
+    },
+    {
+      "id": "hotel/gpt-4.1/t179/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_is_loyalty_member({\"guest_name\": \"Jane Smith\"}) was called first and returned false (not already a member), satisfying the prerequisite before register_loyalty_member."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t8/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t55/i0/c8",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called (returned \"2024-12-01T10:00:00\"), show_available_rooms was called before it (returned room data including suite), and find_booking_info for Jane Smith with dates 2024-12-03 to 2024-12-06 was called successfully, satisfying all listed prerequisites."
+    },
+    {
+      "id": "hotel/gpt-4o/t116/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The second OR branch requires both `internal_get_booking_details` and `find_booking_info`; `find_booking_info` was never called, so that prerequisite branch is unmet even though the first OR branch (show_available_rooms + booking details) was satisfied."
+    },
+    {
+      "id": "hotel/gpt-4.1/t112/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made, so none of the prerequisites (internal_get_interaction_time, internal_get_loyalty_member_info, show_available_rooms, booking lookup) have been satisfied."
+    },
+    {
+      "id": "hotel/gpt-4o/t15/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All three prerequisites were called successfully beforehand: internal_get_booking_details({}), internal_get_loyalty_member_info({\"guest_name\": \"Sakana Inoue\"}), and show_available_rooms({})."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t25/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `show_available_rooms` and `internal_get_interaction_time` appear in the evidence."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t102/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `find_booking_info` was never called; the nested AND branch requires both `internal_get_booking_details` and `find_booking_info` to have been called first."
+    },
+    {
+      "id": "hotel/gpt-4.1/t114/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Only `internal_get_booking_details` was called; `internal_get_interaction_time`, `internal_get_loyalty_member_info`, `find_booking_info`, and `show_available_rooms` were never called, so multiple required prerequisites are unmet."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t64/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called and returned 2024-12-02T20:04:31; show_available_rooms was called and returned availability (including suites for 2024-12-05 to 2024-12-09); find_booking_info was called with matching guest Jane Smith and dates 2024-12-03/2024-12-06, returning a confir"
+    },
+    {
+      "id": "hotel/gpt-4.1/t184/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; it is a required prerequisite and is absent from the tool call list."
+    },
+    {
+      "id": "hotel/gpt-4o/t66/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded (2024-12-01T10:00:00), show_available_rooms succeeded for all room types including double, and internal_get_booking_details succeeded (returning Jane Smith's bookings), satisfying the booking-details OR branch."
+    },
+    {
+      "id": "hotel/gpt-4o/t113/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `show_available_rooms` was never called; it is required both in the first OR branch and as a standalone prerequisite."
+    },
+    {
+      "id": "hotel/gpt-4.1/t189/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called in the visible evidence, so that prerequisite is unmet."
+    },
+    {
+      "id": "hotel/gpt-4o/t41/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; the other three prerequisites (internal_get_interaction_time, show_available_rooms, internal_get_booking_details) are present, but this one is absent from the evidence."
+    },
+    {
+      "id": "hotel/gpt-4.1/t21/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The required prerequisite `internal_get_loyalty_member_info` was never called; instead, a different tool (`internal_is_loyalty_member`) was invoked, which does not satisfy the stated prerequisite."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t39/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` and `internal_get_loyalty_member_info` were never called; only `show_available_rooms` and `internal_get_interaction_time` were completed."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t38/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` and `internal_get_loyalty_member_info` were never called; only `show_available_rooms`, `internal_get_interaction_time`, and `find_booking_info` appear in the evidence."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t124/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - find_booking_info (matching dates) was called; show_available_rooms succeeded; internal_get_interaction_time and internal_get_loyalty_member_info were both called and returned results."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t40/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_is_loyalty_member({\"guest_name\": \"Alex Turner\"}) was called and returned false, satisfying the required prior check with matching parameters before register_loyalty_member."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t45/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called successfully, and find_booking_info was called with matching parameters (Jane Smith, 2024-12-03 to 2024-12-06) and returned booking details."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t77/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called (returned 2024-12-07T09:00:00), show_available_rooms was called and succeeded, and find_booking_info was called with matching parameters for Jane Smith 2024-12-10 to 2024-12-12."
+    },
+    {
+      "id": "hotel/gpt-4.1/t14/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All three prerequisites were called successfully: internal_get_interaction_time({}) returned a timestamp, show_available_rooms({}) returned room availability, and internal_get_booking_details({}) returned booking records."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t7/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - show_available_rooms({}) succeeded with results, and internal_get_loyalty_member_info({\"guest_name\": \"Sakana Inoue\"}) succeeded returning member info."
+    },
+    {
+      "id": "hotel/gpt-4o/t77/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `show_available_rooms` was never called, so both AND-branches requiring it are unmet."
+    },
+    {
+      "id": "hotel/gpt-4o/t10/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `show_available_rooms` appears in the evidence."
+    },
+    {
+      "id": "hotel/gpt-4o/t102/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time, internal_get_loyalty_member_info, internal_get_booking_details, and show_available_rooms were all called successfully; show_available_rooms succeeded, satisfying the AND of (show_available_rooms) with (internal_get_booking_details) per the first OR branch."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t130/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which is a different tool and does not satisfy the required prerequisite."
+    },
+    {
+      "id": "hotel/gpt-4.1/t80/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `show_available_rooms` has not been called, and neither `internal_get_booking_details` nor `find_booking_info` has been called, so the booking lookup and room availability prerequisites are unmet."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t19/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` and `internal_get_loyalty_member_info` were never called; only `show_available_rooms` and `find_booking_info` (a different tool) appear."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t13/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The prerequisite `internal_get_booking_details` was never called; the agent called `find_booking_info` instead, which is a different tool."
+    },
+    {
+      "id": "hotel/gpt-4.1/t33/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All four prerequisites were called successfully: show_available_rooms({}), internal_get_booking_details({}), internal_get_interaction_time({}), and internal_get_loyalty_member_info({\"guest_name\": \"Alex Turner\"}) all returned results."
+    },
+    {
+      "id": "hotel/gpt-4o/t74/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_loyalty_member_info({\"guest_name\": \"Jane Doe\"}) was called and returned, internal_get_booking_details({}) was called and returned bookings including Jane Doe's BK001, and show_available_rooms({}) was called and returned availability \u2014 all required prerequisites for modify_reserva"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t99/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time returned a timestamp, internal_get_loyalty_member_info returned Sakana Inoue's loyalty info, show_available_rooms returned availability (double rooms available 12-15 to 12-18), and both find_booking_info and internal_get_booking_details successfully retrieved the"
+    },
+    {
+      "id": "hotel/gpt-4o/t31/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All four prerequisites were called first with successful results: internal_get_interaction_time, internal_get_booking_details, internal_get_loyalty_member_info({\"guest_name\": \"Sakana Inoue\"}), and show_available_rooms."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t185/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_get_interaction_time` nor `internal_get_booking_details` appears in the call log."
+    },
+    {
+      "id": "hotel/gpt-4o/t167/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called successfully (returned \"2024-12-03T15:10:00\"), and internal_get_booking_details was called successfully (returned booking BK002 for Jane Smith matching the dates 2024-12-03 to 2024-12-06), satisfying the OR prerequisite."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t114/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; all other prerequisites (find_booking_info, show_available_rooms, internal_get_interaction_time) are satisfied."
+    },
+    {
+      "id": "hotel/gpt-4.1/t45/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - find_booking_info was called with matching parameters (Jane Smith, 2024-12-03, 2024-12-06) and succeeded; internal_get_interaction_time was called first-requirement satisfied (and the OR of booking lookup is met by find_booking_info); both required calls appear in the evidence."
+    },
+    {
+      "id": "hotel/gpt-4o/t54/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded (2024-12-02T20:04:31); show_available_rooms succeeded; internal_get_booking_details succeeded, satisfying the OR branch. All prerequisites met before modify_reservation."
+    },
+    {
+      "id": "hotel/gpt-4.1/t72/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info({\"guest_name\": \"Jane Smith\"})` returned false, so the required loyalty member info call did not succeed."
+    },
+    {
+      "id": "hotel/gpt-4o/t132/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called (only `internal_is_loyalty_member` was), and `find_booking_info` was never called either."
+    },
+    {
+      "id": "hotel/gpt-4.1/t26/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All three prerequisites were satisfied: show_available_rooms({}) returned availability (including suite 110 for all requested dates), internal_get_interaction_time({}) returned \"2024-12-02T20:04:31\", and internal_get_loyalty_member_info({\"guest_name\": \"Maria Lopez\"}) returned her loyalty deta"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t121/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - find_booking_info for Sakana Inoue 2024-12-08\u21922024-12-10 returned a confirmed booking; internal_get_interaction_time returned a timestamp; internal_get_loyalty_member_info returned member info (gold, 1500 points); show_available_rooms displayed availability including double rooms for 2024-12-"
+    },
+    {
+      "id": "hotel/gpt-4.1/t2/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - show_available_rooms({}) was called first and returned a successful result listing available rooms before the book_room call."
+    },
+    {
+      "id": "hotel/gpt-4.1/t144/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called (returned \"2024-12-05T09:00:00\"), internal_get_loyalty_member_info for Alice Brown was called, show_available_rooms was called, and internal_get_booking_details was called successfully, satisfying both OR branches."
+    },
+    {
+      "id": "hotel/gpt-4.1/t106/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time returned 2024-12-08T10:00:00; internal_get_loyalty_member_info was called for Jane Smith; show_available_rooms returned availability for all room types; internal_get_booking_details returned the BK002 booking for Jane Smith (matching dates 2024-12-10 to 2024-12-1"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t49/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - Both required prerequisites are satisfied: `find_booking_info({\"guest_name\": \"Jane Smith\", \"check_in_date\": \"2024-12-03\", \"check_out_date\": \"2024-12-06\"})` returned booking details successfully, and `show_available_rooms({})` was called and returned room availability. Both are required before"
+    },
+    {
+      "id": "hotel/gpt-4o/t122/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` and `show_available_rooms` were never called; only interaction time and booking details were retrieved."
+    },
+    {
+      "id": "hotel/gpt-4o/t184/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called, and `internal_get_booking_details` was never called; only room check-in details and reason validation were done."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t87/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time and internal_get_loyalty_member_info were both called successfully; show_available_rooms was called; find_booking_info was called with matching guest name and dates (Sakana Inoue, 2024-12-10 to 2024-12-12) and returned a confirmed booking."
+    },
+    {
+      "id": "hotel/gpt-4.1/t167/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_booking_details was called first (retrieved Jane Smith's booking BK002), and internal_get_interaction_time was called, both with successful results."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t143/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` was never called; the prerequisite requires it (in the OR-branch combining it with `find_booking_info`), but only `find_booking_info` appears in the tool call history."
+    },
+    {
+      "id": "hotel/gpt-4.1/t54/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called first; show_available_rooms was called; internal_get_booking_details was called (an OR alternative satisfied). All prerequisites present."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t106/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which does not satisfy the specified prerequisite."
+    },
+    {
+      "id": "hotel/gpt-4o/t100/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `find_booking_info` was never called, but both OR branches of the prerequisite require it alongside `internal_get_booking_details`."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t109/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - internal_get_booking_details was never called; both OR branches require it (alongside find_booking_info), and only find_booking_info was made."
+    },
+    {
+      "id": "hotel/gpt-4o/t44/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_booking_details was called first (retrieving bookings including Jane Smith's BK002 with matching dates), and internal_get_interaction_time was called first returning a timestamp, satisfying all prerequisites."
+    },
+    {
+      "id": "hotel/gpt-4o/t187/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; only `internal_valid_room_change_reason` and `internal_get_booking_details` were made."
+    },
+    {
+      "id": "hotel/gpt-4o/t6/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - Both prerequisites were completed successfully: `internal_get_interaction_time({})` returned \"2024-12-02T20:04:31\" and `show_available_rooms({})` returned available rooms (single rooms 101 and 102 available for 2024-12-05 and 2024-12-06), both called before the intended `book_room` call."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t62/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called successfully (\"2024-12-02T20:04:31\"), show_available_rooms succeeded showing suite availability for 2024-12-06 to 2024-12-08, and find_booking_info with matching parameters (Jane Smith, 2024-12-03 to 2024-12-06) returned a confirmed booking, satisfying"
+    },
+    {
+      "id": "hotel/gpt-4o/t138/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `find_booking_info` was never called; both the show_available_rooms branch and the alternative branch require either `internal_get_booking_details` AND `find_booking_info`, and `find_booking_info` is absent from the evidence."
+    },
+    {
+      "id": "hotel/gpt-4.1/t170/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` was never called; only `internal_get_room_checkin_details` was made."
+    },
+    {
+      "id": "hotel/gpt-4o/t120/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, and `find_booking_info` was never called (required by both branches of the prerequisite structure, which AND `internal_get_booking_details` with `find_booking_info`)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t38/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only interaction time, show_available_rooms, and internal_get_booking_details appear in the evidence."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t131/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded (\"2024-12-05T09:30:00\"), internal_get_loyalty_member_info succeeded (Jane Smith, silver), show_available_rooms succeeded (suite availability shown), and find_booking_info succeeded for Jane Smith 2024-12-10 to 2024-12-12, satisfying all prerequisites be"
+    },
+    {
+      "id": "hotel/gpt-4o/t114/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, so that prerequisite is unmet."
+    },
+    {
+      "id": "hotel/gpt-4o/t77/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `show_available_rooms` was never called, and it is required (both as part of the AND with booking lookup and as its own AND clause) before `modify_reservation` with the new double-room parameters. Only `internal_get_interaction_time` and `internal_get_booking_details` appear in the call log."
+    },
+    {
+      "id": "hotel/gpt-4.1/t55/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded (\"2024-12-01T10:00:00\"), show_available_rooms was called successfully (twice), and internal_get_booking_details succeeded, satisfying the OR (internal_get_booking_details/find_booking_info)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t118/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; all other prerequisites (internal_get_booking_details, show_available_rooms, internal_get_loyalty_member_info, find_booking_info not required since booking details path used) appear satisfied, but the interaction timestamp call is absent."
+    },
+    {
+      "id": "hotel/gpt-4.1/t91/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `show_available_rooms` was never called; the evidence contains no call displaying available rooms across room types."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t179/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool call has been made, so the required `internal_is_loyalty_member` check was never performed."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t116/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - find_booking_info, show_available_rooms, internal_get_interaction_time, and internal_get_loyalty_member_info were all called successfully with matching parameters before the modify_reservation action."
+    },
+    {
+      "id": "hotel/gpt-4.1/t64/i0/c6",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The second required OR branch requires both `internal_get_booking_details` and `find_booking_info` to have been called, but `find_booking_info` was never called anywhere in the evidence, so that prerequisite branch is unmet."
+    },
+    {
+      "id": "hotel/gpt-4.1/t101/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the final OR-of branch requires both `internal_get_booking_details` and `find_booking_info` to have been called; `find_booking_info` was never called anywhere in the evidence."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t74/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only find_booking_info, show_available_rooms, and internal_get_interaction_time appear in the evidence."
+    },
+    {
+      "id": "hotel/gpt-4.1/t143/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `find_booking_info` was never called; both the \"show_available_rooms OR\" branch and the second OR branch require `find_booking_info` alongside `internal_get_booking_details`, and only the latter appears in the evidence."
+    },
+    {
+      "id": "hotel/gpt-4o/t99/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `internal_get_interaction_time`, `internal_get_booking_details`, `internal_get_loyalty_member_info`, and `show_available_rooms` were all called successfully with correct results; the booking details AND show_available_rooms calls satisfy the required OR branches (find_booking_info is only nee"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t55/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called successfully, show_available_rooms was called successfully, and find_booking_info was called with matching guest and date range parameters."
+    },
+    {
+      "id": "hotel/gpt-4o/t146/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the payment method is loyalty_points, which requires either `internal_get_loyalty_member_info` followed by `internal_compute_room_service_order_fee`, or at minimum `internal_compute_room_service_order_fee`. Neither was ever called (only `internal_is_loyalty_member` was), so the fee prerequisi"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t118/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites are satisfied: `internal_get_interaction_time` was called and returned \"2024-12-02T20:04:31\"; `internal_get_loyalty_member_info` was called for Jane Smith and returned her loyalty info; `show_available_rooms` was called successfully; and both `find_booking_info` (for Jane Sm"
+    },
+    {
+      "id": "hotel/gpt-4.1/t163/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; only `find_booking_info` (OR-branch) is satisfied."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t18/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` was never called; only `find_booking_info`, `internal_is_loyalty_member`, and `internal_get_loyalty_member_info` appear."
+    },
+    {
+      "id": "hotel/gpt-4o/t24/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only interaction time and show_available_rooms appear in the evidence."
+    },
+    {
+      "id": "hotel/gpt-4o/t163/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called."
+    },
+    {
+      "id": "hotel/gpt-4o/t97/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called (2024-12-02T20:04:31), show_available_rooms was called with results, and internal_get_booking_details was called and succeeded (satisfying the OR branch, since find_booking_info is only required in the alternate branch)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t78/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called successfully (\"2024-12-08T12:00:00\"), show_available_rooms({}) was called successfully (suite availability shown), and internal_get_booking_details({}) was called successfully (returned Jane Smith's BK002 booking), satisfying all required prerequisites"
+    },
+    {
+      "id": "hotel/gpt-4o/t129/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; only interaction time and booking details were retrieved."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t68/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_loyalty_member_info was called for Sakana Inoue and succeeded; show_available_rooms succeeded; both find_booking_info and internal_get_booking_details were called with matching dates."
+    },
+    {
+      "id": "hotel/gpt-4o/t14/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All three prerequisites were called successfully with matching results: `internal_get_interaction_time`, `internal_get_booking_details`, and `show_available_rooms` (confirming single room availability for 2024-12-05 and 2024-12-06 at $80/night, matching the 160 total)."
+    },
+    {
+      "id": "hotel/gpt-4o/t57/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called, so that prerequisite is unmet."
+    },
+    {
+      "id": "hotel/gpt-4.1/t176/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called, and the OR branch requires both `internal_get_booking_details` and `internal_get_room_checkin_details`; only the latter was called."
+    },
+    {
+      "id": "hotel/gpt-4o/t64/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded; internal_get_booking_details succeeded; find_booking_info covered by booking details; show_available_rooms succeeded."
+    },
+    {
+      "id": "hotel/gpt-4o/t61/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` and `show_available_rooms` were never called; only `internal_get_booking_details`, `internal_valid_room_type`, and `internal_get_interaction_time` appear in the evidence."
+    },
+    {
+      "id": "hotel/gpt-4o/t38/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; the other prerequisites (internal_get_interaction_time, show_available_rooms, internal_get_booking_details) were called successfully, but loyalty member info is absent from the evidence."
+    },
+    {
+      "id": "hotel/gpt-4o/t179/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_is_loyalty_member({\"guest_name\": \"Jane Smith\"}) was called first and returned a result (false), satisfying the prerequisite that the check precede registration."
+    },
+    {
+      "id": "hotel/gpt-4o/t16/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called."
+    },
+    {
+      "id": "hotel/gpt-4o/t108/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info({\"guest_name\": \"Jane Smith\"})` returned `false`, indicating the loyalty member info lookup did not succeed."
+    },
+    {
+      "id": "hotel/gpt-4.1/t53/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time succeeded (\"2024-12-02T20:04:31\"), show_available_rooms succeeded, and find_booking_info for Jane Smith with dates 2024-12-03 to 2024-12-06 succeeded, satisfying all prerequisites."
+    },
+    {
+      "id": "hotel/gpt-4.1/t57/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The `OR` branch requiring either `internal_get_booking_details` or `find_booking_info` for the guest's booking is unmet; neither call appears in the evidence."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t113/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites are satisfied: `internal_get_interaction_time` returned a timestamp, `internal_get_loyalty_member_info` returned Sakana Inoue's member info, `show_available_rooms` was called successfully, and `find_booking_info` with matching parameters returned the confirmed booking (satis"
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t117/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The prerequisite `internal_get_loyalty_member_info` was never called; only `internal_is_loyalty_member` was called, which is a different tool. All other prerequisites (find_booking_info, show_available_rooms, internal_get_interaction_time) are satisfied."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t166/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - find_booking_info was called with the exact guest_name and dates matching the check-in, returning a confirmed booking, and internal_get_interaction_time was called first in the AND requirement order with a successful timestamp result."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t1/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `show_available_rooms({})` was called first and returned results successfully."
+    },
+    {
+      "id": "hotel/gpt-4.1/t3/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - Both prerequisites were completed: `show_available_rooms({})` returned room availability data, and `internal_get_booking_details({})` returned current bookings, both before the `book_room` call."
+    },
+    {
+      "id": "hotel/gpt-4.1/t0/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `show_available_rooms({})` was called first and returned a successful result showing available single rooms and pricing before the `book_room` call."
+    },
+    {
+      "id": "hotel/gpt-4.1/t95/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called successfully; show_available_rooms was called; the AND branch is satisfied by internal_get_booking_details (which succeeded and shows Jane Smith's booking BK002 with matching dates 2024-12-03 to 2024-12-06), so find_booking_info is not required by the "
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t175/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called successfully; the OR branch is satisfied by internal_get_booking_details called first (results retrieved), with internal_get_room_checkin_details also called before it."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t135/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites satisfied: internal_get_interaction_time succeeded (\"2024-12-01T12:00:00\"), internal_get_loyalty_member_info succeeded (Sakana Inoue, gold), show_available_rooms succeeded (suite availability shown), find_booking_info matched the original dates (2024-12-10 to 2024-12-12), an"
+    },
+    {
+      "id": "hotel/gpt-4o/t109/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called (only `internal_is_loyalty_member`), and `find_booking_info` was never called (only `internal_get_booking_details`); the branch requiring both is unmet."
+    },
+    {
+      "id": "hotel/gpt-4.1/t106/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `find_booking_info` was never called; the required AND branch requires both `internal_get_booking_details` and `find_booking_info`."
+    },
+    {
+      "id": "hotel/gpt-4o/t76/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called successfully, show_available_rooms was called successfully, and internal_get_booking_details retrieved John Doe's booking (BK001) matching the specified dates; all prerequisites satisfied."
+    },
+    {
+      "id": "hotel/gpt-4.1/t74/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info({\"guest_name\": \"Jane Doe\"})` returned `False`, so the loyalty info retrieval prerequisite did not succeed."
+    },
+    {
+      "id": "hotel/gpt-4.1/t92/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called (returned \"2024-12-01T10:00:00\"); internal_get_loyalty_member_info was called with {\"guest_name\": \"John Doe\"} and completed (returned false, i.e., not a member); show_available_rooms was called with results for all room types; and internal_get_booking_"
+    },
+    {
+      "id": "hotel/gpt-4.1/t51/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `find_booking_info` was never called; the OR branches requiring it (paired with `internal_get_booking_details`) are unsatisfied, though `show_available_rooms` was called, so only that branch fails."
+    },
+    {
+      "id": "hotel/gpt-4o/t83/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called; no loyalty member info retrieval appears in the tool call history."
+    },
+    {
+      "id": "hotel/gpt-4.1/t84/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time, internal_get_loyalty_member_info (John Doe), show_available_rooms, and internal_get_booking_details were all called successfully before the modify_reservation call."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t65/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites met: internal_get_interaction_time returned \"2024-11-30T10:00:00\"; show_available_rooms was called; both find_booking_info (John Doe, 2024-12-02\u21922024-12-04) and internal_get_booking_details succeeded with matching booking parameters."
+    },
+    {
+      "id": "hotel/gpt-4.1/t166/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called and returned \"2024-12-03T14:30:00\", and find_booking_info was called with matching parameters (Jane Smith, 2024-12-03 to 2024-12-06) returning a confirmed booking, satisfying both the AND and OR prerequisites."
+    },
+    {
+      "id": "hotel/gpt-4.1/t90/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time and internal_get_loyalty_member_info were called successfully; show_available_rooms was called; internal_get_booking_details was called (satisfying the OR branch of the booking prerequisite)."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t32/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_booking_details` and `internal_get_loyalty_member_info` were never called; only `internal_valid_room_type`, `show_available_rooms`, `internal_get_interaction_time`, and `find_booking_info` appear in the evidence."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t56/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called first (result \"2024-12-03T10:00:00\"), show_available_rooms was called (full availability returned), and find_booking_info was called earlier with matching parameters (Jane Smith, 2024-12-03 to 2024-12-06, confirmed)."
+    },
+    {
+      "id": "hotel/gpt-4.1/t186/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; only `internal_get_booking_details` was completed."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t185/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called in the tool log; `internal_get_booking_details` was called, but only after the `request_room_change` attempt, and the required `internal_get_interaction_time` call is entirely absent."
+    },
+    {
+      "id": "hotel/claude-3-7-sonnet-20250219/t114/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called."
+    },
+    {
+      "id": "hotel/gpt-4.1/t77/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_get_interaction_time was called successfully; show_available_rooms was called successfully; internal_get_booking_details was called successfully (satisfying the OR alternative). All prerequisites met."
+    },
+    {
+      "id": "hotel/gpt-4o/t17/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_loyalty_member_info` was never called."
+    },
+    {
+      "id": "hotel/gpt-4.1/t40/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All four prerequisites were called and completed before the booking: show_available_rooms({}), internal_get_booking_details({}), internal_get_interaction_time({}), and internal_get_loyalty_member_info({\"guest_name\": \"Alex Turner\"}), each with a returned result indicating a successful call."
+    },
+    {
+      "id": "hotel/gpt-4o/t26/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All three prerequisites were called and succeeded: show_available_rooms({}), internal_get_interaction_time({}), and internal_get_loyalty_member_info({\"guest_name\": \"Maria Lopez\"}) all returned successful results before book_room."
+    }
+  ]
+}

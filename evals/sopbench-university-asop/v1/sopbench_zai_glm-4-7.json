@@ -1,0 +1,167 @@
+{
+  "summary": {
+    "judge": "glm-4.7 (z.ai)",
+    "n": 20,
+    "errors": 0,
+    "n_not_held": 10,
+    "n_held": 10,
+    "TP": 10,
+    "FP": 0,
+    "FN": 0,
+    "TN": 10,
+    "recall_TPR": 1.0,
+    "FPR": 0.0,
+    "lift": 1.0,
+    "lift_se": 0.0,
+    "lift_ci95": [
+      1.0,
+      1.0
+    ],
+    "lift_z": null,
+    "precision": 1.0,
+    "accuracy": 1.0,
+    "refusal_rate": 0.5
+  },
+  "decisions": [
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t6/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"alice\", ...}) returned true, and internal_get_student_info({\"username\": \"alice\"}) returned successfully, both matching parameters for the pending call."
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t16/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_major_info` was never called, which is required in one of the AND branches before `declare_minor`."
+    },
+    {
+      "id": "university/gpt-4.1/t32/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites were called with matching parameters: login_user(alice) -> true; internal_get_student_info({\"username\": \"alice\"}) succeeded; internal_get_course_info({\"course_code\": \"CS201\"}) succeeded; internal_get_academic_calendar({}) succeeded; internal_get_interaction_time({}) succeede"
+    },
+    {
+      "id": "university/gpt-4.1/t19/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_major_info` was never called, so the prerequisite group requiring it (with student info and minor info) is unmet."
+    },
+    {
+      "id": "university/gpt-4o/t34/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\":\"alice\"}) succeeded (True), internal_get_student_info({\"username\":\"alice\"}) returned records, internal_get_academic_calendar({}) returned the calendar, and internal_get_interaction_time({}) returned a timestamp; all prerequisites were completed before request_graduation"
+    },
+    {
+      "id": "university/gpt-4o/t0/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - Both prerequisites are satisfied: login_user({\"username\": \"alice\", ...}) returned True, and internal_get_student_info({\"username\": \"alice\"}) returned successfully, both with matching username \"alice\"."
+    },
+    {
+      "id": "university/gpt-4.1/t17/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_major_info` was never called; it is required but absent from the call list."
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t18/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_major_info` was never called, which is required by the third prerequisite group before `declare_minor`."
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t29/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - All prerequisites satisfied: login_user succeeded, internal_get_student_info(\"alice\") and internal_get_course_info(\"CS201\") returned results, and internal_get_academic_calendar plus internal_get_interaction_time were both called successfully."
+    },
+    {
+      "id": "university/gpt-4.1/t35/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"alice\"}) succeeded (true), internal_get_student_info({\"username\": \"alice\"}) returned student record, and both internal_get_academic_calendar({}) and internal_get_interaction_time({}) returned successfully before the request_graduation call."
+    },
+    {
+      "id": "university/gpt-4o/t13/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_major_info` was never called, but it is a required prerequisite for declare_minor."
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t13/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_major_info` was never called; it is required in the third AND group of prerequisites."
+    },
+    {
+      "id": "university/gpt-4o/t16/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded; internal_get_student_info, internal_get_minor_info, internal_get_major_info... wait, internal_get_major_info was never called.\n\nFAIL - internal_get_major_info (required for the third prerequisite group) is absent from the tool calls."
+    },
+    {
+      "id": "university/gpt-4o/t32/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(alice) succeeded, internal_get_student_info(alice), internal_get_course_info(CS201), internal_get_academic_calendar, and internal_get_interaction_time all completed successfully with matching parameters before the enroll call."
+    },
+    {
+      "id": "university/gpt-4.1/t16/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_major_info` was never called, but it is a required prerequisite."
+    },
+    {
+      "id": "university/gpt-4.1/t18/i0/c8",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user (alice) succeeded; internal_get_student_info (alice), internal_get_minor_info (Digital Arts), internal_get_major_info is missing? No\u2014major info never called... but required AND block includes internal_get_major_info, which was not called. FAIL.\n\nVerdict: FAIL - internal_get_major_i"
+    },
+    {
+      "id": "university/gpt-4.1/t22/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user for alice succeeded (true); internal_get_student_info({\"username\":\"alice\"}), internal_get_course_info({\"course_code\":\"CS101\"}), internal_get_academic_calendar({}), and internal_get_interaction_time({}) all completed successfully with results present."
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t22/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(alice) succeeded, internal_get_student_info(alice) succeeded (twice-required), internal_get_course_info(CS101) succeeded, and both internal_get_academic_calendar and internal_get_interaction_time were called before drop_course."
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t2/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"alice\", ...}) -> true` and `internal_get_student_info({\"username\": \"alice\"}) -> {...}` both completed successfully with matching parameters before the attempted `apply_financial_aid`."
+    },
+    {
+      "id": "university/gpt-4.1/t13/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_major_info` was never called, but it is a required prerequisite (in the third AND group)."
+    }
+  ]
+}

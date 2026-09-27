@@ -1,0 +1,2027 @@
+{
+  "summary": {
+    "judge": "string-match (all)",
+    "n": 400,
+    "errors": 0,
+    "n_not_held": 200,
+    "n_held": 200,
+    "TP": 200,
+    "FP": 157,
+    "FN": 0,
+    "TN": 43,
+    "recall_TPR": 1.0,
+    "FPR": 0.785,
+    "lift": 0.21499999999999997,
+    "lift_se": 0.02904952667428507,
+    "lift_ci95": [
+      0.15806292771840125,
+      0.2719370722815987
+    ],
+    "lift_z": 7.401153292811483,
+    "precision": 0.5602240896358543,
+    "accuracy": 0.6075,
+    "refusal_rate": 0.8925
+  },
+  "decisions": [
+    {
+      "id": "online_market/gpt-4.1/t171/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t139/i0/c4",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/gpt-4o/t63/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t34/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t136/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t22/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t139/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t53/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t96/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t65/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t158/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t140/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t121/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t150/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t44/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t104/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t36/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t89/i0/c6",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t116/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t91/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t160/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t140/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t96/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t127/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t75/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t125/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t134/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t90/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t155/i0/c7",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t115/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t132/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t134/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t72/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t109/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t7/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t136/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t154/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t85/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t53/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t68/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t88/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t160/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t94/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t75/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t70/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t84/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t70/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t119/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t124/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t166/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t30/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t114/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t103/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t50/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/gpt-4o/t6/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t76/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t67/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t7/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t152/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t157/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t162/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t86/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t27/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t110/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t94/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t10/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t53/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t151/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t155/i0/c6",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t36/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t155/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t114/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/o4-mini/t113/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t164/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t126/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t125/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t22/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t111/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t0/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t65/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t55/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t87/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t10/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t162/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t38/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t92/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t21/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t62/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t140/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t113/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/gpt-4.1/t62/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t41/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t59/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t141/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t52/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t105/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t6/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t59/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t153/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t49/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/o4-mini/t25/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t120/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t160/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t11/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t77/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t148/i0/c4",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t113/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t129/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t165/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t118/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t42/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t40/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t160/i0/c5",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/gpt-4o/t118/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t163/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t2/i0/c0",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t7/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t48/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t74/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t82/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t86/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t123/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t53/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t41/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/gpt-4o/t170/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t127/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t147/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t88/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t78/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t61/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t1/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t86/i0/c7",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t51/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t142/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t109/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t43/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t65/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t18/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t120/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t25/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t145/i0/c5",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t150/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t92/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t96/i0/c6",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t115/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t123/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t101/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t91/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t24/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t23/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t141/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t126/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t59/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t61/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t113/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t68/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t7/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t163/i0/c6",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t145/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t142/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t36/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t159/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t58/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t75/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t83/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t57/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t29/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t10/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t78/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t148/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/o4-mini/t72/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t139/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t33/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t159/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t170/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t93/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t46/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t121/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t48/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t116/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t0/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t65/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t78/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t79/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t85/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t14/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t136/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t163/i0/c8",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t158/i0/c6",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t136/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t79/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t54/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t15/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t143/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t167/i0/c7",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t146/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t142/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t122/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t75/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t71/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t120/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t140/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t156/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t18/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t7/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t95/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t147/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t97/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t71/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t117/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t52/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t119/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t159/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t125/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t61/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t34/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t92/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t49/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t162/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t115/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t48/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t22/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t76/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t73/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t151/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t91/i0/c6",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t118/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t161/i0/c5",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t161/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t155/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t129/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t109/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/o4-mini/t28/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t82/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t51/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t60/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t169/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t77/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t167/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t28/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t158/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t82/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t88/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t160/i0/c6",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t23/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/gpt-4.1/t42/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t150/i0/c4",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t93/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t131/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t69/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t134/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t70/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t67/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t65/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t137/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t24/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t42/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t134/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t114/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t18/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t148/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t71/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t62/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t55/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t12/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t148/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t133/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t136/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t151/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t38/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t111/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/gpt-4.1/t12/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t160/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t94/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t131/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t79/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t129/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t70/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t30/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t90/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t36/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t80/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t76/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t129/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t79/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t68/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t65/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t141/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t40/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t164/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t60/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t104/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t105/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t32/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/o4-mini/t140/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t163/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t22/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t156/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t134/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t15/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/o4-mini/t119/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t39/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t86/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t159/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t90/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t89/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t94/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t55/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t110/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t132/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/o4-mini/t68/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t51/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t14/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t63/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t84/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t62/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t54/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t102/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t61/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t148/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t146/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t117/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t121/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t104/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t40/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t58/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t88/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t92/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t171/i0/c8",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t82/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t86/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t107/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t115/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t119/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t62/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t91/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t136/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t38/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t49/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/o4-mini/t114/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t14/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t84/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t17/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t24/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t44/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t152/i0/c8",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t156/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t133/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t40/i0/c7",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t93/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t133/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t34/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t163/i0/c5",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t111/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t32/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t60/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t44/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/gpt-4o/t69/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t111/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t73/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t43/i0/c7",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t114/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t133/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t171/i0/c7",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t84/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t14/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t16/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t101/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t71/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t52/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t50/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t161/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t109/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t104/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t118/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t131/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t94/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t97/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t88/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t27/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/gpt-4o/t102/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t33/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t149/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t21/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t32/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/o4-mini/t6/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4.1/t158/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t38/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t70/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t168/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t125/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t67/i0/c3",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t128/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/qwen2.5-72b-it-fireworks/t102/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "online_market/gpt-4o/t145/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t84/i0/c6",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/o4-mini/t87/i0/c7",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t119/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "online_market/claude-3-7-sonnet-20250219/t157/i0/c6",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "online_market/gpt-4o/t96/i0/c2",
+      "truth": "held",
+      "passed": false
+    }
+  ]
+}

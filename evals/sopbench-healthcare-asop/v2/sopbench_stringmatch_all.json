@@ -1,0 +1,1177 @@
+{
+  "summary": {
+    "judge": "string-match (all)",
+    "n": 230,
+    "errors": 0,
+    "n_not_held": 115,
+    "n_held": 115,
+    "TP": 114,
+    "FP": 13,
+    "FN": 1,
+    "TN": 102,
+    "recall_TPR": 0.991304347826087,
+    "FPR": 0.11304347826086956,
+    "lift": 0.8782608695652174,
+    "lift_se": 0.030770495197543744,
+    "lift_ci95": [
+      0.8179506989780317,
+      0.9385710401524031
+    ],
+    "lift_z": 28.542305345652178,
+    "precision": 0.8976377952755905,
+    "accuracy": 0.9391304347826087,
+    "refusal_rate": 0.5521739130434783
+  },
+  "decisions": [
+    {
+      "id": "healthcare/gpt-4.1/t118/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t44/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t91/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t103/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t44/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t92/i0/c4",
+      "truth": "not_held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t104/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t7/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t105/i0/c4",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t85/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t7/i0/c0",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t61/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t62/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t112/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t77/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t75/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t115/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t67/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t13/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t47/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t79/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t37/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t5/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t10/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t49/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t112/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t7/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t82/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t100/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t60/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t89/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t83/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t104/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t61/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t97/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t58/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t83/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t52/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t122/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t46/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t46/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t59/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t71/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t107/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t50/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t120/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t119/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t68/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t80/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4.1/t105/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t90/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t44/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4.1/t12/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t81/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t108/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t108/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t3/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t69/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t62/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t87/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t57/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t28/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t78/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t29/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4.1/t52/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t57/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t49/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t91/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t65/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t70/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t109/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t59/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t74/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t104/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t77/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4.1/t56/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t58/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t79/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t39/i0/c4",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t35/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4.1/t105/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t122/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t64/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t54/i0/c4",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t7/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t49/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t86/i0/c4",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t63/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t88/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t49/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t91/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t43/i0/c4",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t36/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t47/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t37/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t116/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t90/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t35/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t94/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t55/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t83/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t61/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t121/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t9/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t123/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t107/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t8/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t43/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t0/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t116/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t9/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4.1/t48/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t9/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t6/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t84/i0/c0",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t74/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t123/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t102/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t13/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t91/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4.1/t14/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t66/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t8/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t72/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t81/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t36/i0/c5",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t92/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t79/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t97/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t40/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t18/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t98/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4.1/t80/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t0/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t48/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t1/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t12/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t103/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t106/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t100/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4.1/t44/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t60/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t122/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t53/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t91/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t45/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t14/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t88/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t79/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4.1/t94/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t91/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t52/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t12/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t61/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t107/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t95/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t51/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t115/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t72/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t82/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t45/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t9/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t54/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t76/i0/c2",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t34/i0/c4",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t13/i0/c0",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t40/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t92/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t117/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t22/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t51/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t79/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t63/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t0/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t63/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t70/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t57/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t70/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t117/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t73/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t108/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t121/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t90/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t104/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t37/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t31/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t96/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t38/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t8/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t25/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t72/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t66/i0/c5",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t10/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t87/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t89/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t103/i0/c4",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t68/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t103/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t118/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t43/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t13/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4.1/t92/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t76/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t120/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4.1/t50/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t105/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t14/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t90/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t56/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t114/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t55/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t101/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t55/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4o/t43/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t104/i0/c2",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t119/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t40/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t67/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/o4-mini/t29/i0/c4",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t95/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t74/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t94/i0/c3",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t96/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/o4-mini/t83/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/gpt-4o/t0/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t6/i0/c1",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t72/i0/c3",
+      "truth": "not_held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4.1/t11/i0/c4",
+      "truth": "held",
+      "passed": false
+    },
+    {
+      "id": "healthcare/gpt-4.1/t98/i0/c1",
+      "truth": "held",
+      "passed": true
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t39/i0/c2",
+      "truth": "not_held",
+      "passed": false
+    }
+  ]
+}

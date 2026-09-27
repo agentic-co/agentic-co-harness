@@ -1,0 +1,587 @@
+{
+  "summary": {
+    "judge": "openai/gpt-oss-20b",
+    "n": 80,
+    "errors": 0,
+    "n_not_held": 40,
+    "n_held": 40,
+    "TP": 29,
+    "FP": 4,
+    "FN": 11,
+    "TN": 36,
+    "recall_TPR": 0.725,
+    "FPR": 0.1,
+    "lift": 0.625,
+    "lift_se": 0.08505512918102,
+    "lift_ci95": [
+      0.4582919468052008,
+      0.7917080531947992
+    ],
+    "lift_z": 7.348175307215551,
+    "precision": 0.8787878787878788,
+    "accuracy": 0.8125,
+    "refusal_rate": 0.4125
+  },
+  "decisions": [
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t78/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - The prerequisites require either `internal_check_username_exist` or `internal_get_database` to have been called before the `set_safety_box` action, but no such internal function calls are present in the evidence."
+    },
+    {
+      "id": "bank/o4-mini/t6/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"jane_doe\",\"identification\":{\"drivers_license_id\":\"D1234567\",\"drivers_license_state\":\"CA\"}}) -> true"
+    },
+    {
+      "id": "bank/gpt-4o/t62/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - `login_user` prerequisite not satisfied (no call to login_user with matching parameters)"
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t110/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - The OR group requiring either `get_account_balance` or `internal_get_database` has not been satisfied; no such function call was made."
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t60/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_username_exist({\"username\":\"jane_doe\"}) -> true, login_user({\"username\":\"jane_doe\",...}) -> true, get_account_balance({\"username\":\"jane_doe\"}) -> [true,500.0]"
+    },
+    {
+      "id": "bank/gpt-4.1/t89/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite `internal_get_credit_score` or `internal_get_database` not satisfied, and `get_account_balance` with its sub\u2011prerequisites also missing."
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t19/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite `login_user` was not called before `authenticate_admin_password`."
+    },
+    {
+      "id": "bank/gpt-4o/t23/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\", \"identification\":\"padoesshnwojord\"}) -> true and authenticate_admin_password({\"username\":\"john_doe\", \"admin_password\":\"addoeminhnpajoss\"}) -> true, satisfying the prerequisite chain."
+    },
+    {
+      "id": "bank/o4-mini/t40/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_username_exist({\"username\":\"john_doe\"}) -> true"
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t105/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - authenticate_admin_password({\"username\":\"john_doe\",\"admin_password\":\"addoeminhnpajoss\"}) -> true and login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true satisfy the prerequisite chain."
+    },
+    {
+      "id": "bank/gpt-4o/t14/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true satisfies the prerequisite."
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t9/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - The prerequisites listed are for `get_credit_cards`, not for the attempted `cancel_credit_card` action. No evidence shows that those prerequisites were satisfied."
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t69/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - The successful `login_user({\"username\": \"john_doe\", \"identification\": \"padoesshnwojord\"}) -> true` call satisfies the prerequisite."
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t23/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite `login_user` was not called with the required parameters before calling `authenticate_admin_password`."
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t59/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - `login_user` prerequisite not satisfied (no call to `login_user` with the required parameters)"
+    },
+    {
+      "id": "bank/gpt-4.1/t92/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/gpt-4.1/t16/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - deposit_funds was never called, so its prerequisites cannot be verified."
+    },
+    {
+      "id": "bank/o4-mini/t23/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_username_exist({\"username\":\"john_doe\"}) -> true and login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t46/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite `internal_get_credit_score` or `internal_get_database` not satisfied (only `internal_check_username_exist` was called)"
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t131/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - internal_get_database was not called for the get_account_balance prerequisite."
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t61/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - `login_user` prerequisite not satisfied (no call to login_user was made)"
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t102/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) returned true."
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t25/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite `get_account_balance` (or an equivalent internal check) not satisfied."
+    },
+    {
+      "id": "bank/gpt-4.1/t16/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_username_exist({\"username\":\"john_doe\"}) -> true"
+    },
+    {
+      "id": "bank/gpt-4.1/t102/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/gpt-4.1/t39/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - `login_user` prerequisite is unmet (required for the `get_account_owed_balance` branch)."
+    },
+    {
+      "id": "bank/gpt-4o/t66/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_username_exist({\"username\":\"john_doe\"}) -> [true, true] satisfies the prerequisite."
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t119/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\": \"john_doe\", \"identification\": \"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t56/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_username_exist({\"username\":\"john_doe\"}) -> [true,true] and get_account_balance({\"username\":\"john_doe\"}) -> [true,1000.0]"
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t24/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) returned true, satisfying the prerequisite."
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t57/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite `login_user` (or any required internal check) has not been called."
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t78/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",...}) -> true and get_account_balance({\"username\":\"john_doe\"}) -> 1000.0 satisfy all required prerequisites."
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t102/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) returned true."
+    },
+    {
+      "id": "bank/gpt-4o/t41/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t92/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true, authenticate_admin_password({\"username\":\"john_doe\",\"admin_password\":\"addoeminhnpajoss\"}) -> true, get_account_balance({\"username\":\"john_doe\"}) -> 1000.0"
+    },
+    {
+      "id": "bank/o4-mini/t30/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t74/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - `authenticate_admin_password` prerequisite not satisfied (no call made)"
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t70/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"jane_doe\",\"identification\":{\"drivers_license_id\":\"D1234567\",\"drivers_license_state\":\"CA\"}}) -> true"
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t44/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite 2 unmet: `get_account_owed_balance` was called, but neither the required authentication chain (`login_user` or `internal_check_username_exist` + `internal_get_database`) nor a direct `internal_get_database` call was present."
+    },
+    {
+      "id": "bank/gpt-4.1/t124/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/gpt-4o/t126/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"identification\":\"padoesshnwojord\",\"username\":\"john_doe\"}) -> true satisfies the prerequisite for get_account_balance."
+    },
+    {
+      "id": "bank/gpt-4o/t45/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - internal_get_database was not called with the required parameters before get_account_owed_balance."
+    },
+    {
+      "id": "bank/o4-mini/t47/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_username_exist({\"username\":\"john_doe\"}) -> true and login_user({\"username\":\"john_doe\", \"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t88/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"jane_doe\",\"identification\":{\"drivers_license_id\":\"D1234567\",\"drivers_license_state\":\"CA\"}}) -> true"
+    },
+    {
+      "id": "bank/gpt-4o/t15/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) returned true, satisfying the prerequisite."
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t12/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite `internal_get_database` (or `login_user`) not satisfied."
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t2/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - `login_user` prerequisite not satisfied (no call to `login_user` is present in the evidence)."
+    },
+    {
+      "id": "bank/gpt-4.1/t132/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t98/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - internal_get_database prerequisite not satisfied (no call to internal_get_database was made)"
+    },
+    {
+      "id": "bank/gpt-4o/t44/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_username_exist({\"username\":\"john_doe\"}) -> [true, true] satisfies the OR prerequisite."
+    },
+    {
+      "id": "bank/gpt-4.1/t94/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_username_exist({\"username\":\"jane_doe\"}) -> true and login_user({\"username\":\"jane_doe\", ...}) -> true satisfy the prerequisites."
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t34/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_foreign_currency_available({\"foreign_currency_type\":\"JPY\"}) was called and returned false, satisfying the prerequisite."
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t40/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - internal_get_database was not called with the required parameters before get_account_owed_balance."
+    },
+    {
+      "id": "bank/gpt-4.1/t83/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t81/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - authenticate_admin_password({\"username\":\"john_doe\",\"admin_password\":\"addoeminhnpajoss\"}) -> true and login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true satisfy the required prerequisites."
+    },
+    {
+      "id": "bank/o4-mini/t53/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - `login_user` prerequisite not satisfied (no call to `login_user` was made)."
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t115/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - The prerequisite `login_user` was called successfully before the `transfer_funds` call: `login_user({\"username\": \"alice_smith\", \"identification\": \"alicesecurepass\"}) -> true`."
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t54/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - `login_user` must have been called first."
+    },
+    {
+      "id": "bank/gpt-4o/t13/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite `login_user` was not called before attempting to authenticate admin password."
+    },
+    {
+      "id": "bank/o4-mini/t92/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/gpt-4.1/t120/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite unmet: `internal_get_database` was not called before attempting to get account balance."
+    },
+    {
+      "id": "bank/gpt-4.1/t53/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite unmet: `internal_get_database` was not called (required by the OR conditions)."
+    },
+    {
+      "id": "bank/gpt-4o/t95/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - authenticate_admin_password called with {\"username\":\"jane_doe\",\"admin_password\":\"addoeminnepajass\"} -> true, and login_user called with {\"username\":\"jane_doe\",\"identification\":{\"drivers_license_id\":\"D1234567\",\"drivers_license_state\":\"CA\"}} -> true, satisfying the required prerequisites."
+    },
+    {
+      "id": "bank/gpt-4o/t57/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_username_exist({\"username\":\"jane_doe\"}) -> [true, true] satisfies the second OR group prerequisite."
+    },
+    {
+      "id": "bank/o4-mini/t91/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite unmet: `internal_get_database` was not called before attempting `get_account_balance`."
+    },
+    {
+      "id": "bank/gpt-4.1/t18/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_username_exist({\"username\":\"john_doe\"}) -> true and login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/gpt-4.1/t67/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_username_exist({\"username\":\"john_doe\"}) -> true and get_account_balance({\"username\":\"john_doe\"}) -> 400.0 satisfy the required prerequisites."
+    },
+    {
+      "id": "bank/o4-mini/t11/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/gpt-4o/t12/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite `login_user` was not called before attempting to authenticate_admin_password."
+    },
+    {
+      "id": "bank/gpt-4o/t49/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/claude-3-7-sonnet-20250219/t29/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite `internal_check_username_exist` or `internal_get_database` not satisfied (no tool call made)"
+    },
+    {
+      "id": "bank/o4-mini/t119/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/o4-mini/t58/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    },
+    {
+      "id": "bank/gpt-4o/t66/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_username_exist({\"username\":\"john_doe\"}) -> [true,true] satisfies the required internal check; get_account_balance({\"username\":\"john_doe\"}) -> [true,150.0] and get_account_owed_balance({\"username\":\"john_doe\"}) -> [true,200.0] provide the necessary balance information, meeting al"
+    },
+    {
+      "id": "bank/gpt-4o/t119/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - prerequisite `login_user` was not called with the required parameters before attempting to authenticate_admin_password."
+    },
+    {
+      "id": "bank/gpt-4.1/t110/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"jane_doe\",\"identification\":{\"drivers_license_id\":\"D1234567\",\"drivers_license_state\":\"CA\"}}) returned true, satisfying the prerequisite."
+    },
+    {
+      "id": "bank/gpt-4o/t0/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - internal_check_username_exist({\"username\":\"john_doe\"}) -> [true, true] satisfies the prerequisite."
+    },
+    {
+      "id": "bank/gpt-4.1/t121/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - internal_get_database prerequisite not satisfied (only internal_check_username_exist was called)"
+    },
+    {
+      "id": "bank/o4-mini/t16/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "stop",
+      "raw": "FAIL - authenticate_admin_password prerequisite not satisfied (no call to authenticate_admin_password was made)"
+    },
+    {
+      "id": "bank/qwen2.5-72b-it-fireworks/t83/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "stop",
+      "raw": "PASS - login_user({\"username\":\"john_doe\",\"identification\":\"padoesshnwojord\"}) -> true"
+    }
+  ]
+}

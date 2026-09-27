@@ -1,0 +1,1049 @@
+{
+  "summary": {
+    "judge": "glm-4.7 (z.ai)",
+    "n": 146,
+    "errors": 0,
+    "n_not_held": 73,
+    "n_held": 73,
+    "TP": 70,
+    "FP": 2,
+    "FN": 3,
+    "TN": 71,
+    "recall_TPR": 0.958904109589041,
+    "FPR": 0.0273972602739726,
+    "lift": 0.9315068493150684,
+    "lift_se": 0.030080637882550398,
+    "lift_ci95": [
+      0.8725487990652696,
+      0.9904648995648673
+    ],
+    "lift_z": 30.966991223794164,
+    "precision": 0.9722222222222222,
+    "accuracy": 0.9657534246575342,
+    "refusal_rate": 0.4931506849315068
+  },
+  "decisions": [
+    {
+      "id": "dmv/gpt-4.1/t57/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; with `internal_get_database` excluded from judgment, the third OR group requires both `internal_get_interaction_time` and `internal_get_user_birthday`, and only the birthday call is present."
+    },
+    {
+      "id": "dmv/gpt-4.1/t45/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded (true), internal_has_vehicle(HIGH666, AB123CD) returned true, and both internal_get_interaction_time and internal_get_vehicle_details(HIGH666, AB123CD) succeeded, satisfying the required groups."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t10/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No prerequisite calls were made; neither `internal_has_dl` nor `internal_get_dl_details` appears in the evidence."
+    },
+    {
+      "id": "dmv/gpt-4o/t57/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for HIGH666; slot availability checked for knowledge at 2024-12-11T09:00:00 ([true, true]); internal_get_test_details returned status \"not scheduled\"; and the OR group's internal_get_interaction_time (2024-11-21T16:25:31) and internal_get_user_birthday (2000-07-07) both s"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t94/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_has_dl` was never called, and the vehicle-prerequisite groups have no satisfying member: `internal_has_vehicle` and `internal_get_vehicle_details` are absent (only `login_user` was called and succeeded)."
+    },
+    {
+      "id": "dmv/gpt-4.1/t42/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_has_dl` was never called (required member of the OR group), so that prerequisite is unmet."
+    },
+    {
+      "id": "dmv/gpt-4.1/t60/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"new_user\", ...})` returned true; `internal_get_test_details({\"username\": \"new_user\", \"test_type\": \"drive\"})` returned a scheduled test (satisfying the second OR group); and `internal_get_test_details` plus `internal_get_interaction_time({})` returned \"2024-11-21T16:2"
+    },
+    {
+      "id": "dmv/gpt-4o/t6/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No `internal_has_dl` call was made; no tool calls exist in the evidence."
+    },
+    {
+      "id": "dmv/gpt-4.1/t66/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for \"23_Super\"; internal_check_test_slot_available succeeded for drive at 2024-12-11T14:00:00; internal_get_test_details succeeded for (\"23_Super\",\"drive\") satisfying the third OR group (its alternative, internal_get_interaction_time + internal_get_user_birthday, need not"
+    },
+    {
+      "id": "dmv/gpt-4o/t25/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"HIGH666\", ...})` returned true, satisfying the login prerequisite, and `internal_vehicle_registered({\"plate_num\": \"NEW1234\"})` was called for the matching plate (result (True, False) indicating not yet registered)."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t40/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_has_vehicle nor internal_get_vehicle_details has been called for plate \"L023012\"."
+    },
+    {
+      "id": "dmv/gpt-4o/t70/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user for 23_Super succeeded; internal_check_test_slot_available for drive at 2024-12-11T14:00:00 returned true; internal_get_test_details succeeded; both internal_get_user_birthday and internal_get_interaction_time were called successfully, satisfying the last AND group."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t66/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded; internal_check_test_slot_available(\"drive\", 2024-12-11T14:00:00) returned true; internal_get_test_details called; internal_get_interaction_time and internal_get_user_birthday both succeeded."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t43/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The third OR group is unmet: `internal_get_database` was not called and the AND branch (`internal_get_interaction_time` + `internal_get_vehicle_details`) was not performed; neither call appears in the evidence."
+    },
+    {
+      "id": "dmv/gpt-4o/t84/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user for HIGH666 returned true; internal_get_test_details({\"username\": \"HIGH666\", \"test_type\": \"drive\"}) returned (True, ...); internal_get_interaction_time returned (True, ...)."
+    },
+    {
+      "id": "dmv/gpt-4o/t46/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"A123456\"}) -> [true, true] satisfies the first group; internal_get_vehicle_details with matching parameters succeeded, satisfying both the second group and the third group alongside internal_get_interaction_time -> [true, \"2024-02-10T"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t39/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_has_vehicle` was never called, and the `internal_get_vehicle_details` branch is also missing (only `internal_get_interaction_time` was called)."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t43/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"HIGH666\", ...}) returned true, and internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"ZXY1234\"}) returned true with matching parameters."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t7/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls were made; `internal_has_dl` was never called."
+    },
+    {
+      "id": "dmv/gpt-4.1/t3/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"HIGH666\"}) returned true; internal_get_test_details({\"username\": \"HIGH666\", \"test_type\": \"knowledge\"}) returned details; internal_get_interaction_time returned \"2024-11-21T16:25:31\", satisfying all required prerequisite groups."
+    },
+    {
+      "id": "dmv/gpt-4.1/t60/i0/c8",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded; internal_check_test_slot_available({\"test_type\": \"drive\", \"schedule_time\": \"2024-12-13T14:30:00\"}) returned true; internal_get_test_details({\"username\": \"new_user\", \"test_type\": \"drive\"}) succeeded; internal_get_interaction_time() and internal_get_user_birthday({\"usernam"
+    },
+    {
+      "id": "dmv/gpt-4o/t92/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"ZXC987\"}) returned [true, true], internal_get_vehicle_details with same parameters returned [true, {...}], and internal_has_dl({\"username\": \"HIGH666\"}) returned [true, true]; all prerequisite calls succeeded with matching parameters."
+    },
+    {
+      "id": "dmv/gpt-4.1/t5/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_has_dl({\"username\": \"HIGH666\"}) was called and returned true, satisfying the internal_has_dl prerequisite with matching username HIGH666."
+    },
+    {
+      "id": "dmv/gpt-4o/t45/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for HIGH666; internal_has_vehicle(HIGH666, AB123CD) returned true; internal_get_interaction_time and internal_get_vehicle_details(HIGH666, AB123CD) both succeeded."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t87/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made; neither `internal_has_vehicle` nor `internal_get_vehicle_details` was called."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t77/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(frustrated_coder) returned true; internal_has_vehicle(frustrated_coder, 0YST653) returned true; internal_check_username_exist(HIGH666) returned true; internal_has_dl(HIGH666) returned true, satisfying all required prerequisites."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t0/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the OR group requires internal_get_test_details (or the environment-side check) before cancel_test; no internal_get_test_details call appears in the evidence, so that prerequisite group is unmet (login_user was satisfied)."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t40/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded with matching username; internal_has_vehicle and internal_get_vehicle_details both succeeded with the same username and plate_num L023012."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t18/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"HIGH666\", ...}) returned true, and internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"PLT1234\"}) returned true, satisfying all evidenced prerequisites."
+    },
+    {
+      "id": "dmv/gpt-4o/t12/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"HIGH666\"}) returned true; internal_has_dl({\"username\": \"HIGH666\"}) returned (True, True); internal_get_dl_details({\"username\": \"HIGH666\"}) succeeded with license details; all prerequisites for change_dl_address with matching username HIGH666 are satisfied."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t94/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for frustrated_coder, internal_has_dl returned true, internal_has_vehicle returned true for plate 0YST653, and internal_get_vehicle_details returned details for the same user/plate, satisfying all prerequisites."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t8/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"HIGH666\", ...}) returned true and internal_has_dl({\"username\": \"HIGH666\"}) returned true, matching the required parameters."
+    },
+    {
+      "id": "dmv/gpt-4.1/t15/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"A1B2C3\"})` was called with matching parameters and returned true, satisfying the OR requirement."
+    },
+    {
+      "id": "dmv/gpt-4.1/t52/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded with HIGH666; internal_has_vehicle(HIGH666, ZXC1234) returned true; internal_get_vehicle_details returned details; internal_get_interaction_time returned a timestamp, satisfying all required prerequisite groups with matching parameters."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t76/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the driver's license check was never performed: no `internal_has_dl` call appears anywhere in the evidence, so the third OR group (internal_has_dl or the environment-side check) has no agent-side call showing the user has a driver's license. `login_user` and `internal_has_vehicle` both succee"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t29/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(HIGH666) returned true, internal_has_dl(HIGH666) returned true, and internal_vehicle_registered(NEW1234) returned false; all prerequisites satisfied with matching parameters."
+    },
+    {
+      "id": "dmv/gpt-4.1/t38/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"PLT1234\"}) returned true, and both internal_get_vehicle_details({\"username\": \"HIGH666\", \"plate_num\": \"PLT1234\"}) and internal_get_interaction_time({}) succeeded with matching parameters."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t79/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The `internal_has_dl` prerequisite was never called; the agent called `internal_get_dl_details` instead, which is a different tool, so the driver's license checks in both OR groups are unmet."
+    },
+    {
+      "id": "dmv/gpt-4o/t20/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"ZXY987\"}) returned [true, true], and internal_get_vehicle_details with the same parameters returned successfully, satisfying both prerequisite groups."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t33/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The `internal_has_dl` prerequisite (or the alternative `internal_get_interaction_time` + `internal_get_dl_details` chain) was never called; only `login_user` appears in the evidence."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t74/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"86XY120\"}) returned (True, False); the False indicates the vehicle ownership check did not succeed, so the vehicle-membership prerequisite is unmet."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t87/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_has_vehicle` nor `internal_get_vehicle_details` was ever called; the first `validate_vehicle_insurance` attempt happened before any prerequisite calls, and only `internal_check_username_exist` was made afterward."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t2/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_test_details` was never called, and it is the only judgeable member of the required OR group."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t52/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"HIGH666\", ...})` was called and returned True, satisfying the login prerequisite for logout_user with username HIGH666."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t62/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"HIGH666\", \"identification\": \"aosdvvau8e2dscsx\"}) returned true."
+    },
+    {
+      "id": "dmv/gpt-4.1/t84/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"HIGH666\", ...}) returned true; internal_get_test_details({\"username\": \"HIGH666\", \"test_type\": \"drive\"}) returned test details; internal_get_interaction_time({}) returned a timestamp \u2014 all prerequisites for the OR groups are satisfied with matching parameters."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t65/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for HIGH666; internal_check_test_slot_available(knowledge, 2024-12-11T09:00:00) succeeded; internal_get_test_details(knowledge) succeeded; internal_get_interaction_time and internal_get_user_birthday both succeeded."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t62/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_check_test_slot_available` for the requested slot (\"2024-12-11 14:00\", drive) returned false, so the slot-availability prerequisite was not satisfied."
+    },
+    {
+      "id": "dmv/gpt-4o/t35/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user for HIGH666 returned true; internal_has_dl for HIGH666 returned [true, true]; internal_get_interaction_time returned [true, \"2024-11-21T16:25:31\"]; internal_get_dl_details for HIGH666 returned success with license details \u2014 all required prerequisites satisfied."
+    },
+    {
+      "id": "dmv/gpt-4.1/t92/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_has_vehicle({\"username\":\"HIGH666\",\"plate_num\":\"ZXC987\"})->true and internal_get_vehicle_details with matching parameters succeeded; internal_has_dl({\"username\":\"HIGH666\"})->true satisfies the license check."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t43/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_vehicle_details` was never called; the AND group requires both `internal_get_interaction_time` (called, succeeded) and `internal_get_vehicle_details`, which is absent."
+    },
+    {
+      "id": "dmv/gpt-4o/t49/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for HIGH666, internal_has_vehicle(HIGH666, B123456) returned true, internal_get_vehicle_details returned details successfully, and internal_get_interaction_time succeeded; all required prerequisites are satisfied."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t22/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"HIGH666\", ...}) -> true, internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"Z123456\"}) -> true, and internal_get_vehicle_details({\"username\": \"HIGH666\", \"plate_num\": \"Z123456\"}) -> returned details, all with matching parameters and successful results before th"
+    },
+    {
+      "id": "dmv/gpt-4.1/t0/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"frustrated_coder\", ...}) returned true, and internal_get_test_details({\"username\": \"frustrated_coder\", \"test_type\": \"knowledge\"}) returned successfully with matching parameters."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t62/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - only login_user was called; no slot availability check, no test details retrieval, and no interaction time/birthday calls appear in the evidence."
+    },
+    {
+      "id": "dmv/gpt-4o/t58/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The `internal_get_interaction_time` call (required alongside `internal_get_user_birthday` in the third OR branch) was never made."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t42/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR branch requiring `internal_has_dl` (or the environment-side check) is unmet: no `internal_has_dl` call appears anywhere in the evidence, and the environment-side `internal_get_database` cannot be credited as a substitute for an agent action that was never performed."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t75/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"HIGH666\", ...}) was called and returned true, satisfying the prerequisite for logout_user with username HIGH666."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t53/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"frustrated_coder\", ...})` was called earlier and returned true, satisfying the prerequisite."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t42/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"23_Super\", ...}) -> true, internal_has_vehicle({\"username\": \"23_Super\", \"plate_num\": \"86XY120\"}) -> true, and internal_get_vehicle_details({\"username\": \"23_Super\", \"plate_num\": \"86XY120\"}) -> successful details; all prerequisites satisfied with matching parameters."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t49/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Only login_user succeeded; internal_has_vehicle, internal_get_vehicle_details, and internal_get_interaction_time were never called, so the vehicle-ownership, vehicle-details, and timestamp prerequisite groups are unmet."
+    },
+    {
+      "id": "dmv/gpt-4.1/t79/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user for 23_Succeeded true; internal_check_username_exist(HIGH666) true; internal_has_vehicle(23_Super, 86XY120) true; internal_has_dl called for both 23_Super and HIGH666, both true."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t51/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but none of the ownership/vehicle-detail checks were performed: internal_has_vehicle, internal_get_vehicle_details, and internal_get_interaction_time were never called, so the remaining OR prerequisite groups are unmet."
+    },
+    {
+      "id": "dmv/gpt-4.1/t31/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_has_dl(\"HIGH666\") returned true; internal_get_dl_details(\"HIGH666\") and internal_get_interaction_time() both succeeded with matching parameters."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t66/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"23_Super\", \"identification\": \"jsdbvsjvb7Q3\"}) returned true, satisfying the prerequisite for logout_user."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t53/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the OR group is unmet: `internal_check_test_slot_available` for the desired test type and time (2024-12-11T14:00:00) was never called; only `login_user` (succeeded) appears among prerequisites."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t82/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR group requires either `internal_has_dl` (an agent action) to have been called or the environment-side `internal_get_database` check; while `login_user({\"username\": \"HIGH666\", ...})` succeeded (returned true), no `internal_has_dl` call appears in the evidence, so the driver's-license pr"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t60/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the third prerequisite group requires the AND of `internal_get_test_details` and `internal_get_interaction_time`; `internal_get_interaction_time` was never called."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t8/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_has_dl` was never called; only `login_user` and `update_dl_legal_name` appear, so the driver's license check prerequisite is unmet."
+    },
+    {
+      "id": "dmv/gpt-4o/t10/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `internal_has_dl({\"username\": \"HIGH666\"})` returned true and `internal_get_dl_details({\"username\": \"HIGH666\"})` succeeded, satisfying both OR groups for the change_dl_address action."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t21/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the second OR group requires `internal_get_vehicle_details` to have been called (since `internal_get_database` carries no evidence), but no such call appears in the evidence."
+    },
+    {
+      "id": "dmv/gpt-4.1/t90/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"HIGH666\", ...}) returned true; internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"XYZ123\"}) returned true; internal_get_vehicle_details({\"username\": \"HIGH666\", \"plate_num\": \"XYZ123\"}) returned vehicle details, satisfying all agent-side prerequisites."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t33/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"HIGH666\", \"identification\": \"aosdvvau8e2dscsx\"}) -> True succeeded before the logout_user prerequisite check, with matching username HIGH666."
+    },
+    {
+      "id": "dmv/gpt-4o/t68/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded with matching username; internal_check_test_slot_available succeeded for drive at 2024-12-13T14:30:00; internal_get_test_details succeeded for new_user/drive, satisfying the second and third OR groups regardless of the unneeded interaction_time branch."
+    },
+    {
+      "id": "dmv/gpt-4o/t65/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for HIGH666; internal_check_test_slot_available returned true for the same test_type/time; internal_get_test_details succeeded for HIGH666/knowledge; internal_get_interaction_time and internal_get_user_birthday both succeeded, satisfying the third branch."
+    },
+    {
+      "id": "dmv/gpt-4o/t0/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_test_details` was never called; the only call made was `login_user`, so the OR group's actionable member is unmet."
+    },
+    {
+      "id": "dmv/gpt-4.1/t49/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user for HIGH666 succeeded (true); internal_has_vehicle(HIGH666, B123456) returned true; internal_get_vehicle_details succeeded; internal_get_interaction_time returned a timestamp; internal_get_database is environment-side."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t24/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_vehicle_details` was not called; the third OR group requires it (or is judged on it, since internal_get_database carries no evidence either way)."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t52/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The OR groups are only satisfiable by internal_get_database (environment-side, no evidence) since internal_has_vehicle, internal_get_vehicle_details, and internal_get_interaction_time were never called; only login_user was performed, so no membership/vehicle-details prerequisites are shown me"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t6/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_has_dl` was never called; no tool calls exist."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t12/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `login_user` succeeded, but neither `internal_has_dl` nor `internal_get_dl_details` was called before the attempted `change_dl_address`, so the DL-check prerequisite group is unmet."
+    },
+    {
+      "id": "dmv/gpt-4o/t63/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_test_details` was never called; the second OR-group has no satisfied member (no evidence of checking existing test status/attempts for \"new_user\" with test_type \"knowledge\")."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t47/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - Each OR group contains only `internal_get_database` (an environment-side check with no agent call) or that option paired with calls already shown; judging groups on their other members leaves nothing unmet, and `internal_get_interaction_time` was called successfully (returned \"2024-11-21T16:2"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t66/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; the birthday alone doesn't satisfy the age-verification branch, which requires both the interaction timestamp and the birthday."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t31/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls made; `internal_has_dl` and the `internal_get_dl_details` + `internal_get_interaction_time` group are unmet."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t22/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `login_user` succeeded, but neither `internal_has_vehicle` nor `internal_get_vehicle_details` was called before the address change."
+    },
+    {
+      "id": "dmv/gpt-4o/t43/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for HIGH666, internal_has_vehicle returned true for (HIGH666, ZXY1234), and both internal_get_vehicle_details and internal_get_interaction_time succeeded, satisfying all prerequisite groups."
+    },
+    {
+      "id": "dmv/gpt-4.1/t78/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"23_Super\", ...}) was called first and returned true, satisfying the prerequisite for logout_user with username \"23_Super\"."
+    },
+    {
+      "id": "dmv/gpt-4.1/t94/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for frustrated_coder; internal_has_dl returned true; internal_has_vehicle(\"0YST653\") returned true; internal_get_vehicle_details(\"0YST653\") succeeded \u2014 all prerequisites satisfied with matching parameters."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t41/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made; login_user, internal_has_vehicle, and internal_get_vehicle_details are all absent."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t52/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for HIGH666; internal_has_vehicle(HIGH666, ZXC1234) returned true; internal_get_vehicle_details(HIGH666, ZXC1234) returned details; internal_get_interaction_time returned a timestamp \u2014 all prerequisites satisfied."
+    },
+    {
+      "id": "dmv/gpt-4o/t33/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"HIGH666\", \"identification\": \"aosdvvau8e2dscsx\"}) returned true; internal_has_dl({\"username\": \"HIGH666\"}) returned (True, True); and both internal_get_dl_details({\"username\": \"HIGH666\"}) and internal_get_interaction_time({}) returned true, satisfying all prerequisite b"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t17/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made, so `internal_has_vehicle` was never called."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t18/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_has_vehicle` was never called, and the OR group requires it (internal_get_database provides no evidence either way); only login_user was performed."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t96/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_has_dl` was never called (and the vehicle checks `internal_has_vehicle` / `internal_get_vehicle_details` are also absent); only `login_user` was performed."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t63/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(\"new_user\") returned true; internal_check_test_slot_available(\"knowledge\",\"2024-12-11T09:00:00\") returned true; internal_get_test_details(\"new_user\",\"knowledge\") returned successfully."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t0/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user for frustrated_coder returned true, and internal_get_test_details for the same username and test_type returned details, satisfying the login prerequisite and the OR group."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t24/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - internal_get_vehicle_details was not called before the change_vehicle_address attempt."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t33/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_dl_details` was never called; the AND group requiring it alongside `internal_get_interaction_time` (which was called) is unmet."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t29/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"HIGH666\", ...})` -> true; `internal_vehicle_registered({\"plate_num\": \"NEW1234\"})` -> [True, False] (plate not already registered); `internal_has_dl({\"username\": \"HIGH666\"})` -> [True, True] (user has a driver's license). All required prerequisites satisfied with matc"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t14/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - The prerequisite group requiring either `internal_get_database` or `internal_get_dl_details` is unmet: `internal_get_dl_details` was never called, and only the environment-side check remains, which cannot be evidenced. (`login_user` succeeded and `internal_has_dl` returned true, but the third"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t75/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but no evidence of internal_check_username_exist, internal_has_vehicle, or internal_has_dl calls; the username-exist, vehicle-ownership, and license prerequisite groups are unmet."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t36/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made; neither `internal_has_vehicle` nor `internal_get_vehicle_details` was called before the renewal."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t33/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"HIGH666\", ...}) returned true, and internal_has_dl({\"username\": \"HIGH666\"}) returned true; both prerequisites are satisfied with matching parameters."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t56/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"frustrated_coder\", ...}) was called first and returned true."
+    },
+    {
+      "id": "dmv/gpt-4.1/t89/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"ZXC1234\"}) returned true, and internal_get_vehicle_details with the same parameters returned vehicle details successfully."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t64/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_check_test_slot_available` nor `internal_get_test_details` was called; only `login_user` was completed, so one required OR-group prerequisite is unmet."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t35/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_dl_details` was never called, so the second OR branch (internal_get_interaction_time AND internal_get_dl_details) is unmet, and the first branch relies on environment-side checks that also leave this group unsatisfied via evidence."
+    },
+    {
+      "id": "dmv/gpt-4.1/t75/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(HIGH666) returned true; internal_check_username_exist(frustrated_coder) returned true; internal_has_vehicle(HIGH666, XYZ987) returned true; internal_has_dl(HIGH666) returned true, satisfying all prerequisite groups with matching parameters."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t64/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_check_test_slot_available` for the requested slot (2024-12-13T14:30:00, test_type drive) was never called; only `show_available_test_slots` was used, which is not the required prerequisite action."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t58/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the third OR group requires both `internal_get_interaction_time` and `internal_get_user_birthday`; `internal_get_interaction_time` was never called (only `internal_get_user_birthday` appears)."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t63/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user({\"username\": \"new_user\"}) succeeded; internal_check_test_slot_available({\"test_type\": \"knowledge\", \"schedule_time\": \"2024-12-11T09:00:00\"}) succeeded; internal_get_test_details({\"username\": \"new_user\", \"test_type\": \"knowledge\"}) succeeded. All prerequisites met with matching parame"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t11/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_has_dl` nor `internal_get_dl_details` has been called; no tool calls exist at all."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t86/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - no `internal_has_vehicle` or `internal_get_vehicle_details` call was made."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t20/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls were made; `internal_has_vehicle` and `internal_get_vehicle_details` were never called."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t37/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_vehicle_details` was never called; only `internal_has_vehicle` and `internal_has_dl` appear in the evidence, so that prerequisite group is unmet."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t90/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - neither `internal_has_vehicle` nor `internal_get_vehicle_details` was called; only `login_user` appears in the evidence."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t51/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the OR group requires `internal_has_dl` (or the environment-side `internal_get_database`, which carries no evidence), and no call to `internal_has_dl` appears anywhere in the evidence."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t8/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the internal_has_dl prerequisite was never called (only login_user appears in the evidence)."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t57/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_interaction_time` was never called; the fourth OR branch requires both it and `internal_get_user_birthday`, and no other branch covers the third requirement beyond the environment-side check."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t53/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user with matching username returned true, and internal_check_test_slot_available for drive at 2024-12-11T14:00:00 returned true."
+    },
+    {
+      "id": "dmv/gpt-4o/t15/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"A1B2C3\"}) returned [true, true], satisfying the ownership check with matching parameters."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t88/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No tool calls have been made; neither `internal_has_vehicle` nor `internal_get_vehicle_details` was called first."
+    },
+    {
+      "id": "dmv/gpt-4o/t79/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user(23_Super) returned true; internal_check_username_exist(HIGH666) returned true; internal_has_vehicle(23_Super, 86XY120) returned true; and internal_has_dl was called for both 23_Super and HIGH666, each returning true \u2014 all prerequisites satisfied with matching parameters."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t90/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_vehicle_details` was never called; the OR group requires either it or the environment-side check, and only `internal_has_vehicle` covers the first OR group, not this one."
+    },
+    {
+      "id": "dmv/gpt-4.1/t86/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"A123BC\"}) -> true` and `internal_get_vehicle_details({\"username\": \"HIGH666\", \"plate_num\": \"A123BC\"}) -> {...}` were both called successfully with matching parameters, satisfying both OR groups."
+    },
+    {
+      "id": "dmv/gpt-4o/t39/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `internal_has_vehicle({\"username\": \"frustrated_coder\", \"plate_num\": \"0YST653\"})` returned true; `internal_get_interaction_time` succeeded; `internal_get_vehicle_details` with matching parameters returned true with vehicle details. All agent-callable prerequisites satisfied."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t15/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_has_vehicle` was never called; no prerequisite tool calls exist."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t3/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_test_details` (required by both OR groups) has not been called; only `login_user` appears in the evidence."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t51/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded, internal_has_vehicle(\"frustrated_coder\",\"0YST653\") returned true, internal_get_vehicle_details with matching params succeeded, and internal_get_interaction_time succeeded; all prerequisite groups satisfied."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t42/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_vehicle_details` was never called (the second OR group has no agent-callable member performed)."
+    },
+    {
+      "id": "dmv/gpt-4.1/t77/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user was called first with username \"frustrated_coder\" and returned true; internal_check_username_exist returned true; internal_has_vehicle was called with matching username and plate_num \"0YST653\" and returned true; internal_has_dl was called on the target owner \"HIGH666\" and returned "
+    },
+    {
+      "id": "dmv/gpt-4.1/t40/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user succeeded for frustrated_coder; internal_has_vehicle returned true for plate L023012; internal_get_vehicle_details succeeded with matching parameters."
+    },
+    {
+      "id": "dmv/gpt-4o/t77/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - internal_has_dl was called with username \"HIGH666\" (the target owner), not \"frustrated_coder\" (the logged-in user performing the transfer), so the driver's license prerequisite was not checked with matching parameters."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t46/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_has_vehicle` was never called, and no alternative agent action satisfies that group; `internal_get_vehicle_details` is also absent, so two required OR groups lack a completed prerequisite call."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t58/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - the third OR branch requires `internal_get_interaction_time` (along with `internal_get_user_birthday`); no call to `internal_get_interaction_time` appears in the evidence."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t73/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - login_user succeeded, but neither internal_check_username_exist nor internal_has_vehicle was called."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t79/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user for 23_Succeeded (true); internal_check_username_exist for HIGH666 (true); internal_has_vehicle for 23_Super/86XY120 (true); internal_has_dl for 23_Super and HIGH666 both true, satisfying all OR groups."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t16/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - No `internal_has_vehicle` call with plate \"0YST653\" was made; no tool calls exist at all."
+    },
+    {
+      "id": "dmv/gpt-4.1/t63/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user for \"new_user\" succeeded (true), internal_check_test_slot_available for knowledge at 2024-12-11T09:00:00 succeeded (true), and internal_get_test_details for \"new_user\"/knowledge succeeded, satisfying all agent-side prerequisites."
+    },
+    {
+      "id": "dmv/gpt-4o/t74/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"86XY120\"})` returned `[true, false]`; the second element (the has-vehicle determination) is false, so the vehicle-ownership check did not succeed for the given plate number, leaving that prerequisite unmet."
+    },
+    {
+      "id": "dmv/gpt-4o/t86/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - internal_has_vehicle({\"username\": \"HIGH666\", \"plate_num\": \"A123666\"}) returned true, and internal_get_vehicle_details with the same parameters returned successfully; both prerequisites satisfied with matching parameters."
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t12/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - login_user with username HIGH666 returned true; internal_has_dl with HIGH666 returned true; internal_get_dl_details with HIGH666 succeeded, satisfying all prerequisite groups with matching parameters."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t35/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - Neither `internal_has_dl` nor the pair `internal_get_interaction_time` + `internal_get_dl_details` appears in the evidence; only `login_user` was called, so the OR prerequisite groups for the DL check are unmet."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t84/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "finish_reason": "end_turn",
+      "raw": "FAIL - `internal_get_test_details` was never called; the OR group and the AND group both require it (the latter also requires `internal_get_interaction_time`, also absent). Only `login_user` was performed."
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t30/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "finish_reason": "end_turn",
+      "raw": "PASS - `login_user({\"username\": \"HIGH666\", ...})` returned true; `internal_vehicle_registered({\"plate_num\": \"NEW1234\"})` was called and returned successfully ([true, false], indicating the plate is not yet registered); and `internal_has_dl({\"username\": \"HIGH666\"})` was called and returned successful"
+    }
+  ]
+}

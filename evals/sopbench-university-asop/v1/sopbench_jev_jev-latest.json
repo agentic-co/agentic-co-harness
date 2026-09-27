@@ -1,0 +1,168 @@
+{
+  "summary": {
+    "judge": "jev:jev-latest",
+    "n": 20,
+    "errors": 0,
+    "n_not_held": 10,
+    "n_held": 10,
+    "TP": 10,
+    "FP": 0,
+    "FN": 0,
+    "TN": 10,
+    "recall_TPR": 1.0,
+    "FPR": 0.0,
+    "lift": 1.0,
+    "lift_se": 0.0,
+    "lift_ci95": [
+      1.0,
+      1.0
+    ],
+    "lift_z": null,
+    "precision": 1.0,
+    "accuracy": 1.0,
+    "refusal_rate": 0.5,
+    "avg_confidence": 0.9685
+  },
+  "decisions": [
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t6/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.89,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.89, \"probabilities\": {\"not_held\": 0.05, \"held\": 0.95}}"
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t16/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.99,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.99, \"probabilities\": {\"held\": 0.01, \"not_held\": 0.99}}"
+    },
+    {
+      "id": "university/gpt-4.1/t32/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.97,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.97, \"probabilities\": {\"not_held\": 0.02, \"held\": 0.98}}"
+    },
+    {
+      "id": "university/gpt-4.1/t19/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.98,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.98, \"probabilities\": {\"held\": 0.01, \"not_held\": 0.99}}"
+    },
+    {
+      "id": "university/gpt-4o/t34/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.97,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.97, \"probabilities\": {\"held\": 0.99, \"not_held\": 0.01}}"
+    },
+    {
+      "id": "university/gpt-4o/t0/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.93,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.93, \"probabilities\": {\"not_held\": 0.04, \"held\": 0.96}}"
+    },
+    {
+      "id": "university/gpt-4.1/t17/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.99,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.99, \"probabilities\": {\"not_held\": 0.99, \"held\": 0.01}}"
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t18/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.99,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.99, \"probabilities\": {\"held\": 0.0, \"not_held\": 1.0}}"
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t29/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.96,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.96, \"probabilities\": {\"not_held\": 0.02, \"held\": 0.98}}"
+    },
+    {
+      "id": "university/gpt-4.1/t35/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.97,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.97, \"probabilities\": {\"not_held\": 0.01, \"held\": 0.99}}"
+    },
+    {
+      "id": "university/gpt-4o/t13/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.99,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.99, \"probabilities\": {\"held\": 0.01, \"not_held\": 0.99}}"
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t13/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.99,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.99, \"probabilities\": {\"held\": 0.01, \"not_held\": 0.99}}"
+    },
+    {
+      "id": "university/gpt-4o/t16/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.98,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.98, \"probabilities\": {\"not_held\": 0.99, \"held\": 0.01}}"
+    },
+    {
+      "id": "university/gpt-4o/t32/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.98,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.98, \"probabilities\": {\"held\": 0.99, \"not_held\": 0.01}}"
+    },
+    {
+      "id": "university/gpt-4.1/t16/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.98,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.98, \"probabilities\": {\"not_held\": 0.99, \"held\": 0.01}}"
+    },
+    {
+      "id": "university/gpt-4.1/t18/i0/c8",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.99,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.99, \"probabilities\": {\"not_held\": 0.99, \"held\": 0.01}}"
+    },
+    {
+      "id": "university/gpt-4.1/t22/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.96,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.96, \"probabilities\": {\"not_held\": 0.02, \"held\": 0.98}}"
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t22/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.97,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.97, \"probabilities\": {\"held\": 0.99, \"not_held\": 0.01}}"
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t2/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.91,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.91, \"probabilities\": {\"not_held\": 0.05, \"held\": 0.95}}"
+    },
+    {
+      "id": "university/gpt-4.1/t13/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.98,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.98, \"probabilities\": {\"held\": 0.01, \"not_held\": 0.99}}"
+    }
+  ]
+}
