@@ -1,0 +1,107 @@
+[
+  {
+    "lms_id": "qwen/qwen3.6-35b-a3b",
+    "role": "executor-primary",
+    "why": "35B total / 3B active MoE, 29.42GB on disk. Vendor-reported 73.4% SWE-bench Verified (Qwen blog, 2026-04-16 release) at only 3B active params — best quality-per-GB in the on-disk lineup, small enough to co-load with a judge model. No independent tool-calling-with-policy (tau2/SOPBench) figure exists publicly; benchmark locally first.",
+    "evidence_urls": [
+      "https://buildfastwithai.com",
+      "https://llm-stats.com"
+    ],
+    "expected_mem_gb": 29.42
+  },
+  {
+    "lms_id": "zai-org/glm-4.7-flash",
+    "role": "executor-alt-sopbench",
+    "why": "30B, arch glm4_moe_lite (MoE — confirmed via local `lms ls`, contra one research pass that called it dense), 31.84GB on disk. Closest independently-benchmarked proxy to our own measured hosted-GLM-4.7 SOPBench-hotel score (0.697): tau2-bench 79.5 (Flash) / 84.7 (full GLM-4.7) on llm-stats.com. Independently reports 59.2% SWE-bench Verified, beating Qwen3-30B (22%) and gpt-oss-20b (34%) per same source. No public SOPBench leaderboard exists for either GLM figure — run locally.",
+    "evidence_urls": [
+      "https://llm-stats.com"
+    ],
+    "expected_mem_gb": 31.84
+  },
+  {
+    "lms_id": "qwen/qwen3-coder-next",
+    "role": "coder-primary",
+    "why": "80B total / 3B active MoE, hybrid attention, 65.53GB on disk. Purpose-built coder. Vendor/aggregator-sourced 70.6% SWE-bench Verified, 62.8% Multilingual, 44.3% Pro (w/ SWE-Agent scaffold) — not independently re-run, treat as vendor-lineage.",
+    "evidence_urls": [
+      "https://n1n.ai",
+      "https://localaimaster.com",
+      "https://unsloth.ai"
+    ],
+    "expected_mem_gb": 65.53
+  },
+  {
+    "lms_id": "poolside/laguna-s-2.1",
+    "role": "coder-alt",
+    "why": "256x4.5B MoE experts (confirmed via local `lms ls` PARAMS column, contra a web pass that guessed 118B/8B-active), 71.16GB on disk. Vendor-published Terminal-Bench 70.2%, SWE-Bench Multilingual 78.5% (table-topping), SWE-Bench Pro 59.4%, corroborated by independent tech-press write-ups (VentureBeat, MarkTechPost) but not independently re-run. Poolside is a much newer/less-established lab than Qwen/OpenAI/Z.ai — A/B against qwen3-coder-next on real bugs before trusting either vendor number.",
+    "evidence_urls": [
+      "https://poolside.ai/blog"
+    ],
+    "expected_mem_gb": 71.16
+  },
+  {
+    "lms_id": "openai/gpt-oss-20b",
+    "role": "system1-judge",
+    "why": "12.10GB on disk, MXFP4-native, smallest capable model. BLOCKED as designed: LM Studio's /v1/chat/completions does not expose logprobs/top_logprobs on either engine as of the latest verified report (github.com/lmstudio-ai/lms#60, still open 2026-06-07). Underlying engines both support logprobs (MLX engine since Nov 2024, llama.cpp server since Dec 2024) so the fix is to bypass LM Studio's API wrapper — run the bundled llama-server binary directly or mlx_lm.server — or test LM Studio's legacy /v1/completions endpoint first (untested, 5-minute check).",
+    "evidence_urls": [
+      "https://github.com/lmstudio-ai/lms/issues/60",
+      "https://github.com/lmstudio-ai/mlx-engine/issues/37",
+      "https://github.com/ggml-org/llama.cpp/pull/10783"
+    ],
+    "expected_mem_gb": 12.1
+  },
+  {
+    "lms_id": "openai/gpt-oss-120b",
+    "role": "router-escalation-target",
+    "why": "63.39GB on disk, 120B MoE. Already measured locally at 0.621 SOPBench+procedure. Independently verified Aider polyglot 68.4% at reasoning_effort:high (huggingface.co discussion, confirmed via direct fetch 2026-09-25 — corrects an earlier unverified 41.8% guess). Speculative-decoding-style routing is currently unreliable on MLX (batched MLX speculative decoding broken, lmstudio-bug-tracker#1519 / mlx-engine#269) — use confidence-threshold escalation (as the Jev routing work already does), not literal draft/target speculative decoding.",
+    "evidence_urls": [
+      "https://huggingface.co/openai/gpt-oss-120b/discussions/116",
+      "https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/1519",
+      "https://github.com/lmstudio-ai/mlx-engine/issues/269"
+    ],
+    "expected_mem_gb": 63.39
+  },
+  {
+    "lms_id": "google/gemma-4-31b",
+    "role": "coder-darkhorse-untested",
+    "why": "26.40GB on disk. Strong LiveCodeBench v6: 80.0% (vs Gemma3-27B's 29.1%) — general-purpose, not agent/tool-calling-specialized, and no SWE-bench/BFCL/tau2 figure found. Cheap to smoke-test locally, not a first pick.",
+    "evidence_urls": [
+      "https://artificialanalysis.ai"
+    ],
+    "expected_mem_gb": 26.4
+  },
+  {
+    "lms_id": "qwen/qwen3.6-27b",
+    "role": "unbenchmarked-thin-evidence",
+    "why": "23.01GB on disk, arch qwen35, dense. Confirmed present and real locally, but no independent third-party benchmark figure found anywhere in this research pass. Cheap local BFCL/SWE-bench-lite smoke test would settle whether it beats qwen3.6-35b-a3b for the executor role.",
+    "evidence_urls": [],
+    "expected_mem_gb": 23.01
+  },
+  {
+    "lms_id": "qwen/qwen3.8-27b",
+    "role": "unbenchmarked-thin-evidence",
+    "why": "29.98GB on disk, arch qwen35, dense. Confirmed present and real locally (contra one research pass that only found an architecture paper, not a shipped checkpoint). No independent third-party benchmark figure found. Cheap local smoke test recommended before use.",
+    "evidence_urls": [],
+    "expected_mem_gb": 29.98
+  },
+  {
+    "lms_id": "liquid/lfm2-24b-a2b",
+    "role": "deprioritized",
+    "why": "25.34GB on disk, 24B/2.3B-active MoE. Throughput-optimized, not reasoning-optimized. Artificial Analysis Intelligence Index of only 6 (low relative to rest of lineup). No SWE-bench/BFCL/tau2 evidence found.",
+    "evidence_urls": [],
+    "expected_mem_gb": 25.34
+  },
+  {
+    "lms_id": "prism-ml/bonsai-27b",
+    "role": "deprioritized",
+    "why": "8.52GB on disk. Local arch string qwen3_5 confirms this is an extreme ternary/binary quantization of a Qwen3.5-generation 27B model (PrismML's own unverified claim: 89.5-94.6% of FP16 score retained), not an independent architecture. Redundant with the full-precision Qwen models already on disk.",
+    "evidence_urls": [],
+    "expected_mem_gb": 8.52
+  },
+  {
+    "lms_id": "meta/muse-glimmer",
+    "role": "deprioritized",
+    "why": "18.16GB on disk, ~28-29.6B incl. a ~1.8B vision encoder. Real (Meta Research blog/HF/NVIDIA dev blog), positioned as agentic+multimodal for consumer hardware, but no SWE-bench/BFCL/tau2/Aider figure found anywhere in this research pass.",
+    "evidence_urls": [],
+    "expected_mem_gb": 18.16
+  }
+]

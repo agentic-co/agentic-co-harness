@@ -44,3 +44,8 @@ logs/
 # working state, not something a public runtime repo publishes — the findings
 # that matter are promoted into ai-tasks/unified/DECISIONS.md by hand.
 .agents/
+
+# Repobench upstream snapshots: third-party source (with its authors' addresses
+# and fixtures) that a pinned commit reproduces exactly. Materialize with
+# scripts/eval/codebench/repobench/snapshot.py — see evals/codebench/CODEBENCH.md.
+evals/codebench/data/repobench/*/repo/

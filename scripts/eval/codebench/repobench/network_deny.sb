@@ -1,0 +1,11 @@
+(version 1)
+; Everything else stays allowed (file read/write, process spawn, pytest's own
+; needs) — only network is denied. `(deny default)` was tried first and
+; refused to exec even /bin/echo under SIP on this machine (verified
+; 2026-09-25); `(allow default)` + explicit network denies is the profile
+; that actually works, verified against a real pytest run (same pass count
+; as unsandboxed) and a real raw-socket connect attempt (denied at the
+; kernel: PermissionError, not just a proxy-env miss).
+(allow default)
+(deny network-outbound)
+(deny network-bind)
