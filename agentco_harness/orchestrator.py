@@ -2016,11 +2016,19 @@ class Orchestrator:
                     outcome["outcome"] = "failed"
             except Exception as e:
                 print(f"[cycle] Error executing {task.id}: {e}")
-                self._fail_with_rca(task, str(e))
                 errors += 1
                 outcome["outcome"] = "failed"
-            if outcome["outcome"] == "failed":
-                refreshed = self.beads.get(task.id)
+                try:
+                    self._fail_with_rca(task, str(e))
+                except Exception as e2:  # noqa: BLE001 — a failing failure path must not kill the cycle
+                    print(f"[cycle] ERROR: failure path for {task.id} also failed: {e2}")
+                    outcome["error"] = f"{e}; failure path also failed: {e2}"[:200]
+            if outcome["outcome"] == "failed" and "error" not in outcome:
+                try:
+                    refreshed = self.beads.get(task.id)
+                except Exception as e3:  # noqa: BLE001 — outcome enrichment is best-effort
+                    print(f"[cycle] WARNING: could not refresh {task.id} after failure: {e3}")
+                    refreshed = None
                 if refreshed and refreshed.result:
                     outcome["error"] = refreshed.result[:200]
             outcomes.append(outcome)

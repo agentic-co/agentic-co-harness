@@ -114,6 +114,54 @@ def test_bead_failure_counts_as_error_but_cycle_completes(tmp_path, monkeypatch)
     assert "exited 1" in orch.beads.get(task.id).result
 
 
+def test_failure_path_crash_does_not_kill_the_cycle(tmp_path, monkeypatch, capsys):
+    """RCA ac-fb4bc1e6: _fail_with_rca raised inside the per-task except, the
+    exception escaped the loop, and the node wrote no heartbeat for hours."""
+    monkeypatch.chdir(tmp_path)
+    orch = _orch(tmp_path)
+    _no_triage_lm(orch, monkeypatch)
+    orch.beads.create(title="will raise", description="x", assigned_agent="claude")
+
+    def execute_boom(task, now=None):
+        raise RuntimeError("executor exploded")
+
+    def fail_path_boom(task, msg, attempt=None):
+        raise RuntimeError("store write refused")
+
+    monkeypatch.setattr(orch, "_execute_cycle_task", execute_boom)
+    monkeypatch.setattr(orch, "_fail_with_rca", fail_path_boom)
+
+    summary = orch.cycle(now=NOW)
+
+    assert summary["errors"] == 1
+    hb = json.loads((tmp_path / "heartbeat.json").read_text())
+    assert hb["errors_this_cycle"] == 1
+    record = json.loads((tmp_path / "runs.jsonl").read_text().strip().splitlines()[-1])
+    assert record["tasks"][0]["outcome"] == "failed"
+    assert "executor exploded" in record["tasks"][0]["error"]
+    assert "store write refused" in record["tasks"][0]["error"]
+    assert "failure path for" in capsys.readouterr().out
+
+
+def test_failed_bead_refresh_crash_does_not_kill_the_cycle(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    orch = _orch(tmp_path)
+    _no_triage_lm(orch, monkeypatch)
+    orch.beads.create(title="will fail", description="x", assigned_agent="claude")
+
+    def get_boom(task_id):
+        raise RuntimeError("store unreadable")
+
+    monkeypatch.setattr(orch, "_execute_cycle_task", lambda task, now=None: False)
+    monkeypatch.setattr(orch.beads, "get", get_boom)
+
+    summary = orch.cycle(now=NOW)
+
+    assert summary["errors"] == 1
+    hb = json.loads((tmp_path / "heartbeat.json").read_text())
+    assert hb["errors_this_cycle"] == 1
+
+
 # ---------------------------------------------------------------- triage
 
 
