@@ -72,6 +72,40 @@ def test_per_task_transition_counts_fixed_broken_and_unchanged():
     assert transition == {"fixed": 1, "broken": 1, "unchanged_pass": 1, "unchanged_fail": 1}
 
 
+def test_check_run_health_passes_on_a_complete_clean_run(tmp_path):
+    splits = {"edit": [0, 1], "select": [2, 3], "test": [4, 5]}
+    records = {i: _rec(True) for i in range(6)}
+    log = tmp_path / "run.log"
+    log.write_text("Running interactions: 100%|##########| 6/6\nSaved results\n")
+    healthy, problems = loop_mod.check_run_health(records, splits, log)
+    assert healthy is True
+    assert problems == []
+
+
+def test_check_run_health_fails_loud_on_a_partial_split():
+    """The round-1 incident, minimally reproduced: another process unloaded
+    the shared LM Studio instance mid-run, and only 48/195 tasks scored — the
+    guard must catch this from split completeness alone, even with no error
+    text in the log.
+    """
+    splits = {"edit": [0, 1, 2, 3], "select": [4, 5], "test": [6, 7]}
+    records = {i: _rec(True) for i in range(4)}  # select/test never scored
+    healthy, problems = loop_mod.check_run_health(records, splits, Path("/nonexistent/run.log"))
+    assert healthy is False
+    assert any("select" in p for p in problems)
+    assert any("test" in p for p in problems)
+
+
+def test_check_run_health_fails_loud_on_a_request_error_even_if_counts_match(tmp_path):
+    splits = {"edit": [0], "select": [1], "test": [2]}
+    records = {i: _rec(True) for i in range(3)}
+    log = tmp_path / "run.log"
+    log.write_text("[route] call failed: Error code: 400 - No models loaded\n")
+    healthy, problems = loop_mod.check_run_health(records, splits, log)
+    assert healthy is False
+    assert any("No models loaded" in p for p in problems)
+
+
 def test_a_rejected_round_leaves_b_untouched_in_state(tmp_path, monkeypatch):
     """Simulates the state-update half of `cmd_round`'s accept/reject branch
     without running a real subprocess or reviser call: after a reject, the

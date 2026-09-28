@@ -35,7 +35,15 @@ DEFAULT_OPENAI_ENV = {"OPENAI_BASE_URL": "http://localhost:4242/v1", "OPENAI_API
 # "Setting"): Qwen3.6-35B-A3B, local, --parallel 1 (set at LM Studio load
 # time, not here), 2048-token cap, V2b tool-gate config (--host-rules).
 EXECUTOR_MODEL = "qwen/qwen3.6-35b-a3b"
-EXECUTOR_INSTANCE = "exec-qwen36"
+# Round 1's first attempt queued on the shared `exec-qwen36` instance per the
+# original instruction; the team lead's own rerun script unloaded that
+# instance mid-run (`lms unload exec-qwen36`), which silently truncated the
+# run at task 48/195 ("No models loaded" from task 48 on — round 1 voided,
+# see EXP-L.md's deviation log). EXP-L now loads and owns its OWN LM Studio
+# identifier, `expl-qwen36`, loaded once (--parallel 1, 32768 ctx) and never
+# unloaded until Stage 1 is completely done, specifically so no other
+# process's lifecycle can pull the rug out from under a mid-round run again.
+EXECUTOR_INSTANCE = "expl-qwen36"
 DOMAIN = "hotel"
 
 
