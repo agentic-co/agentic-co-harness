@@ -204,14 +204,21 @@ FAULT_LOG_PATTERNS = (
 )
 
 
-def check_run_health(records: dict, splits: dict[str, list[int]], run_log: Path) -> tuple[bool, list[str]]:
+def check_run_health(
+    records: dict, splits: dict[str, list[int]], run_log: Path, only: tuple[str, ...] = ("edit", "select", "test")
+) -> tuple[bool, list[str]]:
     """Fail loud (RL/ML review + the round-1 incident): a round must never
     compare or decide on a subset. Every split's scored count must equal its
     declared size, and the run log must carry no request-error pattern —
     either one, on its own, makes a round FAULTED and nothing is accepted.
+
+    `only` narrows which splits are checked for completeness — a TEST-only
+    variance rerun (`--task-ids` restricted to the 65 TEST positions) has
+    nothing scored on EDIT/SELECT by design, and checking those would always
+    fail; the log-error check still runs regardless of `only`.
     """
     problems: list[str] = []
-    for name in ("edit", "select", "test"):
+    for name in only:
         expected = len(splits[name])
         present = sum(1 for p in splits[name] if p in records)
         if present < expected:
@@ -486,6 +493,9 @@ def cmd_blind(args: argparse.Namespace) -> int:
     blind_record["run"] = {"ok": result.ok, "wall_time_s": result.wall_time_s, "error": result.error}
     if result.ok:
         records = scoring.score_file(result.output_file)
+        healthy, problems = check_run_health(records, splits, result.log_file)
+        blind_record["healthy"] = healthy
+        blind_record["health_problems"] = problems
         _save_records(records, round_dir / "records.json")
         test_positions = [p for p in splits["test"] if p in records]
         blind_record["test_summary"] = scoring.summarize({p: records[p] for p in test_positions})
@@ -494,7 +504,71 @@ def cmd_blind(args: argparse.Namespace) -> int:
     state["blind"] = blind_record
     _save_state(state)
     print(f"[blind] {'ok' if result.ok else 'FAILED'} — {blind_record.get('test_summary')}")
-    return 0 if result.ok else 1
+    return 0 if (result.ok and blind_record.get("healthy", True)) else 1
+
+
+def cmd_variance(args: argparse.Namespace) -> int:
+    """Variance check (EXP-L.md v3, ML review #2): rerun `--label`'s document
+    TWICE on the TEST split alone (65 tasks, `--task-ids`), independently, at
+    identical settings. Not a decision — measures the loop's own noise floor
+    (agreement between the two runs) so the Stage-1 primary comparison can be
+    read against it.
+    """
+    state = _load_state()
+    label = args.label
+    if args.doc:
+        doc_path = Path(args.doc)
+    elif label == "vbest":
+        doc_path = Path(state["b_doc"])
+    else:
+        doc_path = DOCS_DIR / "v0.md"
+
+    splits = _split()
+    test_ids_path = ROUNDS_DIR / "variance" / f"{label}_test_task_ids.json"
+    split_mod.write_task_ids_file(splits["test"], test_ids_path)
+
+    variance_dir = ROUNDS_DIR / "variance" / label
+    variance_dir.mkdir(parents=True, exist_ok=True)
+    runs = []
+    for i in (1, 2):
+        run_dir = variance_dir / f"run{i}"
+        result = runner.run_arm(doc_path, run_dir, task_ids_path=test_ids_path)
+        run_record: dict = {
+            "ok": result.ok, "wall_time_s": result.wall_time_s, "log": str(result.log_file), "error": result.error,
+        }
+        if result.ok:
+            records = scoring.score_file(result.output_file, subset_positions=set(splits["test"]))
+            healthy, problems = check_run_health(records, splits, result.log_file, only=("test",))
+            run_record["healthy"] = healthy
+            run_record["health_problems"] = problems
+            records_path = run_dir / "records.json"
+            _save_records(records, records_path)
+            run_record["records_file"] = str(records_path)
+            run_record["summary"] = scoring.summarize(records)
+        else:
+            run_record["healthy"] = False
+        runs.append(run_record)
+
+    out: dict = {"doc": str(doc_path), "label": label, "runs": runs}
+    if all(r.get("healthy") for r in runs):
+        r1 = _load_records(Path(runs[0]["records_file"]))
+        r2 = _load_records(Path(runs[1]["records_file"]))
+        common = sorted(set(r1) & set(r2))
+        from expl.stats import paired_delta
+
+        cmp = paired_delta({p: r1[p]["success"] for p in common}, {p: r2[p]["success"] for p in common}, common)
+        out["agreement"] = {
+            "n": len(common),
+            "discordant": cmp["gained"] + cmp["lost"],
+            "run1_success_rate": sum(v["success"] for v in r1.values()) / len(r1),
+            "run2_success_rate": sum(v["success"] for v in r2.values()) / len(r2),
+        }
+
+    state.setdefault("variance", {})[label] = out
+    _save_state(state)
+    all_healthy = all(r.get("healthy") for r in runs)
+    print(f"[variance {label}] {'ok' if all_healthy else 'UNHEALTHY RUN(S)'} — {out.get('agreement', out)}")
+    return 0 if all_healthy else 1
 
 
 def build_argparser() -> argparse.ArgumentParser:
@@ -520,6 +594,11 @@ def build_argparser() -> argparse.ArgumentParser:
 
     p_blind = sub.add_parser("blind", help="produce + score the V1-blind control")
     p_blind.set_defaults(func=cmd_blind)
+
+    p_var = sub.add_parser("variance", help="rerun a document twice on TEST only, report run-to-run agreement")
+    p_var.add_argument("--label", choices=["v0", "vbest"], required=True)
+    p_var.add_argument("--doc", type=Path, default=None, help="override document path (default: v0.md or current B)")
+    p_var.set_defaults(func=cmd_variance)
 
     return ap
 
