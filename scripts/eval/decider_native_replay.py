@@ -28,6 +28,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
+import subprocess
 import sys
 import time
 import urllib.request
@@ -37,6 +39,19 @@ from pathlib import Path
 _ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(_ROOT))
 from sopbench_judge import score, stratified  # noqa: E402
+
+
+def _free_mem_pct() -> float | None:
+    """macOS `memory_pressure -Q`'s "System-wide memory free percentage: NN%" line, as a
+    float, or None if the tool isn't available (e.g. not on macOS) -- --mem-floor-pct then
+    has nothing to check against and the caller should treat that as "can't verify"."""
+    try:
+        out = subprocess.run(["memory_pressure", "-Q"], capture_output=True, text=True,
+                              timeout=10).stdout
+        m = re.search(r"free percentage:\s*(\d+)%", out)
+        return float(m.group(1)) if m else None
+    except Exception:
+        return None
 
 
 def build_state(row: dict) -> dict:
@@ -102,6 +117,12 @@ def main() -> int:
                     help="sequential (1) by default so latency_s reflects true per-call cost; "
                          "raise only for throughput, not for the latency table")
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--mem-floor-pct", type=float, default=0,
+                    help="abort cleanly (write whatever was scored so far, tagged partial) if "
+                         "`memory_pressure -Q`'s free%% drops below this, checked every "
+                         "--mem-check-every decisions. 0 disables the check (default: off, so "
+                         "small local runs pay no cost for it).")
+    ap.add_argument("--mem-check-every", type=int, default=10)
     args = ap.parse_args()
 
     rows = [json.loads(l) for l in open(args.decisions) if l.strip()]
@@ -112,6 +133,7 @@ def main() -> int:
 
     out = []
     t0 = time.time()
+    aborted_low_memory = False
     if args.workers > 1:
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
             out = list(pool.map(lambda r: ask(args.url, r), sample))
@@ -121,6 +143,14 @@ def main() -> int:
             if i % 50 == 0:
                 rate = (time.time() - t0) / i
                 print(f"    {i}/{len(sample)}  ({rate:.3f}s/call)", flush=True)
+            if args.mem_floor_pct and i % args.mem_check_every == 0:
+                free_pct = _free_mem_pct()
+                if free_pct is not None and free_pct < args.mem_floor_pct:
+                    print(f"[ABORT] memory_pressure free%={free_pct:.1f} < floor "
+                          f"{args.mem_floor_pct}% after {i}/{len(sample)} decisions -- "
+                          f"stopping cleanly, writing partial results", flush=True)
+                    aborted_low_memory = True
+                    break
 
     s = score(out, args.label)
     confs = [r["confidence"] for r in out if r["passed"] is not None]
@@ -129,12 +159,15 @@ def main() -> int:
     if lat:
         s["latency_median_s"] = lat[len(lat) // 2]
         s["latency_p95_s"] = lat[int(len(lat) * 0.95)]
+    s["aborted_low_memory"] = aborted_low_memory
+    s["n_sampled"] = len(sample)
     print(json.dumps(s, indent=2))
     args.out.mkdir(parents=True, exist_ok=True)
     tag = args.label.replace("/", "_").replace(".", "-")
+    tag = tag + "_PARTIAL" if aborted_low_memory else tag
     (args.out / f"sopbench_native_{tag}.json").write_text(
         json.dumps({"summary": s, "decisions": out}, indent=2))
-    return 0
+    return 1 if aborted_low_memory else 0
 
 
 if __name__ == "__main__":

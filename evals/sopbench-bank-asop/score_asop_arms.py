@@ -435,6 +435,12 @@ def main() -> int:
             ("asop-v2-laya", "asop-v2-jev"),
             ("asop-v2-toolgate", "pva"),
             ("asop-v2-jev", "pva"),
+            #   idea 4 (advisory gate): A7's primary and secondary comparisons —
+            #   does letting a not_held verdict pass with a note (instead of
+            #   hard-stopping) cost back what blocking bought, against A4
+            #   (blocking) and against A3 (tool-gate only, no value gate)?
+            ("asop-v2-jev-advisory", "asop-v2-jev"),
+            ("asop-v2-jev-advisory", "asop-v2-toolgate"),
         ):
             if a in arms and base in arms:
                 r = paired(arms, routable, a, base=base)
