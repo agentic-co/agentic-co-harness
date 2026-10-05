@@ -1884,6 +1884,56 @@ def doctor(ctx, classes: tuple[str, ...], as_json: bool):
     sys.exit(run_doctor(ctx.obj["config_path"], classes=classes or None, as_json=as_json))
 
 
+@main.group("audit")
+def audit_group():
+    """Metadata-only audit bundles: export one from a node, verify one.
+
+    No bead text, prompts, model output, config values or home paths leave the
+    node — see docs/audit.md and the field table in `agentco_harness.audit`.
+    """
+
+
+@audit_group.command("export")
+@click.option("--node", "node", default=None,
+              help="Node directory (default: the directory of --config)")
+@click.option("--since", default=None, help="Only events at/after this ISO-8601 time")
+@click.option("--out", "out", default=None,
+              help="Directory the bundle and its .tar.gz are written into "
+                   "(default: ~/agentic-co-audit)")
+@click.pass_context
+def audit_export_cmd(ctx, node: str | None, since: str | None, out: str | None):
+    """Write a metadata-only audit bundle (directory + .tar.gz). Read-only on the node."""
+    from . import audit as audit_mod
+
+    try:
+        resolved = audit_mod.resolve_node(node, ctx.obj["config_path"])
+        result = audit_mod.export(
+            resolved,
+            out_dir=Path(out or audit_mod.DEFAULT_OUT),
+            since=audit_mod.parse_since(since),
+        )
+    except audit_mod.AuditError as e:
+        click.echo(f"❌ {e}", err=True)
+        sys.exit(2)
+    click.echo(f"bundle:  {result.bundle_dir}")
+    click.echo(f"tarball: {result.tarball}")
+    dropped = sum(sum(r["dropped"].values()) for r in result.manifest["redaction"].values())
+    click.echo(f"files: {len(result.manifest['files'])}  fields dropped: {dropped}")
+
+
+@audit_group.command("verify")
+@click.argument("bundle", type=click.Path())
+def audit_verify_cmd(bundle: str):
+    """Recompute a bundle's hashes against its manifest. Exit 0 intact, 1 not."""
+    from . import audit as audit_mod
+
+    ok, problems = audit_mod.verify(Path(bundle))
+    for problem in problems:
+        click.echo(f"❌ {problem}", err=True)
+    click.echo("✅ bundle verified" if ok else "❌ bundle failed verification")
+    sys.exit(0 if ok else 1)
+
+
 # Task management commands
 @main.group()
 def tasks():
