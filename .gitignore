@@ -49,3 +49,8 @@ logs/
 # and fixtures) that a pinned commit reproduces exactly. Materialize with
 # scripts/eval/codebench/repobench/snapshot.py — see evals/codebench/CODEBENCH.md.
 evals/codebench/data/repobench/*/repo/
+
+# EXP-L loop state (scripts/eval/expl/loop.py reads and resumes from here): 88M of per-round
+# transcripts and caches, one deployment's working state. Ignored in place — the loop's path is
+# hard-coded, so it cannot be moved out; snapshots live in ~/Code/agentco-harness-eval-archive.
+evals/expl/rounds/
