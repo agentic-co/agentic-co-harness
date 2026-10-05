@@ -4,9 +4,9 @@
 worked example added at `docs/lifeos-exit/f7-example/`. No real personal content copied into this
 repo; every value below and in the example is fabricated.
 
-Source read (read-only, not copied): `~/.claude/LIFEOS/USER/` — a symlink to
-`~/.config/LIFEOS/USER/` (confirmed via `ls -la`; documented as deliberate in
-`OPERATIONAL_RULES.md`'s "Second machine" section) — specifically `TELOS/`, `PRINCIPAL/`,
+Source read (read-only, not copied): the operator's private LifeOS user directory — a symlink
+out of the synced tree (confirmed via `ls -la`; documented as deliberate in the operator's own
+rules file) — specifically `TELOS/`, `PRINCIPAL/`,
 `DIGITAL_ASSISTANT/`, `CONFIG/`, and `PROJECTS.md`, plus
 `LIFEOS/DOCUMENTATION/Freshness/FreshnessSystem.md` and `hooks/lib/identity.ts`.
 
@@ -79,7 +79,7 @@ schema to parse against). Treating the body as "prose, read whole" is what F7's 
 **Finding: the documented frontmatter schema for `DA_IDENTITY.md`/`PRINCIPAL_IDENTITY.md` is dead
 code against the real, populated files.**
 
-`~/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/_example/identity.md` (the template new users copy) and
+`DIGITAL_ASSISTANT/_example/identity.md` under that directory (the template new users copy) and
 `DIGITAL_ASSISTANT/README.md` document a **nested, structured** frontmatter contract —
 `id`, `name`, `display_name`, `color`, `role`, `personality.traits.*`, `voice.voice_id`,
 `autonomy.can_initiate`/`must_ask` — described as "read by hooks via `lib/identity.ts`."

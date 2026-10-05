@@ -4,7 +4,7 @@
 generalized. No machine names, repo names, vendor keys, dollar figures, or the principal's
 project names appear below; every example is described by role/shape rather than by identity.
 
-Source read (not quoted verbatim): `~/.claude/LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md`'s "Work &
+Source read (not quoted verbatim): the operator's private operational-rules file, its "Work &
 task routing" and "Delegation token economics" sections. Cross-checked against what's already
 mechanical code in this repo, so this document doesn't re-claim as "doctrine" what's already
 enforced as a rule.
