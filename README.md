@@ -1,5 +1,7 @@
 # AgentCo Harness
 
+> **Setting this up on a machine?** Go straight to [`docs/install.md`](docs/install.md).
+
 A standalone runtime for agentic work: a local bead store, a heartbeat cycle
 that decomposes, triages, dispatches and verifies beads, human executors as
 first-class assignees, and a doctor that tells you what is broken before the
@@ -50,6 +52,12 @@ green ([details](scripts/e2e/README.md)):
 | all of the above at once | | 25/25 |
 
 ## Install
+
+**To use it on a machine, follow [`docs/install.md`](docs/install.md).** It is
+written so a person or a coding agent can follow it step by step: requirements,
+install, first node, what `doctor` should print on a fresh node, a first task.
+
+From a clone, for contributors:
 
 ```sh
 uv venv && uv pip install -e ".[dev]"      # runtime + tests (pulls the DSPy test double)
