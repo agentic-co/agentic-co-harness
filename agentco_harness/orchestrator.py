@@ -521,6 +521,19 @@ def _append_chat_reply(beads: Beads, task: Task, text: str) -> None:
     beads.update(task.id, metadata=meta)
 
 
+def _routes_to_claude(task: Task) -> bool:
+    """True when the cycle would hand this bead to the claude executor."""
+    return task.assigned_agent == "claude" or task.metadata.get("executor") == "claude"
+
+
+class ClaudeAuthOutage(Exception):
+    """The claude CLI could not authenticate on this host.
+
+    Raised after the bead is released back to PENDING; the cycle stops
+    dispatching claude beads for the rest of the run instead of failing each.
+    """
+
+
 class Orchestrator:
     """Main orchestrator that runs the agent loop."""
 
@@ -854,6 +867,36 @@ class Orchestrator:
             print(f"[cycle] WARNING: could not create RCA for {task.id}: {e}")
         return failed
 
+    def _fail_claude(self, task: Task, error: str | None, attempt: int | None) -> None:
+        """Route a claude child's failure: auth outage → release, else → RCA.
+
+        An auth failure is the host's credential, not the bead: the child exits
+        before reading its prompt. Failing the bead would be a false record,
+        and the RCA it spawns is unactionable by construction — no agent can
+        run `claude login`. So the bead goes back to PENDING with its lease
+        cleared, as the lease reaper would leave it, and `ClaudeAuthOutage`
+        tells the cycle to stop dispatching claude beads until the next run.
+        """
+        from .rca import is_claude_auth_outage
+
+        if not is_claude_auth_outage(error):
+            self._fail_with_rca(task, error, attempt=attempt)
+            return
+        self.beads.update(
+            task.id,
+            status=TaskStatus.PENDING,
+            leased_by=None,
+            lease_expires_at=None,
+            result=None,
+        )
+        print(
+            f"[cycle] AUTH OUTAGE: {task.id} released back to pending — the claude "
+            f"CLI could not authenticate on this host; no RCA (an agent cannot "
+            f"re-login the CLI). Fix: run `claude login` as the launchd user, or "
+            f"provision an API key for unattended runs."
+        )
+        raise ClaudeAuthOutage(error or "claude CLI could not authenticate")
+
     def _execute_verify_child(self, task: Task, now: datetime | None = None) -> bool:
         """Execute a verify_child bead. Pure code path — no LLM at all."""
         child_name = task.metadata.get("child")
@@ -992,7 +1035,7 @@ class Orchestrator:
             self._record_cost(task, 'claude', exec_result)
             if not exec_result.success:
                 print(f"[cycle] FAIL: claude subagent for {task.id}: {exec_result.error}")
-                self._fail_with_rca(task, exec_result.error, attempt=attempt)
+                self._fail_claude(task, exec_result.error, attempt)
                 return False
             # Result lives in the store — agent wrote it via `agentco tasks complete`
             refreshed = self.beads.get(task.id)
@@ -1018,7 +1061,7 @@ class Orchestrator:
             self._record_cost(task, 'claude', exec_result)
             if not exec_result.success:
                 print(f"[cycle] FAIL: claude subagent for {task.id}: {exec_result.error}")
-                self._fail_with_rca(task, exec_result.error, attempt=attempt)
+                self._fail_claude(task, exec_result.error, attempt)
                 return False
             self.beads.report_result(
                 task.id, attempt, TaskStatus.DONE, result=exec_result.output
@@ -2005,8 +2048,14 @@ class Orchestrator:
         done = 0
         errors = 0
         outcomes: list[dict] = []
+        claude_outage: str | None = None
         for task in ordered:
             outcome = {"id": task.id, "title": task.title, "agent": task.assigned_agent}
+            if claude_outage is not None and _routes_to_claude(task):
+                outcome["outcome"] = "deferred"
+                outcome["error"] = f"claude auth outage: {claude_outage}"[:200]
+                outcomes.append(outcome)
+                continue
             try:
                 if self._execute_cycle_task(task, now=now):
                     done += 1
@@ -2014,6 +2063,20 @@ class Orchestrator:
                 else:
                     errors += 1
                     outcome["outcome"] = "failed"
+            except ClaudeAuthOutage as e:
+                claude_outage = str(e)
+                outcome["outcome"] = "deferred"
+                outcome["error"] = f"claude auth outage: {e}"[:200]
+                outcomes.append(outcome)
+                if self.config.notify.enabled:
+                    notify_event(
+                        self.config.notify,
+                        f"⚠️ AgentCo [{self.config.instance_name}]: claude CLI could not "
+                        f"authenticate — claude beads left pending, no RCA. "
+                        f"Run `claude login` as the launchd user. ({str(e)[:120]})",
+                        urgent=True,
+                    )
+                continue
             except Exception as e:
                 print(f"[cycle] Error executing {task.id}: {e}")
                 errors += 1

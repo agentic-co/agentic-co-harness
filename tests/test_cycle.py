@@ -114,6 +114,38 @@ def test_bead_failure_counts_as_error_but_cycle_completes(tmp_path, monkeypatch)
     assert "exited 1" in orch.beads.get(task.id).result
 
 
+def test_claude_auth_outage_releases_beads_without_rca(tmp_path, monkeypatch):
+    """An expired OAuth session is the host's, not the bead's: the bead goes
+    back to PENDING, no RCA is spawned, and the rest of the claude queue is
+    deferred instead of each failing the same way."""
+    monkeypatch.chdir(tmp_path)
+    orch = _orch(tmp_path)
+    _no_triage_lm(orch, monkeypatch)
+    calls: list = []
+
+    def fake(prompt, timeout, max_turns, model=None, cwd=None):
+        calls.append(prompt)
+        return ExecResult(
+            False, "",
+            "claude subagent exited 1: Failed to authenticate: "
+            "OAuth session expired and could not be refreshed",
+            1, 0.1,
+        )
+
+    monkeypatch.setattr(orchestrator_mod, "run_claude_task", fake)
+    first = orch.beads.create(title="ingest a", description="x", assigned_agent="claude")
+    second = orch.beads.create(title="ingest b", description="x", assigned_agent="claude")
+
+    orch.cycle(now=NOW)
+
+    assert len(calls) == 1
+    for bead in (first, second):
+        refreshed = orch.beads.get(bead.id)
+        assert refreshed.status == TaskStatus.PENDING
+        assert refreshed.leased_by is None
+    assert not [t for t in orch.beads.list() if t.source == "rca"]
+
+
 def test_failure_path_crash_does_not_kill_the_cycle(tmp_path, monkeypatch, capsys):
     """RCA ac-fb4bc1e6: _fail_with_rca raised inside the per-task except, the
     exception escaped the loop, and the node wrote no heartbeat for hours."""

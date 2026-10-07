@@ -64,6 +64,9 @@ EXPECTED_SITES = {
     # --- no verb writes these fields -----------------------------------------
     ("cli.py", "`tasks update` — a generic multi-field write (due_at, starts_at, "
                "estimate, blocked_by); no verb touches most of them"),
+    ("orchestrator.py", "claude auth outage: un-claims a leased bead back to PENDING "
+                        "with the lease cleared — the lease reaper's write. Not a "
+                        "completion; no verb releases a lease early"),
     ("cli.py", "`tasks retry` — a RESET from FAILED back to PENDING with result "
                "cleared. Not a completion; no verb resets"),
     ("cli.py", "bare assigned_to write; there is no `assign` verb"),
@@ -79,7 +82,7 @@ EXPECTED_SITES = {
 #: module can hold several sites of the same shape, and collapsing them would
 #: hide a new one arriving next to an old one.
 EXPECTED_COUNTS = {
-    "orchestrator.py": 5,
+    "orchestrator.py": 6,
     "cli.py": 4,
     "asop_store.py": 1,
     "humans.py": 1,

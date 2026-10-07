@@ -46,6 +46,28 @@ DEFAULT_ESCALATION_ASSIGNEE = "human:operator"
 def escalation_assignee() -> str:
     return os.environ.get("AGENTCO_ESCALATE_TO") or DEFAULT_ESCALATION_ASSIGNEE
 
+
+# When the claude CLI cannot authenticate, the child exits before it reads its
+# prompt — the bead's content never ran, and every claude bead on the host
+# fails the same way. An RCA cannot fix that (no agent can re-login the CLI),
+# so the failure must not spawn one. Matched on the CLI's own wording.
+CLAUDE_AUTH_OUTAGE_MARKERS = (
+    "Failed to authenticate",
+    "OAuth session expired",
+    "Not logged in",
+)
+
+
+def is_claude_auth_outage(error: str | None) -> bool:
+    """True when a claude child's error is the CLI refusing to authenticate.
+
+    Host-level, not bead-level: the credential every claude bead on this node
+    shares is what failed.
+    """
+    if not error:
+        return False
+    return any(marker in error for marker in CLAUDE_AUTH_OUTAGE_MARKERS)
+
 # RCA beads carried no budget, so they inherited executor.DEFAULT_TIMEOUT (600s)
 # while the work they analyze routinely runs far longer — feeds ingest beads get
 # 1800s from config. An analysis bead is strictly MORE work than the bead it
