@@ -136,6 +136,9 @@ ARM_PATHS = {
     "asop-v2-jev": f"{SP}/gate/jev/{DOMAIN}/{FNAME}",
     "asop-v2-stringall": f"{SP}/gate/stringall/{DOMAIN}/{FNAME}",
     "asop-v2-laya": f"{SP}/gate/laya/{DOMAIN}/{FNAME}",
+    # Clef (Cloudflare, SystemOne-compatible) in Jev's place — `asop-v2-jev`'s
+    # exact config with `--judge-gate clef` (evals/sopbench-clef/stage2/).
+    "asop-v2-clef": f"{SP}/gate/clef/{DOMAIN}/{FNAME}",
     # A7 (idea 4): `asop-v2-jev`'s exact config + `--judge-gate-mode advisory`
     # — a not_held Jev verdict below the hard-block confidence PASSES with a
     # note queued for the executor's next prompt instead of hard-stopping.

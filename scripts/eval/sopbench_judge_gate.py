@@ -226,6 +226,42 @@ def laya_ask(body: str, timeout: int = 60, retries: int = 3,
     return None, 0.0, raw
 
 
+CLEF_URL = os.environ.get("CLEF_URL", "http://127.0.0.1:8791/v1/systemone")
+
+
+def clef_ask(body: str, timeout: int = 120, retries: int = 3,
+             url: Optional[str] = None) -> tuple[Optional[bool], float, str]:
+    """One Cloudflare Clef call via `evals/sopbench-clef/serve/clef_server.py`.
+
+    Clef speaks Jev's SystemOne wire format, so the payload is `jev_ask`'s
+    byte-for-byte (same instructions, same criteria, `state` as a string) --
+    the only differences are the local URL and no Authorization header. That
+    keeps a Clef-gated arm comparable to the Jev-gated one: the judge is the
+    single variable."""
+    payload = {
+        "model": "clef",
+        "state": body,
+        "questions": {"verdict": {"type": "choice", "instructions": _JEV_INSTRUCTIONS,
+                                  "criteria": _JEV_CRITERIA}},
+    }
+    raw = ""
+    for attempt in range(retries):
+        try:
+            req = urllib.request.Request(url or CLEF_URL, data=json.dumps(payload).encode(),
+                                         headers={"Content-Type": "application/json"})
+            ans = json.load(urllib.request.urlopen(req, timeout=timeout))["answers"]["verdict"]
+            return ans["choice"] == "held", float(ans.get("confidence", 0.0)), json.dumps(ans)[:200]
+        except Exception as exc:
+            raw = f"ERROR {type(exc).__name__}: {exc}"[:200]
+            if attempt < retries - 1:
+                time.sleep(2 ** attempt)
+                continue
+    return None, 0.0, raw
+
+
+_ASK = {"jev": jev_ask, "laya": laya_ask, "clef": clef_ask}
+
+
 _FALSY = {"", "false", "none", "null", "0", "0.0", "[]", "{}", "no"}
 
 
@@ -338,9 +374,9 @@ def preflight_judge(mode: str, timeout: int = 20, ask_fn: Optional[Callable] = N
     """
     if mode == "string-all":
         return True, "string-all calls no judge; nothing to preflight"
-    if mode not in ("jev", "laya"):
+    if mode not in _ASK:
         raise ValueError(f"unknown judge gate {mode!r}")
-    fn = ask_fn or (laya_ask if mode == "laya" else jev_ask)
+    fn = ask_fn or _ASK[mode]
     body = evidence_body((), {}, "preflight probe: is the judge reachable?")
     held, conf, raw = fn(body, timeout=timeout, retries=1)
     if held is None:
@@ -473,11 +509,11 @@ def make_judge_value_checker(
     hard_block_confidence`, which still hard-stops (`string-all` has no
     confidence to compare, so it is always advisory-eligible under this mode).
     """
-    if mode not in ("jev", "laya", "string-all"):
+    if mode not in ("jev", "laya", "clef", "string-all"):
         raise ValueError(f"unknown judge gate {mode!r}")
     if gate_mode not in (GATE_MODE_BLOCK, GATE_MODE_ADVISORY):
         raise ValueError(f"unknown judge gate mode {gate_mode!r}")
-    ask = ask or (laya_ask if mode == "laya" else jev_ask)
+    ask = ask or _ASK.get(mode, jev_ask)
     params = task.get("constraint_parameters") or {}
     known = task.get("user_known") or {}
     goal = task.get("user_goal", "")
@@ -515,7 +551,7 @@ def make_judge_value_checker(
             body = evidence_body(tool_history, known, condition)
             sha = hashlib.sha1(body.encode()).hexdigest()[:12]
             conf: Optional[float] = None
-            if mode in ("jev", "laya"):
+            if mode in _ASK:
                 t0 = time.time()
                 held, conf, raw = ask(body)
                 stats.calls += 1
@@ -524,7 +560,7 @@ def make_judge_value_checker(
                     if held is None:
                         stats.first20_errors += 1
                 _check_judge_health(stats, mode)
-                if mode == "jev":  # Laya is local; only Jev costs anything
+                if mode == "jev":  # Laya and Clef are local; only Jev costs anything
                     stats.input_chars += len(body)
                 result_snippet = (tool_results(tool_history).get(tool) or "")[:200]
                 entry = {**base, "verdict": held, "confidence": conf, "raw": raw,

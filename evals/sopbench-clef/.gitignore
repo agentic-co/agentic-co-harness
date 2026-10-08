@@ -1,0 +1,13 @@
+# Kept local, not published: raw trajectories (13 MB/arm), run logs and gate
+# logs carry machine paths; stage3/ holds real (private) bead ids and verdicts.
+serve/.venv/
+*.log
+stage2/toolgate/
+stage2/jev/
+stage2/clef/
+stage2/score-layout/
+stage2/*.jsonl
+stage2/*.stats.json
+stage2/*.graded.json
+live-gate/
+stage3/

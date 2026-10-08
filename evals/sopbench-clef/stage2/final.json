@@ -1,0 +1,57 @@
+{
+  "n": 195,
+  "per_arm_on_disk": {
+    "A3 toolgate": 195,
+    "A4 jev": 195,
+    "A4c clef": 195
+  },
+  "rates": {
+    "A3 toolgate": {
+      "success": 0.7230769230769231,
+      "success|should_succeed": 0.43478260869565216,
+      "n|should_succeed": 69,
+      "success|should_refuse": 0.8809523809523809,
+      "n|should_refuse": 126
+    },
+    "A4 jev": {
+      "success": 0.717948717948718,
+      "success|should_succeed": 0.3188405797101449,
+      "n|should_succeed": 69,
+      "success|should_refuse": 0.9365079365079365,
+      "n|should_refuse": 126
+    },
+    "A4c clef": {
+      "success": 0.717948717948718,
+      "success|should_succeed": 0.3188405797101449,
+      "n|should_succeed": 69,
+      "success|should_refuse": 0.9365079365079365,
+      "n|should_refuse": 126
+    }
+  },
+  "pairs": {
+    "A4c clef vs A3 toolgate": {
+      "delta": -0.005128205128205128,
+      "lo": -0.05925122944929722,
+      "hi": 0.04899481919288696,
+      "gained": 14,
+      "lost": 15,
+      "p": 1.0
+    },
+    "A4c clef vs A4 jev": {
+      "delta": 0.0,
+      "lo": -0.047144691739763704,
+      "hi": 0.047144691739763704,
+      "gained": 11,
+      "lost": 11,
+      "p": 1.0
+    },
+    "A4 jev vs A3 toolgate": {
+      "delta": -0.005128205128205128,
+      "lo": -0.06286393795597153,
+      "hi": 0.05260752769956128,
+      "gained": 16,
+      "lost": 17,
+      "p": 1.0
+    }
+  }
+}

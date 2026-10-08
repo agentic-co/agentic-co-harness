@@ -1234,12 +1234,12 @@ def main() -> int:
     )
     ap.add_argument(
         "--judge-gate",
-        choices=["jev", "laya", "string-all"],
+        choices=["jev", "laya", "clef", "string-all"],
         default=None,
         help="value gate backed by a JUDGE instead of `_TaskTruth` — the portable "
         "gate for domains the hand-written table does not cover. `jev` asks "
         "TypeSafe's Jev; `laya` asks Laya via laya-serve (LAYA_URL, default "
-        "127.0.0.1:4243); `string-all` is the no-judgment control. See "
+        "127.0.0.1:4243); `clef` asks Cloudflare Clef via evals/sopbench-clef/serve (CLEF_URL, default 127.0.0.1:8791); `string-all` is the no-judgment control. See "
         "`sopbench_judge_gate`. Mutually exclusive with --value-gate.",
     )
     ap.add_argument(

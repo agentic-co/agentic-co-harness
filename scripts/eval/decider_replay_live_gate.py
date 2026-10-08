@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import time
 import urllib.request
 from pathlib import Path
@@ -52,16 +53,22 @@ def evidence_body(result: str, condition: str) -> str:
             f"CONDITION THAT MUST HOLD: {condition}")
 
 
-def ask(url: str, body: str, timeout: int = 60, retries: int = 4) -> tuple[bool | None, float, str, float]:
+def ask(url: str, body: str, timeout: int = 60, retries: int = 4,
+        model: str | None = None, bearer: str | None = None) -> tuple[bool | None, float, str, float]:
     payload = {"state": body, "questions": {"verdict": {
         "type": "choice", "instructions": _INSTRUCTIONS, "criteria": _CRITERIA}}}
+    # decider/laya servers ignore `model`; Jev and Clef require it.
+    if model:
+        payload["model"] = model
+    headers = {"Content-Type": "application/json"}
+    if bearer:
+        headers["Authorization"] = f"Bearer {bearer}"
     raw = ""
     for attempt in range(retries):
         t0 = time.time()
         try:
             req = urllib.request.Request(
-                url, data=json.dumps(payload).encode(),
-                headers={"Content-Type": "application/json"})
+                url, data=json.dumps(payload).encode(), headers=headers)
             resp = json.load(urllib.request.urlopen(req, timeout=timeout))
             ans = resp["answers"]["verdict"]
             return ans["choice"] == "held", float(ans.get("confidence", 0.0)), \
@@ -81,7 +88,21 @@ def main() -> int:
     ap.add_argument("--url", required=True, help="decider server's POST /v1/systemone endpoint")
     ap.add_argument("--mode", required=True, help="label written into every output row's 'mode'")
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--model-name", default=None,
+                    help="`model` field to send (Jev and Clef require one; decider ignores it)")
+    ap.add_argument("--bearer-env", default=None,
+                    help="env var (or ~/.claude/.env key) holding a bearer token, e.g. TYPESAFE_API_KEY for Jev")
     args = ap.parse_args()
+    bearer = None
+    if args.bearer_env:
+        bearer = os.environ.get(args.bearer_env)
+        envf = Path.home() / ".claude" / ".env"
+        if not bearer and envf.exists():
+            for line in envf.read_text().splitlines():
+                if line.startswith(args.bearer_env + "="):
+                    bearer = line.split("=", 1)[1].strip().strip('"').strip("'")
+        if not bearer:
+            raise SystemExit(f"{args.bearer_env} not found in env or ~/.claude/.env")
 
     rows = [json.loads(l) for l in args.log.read_text().splitlines() if l.strip()]
     print(f"replaying {len(rows)} rows from {args.log} against {args.url}")
@@ -89,7 +110,12 @@ def main() -> int:
     out = []
     t0 = time.time()
     for i, r in enumerate(rows, 1):
-        held, conf, raw, latency = ask(args.url, evidence_body(r.get("result", ""), r["condition"]))
+        held, conf, raw, latency = ask(args.url, evidence_body(r.get("result", ""), r["condition"]),
+                                       model=args.model_name, bearer=bearer)
+        # A dead or incompatible judge must fail loudly, not finish as 958
+        # error rows (2026-10-08: a missing `model` field did exactly that).
+        if i == 20 and sum(1 for x in out if x["verdict"] is None) + (held is None) > 10:
+            raise SystemExit(f"over half of the first 20 calls errored; last: {raw}")
         out.append({**r, "mode": args.mode, "verdict": held, "confidence": conf,
                      "raw": raw, "latency_s": latency,
                      "jev_verdict": r.get("verdict"), "jev_confidence": r.get("confidence")})
