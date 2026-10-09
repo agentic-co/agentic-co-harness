@@ -141,6 +141,51 @@ read-only and never writes a bead.
 With n=2 there is no accuracy estimate here — the point of the stage is that the
 plumbing works and the evidence does not exist yet.
 
+## Clef-flash (added 2026-10-08 evening)
+
+Cloudflare's smaller variant (Qwen3.5-9B backbone, 19 GB, bead `ac-7a682179`) through the
+same audit path. Served three instances side by side to speed the sweep: only **×1.17**
+faster than one (1.21 vs 1.42 s/decision on 24 hotel decisions) — the single GPU is the
+bottleneck, not the server. Flash alone is ~3× faster per call than Clef (1.4 s vs ~4 s)
+and loads in ~20 s vs 136 s.
+
+| Cell | Jev | Clef | Flash | Flash − Jev | Flash − Clef |
+|---|---|---|---|---|---|
+| bank v1 / v2 | 0.770 / 0.725 | 0.885 / 0.905 | 0.680 / 0.545 | −0.090* / −0.180* | −0.205* / −0.360* |
+| online_market v1 / v2 | 0.615 / 0.540 | 0.820 / 0.790 | 0.495 / 0.390 | −0.120* / −0.150* | −0.325* / −0.400* |
+| hotel v1 / v2 | 0.845 / 0.845 | 0.770 / 0.770 | 0.485 / 0.485 | −0.360* / −0.360* | −0.285* / −0.285* |
+| library v1 / v2 | 0.652 / 0.763 | 0.578 / 0.630 | 0.533 / 0.585 | −0.119 / −0.178* | −0.044 / −0.044 |
+| healthcare v1 / v2 | 0.374 / 0.235 | 0.835 / 0.765 | 0.548 / 0.470 | +0.174* / +0.235* | −0.287* / −0.296* |
+| dmv v1 / v2 | 0.630 / 0.616 | 0.849 / 0.781 | 0.452 / 0.699 | −0.178* / +0.082 | −0.397* / −0.082 |
+| university v1 / v2 | 1.0 / 1.0 | 1.0 / 1.0 | 1.0 / 1.0 | tie | tie |
+
+**Audit mean lift: Clef 0.813, Jev 0.686, Flash 0.598.** Flash vs Jev: 2 significant wins
+(healthcare, where Jev is weak), 8 losses, 4 ties. Flash vs Clef: 0 wins, 9 losses, 5 ties.
+Same determinism as Clef (0/420 flips). Its hotel failure is false refusals (FPR +0.44 vs
+Jev). Cloudflare's leaderboard has Flash level with Clef on decision tasks; on this
+prerequisite-audit question it is not. **Not recommended as the audit judge** — use the 27B.
+
+**Live hotel gate (A4f, 195 tasks, run after the other three on the same HEAD config —
+executor noise is not equalized against them):** here Flash holds up far better than the
+audit predicted.
+
+| Judge | Conditions | Blocks (correct / wrong) | Let through | TPR | FPR | Lift | p50 / p95 latency |
+|---|---|---|---|---|---|---|---|
+| Jev | 981 | 247 (180 / 67) | 5 | 0.973 | 0.084 | 0.889 | 0.3 s / 60 s |
+| Clef | 955 | 248 (161 / 87) | 9 | 0.947 | 0.111 | 0.836 | 3.5 s / 5.0 s |
+| Flash | 959 | 281 (166 / 115) | 9 | 0.949 | 0.147 | 0.802 | 1.3 s / 7.3 s |
+
+Outcomes: A4f success 0.713 (should-succeed 0.304, should-refuse 0.937) — vs A3 −0.010
+(p=0.86), vs Jev −0.005 (p=1.0), vs Clef −0.005 (p=1.0). All four arms are
+statistically indistinguishable. Flash's extra wrong blocks (115 vs 87 for Clef, mostly
+`modify_reservation`) cost one more should-succeed task than Clef did.
+
+Why the audit and the live gate disagree: the audit asks Flash to judge a prerequisite
+from a rendered decision record; the live gate asks it about one ASOP condition with
+the full tool history in view. With rich evidence the 9B is nearly as good as the 27B; on
+the harder audit framing it falls apart. Same lesson as the rest of this report, from a
+new angle: evidence quality dominates judge size.
+
 ## Recommendations
 
 1. **Make beads carry evidence before automating any judged gate.** Executors should
@@ -157,9 +202,9 @@ changes nothing in outcomes. More importantly, **neither** value gate helps outc
 here: the gate's cost on legitimate tasks is the thing to fix (a calibrated threshold,
 or a park-for-human instead of a hard block on low-confidence `not_held`), not the
 judge. That is a testable next experiment and costs nothing extra to run on Clef locally.
-5. **Serving:** Clef-flash (smaller, reported faster and comparable on decision tasks) is
-   the candidate for co-tenancy with LM Studio; the 27B needs bigmac to itself (two
-   instances do not fit in 96 GB). Speed on MPS is ~15–25× slower than Cloudflare's H200
+5. **Serving:** Clef-flash fits beside LM Studio and is an acceptable live-gate judge
+   (lift 0.80, outcomes unchanged) but a poor auditor (see above); the 27B needs bigmac to itself (two instances do not fit in 96 GB), and extra
+   instances of either buy little on one GPU. Speed on MPS is ~15–25× slower than Cloudflare's H200
    figure; fine for gates and audits, not for per-token hot paths.
 
 ## Artifacts

@@ -21,15 +21,19 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "evals" / "sopbench-bank-asop"))
 import score_asop_arms as s  # noqa: E402
 
-ARMS = {"A3 toolgate": "asop-v2-toolgate", "A4 jev": "asop-v2-jev", "A4c clef": "asop-v2-clef"}
-PAIRS = [("A4c clef", "A3 toolgate"), ("A4c clef", "A4 jev"), ("A4 jev", "A3 toolgate")]
+ARMS = {"A3 toolgate": "asop-v2-toolgate", "A4 jev": "asop-v2-jev", "A4c clef": "asop-v2-clef",
+        "A4f flash": "asop-v2-clef-flash"}
+PAIRS = [("A4c clef", "A3 toolgate"), ("A4c clef", "A4 jev"), ("A4 jev", "A3 toolgate"),
+         ("A4f flash", "A3 toolgate"), ("A4f flash", "A4 jev"), ("A4f flash", "A4c clef")]
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--json", type=Path)
     args = ap.parse_args()
-    arms = {label: s.score_file(s.ARM_PATHS[key]) for label, key in ARMS.items()}
+    # An arm with no trajectories yet (A4f before its run) is left out, not zero-filled.
+    arms = {label: s.score_file(s.ARM_PATHS[key]) for label, key in ARMS.items()
+            if Path(s.ARM_PATHS[key]).exists()}
     keys = sorted(set.intersection(*(set(v) for v in arms.values())), key=lambda k: k[1])
     n = len(keys)
     out = {"n": n, "per_arm_on_disk": {k: len(v) for k, v in arms.items()}, "rates": {}, "pairs": {}}
@@ -48,6 +52,8 @@ def main() -> int:
               f" (n={r['n|should_succeed']})   should-refuse {r['success|should_refuse']:.3f} (n={r['n|should_refuse']})")
     print()
     for a, b in PAIRS:
+        if a not in arms or b not in arms:
+            continue
         p = s.paired(arms, keys, a, base=b)
         out["pairs"][f"{a} vs {b}"] = p
         print(f"{a} vs {b}: Δ {p['delta']:+.3f} [{p['lo']:+.3f},{p['hi']:+.3f}]  "

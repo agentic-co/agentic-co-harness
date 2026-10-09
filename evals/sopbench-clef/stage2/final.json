@@ -3,7 +3,8 @@
   "per_arm_on_disk": {
     "A3 toolgate": 195,
     "A4 jev": 195,
-    "A4c clef": 195
+    "A4c clef": 195,
+    "A4f flash": 195
   },
   "rates": {
     "A3 toolgate": {
@@ -23,6 +24,13 @@
     "A4c clef": {
       "success": 0.717948717948718,
       "success|should_succeed": 0.3188405797101449,
+      "n|should_succeed": 69,
+      "success|should_refuse": 0.9365079365079365,
+      "n|should_refuse": 126
+    },
+    "A4f flash": {
+      "success": 0.7128205128205128,
+      "success|should_succeed": 0.30434782608695654,
       "n|should_succeed": 69,
       "success|should_refuse": 0.9365079365079365,
       "n|should_refuse": 126
@@ -51,6 +59,30 @@
       "hi": 0.05260752769956128,
       "gained": 16,
       "lost": 17,
+      "p": 1.0
+    },
+    "A4f flash vs A3 toolgate": {
+      "delta": -0.010256410256410256,
+      "lo": -0.06529072456526282,
+      "hi": 0.04477790405244231,
+      "gained": 14,
+      "lost": 16,
+      "p": 0.855535551905632
+    },
+    "A4f flash vs A4 jev": {
+      "delta": -0.005128205128205128,
+      "lo": -0.04656445147326428,
+      "hi": 0.03630804121685402,
+      "gained": 8,
+      "lost": 9,
+      "p": 1.0
+    },
+    "A4f flash vs A4c clef": {
+      "delta": -0.005128205128205128,
+      "lo": -0.044049998116447324,
+      "hi": 0.03379358786003706,
+      "gained": 7,
+      "lost": 8,
       "p": 1.0
     }
   }

@@ -2,6 +2,7 @@
 """Clef vs Jev (and GLM-4.7 for context) on every SOPBench cell scored so far.
 
     python3 evals/sopbench-clef/compare_clef_jev.py [--json out.json]
+    python3 evals/sopbench-clef/compare_clef_jev.py --b clef-flash [--a clef]
 
 Pairs Clef's verdicts against Jev's published verdicts on the identical
 decision ids via `judge_paired_bootstrap.compare` (A = Jev, B = Clef, so a
@@ -36,30 +37,37 @@ def lift(path: Path) -> float | None:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--json", type=Path, default=None)
+    ap.add_argument("--b", default="clef", help="Clef variant under test (clef, clef-flash)")
+    ap.add_argument("--a", default="jev", help="reference: jev, or another Clef variant")
     args = ap.parse_args()
 
+    def ref(d: str, r: str) -> Path:
+        if args.a == "jev":
+            return ref_dir(d, r) / "sopbench_jev_jev-latest.json"
+        return ROOT / "evals" / "sopbench-clef" / d / r / f"sopbench_jev_{args.a}.json"
+
     rows = []
-    print(f"{'cell':<20}{'n':>5}  {'Jev':>7}{'Clef':>7}{'GLM':>7}   {'Δlift (Clef−Jev)':<28}{'ΔTPR':>8}{'ΔFPR':>8}  errs")
+    print(f"{'cell':<20}{'n':>5}  {args.a[:8]:>9}{args.b[:8]:>9}{'GLM':>7}   {'Δlift (B−A)':<28}{'ΔTPR':>8}{'ΔFPR':>8}  errs")
     for render in ("v1", "v2"):
         for d in DOMAINS:
-            clef = ROOT / "evals" / "sopbench-clef" / d / render / "sopbench_jev_clef.json"
+            clef = ROOT / "evals" / "sopbench-clef" / d / render / f"sopbench_jev_{args.b}.json"
             if not clef.exists():
                 continue
-            jev = ref_dir(d, render) / "sopbench_jev_jev-latest.json"
+            jev = ref(d, render)
             glm = ref_dir(d, render) / "sopbench_zai_glm-4-7.json"
             res = compare(jev, clef, f"{d} {render}", reps=10000, seed=20260923)
             dl, dt, df = (res["delta"][k] for k in ("lift", "TPR", "FPR"))
             errs = json.loads(clef.read_text())["summary"]["errors"]
             sig = "*" if (dl["ci95"][0] > 0 or dl["ci95"][1] < 0) else " "
-            print(f"{d + ' ' + render:<20}{res['n']:>5}  {res['a']['lift']:>+7.3f}{res['b']['lift']:>+7.3f}"
+            print(f"{d + ' ' + render:<20}{res['n']:>5}  {res['a']['lift']:>+9.3f}{res['b']['lift']:>+9.3f}"
                   f"{(lift(glm) or float('nan')):>+7.3f}   {dl['point']:>+.3f} [{dl['ci95'][0]:+.3f},{dl['ci95'][1]:+.3f}]{sig}"
                   f"{'':<4}{dt['point']:>+8.3f}{df['point']:>+8.3f}  {errs}")
             rows.append({**res, "glm_lift": lift(glm), "clef_errors": errs})
 
     # Repeat-run determinism: same evidence twice.
     for d in ("hotel", "university"):
-        a = ROOT / "evals" / "sopbench-clef" / d / "v1" / "sopbench_jev_clef.json"
-        b = ROOT / "evals" / "sopbench-clef" / d / "v2" / "sopbench_jev_clef.json"
+        a = ROOT / "evals" / "sopbench-clef" / d / "v1" / f"sopbench_jev_{args.b}.json"
+        b = ROOT / "evals" / "sopbench-clef" / d / "v2" / f"sopbench_jev_{args.b}.json"
         if a.exists() and b.exists():
             va = {x["id"]: x["passed"] for x in json.loads(a.read_text())["decisions"]}
             vb = {x["id"]: x["passed"] for x in json.loads(b.read_text())["decisions"]}

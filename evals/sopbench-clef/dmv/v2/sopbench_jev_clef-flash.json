@@ -1,0 +1,1050 @@
+{
+  "summary": {
+    "judge": "jev:clef-flash",
+    "n": 146,
+    "errors": 0,
+    "n_not_held": 73,
+    "n_held": 73,
+    "TP": 53,
+    "FP": 2,
+    "FN": 20,
+    "TN": 71,
+    "recall_TPR": 0.726027397260274,
+    "FPR": 0.0273972602739726,
+    "lift": 0.6986301369863014,
+    "lift_se": 0.055586322611981404,
+    "lift_ci95": [
+      0.5896809446668179,
+      0.8075793293057849
+    ],
+    "lift_z": 12.568382007622043,
+    "precision": 0.9636363636363636,
+    "accuracy": 0.8493150684931506,
+    "refusal_rate": 0.3767123287671233,
+    "avg_confidence": 0.8730130136986299
+  },
+  "decisions": [
+    {
+      "id": "dmv/gpt-4.1/t57/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9638,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9638, \"probabilities\": {\"held\": 0.0362, \"not_held\": 0.9638}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t45/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.931,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.931, \"probabilities\": {\"held\": 0.931, \"not_held\": 0.069}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t10/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9681,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9681, \"probabilities\": {\"held\": 0.0319, \"not_held\": 0.9681}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t57/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7233,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7233, \"probabilities\": {\"held\": 0.7233, \"not_held\": 0.2767}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t94/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9173,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9173, \"probabilities\": {\"held\": 0.0827, \"not_held\": 0.9173}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t42/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8791,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8791, \"probabilities\": {\"held\": 0.8791, \"not_held\": 0.1209}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t60/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7387,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7387, \"probabilities\": {\"held\": 0.7387, \"not_held\": 0.2613}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t6/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9353,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9353, \"probabilities\": {\"held\": 0.0647, \"not_held\": 0.9353}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t66/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9664,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9664, \"probabilities\": {\"held\": 0.0336, \"not_held\": 0.9664}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t25/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8634,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8634, \"probabilities\": {\"held\": 0.8634, \"not_held\": 0.1366}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t40/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7341,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.7341, \"probabilities\": {\"held\": 0.2659, \"not_held\": 0.7341}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t70/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8187,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8187, \"probabilities\": {\"held\": 0.8187, \"not_held\": 0.1813}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t66/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6843,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.6843, \"probabilities\": {\"held\": 0.6843, \"not_held\": 0.3157}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t43/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9781,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9781, \"probabilities\": {\"held\": 0.0219, \"not_held\": 0.9781}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t84/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.908,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.908, \"probabilities\": {\"held\": 0.908, \"not_held\": 0.092}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t46/i0/c3",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5176,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.5176, \"probabilities\": {\"held\": 0.4824, \"not_held\": 0.5176}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t39/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9763,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9763, \"probabilities\": {\"held\": 0.0237, \"not_held\": 0.9763}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t43/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8758,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8758, \"probabilities\": {\"held\": 0.8758, \"not_held\": 0.1242}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t7/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9592,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9592, \"probabilities\": {\"held\": 0.0408, \"not_held\": 0.9592}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t3/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8032,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8032, \"probabilities\": {\"held\": 0.8032, \"not_held\": 0.1968}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t60/i0/c8",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.9067,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9067, \"probabilities\": {\"held\": 0.0933, \"not_held\": 0.9067}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t92/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7447,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7447, \"probabilities\": {\"held\": 0.7447, \"not_held\": 0.2553}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t5/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9381,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9381, \"probabilities\": {\"held\": 0.9381, \"not_held\": 0.0619}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t45/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9519,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9519, \"probabilities\": {\"held\": 0.9519, \"not_held\": 0.0481}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t87/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9736,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9736, \"probabilities\": {\"held\": 0.0264, \"not_held\": 0.9736}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t77/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7982,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7982, \"probabilities\": {\"held\": 0.7982, \"not_held\": 0.2018}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t0/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8963,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8963, \"probabilities\": {\"held\": 0.8963, \"not_held\": 0.1037}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t40/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8661,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8661, \"probabilities\": {\"held\": 0.8661, \"not_held\": 0.1339}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t18/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8706,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8706, \"probabilities\": {\"held\": 0.8706, \"not_held\": 0.1294}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t12/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8715,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8715, \"probabilities\": {\"held\": 0.8715, \"not_held\": 0.1285}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t94/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8775,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8775, \"probabilities\": {\"held\": 0.8775, \"not_held\": 0.1225}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t8/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8783,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8783, \"probabilities\": {\"held\": 0.8783, \"not_held\": 0.1217}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t15/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.939,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.939, \"probabilities\": {\"held\": 0.939, \"not_held\": 0.061}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t52/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.906,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.906, \"probabilities\": {\"held\": 0.906, \"not_held\": 0.094}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t76/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8199,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8199, \"probabilities\": {\"held\": 0.8199, \"not_held\": 0.1801}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t29/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7982,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7982, \"probabilities\": {\"held\": 0.7982, \"not_held\": 0.2018}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t38/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9458,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9458, \"probabilities\": {\"held\": 0.9458, \"not_held\": 0.0542}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t79/i0/c6",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8418,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8418, \"probabilities\": {\"held\": 0.8418, \"not_held\": 0.1582}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t20/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9381,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9381, \"probabilities\": {\"held\": 0.9381, \"not_held\": 0.0619}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t33/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.977,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.977, \"probabilities\": {\"held\": 0.023, \"not_held\": 0.977}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t74/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8081,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8081, \"probabilities\": {\"held\": 0.8081, \"not_held\": 0.1919}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t87/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9604,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9604, \"probabilities\": {\"held\": 0.0396, \"not_held\": 0.9604}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t2/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8808,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8808, \"probabilities\": {\"held\": 0.8808, \"not_held\": 0.1192}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t52/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9474,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9474, \"probabilities\": {\"held\": 0.9474, \"not_held\": 0.0526}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t62/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9511,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9511, \"probabilities\": {\"held\": 0.9511, \"not_held\": 0.0489}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t84/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8758,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8758, \"probabilities\": {\"held\": 0.8758, \"not_held\": 0.1242}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t65/i0/c7",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8019,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8019, \"probabilities\": {\"held\": 0.8019, \"not_held\": 0.1981}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t62/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.6077,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.6077, \"probabilities\": {\"held\": 0.3923, \"not_held\": 0.6077}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t35/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9339,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9339, \"probabilities\": {\"held\": 0.9339, \"not_held\": 0.0661}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t92/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8245,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8245, \"probabilities\": {\"held\": 0.8245, \"not_held\": 0.1755}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t43/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9759,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9759, \"probabilities\": {\"held\": 0.0241, \"not_held\": 0.9759}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t49/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9112,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9112, \"probabilities\": {\"held\": 0.9112, \"not_held\": 0.0888}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t22/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8355,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8355, \"probabilities\": {\"held\": 0.8355, \"not_held\": 0.1645}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t0/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.85,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.85, \"probabilities\": {\"held\": 0.85, \"not_held\": 0.15}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t62/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9782,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9782, \"probabilities\": {\"held\": 0.0218, \"not_held\": 0.9782}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t58/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9662,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9662, \"probabilities\": {\"held\": 0.0338, \"not_held\": 0.9662}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t42/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8977,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8977, \"probabilities\": {\"held\": 0.8977, \"not_held\": 0.1023}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t75/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9474,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9474, \"probabilities\": {\"held\": 0.9474, \"not_held\": 0.0526}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t53/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9263,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9263, \"probabilities\": {\"held\": 0.9263, \"not_held\": 0.0737}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t42/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8069,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8069, \"probabilities\": {\"held\": 0.8069, \"not_held\": 0.1931}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t49/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9794,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9794, \"probabilities\": {\"held\": 0.0206, \"not_held\": 0.9794}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t79/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8977,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8977, \"probabilities\": {\"held\": 0.8977, \"not_held\": 0.1023}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t51/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9789,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9789, \"probabilities\": {\"held\": 0.0211, \"not_held\": 0.9789}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t31/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9395,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9395, \"probabilities\": {\"held\": 0.9395, \"not_held\": 0.0605}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t66/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8991,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8991, \"probabilities\": {\"held\": 0.8991, \"not_held\": 0.1009}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t53/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8832,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8832, \"probabilities\": {\"held\": 0.8832, \"not_held\": 0.1168}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t82/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8933,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8933, \"probabilities\": {\"held\": 0.8933, \"not_held\": 0.1067}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t60/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9493,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9493, \"probabilities\": {\"held\": 0.0507, \"not_held\": 0.9493}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t8/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.9149,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9149, \"probabilities\": {\"held\": 0.9149, \"not_held\": 0.0851}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t10/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9289,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9289, \"probabilities\": {\"held\": 0.9289, \"not_held\": 0.0711}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t21/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.709,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.709, \"probabilities\": {\"held\": 0.709, \"not_held\": 0.291}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t90/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9433,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9433, \"probabilities\": {\"held\": 0.9433, \"not_held\": 0.0567}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t33/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9372,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9372, \"probabilities\": {\"held\": 0.9372, \"not_held\": 0.0628}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t68/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9646,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9646, \"probabilities\": {\"held\": 0.0354, \"not_held\": 0.9646}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t65/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7447,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7447, \"probabilities\": {\"held\": 0.7447, \"not_held\": 0.2553}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t0/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8963,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8963, \"probabilities\": {\"held\": 0.8963, \"not_held\": 0.1037}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t49/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8911,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8911, \"probabilities\": {\"held\": 0.8911, \"not_held\": 0.1089}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t24/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.5718,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.5718, \"probabilities\": {\"held\": 0.4282, \"not_held\": 0.5718}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t52/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9792,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9792, \"probabilities\": {\"held\": 0.0208, \"not_held\": 0.9792}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t6/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9511,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9511, \"probabilities\": {\"held\": 0.0489, \"not_held\": 0.9511}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t12/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8141,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8141, \"probabilities\": {\"held\": 0.1859, \"not_held\": 0.8141}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t63/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.6077,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.6077, \"probabilities\": {\"held\": 0.6077, \"not_held\": 0.3923}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t47/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9795,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9795, \"probabilities\": {\"held\": 0.0205, \"not_held\": 0.9795}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t66/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9656,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9656, \"probabilities\": {\"held\": 0.0344, \"not_held\": 0.9656}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t31/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9806,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9806, \"probabilities\": {\"held\": 0.0194, \"not_held\": 0.9806}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t22/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7746,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.7746, \"probabilities\": {\"held\": 0.2254, \"not_held\": 0.7746}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t43/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9353,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9353, \"probabilities\": {\"held\": 0.9353, \"not_held\": 0.0647}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t78/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8697,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8697, \"probabilities\": {\"held\": 0.8697, \"not_held\": 0.1303}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t94/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8625,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8625, \"probabilities\": {\"held\": 0.8625, \"not_held\": 0.1375}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t41/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9734,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9734, \"probabilities\": {\"held\": 0.0266, \"not_held\": 0.9734}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t52/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.906,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.906, \"probabilities\": {\"held\": 0.906, \"not_held\": 0.094}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t33/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9241,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9241, \"probabilities\": {\"held\": 0.9241, \"not_held\": 0.0759}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t17/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9724,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9724, \"probabilities\": {\"held\": 0.0276, \"not_held\": 0.9724}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t18/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7931,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7931, \"probabilities\": {\"held\": 0.7931, \"not_held\": 0.2069}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t96/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9137,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9137, \"probabilities\": {\"held\": 0.0863, \"not_held\": 0.9137}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t63/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6758,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.6758, \"probabilities\": {\"held\": 0.6758, \"not_held\": 0.3242}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t0/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.85,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.85, \"probabilities\": {\"held\": 0.85, \"not_held\": 0.15}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t24/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.5603,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.5603, \"probabilities\": {\"held\": 0.4397, \"not_held\": 0.5603}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t33/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.977,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.977, \"probabilities\": {\"held\": 0.023, \"not_held\": 0.977}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t29/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8176,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8176, \"probabilities\": {\"held\": 0.8176, \"not_held\": 0.1824}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t14/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8643,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8643, \"probabilities\": {\"held\": 0.1357, \"not_held\": 0.8643}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t75/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.5927,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.5927, \"probabilities\": {\"held\": 0.5927, \"not_held\": 0.4073}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t36/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.973,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.973, \"probabilities\": {\"held\": 0.027, \"not_held\": 0.973}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t33/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8977,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8977, \"probabilities\": {\"held\": 0.8977, \"not_held\": 0.1023}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t56/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8824,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8824, \"probabilities\": {\"held\": 0.8824, \"not_held\": 0.1176}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t89/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.852,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.852, \"probabilities\": {\"held\": 0.852, \"not_held\": 0.148}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t64/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.6225,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.6225, \"probabilities\": {\"held\": 0.6225, \"not_held\": 0.3775}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t35/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9758,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9758, \"probabilities\": {\"held\": 0.0242, \"not_held\": 0.9758}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t75/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8808,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8808, \"probabilities\": {\"held\": 0.8808, \"not_held\": 0.1192}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t64/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7691,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.7691, \"probabilities\": {\"held\": 0.2309, \"not_held\": 0.7691}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t58/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9635,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9635, \"probabilities\": {\"held\": 0.0365, \"not_held\": 0.9635}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t63/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7264,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7264, \"probabilities\": {\"held\": 0.7264, \"not_held\": 0.2736}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t11/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9641,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9641, \"probabilities\": {\"held\": 0.0359, \"not_held\": 0.9641}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t86/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.977,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.977, \"probabilities\": {\"held\": 0.023, \"not_held\": 0.977}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t20/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9742,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9742, \"probabilities\": {\"held\": 0.0258, \"not_held\": 0.9742}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t37/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.5889,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.5889, \"probabilities\": {\"held\": 0.5889, \"not_held\": 0.4111}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t90/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8749,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8749, \"probabilities\": {\"held\": 0.1251, \"not_held\": 0.8749}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t51/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8991,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8991, \"probabilities\": {\"held\": 0.8991, \"not_held\": 0.1009}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t8/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8267,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8267, \"probabilities\": {\"held\": 0.8267, \"not_held\": 0.1733}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t57/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9649,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9649, \"probabilities\": {\"held\": 0.0351, \"not_held\": 0.9649}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t53/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.85,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.85, \"probabilities\": {\"held\": 0.85, \"not_held\": 0.15}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t15/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9353,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9353, \"probabilities\": {\"held\": 0.9353, \"not_held\": 0.0647}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t88/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9693,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9693, \"probabilities\": {\"held\": 0.0307, \"not_held\": 0.9693}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t79/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.897,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.897, \"probabilities\": {\"held\": 0.897, \"not_held\": 0.103}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t90/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8977,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8977, \"probabilities\": {\"held\": 0.8977, \"not_held\": 0.1023}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t86/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9173,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9173, \"probabilities\": {\"held\": 0.9173, \"not_held\": 0.0827}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t39/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9462,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9462, \"probabilities\": {\"held\": 0.9462, \"not_held\": 0.0538}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t15/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.973,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.973, \"probabilities\": {\"held\": 0.027, \"not_held\": 0.973}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t3/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9798,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9798, \"probabilities\": {\"held\": 0.0202, \"not_held\": 0.9798}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t51/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7372,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7372, \"probabilities\": {\"held\": 0.7372, \"not_held\": 0.2628}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t42/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7372,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.7372, \"probabilities\": {\"held\": 0.2628, \"not_held\": 0.7372}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t77/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7759,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7759, \"probabilities\": {\"held\": 0.7759, \"not_held\": 0.2241}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t40/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8661,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8661, \"probabilities\": {\"held\": 0.8661, \"not_held\": 0.1339}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t77/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8117,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8117, \"probabilities\": {\"held\": 0.8117, \"not_held\": 0.1883}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t46/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.98,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.98, \"probabilities\": {\"held\": 0.02, \"not_held\": 0.98}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t58/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9669,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9669, \"probabilities\": {\"held\": 0.0331, \"not_held\": 0.9669}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t73/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8559,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8559, \"probabilities\": {\"held\": 0.1441, \"not_held\": 0.8559}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t79/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8977,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8977, \"probabilities\": {\"held\": 0.8977, \"not_held\": 0.1023}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t16/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9716,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9716, \"probabilities\": {\"held\": 0.0284, \"not_held\": 0.9716}}"
+    },
+    {
+      "id": "dmv/gpt-4.1/t63/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6758,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.6758, \"probabilities\": {\"held\": 0.6758, \"not_held\": 0.3242}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t74/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6859,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.6859, \"probabilities\": {\"held\": 0.6859, \"not_held\": 0.3141}}"
+    },
+    {
+      "id": "dmv/gpt-4o/t86/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9225,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9225, \"probabilities\": {\"held\": 0.9225, \"not_held\": 0.0775}}"
+    },
+    {
+      "id": "dmv/claude-3-7-sonnet-20250219/t12/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8529,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8529, \"probabilities\": {\"held\": 0.8529, \"not_held\": 0.1471}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t35/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9785,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9785, \"probabilities\": {\"held\": 0.0215, \"not_held\": 0.9785}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t84/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9787,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9787, \"probabilities\": {\"held\": 0.0213, \"not_held\": 0.9787}}"
+    },
+    {
+      "id": "dmv/qwen2.5-72b-it-fireworks/t30/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7564,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7564, \"probabilities\": {\"held\": 0.7564, \"not_held\": 0.2436}}"
+    }
+  ]
+}

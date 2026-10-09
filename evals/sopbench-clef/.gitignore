@@ -5,6 +5,7 @@ serve/.venv/
 stage2/toolgate/
 stage2/jev/
 stage2/clef/
+stage2/flash/
 stage2/score-layout/
 stage2/*.jsonl
 stage2/*.stats.json

@@ -1,0 +1,1638 @@
+{
+  "summary": {
+    "judge": "jev:clef-flash",
+    "n": 230,
+    "errors": 0,
+    "n_not_held": 115,
+    "n_held": 115,
+    "TP": 67,
+    "FP": 13,
+    "FN": 48,
+    "TN": 102,
+    "recall_TPR": 0.5826086956521739,
+    "FPR": 0.11304347826086956,
+    "lift": 0.4695652173913043,
+    "lift_se": 0.05464831861737459,
+    "lift_ci95": [
+      0.3624545129012501,
+      0.5766759218813585
+    ],
+    "lift_z": 8.592491576529735,
+    "precision": 0.8375,
+    "accuracy": 0.7347826086956522,
+    "refusal_rate": 0.34782608695652173,
+    "avg_confidence": 0.8672530434782607
+  },
+  "decisions": [
+    {
+      "id": "healthcare/gpt-4.1/t118/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9576,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9576, \"probabilities\": {\"held\": 0.9576, \"not_held\": 0.0424}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t44/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.923,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.923, \"probabilities\": {\"held\": 0.923, \"not_held\": 0.077}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t91/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9579,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9579, \"probabilities\": {\"held\": 0.9579, \"not_held\": 0.0421}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t103/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.728,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.728, \"probabilities\": {\"held\": 0.272, \"not_held\": 0.728}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t44/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.5137,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.5137, \"probabilities\": {\"held\": 0.4863, \"not_held\": 0.5137}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t92/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7691,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7691, \"probabilities\": {\"held\": 0.7691, \"not_held\": 0.2309}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t104/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9598,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9598, \"probabilities\": {\"held\": 0.9598, \"not_held\": 0.0402}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t7/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9482,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9482, \"probabilities\": {\"held\": 0.9482, \"not_held\": 0.0518}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t105/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5273,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.5273, \"probabilities\": {\"held\": 0.4727, \"not_held\": 0.5273}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t85/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8791,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8791, \"probabilities\": {\"held\": 0.8791, \"not_held\": 0.1209}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t7/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9268,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9268, \"probabilities\": {\"held\": 0.0732, \"not_held\": 0.9268}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t61/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8933,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8933, \"probabilities\": {\"held\": 0.8933, \"not_held\": 0.1067}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t62/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9526,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9526, \"probabilities\": {\"held\": 0.9526, \"not_held\": 0.0474}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t112/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9592,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9592, \"probabilities\": {\"held\": 0.9592, \"not_held\": 0.0408}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t77/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9086,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9086, \"probabilities\": {\"held\": 0.0914, \"not_held\": 0.9086}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t75/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9438,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9438, \"probabilities\": {\"held\": 0.0562, \"not_held\": 0.9438}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t115/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9425,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9425, \"probabilities\": {\"held\": 0.9425, \"not_held\": 0.0575}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t67/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9529,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9529, \"probabilities\": {\"held\": 0.9529, \"not_held\": 0.0471}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t13/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.6619,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.6619, \"probabilities\": {\"held\": 0.6619, \"not_held\": 0.3381}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t47/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8549,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8549, \"probabilities\": {\"held\": 0.1451, \"not_held\": 0.8549}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t79/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.9149,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9149, \"probabilities\": {\"held\": 0.0851, \"not_held\": 0.9149}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t37/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9543,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9543, \"probabilities\": {\"held\": 0.9543, \"not_held\": 0.0457}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t5/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.954,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.954, \"probabilities\": {\"held\": 0.954, \"not_held\": 0.046}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t10/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8848,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8848, \"probabilities\": {\"held\": 0.1152, \"not_held\": 0.8848}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t49/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.954,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.954, \"probabilities\": {\"held\": 0.954, \"not_held\": 0.046}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t112/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8977,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8977, \"probabilities\": {\"held\": 0.1023, \"not_held\": 0.8977}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t7/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.955,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.955, \"probabilities\": {\"held\": 0.955, \"not_held\": 0.045}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t82/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8176,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8176, \"probabilities\": {\"held\": 0.8176, \"not_held\": 0.1824}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t100/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9579,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9579, \"probabilities\": {\"held\": 0.9579, \"not_held\": 0.0421}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t60/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.9131,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9131, \"probabilities\": {\"held\": 0.9131, \"not_held\": 0.0869}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t89/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9294,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9294, \"probabilities\": {\"held\": 0.9294, \"not_held\": 0.0706}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t83/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8333,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8333, \"probabilities\": {\"held\": 0.8333, \"not_held\": 0.1667}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t104/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9598,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9598, \"probabilities\": {\"held\": 0.9598, \"not_held\": 0.0402}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t61/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8639,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8639, \"probabilities\": {\"held\": 0.1361, \"not_held\": 0.8639}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t97/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5545,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.5545, \"probabilities\": {\"held\": 0.5545, \"not_held\": 0.4455}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t58/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8758,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8758, \"probabilities\": {\"held\": 0.8758, \"not_held\": 0.1242}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t83/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.9219,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9219, \"probabilities\": {\"held\": 0.0781, \"not_held\": 0.9219}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t52/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9325,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9325, \"probabilities\": {\"held\": 0.0675, \"not_held\": 0.9325}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t122/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9185,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9185, \"probabilities\": {\"held\": 0.0815, \"not_held\": 0.9185}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t46/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9482,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9482, \"probabilities\": {\"held\": 0.9482, \"not_held\": 0.0518}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t46/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9615,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9615, \"probabilities\": {\"held\": 0.9615, \"not_held\": 0.0385}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t59/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9191,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9191, \"probabilities\": {\"held\": 0.0809, \"not_held\": 0.9191}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t71/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9372,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9372, \"probabilities\": {\"held\": 0.0628, \"not_held\": 0.9372}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t107/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8848,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8848, \"probabilities\": {\"held\": 0.8848, \"not_held\": 0.1152}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t50/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8559,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8559, \"probabilities\": {\"held\": 0.1441, \"not_held\": 0.8559}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t120/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9612,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9612, \"probabilities\": {\"held\": 0.9612, \"not_held\": 0.0388}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t119/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.923,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.923, \"probabilities\": {\"held\": 0.077, \"not_held\": 0.923}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t68/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8804,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8804, \"probabilities\": {\"held\": 0.1196, \"not_held\": 0.8804}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t80/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8991,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8991, \"probabilities\": {\"held\": 0.1009, \"not_held\": 0.8991}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t105/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9563,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9563, \"probabilities\": {\"held\": 0.9563, \"not_held\": 0.0437}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t90/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.5117,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.5117, \"probabilities\": {\"held\": 0.5117, \"not_held\": 0.4883}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t44/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7476,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.7476, \"probabilities\": {\"held\": 0.2524, \"not_held\": 0.7476}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t12/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9274,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9274, \"probabilities\": {\"held\": 0.9274, \"not_held\": 0.0726}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t81/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8222,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8222, \"probabilities\": {\"held\": 0.8222, \"not_held\": 0.1778}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t108/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.6993,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.6993, \"probabilities\": {\"held\": 0.3007, \"not_held\": 0.6993}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t108/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9615,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9615, \"probabilities\": {\"held\": 0.9615, \"not_held\": 0.0385}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t3/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.5293,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.5293, \"probabilities\": {\"held\": 0.5293, \"not_held\": 0.4707}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t69/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9474,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9474, \"probabilities\": {\"held\": 0.0526, \"not_held\": 0.9474}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t62/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9412,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9412, \"probabilities\": {\"held\": 0.0588, \"not_held\": 0.9412}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t87/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9595,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9595, \"probabilities\": {\"held\": 0.9595, \"not_held\": 0.0405}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t57/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8376,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8376, \"probabilities\": {\"held\": 0.8376, \"not_held\": 0.1624}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t28/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8087,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8087, \"probabilities\": {\"held\": 0.1913, \"not_held\": 0.8087}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t78/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6442,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.6442, \"probabilities\": {\"held\": 0.3558, \"not_held\": 0.6442}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t29/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7402,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7402, \"probabilities\": {\"held\": 0.7402, \"not_held\": 0.2598}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t52/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8539,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8539, \"probabilities\": {\"held\": 0.8539, \"not_held\": 0.1461}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t57/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8032,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8032, \"probabilities\": {\"held\": 0.8032, \"not_held\": 0.1968}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t49/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9526,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9526, \"probabilities\": {\"held\": 0.9526, \"not_held\": 0.0474}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t91/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9615,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9615, \"probabilities\": {\"held\": 0.9615, \"not_held\": 0.0385}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t65/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9099,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9099, \"probabilities\": {\"held\": 0.0901, \"not_held\": 0.9099}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t70/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9167,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9167, \"probabilities\": {\"held\": 0.0833, \"not_held\": 0.9167}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t109/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9214,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9214, \"probabilities\": {\"held\": 0.0786, \"not_held\": 0.9214}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t59/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.9012,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9012, \"probabilities\": {\"held\": 0.9012, \"not_held\": 0.0988}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t74/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9546,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9546, \"probabilities\": {\"held\": 0.9546, \"not_held\": 0.0454}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t104/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9173,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9173, \"probabilities\": {\"held\": 0.0827, \"not_held\": 0.9173}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t77/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5409,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.5409, \"probabilities\": {\"held\": 0.4591, \"not_held\": 0.5409}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t56/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9585,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9585, \"probabilities\": {\"held\": 0.9585, \"not_held\": 0.0415}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t58/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8539,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8539, \"probabilities\": {\"held\": 0.8539, \"not_held\": 0.1461}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t79/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8397,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8397, \"probabilities\": {\"held\": 0.8397, \"not_held\": 0.1603}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t39/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8539,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8539, \"probabilities\": {\"held\": 0.1461, \"not_held\": 0.8539}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t35/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8311,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8311, \"probabilities\": {\"held\": 0.8311, \"not_held\": 0.1689}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t105/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9412,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9412, \"probabilities\": {\"held\": 0.9412, \"not_held\": 0.0588}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t122/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9458,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9458, \"probabilities\": {\"held\": 0.9458, \"not_held\": 0.0542}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t64/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7739,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.7739, \"probabilities\": {\"held\": 0.2261, \"not_held\": 0.7739}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t54/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7074,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7074, \"probabilities\": {\"held\": 0.7074, \"not_held\": 0.2926}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t7/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7691,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7691, \"probabilities\": {\"held\": 0.7691, \"not_held\": 0.2309}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t49/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8634,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8634, \"probabilities\": {\"held\": 0.1366, \"not_held\": 0.8634}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t86/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8706,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8706, \"probabilities\": {\"held\": 0.8706, \"not_held\": 0.1294}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t63/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.939,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.939, \"probabilities\": {\"held\": 0.939, \"not_held\": 0.061}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t88/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9446,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9446, \"probabilities\": {\"held\": 0.9446, \"not_held\": 0.0554}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t49/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9093,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9093, \"probabilities\": {\"held\": 0.0907, \"not_held\": 0.9093}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t91/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8652,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8652, \"probabilities\": {\"held\": 0.8652, \"not_held\": 0.1348}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t43/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8661,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8661, \"probabilities\": {\"held\": 0.8661, \"not_held\": 0.1339}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t36/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9504,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9504, \"probabilities\": {\"held\": 0.9504, \"not_held\": 0.0496}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t47/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9493,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9493, \"probabilities\": {\"held\": 0.0507, \"not_held\": 0.9493}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t37/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7718,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7718, \"probabilities\": {\"held\": 0.7718, \"not_held\": 0.2282}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t116/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9482,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9482, \"probabilities\": {\"held\": 0.9482, \"not_held\": 0.0518}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t90/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9782,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9782, \"probabilities\": {\"held\": 0.0218, \"not_held\": 0.9782}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t35/i0/c5",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8643,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8643, \"probabilities\": {\"held\": 0.8643, \"not_held\": 0.1357}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t94/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8152,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8152, \"probabilities\": {\"held\": 0.8152, \"not_held\": 0.1848}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t55/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9137,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9137, \"probabilities\": {\"held\": 0.0863, \"not_held\": 0.9137}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t83/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8267,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8267, \"probabilities\": {\"held\": 0.8267, \"not_held\": 0.1733}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t61/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9124,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9124, \"probabilities\": {\"held\": 0.0876, \"not_held\": 0.9124}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t121/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9627,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9627, \"probabilities\": {\"held\": 0.9627, \"not_held\": 0.0373}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t9/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8093,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8093, \"probabilities\": {\"held\": 0.8093, \"not_held\": 0.1907}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t123/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9621,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9621, \"probabilities\": {\"held\": 0.9621, \"not_held\": 0.0379}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t107/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8848,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8848, \"probabilities\": {\"held\": 0.8848, \"not_held\": 0.1152}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t8/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9573,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9573, \"probabilities\": {\"held\": 0.9573, \"not_held\": 0.0427}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t43/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8832,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8832, \"probabilities\": {\"held\": 0.8832, \"not_held\": 0.1168}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t0/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7607,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7607, \"probabilities\": {\"held\": 0.7607, \"not_held\": 0.2393}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t116/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8289,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8289, \"probabilities\": {\"held\": 0.8289, \"not_held\": 0.1711}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t9/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.5718,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.5718, \"probabilities\": {\"held\": 0.5718, \"not_held\": 0.4282}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t48/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8376,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8376, \"probabilities\": {\"held\": 0.8376, \"not_held\": 0.1624}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t9/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8222,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8222, \"probabilities\": {\"held\": 0.8222, \"not_held\": 0.1778}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t6/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9533,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9533, \"probabilities\": {\"held\": 0.9533, \"not_held\": 0.0467}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t84/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9454,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9454, \"probabilities\": {\"held\": 0.0546, \"not_held\": 0.9454}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t74/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9349,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9349, \"probabilities\": {\"held\": 0.9349, \"not_held\": 0.0651}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t123/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9563,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9563, \"probabilities\": {\"held\": 0.9563, \"not_held\": 0.0437}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t102/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7578,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7578, \"probabilities\": {\"held\": 0.7578, \"not_held\": 0.2422}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t13/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.5,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.5, \"probabilities\": {\"held\": 0.5, \"not_held\": 0.5}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t91/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9005,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9005, \"probabilities\": {\"held\": 0.0995, \"not_held\": 0.9005}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t14/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9325,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9325, \"probabilities\": {\"held\": 0.9325, \"not_held\": 0.0675}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t66/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9395,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9395, \"probabilities\": {\"held\": 0.0605, \"not_held\": 0.9395}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t8/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8688,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8688, \"probabilities\": {\"held\": 0.8688, \"not_held\": 0.1312}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t72/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9489,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9489, \"probabilities\": {\"held\": 0.0511, \"not_held\": 0.9489}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t81/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8289,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8289, \"probabilities\": {\"held\": 0.8289, \"not_held\": 0.1711}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t36/i0/c5",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8032,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8032, \"probabilities\": {\"held\": 0.1968, \"not_held\": 0.8032}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t92/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9787,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9787, \"probabilities\": {\"held\": 0.0213, \"not_held\": 0.9787}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t79/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6132,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.6132, \"probabilities\": {\"held\": 0.6132, \"not_held\": 0.3868}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t97/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7853,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7853, \"probabilities\": {\"held\": 0.7853, \"not_held\": 0.2147}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t40/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8529,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8529, \"probabilities\": {\"held\": 0.1471, \"not_held\": 0.8529}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t18/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9474,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9474, \"probabilities\": {\"held\": 0.9474, \"not_held\": 0.0526}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t98/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8355,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8355, \"probabilities\": {\"held\": 0.8355, \"not_held\": 0.1645}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t80/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9585,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9585, \"probabilities\": {\"held\": 0.9585, \"not_held\": 0.0415}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t0/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9604,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9604, \"probabilities\": {\"held\": 0.9604, \"not_held\": 0.0396}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t48/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7957,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7957, \"probabilities\": {\"held\": 0.7957, \"not_held\": 0.2043}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t1/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9607,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9607, \"probabilities\": {\"held\": 0.9607, \"not_held\": 0.0393}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t12/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8741,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8741, \"probabilities\": {\"held\": 0.1259, \"not_held\": 0.8741}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t103/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9482,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9482, \"probabilities\": {\"held\": 0.9482, \"not_held\": 0.0518}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t106/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9179,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9179, \"probabilities\": {\"held\": 0.0821, \"not_held\": 0.9179}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t100/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8289,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8289, \"probabilities\": {\"held\": 0.8289, \"not_held\": 0.1711}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t44/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9604,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9604, \"probabilities\": {\"held\": 0.9604, \"not_held\": 0.0396}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t60/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9073,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9073, \"probabilities\": {\"held\": 0.0927, \"not_held\": 0.9073}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t122/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9433,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9433, \"probabilities\": {\"held\": 0.9433, \"not_held\": 0.0567}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t53/i0/c5",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.6584,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.6584, \"probabilities\": {\"held\": 0.3416, \"not_held\": 0.6584}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t91/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9615,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9615, \"probabilities\": {\"held\": 0.9615, \"not_held\": 0.0385}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t45/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.5254,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.5254, \"probabilities\": {\"held\": 0.5254, \"not_held\": 0.4746}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t14/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7249,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7249, \"probabilities\": {\"held\": 0.7249, \"not_held\": 0.2751}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t88/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9093,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9093, \"probabilities\": {\"held\": 0.0907, \"not_held\": 0.9093}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t79/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9026,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9026, \"probabilities\": {\"held\": 0.0974, \"not_held\": 0.9026}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t94/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8775,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8775, \"probabilities\": {\"held\": 0.8775, \"not_held\": 0.1225}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t91/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9615,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9615, \"probabilities\": {\"held\": 0.9615, \"not_held\": 0.0385}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t52/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9208,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9208, \"probabilities\": {\"held\": 0.9208, \"not_held\": 0.0792}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t12/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9529,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9529, \"probabilities\": {\"held\": 0.9529, \"not_held\": 0.0471}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t61/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9485,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9485, \"probabilities\": {\"held\": 0.9485, \"not_held\": 0.0515}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t107/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9573,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9573, \"probabilities\": {\"held\": 0.9573, \"not_held\": 0.0427}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t95/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.908,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.908, \"probabilities\": {\"held\": 0.908, \"not_held\": 0.092}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t51/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.628,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.628, \"probabilities\": {\"held\": 0.372, \"not_held\": 0.628}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t115/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8032,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8032, \"probabilities\": {\"held\": 0.8032, \"not_held\": 0.1968}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t72/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.956,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.956, \"probabilities\": {\"held\": 0.956, \"not_held\": 0.044}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t82/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8758,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8758, \"probabilities\": {\"held\": 0.8758, \"not_held\": 0.1242}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t45/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9557,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9557, \"probabilities\": {\"held\": 0.9557, \"not_held\": 0.0443}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t9/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9421,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9421, \"probabilities\": {\"held\": 0.9421, \"not_held\": 0.0579}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t54/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8397,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8397, \"probabilities\": {\"held\": 0.1603, \"not_held\": 0.8397}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t76/i0/c2",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8587,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8587, \"probabilities\": {\"held\": 0.1413, \"not_held\": 0.8587}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t34/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8129,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8129, \"probabilities\": {\"held\": 0.1871, \"not_held\": 0.8129}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t13/i0/c0",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9137,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9137, \"probabilities\": {\"held\": 0.0863, \"not_held\": 0.9137}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t40/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.5137,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.5137, \"probabilities\": {\"held\": 0.5137, \"not_held\": 0.4863}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t92/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8111,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8111, \"probabilities\": {\"held\": 0.1889, \"not_held\": 0.8111}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t117/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9579,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9579, \"probabilities\": {\"held\": 0.9579, \"not_held\": 0.0421}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t22/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8597,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8597, \"probabilities\": {\"held\": 0.8597, \"not_held\": 0.1403}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t51/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.884,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.884, \"probabilities\": {\"held\": 0.884, \"not_held\": 0.116}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t79/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8749,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8749, \"probabilities\": {\"held\": 0.8749, \"not_held\": 0.1251}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t63/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8697,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8697, \"probabilities\": {\"held\": 0.1303, \"not_held\": 0.8697}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t0/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9546,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9546, \"probabilities\": {\"held\": 0.9546, \"not_held\": 0.0454}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t63/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9433,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9433, \"probabilities\": {\"held\": 0.0567, \"not_held\": 0.9433}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t70/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9438,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9438, \"probabilities\": {\"held\": 0.0562, \"not_held\": 0.9438}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t57/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9579,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9579, \"probabilities\": {\"held\": 0.9579, \"not_held\": 0.0421}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t70/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9425,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9425, \"probabilities\": {\"held\": 0.9425, \"not_held\": 0.0575}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t117/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8245,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8245, \"probabilities\": {\"held\": 0.8245, \"not_held\": 0.1755}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t73/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.939,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.939, \"probabilities\": {\"held\": 0.061, \"not_held\": 0.939}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t108/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9579,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9579, \"probabilities\": {\"held\": 0.9579, \"not_held\": 0.0421}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t121/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7549,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7549, \"probabilities\": {\"held\": 0.7549, \"not_held\": 0.2451}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t90/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9466,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9466, \"probabilities\": {\"held\": 0.9466, \"not_held\": 0.0534}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t104/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9598,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9598, \"probabilities\": {\"held\": 0.9598, \"not_held\": 0.0402}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t37/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9557,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9557, \"probabilities\": {\"held\": 0.9557, \"not_held\": 0.0443}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t31/i0/c4",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.8745,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8745, \"probabilities\": {\"held\": 0.1255, \"not_held\": 0.8745}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t96/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.752,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.752, \"probabilities\": {\"held\": 0.752, \"not_held\": 0.248}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t38/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8007,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8007, \"probabilities\": {\"held\": 0.8007, \"not_held\": 0.1993}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t8/i0/c4",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8597,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8597, \"probabilities\": {\"held\": 0.8597, \"not_held\": 0.1403}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t25/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9612,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9612, \"probabilities\": {\"held\": 0.9612, \"not_held\": 0.0388}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t72/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.6706,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.6706, \"probabilities\": {\"held\": 0.6706, \"not_held\": 0.3294}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t66/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.5351,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.5351, \"probabilities\": {\"held\": 0.5351, \"not_held\": 0.4649}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t10/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9202,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9202, \"probabilities\": {\"held\": 0.0798, \"not_held\": 0.9202}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t87/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9012,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9012, \"probabilities\": {\"held\": 0.0988, \"not_held\": 0.9012}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t89/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8222,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8222, \"probabilities\": {\"held\": 0.8222, \"not_held\": 0.1778}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t103/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7311,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7311, \"probabilities\": {\"held\": 0.7311, \"not_held\": 0.2689}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t68/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.947,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.947, \"probabilities\": {\"held\": 0.053, \"not_held\": 0.947}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t103/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7122,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7122, \"probabilities\": {\"held\": 0.7122, \"not_held\": 0.2878}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t118/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8199,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8199, \"probabilities\": {\"held\": 0.8199, \"not_held\": 0.1801}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t43/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9536,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9536, \"probabilities\": {\"held\": 0.9536, \"not_held\": 0.0464}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t13/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9543,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9543, \"probabilities\": {\"held\": 0.9543, \"not_held\": 0.0457}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t92/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9573,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9573, \"probabilities\": {\"held\": 0.9573, \"not_held\": 0.0427}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t76/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9519,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9519, \"probabilities\": {\"held\": 0.0481, \"not_held\": 0.9519}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t120/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9202,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9202, \"probabilities\": {\"held\": 0.0798, \"not_held\": 0.9202}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t50/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9546,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9546, \"probabilities\": {\"held\": 0.9546, \"not_held\": 0.0454}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t105/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9149,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9149, \"probabilities\": {\"held\": 0.0851, \"not_held\": 0.9149}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t14/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.696,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.696, \"probabilities\": {\"held\": 0.696, \"not_held\": 0.304}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t90/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9752,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9752, \"probabilities\": {\"held\": 0.0248, \"not_held\": 0.9752}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t56/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9047,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9047, \"probabilities\": {\"held\": 0.0953, \"not_held\": 0.9047}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t114/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9173,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9173, \"probabilities\": {\"held\": 0.0827, \"not_held\": 0.9173}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t55/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9137,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9137, \"probabilities\": {\"held\": 0.0863, \"not_held\": 0.9137}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t101/i0/c1",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8289,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8289, \"probabilities\": {\"held\": 0.8289, \"not_held\": 0.1711}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t55/i0/c3",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9268,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9268, \"probabilities\": {\"held\": 0.0732, \"not_held\": 0.9268}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t43/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9466,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9466, \"probabilities\": {\"held\": 0.9466, \"not_held\": 0.0534}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t104/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9474,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9474, \"probabilities\": {\"held\": 0.9474, \"not_held\": 0.0526}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t119/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.961,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.961, \"probabilities\": {\"held\": 0.961, \"not_held\": 0.039}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t40/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9604,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9604, \"probabilities\": {\"held\": 0.9604, \"not_held\": 0.0396}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t67/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9454,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9454, \"probabilities\": {\"held\": 0.0546, \"not_held\": 0.9454}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t29/i0/c4",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.6558,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.6558, \"probabilities\": {\"held\": 0.3442, \"not_held\": 0.6558}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t95/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7607,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7607, \"probabilities\": {\"held\": 0.7607, \"not_held\": 0.2393}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t74/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9395,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9395, \"probabilities\": {\"held\": 0.0605, \"not_held\": 0.9395}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t94/i0/c3",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8706,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8706, \"probabilities\": {\"held\": 0.8706, \"not_held\": 0.1294}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t96/i0/c1",
+      "truth": "held",
+      "passed": false,
+      "confidence": 0.5467,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.5467, \"probabilities\": {\"held\": 0.4533, \"not_held\": 0.5467}}"
+    },
+    {
+      "id": "healthcare/o4-mini/t83/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9573,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9573, \"probabilities\": {\"held\": 0.9573, \"not_held\": 0.0427}}"
+    },
+    {
+      "id": "healthcare/gpt-4o/t0/i0/c2",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.7372,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7372, \"probabilities\": {\"held\": 0.7372, \"not_held\": 0.2628}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t6/i0/c1",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8955,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8955, \"probabilities\": {\"held\": 0.1045, \"not_held\": 0.8955}}"
+    },
+    {
+      "id": "healthcare/claude-3-7-sonnet-20250219/t72/i0/c3",
+      "truth": "not_held",
+      "passed": true,
+      "confidence": 0.8278,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8278, \"probabilities\": {\"held\": 0.8278, \"not_held\": 0.1722}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t11/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.7982,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.7982, \"probabilities\": {\"held\": 0.7982, \"not_held\": 0.2018}}"
+    },
+    {
+      "id": "healthcare/gpt-4.1/t98/i0/c1",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9604,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9604, \"probabilities\": {\"held\": 0.9604, \"not_held\": 0.0396}}"
+    },
+    {
+      "id": "healthcare/qwen2.5-72b-it-fireworks/t39/i0/c2",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.7621,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.7621, \"probabilities\": {\"held\": 0.2379, \"not_held\": 0.7621}}"
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "summary": {
+    "judge": "jev:clef-flash",
+    "n": 20,
+    "errors": 0,
+    "n_not_held": 10,
+    "n_held": 10,
+    "TP": 10,
+    "FP": 0,
+    "FN": 0,
+    "TN": 10,
+    "recall_TPR": 1.0,
+    "FPR": 0.0,
+    "lift": 1.0,
+    "lift_se": 0.0,
+    "lift_ci95": [
+      1.0,
+      1.0
+    ],
+    "lift_z": null,
+    "precision": 1.0,
+    "accuracy": 1.0,
+    "refusal_rate": 0.5,
+    "avg_confidence": 0.909575
+  },
+  "decisions": [
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t6/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9489,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9489, \"probabilities\": {\"held\": 0.9489, \"not_held\": 0.0511}}"
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t16/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9339,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9339, \"probabilities\": {\"held\": 0.0661, \"not_held\": 0.9339}}"
+    },
+    {
+      "id": "university/gpt-4.1/t32/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8176,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8176, \"probabilities\": {\"held\": 0.8176, \"not_held\": 0.1824}}"
+    },
+    {
+      "id": "university/gpt-4.1/t19/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9214,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9214, \"probabilities\": {\"held\": 0.0786, \"not_held\": 0.9214}}"
+    },
+    {
+      "id": "university/gpt-4o/t34/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9381,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9381, \"probabilities\": {\"held\": 0.9381, \"not_held\": 0.0619}}"
+    },
+    {
+      "id": "university/gpt-4o/t0/i0/c2",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.954,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.954, \"probabilities\": {\"held\": 0.954, \"not_held\": 0.046}}"
+    },
+    {
+      "id": "university/gpt-4.1/t17/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9241,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9241, \"probabilities\": {\"held\": 0.0759, \"not_held\": 0.9241}}"
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t18/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.8998,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.8998, \"probabilities\": {\"held\": 0.1002, \"not_held\": 0.8998}}"
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t29/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8222,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8222, \"probabilities\": {\"held\": 0.8222, \"not_held\": 0.1778}}"
+    },
+    {
+      "id": "university/gpt-4.1/t35/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9315,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9315, \"probabilities\": {\"held\": 0.9315, \"not_held\": 0.0685}}"
+    },
+    {
+      "id": "university/gpt-4o/t13/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9339,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9339, \"probabilities\": {\"held\": 0.0661, \"not_held\": 0.9339}}"
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t13/i0/c6",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9417,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9417, \"probabilities\": {\"held\": 0.0583, \"not_held\": 0.9417}}"
+    },
+    {
+      "id": "university/gpt-4o/t16/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9404,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9404, \"probabilities\": {\"held\": 0.0596, \"not_held\": 0.9404}}"
+    },
+    {
+      "id": "university/gpt-4o/t32/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8176,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8176, \"probabilities\": {\"held\": 0.8176, \"not_held\": 0.1824}}"
+    },
+    {
+      "id": "university/gpt-4.1/t16/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9372,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9372, \"probabilities\": {\"held\": 0.0628, \"not_held\": 0.9372}}"
+    },
+    {
+      "id": "university/gpt-4.1/t18/i0/c8",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9124,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9124, \"probabilities\": {\"held\": 0.0876, \"not_held\": 0.9124}}"
+    },
+    {
+      "id": "university/gpt-4.1/t22/i0/c6",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8926,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8926, \"probabilities\": {\"held\": 0.8926, \"not_held\": 0.1074}}"
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t22/i0/c5",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.8418,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.8418, \"probabilities\": {\"held\": 0.8418, \"not_held\": 0.1582}}"
+    },
+    {
+      "id": "university/claude-3-7-sonnet-20250219/t2/i0/c4",
+      "truth": "held",
+      "passed": true,
+      "confidence": 0.9485,
+      "raw": "{\"type\": \"choice\", \"choice\": \"held\", \"confidence\": 0.9485, \"probabilities\": {\"held\": 0.9485, \"not_held\": 0.0515}}"
+    },
+    {
+      "id": "university/gpt-4.1/t13/i0/c7",
+      "truth": "not_held",
+      "passed": false,
+      "confidence": 0.9339,
+      "raw": "{\"type\": \"choice\", \"choice\": \"not_held\", \"confidence\": 0.9339, \"probabilities\": {\"held\": 0.0661, \"not_held\": 0.9339}}"
+    }
+  ]
+}
