@@ -523,12 +523,17 @@ SOP_KEYS = frozenset(
 # The four free-prose fields, kept in the order a reader wants them.
 SOP_TEXT_KEYS = ("purpose", "trigger", "inputs", "definition_of_done")
 
-# Why a cap at all, and why 3: the cap IS the discipline. An unbounded mistakes
-# list becomes a wiki page, and a wiki page is not read at the moment of
-# handoff. Forcing a ranking down to three is what keeps the field to the things
-# that actually bite. The source note specifies three; this enforces it rather
-# than trusting the author to stop.
-MAX_SOP_MISTAKES = 3
+# Why a cap at all: the cap IS the discipline. An unbounded mistakes list
+# becomes a wiki page, and a wiki page is not read at the moment of handoff.
+# Forcing a ranking is what keeps the field to the things that actually bite;
+# this enforces it rather than trusting the author to stop.
+#
+# Why 5 (was 3, the source note's figure): raised by the principal 2026-10-10
+# from the first real coding-domain ASOP execution, a multi-procedure legacy
+# modernization, where steps carried more measured failure modes (each with a
+# cited origin) than three slots could hold. Still a cap, still a ranking — not
+# a licence to list everything.
+MAX_SOP_MISTAKES = 5
 
 
 def validate_sop(payload: object) -> dict:
@@ -600,8 +605,8 @@ def validate_sop(payload: object) -> dict:
                 f"metadata.sop['common_mistakes'] carries {len(mistakes)} "
                 f"entries; the cap is {MAX_SOP_MISTAKES}. The cap is the "
                 f"discipline — an unbounded list is a wiki page, and a wiki "
-                f"page is not read at handoff time. Keep the three that "
-                f"actually bite."
+                f"page is not read at handoff time. Keep the "
+                f"{MAX_SOP_MISTAKES} that actually bite."
             )
         normalized: list[str] = []
         for i, mistake in enumerate(mistakes):

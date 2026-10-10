@@ -9,7 +9,7 @@ handoff actually breaks on.
 The contract's sharp edges: partial blocks are LEGAL (an SOP is filled in as
 the work is understood), but the dishonest shapes are refused at the write
 boundary — an empty block, a present-but-blank field, an empty mistakes list,
-and more than three mistakes.
+and more than five mistakes.
 """
 
 from __future__ import annotations
@@ -92,14 +92,14 @@ def test_a_present_but_blank_text_field_is_refused(key, value):
 # --- the mistakes list, and its cap -----------------------------------------
 
 
-def test_three_mistakes_are_accepted():
-    block = validate_sop({"common_mistakes": ["a", "b", "c"]})
-    assert block["common_mistakes"] == ["a", "b", "c"]
+def test_five_mistakes_are_accepted():
+    block = validate_sop({"common_mistakes": ["a", "b", "c", "d", "e"]})
+    assert block["common_mistakes"] == ["a", "b", "c", "d", "e"]
 
 
-def test_a_fourth_mistake_is_refused():
-    with pytest.raises(SopContractError, match="the cap is 3"):
-        validate_sop({"common_mistakes": ["a", "b", "c", "d"]})
+def test_a_sixth_mistake_is_refused():
+    with pytest.raises(SopContractError, match="the cap is 5"):
+        validate_sop({"common_mistakes": ["a", "b", "c", "d", "e", "f"]})
 
 
 def test_the_cap_constant_is_what_is_enforced():
@@ -138,7 +138,10 @@ def test_the_block_round_trips_through_the_store(tmp_path):
 def test_a_bad_block_is_refused_at_create_and_nothing_is_written(tmp_path):
     beads = Beads(tmp_path / "tasks.jsonl")
     with pytest.raises(SopContractError):
-        beads.create("t", "d", metadata={"sop": {"common_mistakes": ["a", "b", "c", "d"]}})
+        beads.create(
+            "t", "d",
+            metadata={"sop": {"common_mistakes": ["m"] * (MAX_SOP_MISTAKES + 1)}},
+        )
     assert beads.list() == []
 
 
@@ -207,17 +210,18 @@ def test_create_without_sop_flags_writes_no_block(tmp_path):
     assert "sop" not in task.metadata
 
 
-def test_a_fourth_mistake_flag_refuses_and_creates_nothing(tmp_path):
+def test_a_sixth_mistake_flag_refuses_and_creates_nothing(tmp_path):
     cfg = _node(tmp_path / "node")
     result = CliRunner().invoke(
         main,
         [
             "--config", str(cfg), "tasks", "create", "t",
-            "--mistake", "a", "--mistake", "b", "--mistake", "c", "--mistake", "d",
+            "--mistake", "a", "--mistake", "b", "--mistake", "c",
+            "--mistake", "d", "--mistake", "e", "--mistake", "f",
         ],
     )
     assert result.exit_code == 1
-    assert "the cap is 3" in result.output
+    assert "the cap is 5" in result.output
     assert "Task NOT created" in result.output
     # The refusal is worth nothing if a bead landed anyway.
     assert Beads(tmp_path / "node" / "tasks.jsonl").list() == []
