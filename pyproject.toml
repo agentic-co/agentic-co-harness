@@ -15,7 +15,7 @@ dependencies = [
     # The ASOP contract — gate schema, record shapes, refusal vocabulary —
     # shared with the Hub, and published on its own so this dependency names
     # a version rather than another product's repository URL.
-    "asop-spec>=0.1.0",
+    "asop-spec>=0.4.1",
 ]
 
 [project.optional-dependencies]
