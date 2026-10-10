@@ -454,7 +454,7 @@ wheels = [
 
 [[package]]
 name = "dspy"
-version = "3.3.1"
+version = "3.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -472,21 +472,21 @@ dependencies = [
     { name = "tenacity" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/47/36/cafd7ee235481f299426243d9c3608b9fa2e64227940cce50f94feea9570/dspy-3.3.1.tar.gz", hash = "sha256:ca53a428ac6a30984a894cf3847cf623b7dd7e8aadf8a63620b1f1f6155e4eaf", size = 361491, upload-time = "2026-08-21T23:06:13.993Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d2/1b/5b1964b0f1299aaca2b98300d73d972046ab70edb53c47674d6ace3c1bf1/dspy-3.4.0.tar.gz", hash = "sha256:4dea089c6bd1f8d314e1095e7f64b4b4ff64bb8a09549efee026c0a609f08c16", size = 887770, upload-time = "2026-09-25T04:04:25.439Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d7/cc/d769426ff2cfb816bdedbcedf364c1812b6831887d34be8d188ca2727dc8/dspy-3.3.1-py3-none-any.whl", hash = "sha256:250049f565f52c014609ce2d3ca0de17a6c9449ac961492d61a009aa30dceabf", size = 421179, upload-time = "2026-08-21T23:06:12.591Z" },
+    { url = "https://files.pythonhosted.org/packages/17/96/31628d4231b5dd7edbe9eaf5c975d1055f4b79b337062a1f957dca6dd931/dspy-3.4.0-py3-none-any.whl", hash = "sha256:36de329ecdaf18e31977e26c61b587caa470a34f574f2fe6cb7f4c82bcbf97cc", size = 987510, upload-time = "2026-09-25T04:04:23.915Z" },
 ]
 
 [[package]]
 name = "dspy-ai"
-version = "3.3.1"
+version = "3.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "dspy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/35/80/a1b573c8c2f6a649e7e65802927bfdf289d16338b2fbf9efe8fc5b869168/dspy_ai-3.3.1.tar.gz", hash = "sha256:09ffb30df2e0692f387bbcdde4e542b965c8e15e90e2ac5de48a61c36ea9af5c", size = 1254, upload-time = "2026-08-21T23:06:21.746Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0c/df/86d7c3efbf81528e5f385def06380d477263f3d9a64a01dc5a67eb3bc48d/dspy_ai-3.4.0.tar.gz", hash = "sha256:4250d439ef5c12475e04ce57eeff4f8379905a5fcbb9827f49a062adb4e12010", size = 1239, upload-time = "2026-09-25T04:04:31.489Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/66/8c/09d4ace01fc63f534748ee2025d6b1fcb8b12d803768ecd7587e723ca945/dspy_ai-3.3.1-py3-none-any.whl", hash = "sha256:84760146779baa173d10b6164438c3ddc2eb58f164ed33d318c943304ab8b2ad", size = 1170, upload-time = "2026-08-21T23:06:20.945Z" },
+    { url = "https://files.pythonhosted.org/packages/e6/48/99b957c07f8a4a81931e34c7dfdb7930eaab82fefef748b02a02e9cc6f87/dspy_ai-3.4.0-py3-none-any.whl", hash = "sha256:74c8899a92db77fd3b57744e5fa36686e017f4bb43e748f40bf6b40b6c098b9f", size = 1170, upload-time = "2026-09-25T04:04:30.339Z" },
 ]
 
 [[package]]
