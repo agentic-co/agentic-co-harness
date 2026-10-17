@@ -198,11 +198,11 @@ wheels = [
 
 [[package]]
 name = "asop-spec"
-version = "0.4.1"
+version = "0.5.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e5/11/f8217fd314209ea02f5fd5cdde1cd81ee477c4764a5de00276f950157807/asop_spec-0.4.1.tar.gz", hash = "sha256:0c59a188c033c7a6c8c93e0a15aa63a91efb3867e30f39ba24f2c00eb664eb07", size = 105309, upload-time = "2026-10-10T17:39:19.012Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/91/1c/bfdbe2e15fcb0d4d28ae13b14fb2167404e2c28fc1baee0500f85a189aee/asop_spec-0.5.0.tar.gz", hash = "sha256:5b883f919d705b057fa9cfcb1dcf04ab4d409537635b73939db3e7b89f17d446", size = 154959, upload-time = "2026-10-11T01:07:31.134Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/26/fd/1370785c49258f64a92396704795b878a9b110260c72d1bdfcc005c99aeb/asop_spec-0.4.1-py3-none-any.whl", hash = "sha256:f49435966a95be3073bafcb0a9c2c18c9b6b1d2c6ad8d11761aa622a175f898a", size = 84203, upload-time = "2026-10-10T17:39:20.332Z" },
+    { url = "https://files.pythonhosted.org/packages/55/ff/39ff6ae05ee80da9e44a294303dc38ed2081932bf79ccce3aa910e70bc2f/asop_spec-0.5.0-py3-none-any.whl", hash = "sha256:0de6300042928a31b0e7206d58408ba0c399fbfde4368dbf27e1435b3474f665", size = 112703, upload-time = "2026-10-11T01:07:29.653Z" },
 ]
 
 [[package]]
