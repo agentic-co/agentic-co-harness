@@ -24,7 +24,7 @@ refuses a run it cannot file honestly, with the contract's own codes.
 
 from __future__ import annotations
 
-import fcntl
+from agentco_harness.filelock import lock_exclusive, unlock
 import json
 import os
 import secrets
@@ -123,11 +123,11 @@ class AsopStore:
     @contextmanager
     def _locked(self):
         with open(self._lock_path, "w") as lock_file:
-            fcntl.flock(lock_file, fcntl.LOCK_EX)
+            lock_exclusive(lock_file)
             try:
                 yield
             finally:
-                fcntl.flock(lock_file, fcntl.LOCK_UN)
+                unlock(lock_file)
 
     def _read_all(self) -> list[ASOP]:
         out: list[ASOP] = []
