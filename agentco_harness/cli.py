@@ -3606,3 +3606,8 @@ def hub_sync(ctx):
     for r in receipts:
         click.echo(f"  {r['bead']} → plane {r['item']}: {r['status']} ({r['receipt'].get('state')})")
     click.echo(f"Reported {len(receipts)} outcome(s).")
+
+
+from .partition import partition_group  # noqa: E402
+
+main.add_command(partition_group)

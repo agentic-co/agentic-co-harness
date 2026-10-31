@@ -52,15 +52,34 @@ SIGNATURE_HEADER = "x-agentco-signature"
 HUB_KEY = "hub"
 
 
-def signing_string(method: str, path: str, timestamp: str, body: bytes) -> str:
+def canonical_query(query: Optional[str]) -> str:
+    """Byte-for-byte the plane's `agentco.auth.canonical_query`: parse, sort,
+    re-encode, so a proxy reordering parameters cannot break a signature while
+    the values stay bound. "" for no query."""
+    if not query:
+        return ""
+    pairs = urllib.parse.parse_qsl(query.lstrip("?"), keep_blank_values=True)
+    return "&".join(
+        f"{urllib.parse.quote(k, safe='')}={urllib.parse.quote(v, safe='')}"
+        for k, v in sorted(pairs)
+    )
+
+
+def signing_string(method: str, path: str, timestamp: str, body: bytes,
+                   query: Optional[str] = None) -> str:
     """Byte-for-byte the plane's `agentco.auth.signing_string`. A second
-    hand-written copy is how a scheme drifts, so the test pins a vector."""
+    hand-written copy is how a scheme drifts, so the test pins a vector. The
+    query is its own line only when there is one, as on the plane."""
     digest = hashlib.sha256(body or b"").hexdigest()
-    return f"{method.upper()}\n{path}\n{timestamp}\n{digest}"
+    base = f"{method.upper()}\n{path}\n{timestamp}\n{digest}"
+    canonical = canonical_query(query)
+    return f"{base}\n{canonical}" if canonical else base
 
 
-def sign(secret: str, method: str, path: str, timestamp: str, body: bytes) -> str:
-    return hmac.new(secret.encode(), signing_string(method, path, timestamp, body).encode(), hashlib.sha256).hexdigest()
+def sign(secret: str, method: str, path: str, timestamp: str, body: bytes,
+         query: Optional[str] = None) -> str:
+    return hmac.new(secret.encode(), signing_string(method, path, timestamp, body, query).encode(),
+                    hashlib.sha256).hexdigest()
 
 
 class HubRefusal(Exception):
@@ -121,16 +140,18 @@ class HubClient:
 
     # ------------------------------------------------------------ transport
 
-    def _request(self, method: str, path: str, payload: Optional[dict] = None) -> dict:
+    def _request(self, method: str, path: str, payload: Optional[dict] = None,
+                 query: Optional[str] = None) -> dict:
         body = json.dumps(payload).encode() if payload is not None else b""
         timestamp = str(int(time.time()))
         headers = {
             ACTOR_HEADER: self.actor,
             TIMESTAMP_HEADER: timestamp,
-            SIGNATURE_HEADER: sign(self.secret, method, path, timestamp, body),
+            SIGNATURE_HEADER: sign(self.secret, method, path, timestamp, body, query),
             "content-type": "application/json",
         }
-        req = urllib.request.Request(self.url.rstrip("/") + path, data=body if payload is not None else None,
+        target = self.url.rstrip("/") + path + (f"?{query}" if query else "")
+        req = urllib.request.Request(target, data=body if payload is not None else None,
                                      method=method, headers=headers)
         try:
             opener = urllib.request.build_opener(_NoSchemeDowngrade)
