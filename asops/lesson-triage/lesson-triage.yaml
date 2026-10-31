@@ -1,0 +1,153 @@
+# Triage every lesson a piece of work produced, so none is written and then
+# never read. Filed by a join on the procedure that fans the work out (see
+# wiring.example.yaml); the work's close step requires this run to be done.
+asop_id: lesson-triage
+version: 1
+title: Triage the lessons a piece of work produced
+status: draft
+task_type: lesson-triage
+purpose: >
+  Turn every lesson written during one scope of work into a typed, owned
+  disposition: a fact recorded where it will be read, a defect routed to a fix,
+  or noise dismissed with a reason. Nothing collected leaves without one.
+trigger: >
+  Every run a fan-out filed for the scope is done (a join), or a person files
+  it by hand for a scope that has none.
+inputs:
+  - name: scope
+    description: the id of the work whose lessons are triaged (an epic, a wave, a chain)
+  - name: lessons_source
+    description: where the scope's lessons were written (a path or a store query)
+outcomes: [TRIAGED, REGRESSIONS, NOTHING_TO_TRIAGE]
+outputs:
+  - name: defects
+    description: "{items: [{fingerprint, target, disposition, prior_status, occurrences, lessons}]}"
+  - name: metrics
+    description: hours from opened to fixed, and returns after a fix, per fingerprint
+handoffs:
+  - id: fix-each-new-defect
+    to: {asop_id: fix-defect, versions: ">=1"}
+    on_outcomes: [TRIAGED, REGRESSIONS]
+    cardinality: many
+    subject_from: {output: defects, array: items, id_field: fingerprint,
+                   where: {disposition: [new]}}
+    inputs: {fingerprint: $subject, target: $subject.target,
+             lessons: $subject.lessons, scope: $run.inputs.scope}
+  - id: fix-each-regression
+    to: {asop_id: fix-regression, versions: ">=1"}
+    on_outcomes: [REGRESSIONS]
+    cardinality: many
+    subject_from: {output: defects, array: items, id_field: fingerprint,
+                   where: {disposition: [reopened]}}
+    inputs: {fingerprint: $subject, target: $subject.target, lessons: $subject.lessons,
+             scope: $run.inputs.scope, prior_status: $subject.prior_status,
+             occurrences: $subject.occurrences}
+roles:
+  triager: {kind: agent}
+  reviewer: {kind: agent}
+constraints:
+  - distinct: [triager, reviewer]
+steps:
+  - step: 1
+    name: collect
+    role: triager
+    purpose: Gather every lesson the scope wrote, and nothing from outside it.
+    entry_check: >
+      The scope id and the lessons source are in hand, and the registry path is
+      set (LESSON_REGISTRY).
+    inputs: The run's scope and lessons_source.
+    definition_of_done: >
+      lessons/lessons.jsonl holds one row per lesson, {id, text, source}, with
+      source naming the run and step it came from; lessons/scope holds the scope id.
+    validation: Every row parses, ids are unique, text and source are present.
+    write_back: lessons/lessons.jsonl and lessons/scope in the run's directory.
+    common_mistakes:
+      - Summarising several lessons into one row. Each lesson keeps its own id.
+      - Dropping lessons that look minor. Dismissal is a disposition, made in step 2.
+    gate:
+      kind: deterministic
+      check: python -m agentco_harness.lesson_triage check-lessons lessons
+  - step: 2
+    name: classify
+    role: triager
+    purpose: >
+      Type each lesson: a fact about the product, a defect in a procedure or
+      tool, or noise. Give each defect a target and a fingerprint.
+    entry_check: Step 1 is done; the registry's known fingerprints are listed and read.
+    inputs: lessons/lessons.jsonl and the registry.
+    definition_of_done: >
+      lessons/classified.jsonl has one row per lesson. A fact names summary and
+      recorded_in (where it now lives for the next reader). Noise names a
+      reason. A defect names target (asop:<id>#<step> or tool:<path>) and a
+      fingerprint that reuses a known one, or is new with new_because, listing
+      in not_duplicate_of any known fingerprint that looks similar.
+    validation: The checker accounts for every lesson and refuses an unexplained near-duplicate fingerprint.
+    write_back: lessons/classified.jsonl; facts written to their recorded_in location.
+    common_mistakes:
+      - Inventing a new fingerprint for a defect already in the registry. The recurrence count then never moves.
+      - Filing a defect as a fact because the fix is not obvious. Hard to fix is still a defect.
+      - Targeting the symptom (the run that failed) instead of the procedure step or tool that let it fail.
+    gate:
+      kind: deterministic
+      check: python -m agentco_harness.lesson_triage check-classified lessons
+  - step: 3
+    name: review
+    role: reviewer
+    purpose: >
+      Catch the classification that escapes the checker: a defect called a
+      fact or noise, or a defect pinned on the wrong target.
+    entry_check: Step 2 is done with its gate passed.
+    inputs: lessons/lessons.jsonl and lessons/classified.jsonl.
+    definition_of_done: >
+      Every fact and noise row was read against its lesson's text, and every
+      defect's target was checked against the lesson. Corrections are made in
+      classified.jsonl and step 2's gate re-runs.
+    validation: >
+      No lesson that describes something going wrong in a procedure or a tool
+      is typed fact or noise.
+    write_back: Corrections into lessons/classified.jsonl, each with a one-line reason.
+    common_mistakes:
+      - Reviewing only the defects. The lessons that disappear are the ones typed fact or noise.
+    gate:
+      kind: judged
+      check: >
+        Every lesson describing a failure of a procedure or tool is typed defect
+        and targets that procedure step or tool, not the run where it showed.
+      judge_route: distinct-from-executor
+  - step: 4
+    name: dispose
+    role: triager
+    purpose: >
+      Let the registry decide whether each defect is new, still open, or back
+      after a remedy, and record the sighting.
+    entry_check: Step 3 is done with its gate passed.
+    inputs: lessons/classified.jsonl and the registry.
+    definition_of_done: >
+      `python -m agentco_harness.lesson_triage dispose lessons` has run;
+      lessons/defects.json and lessons/outcome are as it wrote them, and the
+      registry records each new or reopened fingerprint as open.
+    validation: Re-computing the disposition from the registry gives exactly the files written.
+    write_back: lessons/defects.json (the run's `defects` output), lessons/outcome, registry events.
+    common_mistakes:
+      - Editing defects.json by hand to steer a defect away from the regression path.
+    gate:
+      kind: deterministic
+      check: python -m agentco_harness.lesson_triage check-disposed lessons
+  - step: 5
+    name: report
+    role: triager
+    purpose: Publish the two numbers that say whether the loop works.
+    entry_check: Step 4 is done with its gate passed.
+    inputs: The registry.
+    definition_of_done: >
+      lessons/metrics.json holds, per fingerprint and in total, hours from
+      opened to fixed and returns after a fix. The run finishes with the
+      outcome in lessons/outcome.
+    validation: metrics.json equals what the registry gives now.
+    write_back: lessons/metrics.json (the run's `metrics` output), quoted in the scope's close report.
+    gate:
+      kind: deterministic
+      check: python -m agentco_harness.lesson_triage check-report lessons
+author: operator
+author_kind: human
+proposals: []

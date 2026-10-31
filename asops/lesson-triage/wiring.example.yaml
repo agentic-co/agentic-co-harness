@@ -1,0 +1,28 @@
+# How a piece of work wires lesson triage in, so it cannot be skipped. Two
+# lines on the procedure that fans the work out, and one `requires` on the
+# step that closes it. Ids here are examples; only lesson-triage is real.
+#
+# On the procedure that fans out (asop-spec >= 0.5.0):
+handoffs:
+  - id: build-each-task
+    to: {asop_id: build, versions: ">=1"}
+    on_outcomes: [PLANNED]
+    cardinality: many
+    subject_from: {output: plan, array: tasks, id_field: id}
+    inputs: {task_id: $subject, epic: $run.inputs.epic}
+  - id: triage-lessons                  # a join: filed once, when every
+    to: {asop_id: lesson-triage, versions: ">=1"}   # build it filed is done
+    on_outcomes: [PLANNED]
+    after: [build-each-task]
+    inputs: {scope: $run.inputs.epic, lessons_source: $run.inputs.lessons_source}
+  - id: close-epic
+    to: {asop_id: close-epic, versions: ">=1"}
+    on_outcomes: [PLANNED]
+    after: [build-each-task]
+    inputs: {epic: $run.inputs.epic}
+---
+# On the procedure that closes the work. The close cannot start until the
+# scope's triage run is done; it does not wait for the fixes, which are
+# their own runs with their own owners.
+requires:
+  - {kind: run_done, asop_id: lesson-triage}
