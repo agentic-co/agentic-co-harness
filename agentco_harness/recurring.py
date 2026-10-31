@@ -34,7 +34,7 @@ days) invisible. `agentco schedules audit` is the query that reads them.
 
 from __future__ import annotations
 
-import fcntl
+from agentco_harness.filelock import lock_exclusive, unlock
 import json
 import os
 import re
@@ -137,11 +137,11 @@ class Recurring:
     @contextmanager
     def _locked(self):
         with open(self._lock_path, "w") as lock_file:
-            fcntl.flock(lock_file, fcntl.LOCK_EX)
+            lock_exclusive(lock_file)
             try:
                 yield
             finally:
-                fcntl.flock(lock_file, fcntl.LOCK_UN)
+                unlock(lock_file)
 
     def _read_all(self) -> list[RecurringDef]:
         defs = []

@@ -44,7 +44,7 @@ needs to change when the store does.
 
 from __future__ import annotations
 
-import fcntl
+from agentco_harness.filelock import lock_exclusive, unlock
 import hashlib
 import json
 import os
@@ -360,11 +360,11 @@ def _store_lock(path: Path):
     """The same advisory lock ``Beads._locked`` takes, on the same file."""
     lock_path = path.with_suffix(path.suffix + ".lock")
     with open(lock_path, "w") as lock_file:
-        fcntl.flock(lock_file, fcntl.LOCK_EX)
+        lock_exclusive(lock_file)
         try:
             yield
         finally:
-            fcntl.flock(lock_file, fcntl.LOCK_UN)
+            unlock(lock_file)
 
 
 def _backfill_locked(path: Path, report: BackfillReport) -> BackfillReport:

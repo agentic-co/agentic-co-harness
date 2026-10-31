@@ -10,7 +10,7 @@ from asop import gates as _asop_gates
 
 from . import declarations
 
-import fcntl
+from agentco_harness.filelock import lock_exclusive, unlock
 import hashlib
 import json
 import os
@@ -1245,11 +1245,11 @@ class Beads:
     def _locked(self):
         """Exclusive advisory lock guarding read-modify-write cycles."""
         with open(self._lock_path, "w") as lock_file:
-            fcntl.flock(lock_file, fcntl.LOCK_EX)
+            lock_exclusive(lock_file)
             try:
                 yield
             finally:
-                fcntl.flock(lock_file, fcntl.LOCK_UN)
+                unlock(lock_file)
 
     def _read_all(self) -> list[Task]:
         """Read all tasks from file.

@@ -22,7 +22,7 @@ account beyond the agent CLI you already use.
 
 | Need | Check |
 |---|---|
-| Linux, macOS, or WSL2 on Windows | Native Windows fails at import (the store uses `fcntl`). Use WSL2. |
+| Linux, macOS, or WSL2 on Windows | Native Windows no longer fails at import: file locks go through `agentco_harness/filelock.py` (`msvcrt` there). It is not tested in CI, so WSL2 stays the supported path. |
 | Python 3.11 or newer | `python3 --version` |
 | `uv` | `uv --version` (install below) |
 | `git` | `git --version` (the install fetches this repository) |
@@ -152,7 +152,7 @@ metadata-only export: [`docs/audit.md`](audit.md).
 | Symptom | Cause and fix |
 |---|---|
 | `agentic-co: command not found` | `~/.local/bin` is not on `PATH`: `export PATH="$HOME/.local/bin:$PATH"`. |
-| `ModuleNotFoundError: fcntl` at startup | Native Windows. Run it inside WSL2. |
+| `ModuleNotFoundError: fcntl` at startup | A version before the portable lock. Upgrade, or run it inside WSL2. |
 | Python is older than 3.11 | `uv` can fetch one: `uv python install 3.12`, then reinstall. Or use a newer system Python. |
 | The install cannot reach `github.com` | Network or proxy policy. Nothing else here works around it; carry a built wheel to the machine instead (`uv build --wheel` from a clone). |
 | `claude binary 'claude' not found on PATH` | Claude Code is not installed or not on `PATH` for the shell that runs `agentic-co`. |
