@@ -24,8 +24,13 @@ dependencies = [
 lm = [
     "dspy-ai>=3.0,<4.0",
 ]
+# The person's partition (agentco_harness/partition.py): signs answers to the
+# hub's human gates. Optional: a node that never answers a gate needs no
+# signing key and no crypto library.
+partition = ["cryptography>=42"]
 dev = [
     "pytest>=8.0",
+    "cryptography>=42",
     "pytest-asyncio>=0.23",
     # DSPy is optional AT RUNTIME and required AT TEST TIME: `tests/conftest.py`
     # builds the fake LM the whole suite runs against out of `dspy.utils.dummies`,

@@ -54,7 +54,7 @@ and ``runs.jsonl``.
 
 from __future__ import annotations
 
-import fcntl
+from agentco_harness.filelock import lock_exclusive, unlock
 import json
 import os
 import sys
@@ -130,11 +130,11 @@ def _locked(path: Path):
     path.parent.mkdir(parents=True, exist_ok=True)
     lock_path = path.with_suffix(path.suffix + ".lock")
     with open(lock_path, "w") as lock_file:
-        fcntl.flock(lock_file, fcntl.LOCK_EX)
+        lock_exclusive(lock_file)
         try:
             yield
         finally:
-            fcntl.flock(lock_file, fcntl.LOCK_UN)
+            unlock(lock_file)
 
 
 def read_ledger(tasks_path: str | Path) -> list[dict]:
