@@ -25,7 +25,7 @@ lm = [
 [package.metadata]
 requires-dist = [
     { name = "agentco-harness", extras = ["lm"], marker = "extra == 'dev'" },
-    { name = "asop-spec", specifier = ">=0.4.1" },
+    { name = "asop-spec", specifier = ">=0.6.1,<1" },
     { name = "click", specifier = ">=8.0" },
     { name = "dspy-ai", marker = "extra == 'lm'", specifier = ">=3.0,<4.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
@@ -198,11 +198,11 @@ wheels = [
 
 [[package]]
 name = "asop-spec"
-version = "0.4.1"
+version = "0.6.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e5/11/f8217fd314209ea02f5fd5cdde1cd81ee477c4764a5de00276f950157807/asop_spec-0.4.1.tar.gz", hash = "sha256:0c59a188c033c7a6c8c93e0a15aa63a91efb3867e30f39ba24f2c00eb664eb07", size = 105309, upload-time = "2026-10-10T17:39:19.012Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/90/b7/4234aa0bb66e11547099650444eee9e84604f3f16a9be7fb0d2c19810bb5/asop_spec-0.6.1.tar.gz", hash = "sha256:67e16551d2e73ff08f7cc8f9cc5fe60135af8c3634c8a7ea85815bf42b302b3c", size = 245625, upload-time = "2026-10-19T00:01:46.565Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/26/fd/1370785c49258f64a92396704795b878a9b110260c72d1bdfcc005c99aeb/asop_spec-0.4.1-py3-none-any.whl", hash = "sha256:f49435966a95be3073bafcb0a9c2c18c9b6b1d2c6ad8d11761aa622a175f898a", size = 84203, upload-time = "2026-10-10T17:39:20.332Z" },
+    { url = "https://files.pythonhosted.org/packages/41/8d/831660f11f265922e0abcbd294718b7949c83098d69440e43cc0f8a4680f/asop_spec-0.6.1-py3-none-any.whl", hash = "sha256:167cecb876a151af48b1d1e93a2dc475a63b787597888195c0f5ecbd19fafb44", size = 168342, upload-time = "2026-10-19T00:01:45.257Z" },
 ]
 
 [[package]]
