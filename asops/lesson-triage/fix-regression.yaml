@@ -1,0 +1,117 @@
+# A defect that came back after it was marked fixed or mitigated. The first
+# remedy did not hold, so another of the same kind is not the answer: a
+# person decides the approach, and "fixed" now needs a structural change.
+asop_id: fix-regression
+version: 1
+title: Fix a defect that came back
+status: draft
+task_type: defect-regression
+purpose: >
+  Find why the earlier remedy did not hold, and replace it with a change to
+  the procedure or tool's structure, or a person's decision to retire it.
+trigger: A lesson-triage run disposed a fingerprint as reopened.
+inputs:
+  - name: fingerprint
+    description: the defect's stable id in the recurrence registry
+  - name: target
+    description: asop:<id>#<step> or tool:<path>
+  - name: lessons
+    description: comma-separated ids of the lessons that reported it this time
+  - name: scope
+    description: the scope whose triage filed this run
+  - name: prior_status
+    description: what the registry said before this sighting (fixed, mitigated or retired)
+  - name: occurrences
+    description: sightings so far, this one included
+outcomes: [FIXED, MITIGATED, RETIRED]
+roles:
+  implementer: {kind: agent}
+  validator: {kind: agent}
+  owner: {kind: human}
+constraints:
+  - distinct: [implementer, validator]
+steps:
+  - step: 1
+    name: history
+    role: implementer
+    purpose: Explain why the previous remedy did not hold.
+    entry_check: The registry's events for the fingerprint, and the earlier fix's record, are read.
+    inputs: fingerprint, prior_status, occurrences, lessons.
+    definition_of_done: >
+      fix/history.md says what the earlier remedy changed, what its check
+      covered (or that it had none), and how the defect got past it this time,
+      ending with a proposed structural change. fix/scope holds the scope.
+    validation: The history names the earlier remedy and the gap it left.
+    write_back: fix/history.md.
+    gate:
+      kind: deterministic
+      check: test -s fix/history.md && test -s fix/scope
+  - step: 2
+    name: decide
+    role: owner
+    purpose: A person chooses the approach, since the last one did not hold.
+    entry_check: Step 1 is done.
+    inputs: fix/history.md.
+    definition_of_done: >
+      The owner approved a structural change, chose a different one, or
+      retired the target (the run then ends RETIRED, with fix.json status
+      wont_fix and the owner's reason).
+    validation: The decision is recorded with the owner's identity.
+    write_back: The decision appended to fix/history.md.
+    gate:
+      kind: human
+      check: The owner approved an approach, or retired the target with a reason.
+      verifier: role:owner
+      max_park_seconds: 259200
+      on_timeout: escalate
+      escalate_to: role:owner
+  - step: 3
+    name: fix
+    role: implementer
+    purpose: Make the approved structural change, with a check that would catch the defect again.
+    entry_check: Step 2 approved a change.
+    inputs: fix/history.md and the target.
+    definition_of_done: >
+      fix/fix.json is as in fix-defect, and for status fixed also carries
+      structural: true and structural_change describing it.
+    validation: The check passes on the fix and fails on base; the change is structural.
+    write_back: The change, committed; fix/fix.json.
+    common_mistakes:
+      - Adding a second lint beside the one that did not hold.
+    gate:
+      kind: deterministic
+      check: python -m agentco_harness.lesson_triage check-fix fix --verify-red --structural --allow-retire
+  - step: 4
+    name: validate
+    role: validator
+    purpose: Confirm the change closes the gap history.md describes.
+    entry_check: Step 3 is done with its gate passed.
+    inputs: fix/history.md, the diff, fix/fix.json.
+    definition_of_done: >
+      Every route the defect has taken, in this sighting and earlier ones, is
+      blocked by the change or caught by the check.
+    validation: Each sighting's lesson would have been prevented or caught.
+    write_back: The validation note on the run.
+    gate:
+      kind: judged
+      check: >
+        Every recorded sighting of the fingerprint would have been prevented or
+        caught by the change, not only this one.
+      judge_route: distinct-from-executor
+  - step: 5
+    name: record
+    role: implementer
+    purpose: Write the result where the next triage will read it.
+    entry_check: Step 4 is done with its gate passed, or step 2 retired the target.
+    inputs: fix/fix.json.
+    definition_of_done: >
+      `python -m agentco_harness.lesson_triage record-fix fix` has run; the
+      run finishes FIXED, MITIGATED or RETIRED, matching fix.json.
+    validation: The registry's latest status for the fingerprint matches fix.json.
+    write_back: One registry event.
+    gate:
+      kind: deterministic
+      check: python -m agentco_harness.lesson_triage check-recorded fix
+author: operator
+author_kind: human
+proposals: []

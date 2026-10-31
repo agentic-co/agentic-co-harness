@@ -1,0 +1,97 @@
+# Fix one defect a lesson-triage run found for the first time. "Fixed" is
+# earned by a regression check that fails on the base and passes on the fix;
+# without one the run ends MITIGATED, and a later sighting reopens it.
+asop_id: fix-defect
+version: 1
+title: Fix a defect found by lesson triage
+status: draft
+task_type: defect-fix
+purpose: >
+  Remove one defect at the procedure step or tool it lives in, with a check
+  that would fail if it came back.
+trigger: A lesson-triage run disposed a fingerprint as new.
+inputs:
+  - name: fingerprint
+    description: the defect's stable id in the recurrence registry
+  - name: target
+    description: asop:<id>#<step> or tool:<path>
+  - name: lessons
+    description: comma-separated ids of the lessons that reported it
+  - name: scope
+    description: the scope whose triage filed this run
+outcomes: [FIXED, MITIGATED]
+roles:
+  implementer: {kind: agent}
+  validator: {kind: agent}
+constraints:
+  - distinct: [implementer, validator]
+steps:
+  - step: 1
+    name: reproduce
+    role: implementer
+    purpose: Write the check that fails while the defect is present.
+    entry_check: The lessons named in the inputs are read, and the target exists.
+    inputs: fingerprint, target, lessons.
+    definition_of_done: >
+      fix/scope holds the scope; fix/fix.json names fingerprint, base (the
+      commit before any fix), check (a command) and check_files (the files the
+      check adds). If no check can be written, no_check_reason says why.
+    validation: The check fails on the tree as it is now.
+    write_back: fix/fix.json and the check's files.
+    common_mistakes:
+      - A check that tests the new code path rather than the failure. It passes before the fix too.
+    gate:
+      kind: deterministic
+      check: python -m agentco_harness.lesson_triage check-red fix
+  - step: 2
+    name: fix
+    role: implementer
+    purpose: Change the target so the check passes.
+    entry_check: Step 1 is done with its gate passed.
+    inputs: fix/fix.json and the target.
+    definition_of_done: >
+      fix.json status is fixed (the check passes now and fails on base with
+      its files laid over it) or mitigated (no check, or the check cannot be
+      made to tell the two apart).
+    validation: The checker re-runs the check on the fix and on base, in a scratch worktree.
+    write_back: The change, committed; fix/fix.json updated with status.
+    common_mistakes:
+      - A text lint or a warning in a prompt, recorded as fixed. That is a mitigation.
+    gate:
+      kind: deterministic
+      check: python -m agentco_harness.lesson_triage check-fix fix --verify-red
+  - step: 3
+    name: validate
+    role: validator
+    purpose: Confirm the fix removes the cause, not one appearance of it.
+    entry_check: Step 2 is done with its gate passed.
+    inputs: The lessons, the diff, fix/fix.json.
+    definition_of_done: >
+      The validator traced each lesson to the cause the check covers. When the
+      target is an ASOP step, a proposal adding the defect to that step's
+      common_mistakes is drafted (`propose`, never an activation).
+    validation: Each reported lesson would have been prevented or caught by the change.
+    write_back: The validation note on the run; the common_mistakes proposal on the target ASOP.
+    gate:
+      kind: judged
+      check: >
+        Every lesson in the inputs would have been prevented or caught by the
+        change, and an ASOP target has a common_mistakes proposal drafted.
+      judge_route: distinct-from-executor
+  - step: 4
+    name: record
+    role: implementer
+    purpose: Write the result where the next triage will read it.
+    entry_check: Step 3 is done with its gate passed.
+    inputs: fix/fix.json.
+    definition_of_done: >
+      `python -m agentco_harness.lesson_triage record-fix fix` has run; the
+      run finishes FIXED or MITIGATED, matching fix.json.
+    validation: The registry's latest status for the fingerprint matches fix.json.
+    write_back: One registry event.
+    gate:
+      kind: deterministic
+      check: python -m agentco_harness.lesson_triage check-recorded fix
+author: operator
+author_kind: human
+proposals: []
