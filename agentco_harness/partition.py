@@ -20,9 +20,9 @@ back. A held answer with no matching entry is one this partition never sent,
 and is shown as such with no confirm.
 
 **The contract** (`asop.answer/1`) is the hub's `docs/envelope.md`. The
-canonical JSON and the signed bytes are re-implemented here because the
-installed asop-spec predates its `canonical_json`; `tests/test_partition.py`
-checks them byte for byte against the hub's published vectors
+canonical JSON is the spec's own (`asop.manifest.canonical_json`, the function
+the hub signs with), not a copy; `tests/test_partition.py` still checks the
+signed bytes against the hub's published vectors
 (`tests/fixtures/envelope-vectors.json`), so a drift fails CI rather than a
 signature.
 
@@ -42,6 +42,9 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Optional
 
+from asop.chain import ChainContractError
+from asop.manifest import canonical_json as _spec_canonical_json
+
 from .hub_client import HubClient, HubRefusal
 
 TYPE = "asop.answer/1"
@@ -59,23 +62,12 @@ class PartitionError(Exception):
 
 
 def canonical_json(value: Any) -> bytes:
-    """ASOP.md §3.10: keys by code point, no whitespace, UTF-8 unescaped except
-    `"`, `\\` and controls, integers only. The same function asop-spec 0.6
-    exports as `asop.manifest.canonical_json`."""
-    def check(v: Any) -> None:
-        if isinstance(v, float):
-            raise PartitionError("an envelope may not contain a float")
-        if isinstance(v, dict):
-            for k, x in v.items():
-                if not isinstance(k, str):
-                    raise PartitionError("an envelope's keys are strings")
-                check(x)
-        elif isinstance(v, (list, tuple)):
-            for x in v:
-                check(x)
-    check(value)
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
-                      allow_nan=False).encode("utf-8")
+    """ASOP.md §3.10, from the spec itself. A float, a non-string key or a lone
+    surrogate is refused, as a `PartitionError` here."""
+    try:
+        return _spec_canonical_json(value)
+    except ChainContractError as exc:
+        raise PartitionError(str(exc)) from exc
 
 
 def signed_bytes(payload: dict) -> bytes:
