@@ -313,7 +313,7 @@ def test_work_verbs_are_allowed_by_default(store):
     assert [l["verb"] for l in lines(box)] == ["work_report", "attest"]
 
 
-@pytest.mark.parametrize("verb", ["sop_revise", "sop_activate"])
+@pytest.mark.parametrize("verb", ["sop_revise"])
 def test_knowledge_verbs_are_refused_unless_enabled(store, verb):
     box = make(store)
     with pytest.raises(OutboxRefused) as ei:
@@ -344,7 +344,21 @@ def test_disabled_class_is_refused_before_the_clean_room(tmp_path):
 
 def test_every_hub_verb_has_a_class():
     assert set(outbox.VERB_CLASS) == set(HUB_PUSH_VERBS)
-    assert set(outbox.VERB_CLASS.values()) <= set(outbox.CLASSES)
+    assert set(outbox.VERB_CLASS.values()) <= set(outbox.CLASSES) | {outbox.CLASS_NEVER}
+
+
+@pytest.mark.parametrize("enabled", [["work"], ["work", "knowledge"], ["knowledge"]])
+def test_sop_activate_is_never_sent_whatever_is_enabled(store, enabled):
+    # Hub ADR 0015 s1: activation is the owner's act; the harness never sends it.
+    box = make(store, enabled_classes=enabled)
+    with pytest.raises(OutboxRefused) as ei:
+        box.push("sop_activate", {"sopId": "s-1", "version": 2})
+    assert ei.value.code == outbox.CODE_VERB_NEVER
+    assert lines(box) == []
+
+
+def test_the_never_class_cannot_be_enabled():
+    assert outbox.CLASS_NEVER not in outbox.CLASSES
 
 
 def test_unclassified_future_verb_is_refused_not_defaulted_to_work(store, monkeypatch):
