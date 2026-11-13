@@ -3611,3 +3611,7 @@ def hub_sync(ctx):
 from .partition import partition_group  # noqa: E402
 
 main.add_command(partition_group)
+
+from .connections import build_connect_group  # noqa: E402
+
+main.add_command(build_connect_group())
