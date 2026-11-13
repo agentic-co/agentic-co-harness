@@ -149,12 +149,30 @@ class EgressConfig:
     routes_path: str | None = None
 
 
+@dataclass
+class IdentityConfig:
+    """Which machine-level connections this instance may use (docs/connections.md).
+
+    Every field holds connection NAMES, never credentials. When this section is
+    present the executor takes its child credentials from these connections
+    only, and a bead is refused (`identity_unavailable`) if one cannot be used.
+    """
+
+    name: str = ""
+    claude: str | None = None       # a claude_code connection
+    github: str | None = None       # a github connection
+    completions: list[str] = field(default_factory=list)  # openai_compat connections
+    agy: str | None = None          # the machine's single agy connection
+
+
+CONSUMED_IDENTITY_KEYS = {"name", "claude", "github", "completions", "agy"}
+
 # Agent settings keys that are actually consumed by the codebase.
 # Anything else in an agent's config block triggers a loud warning at load.
 CONSUMED_AGENT_KEYS = {"model", "use_claude_code", "context", "description"}
 
 # Top-level config keys the loader understands.
-KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress", "hub", "completion", "extensions", "extension_settings", "asop_router", "intake"}
+KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress", "hub", "completion", "extensions", "extension_settings", "asop_router", "intake", "identity"}
 
 #: Blocks the v1 hub consumed that this runtime deliberately does not. They
 #: configured pipelines that belonged to one operator — a feeds ingester
@@ -517,6 +535,8 @@ class Config:
     #: rest, so `lmstudio` works against a local server with no config at all.
     #: Shape: {name: {base_url, model, api_key_env, requires_key}}.
     completion: dict = field(default_factory=dict)
+    #: Per-instance identity. None = no isolation (the pre-connections behaviour).
+    identity: IdentityConfig | None = None
     #: Modules imported before anything dispatches, so their registrations
     #: (cycle handlers, completion hooks, source factories, executor backends)
     #: exist by the time the cycle looks for them. A declared module that will
@@ -719,6 +739,22 @@ class Config:
                 _warn_unknown_nested(f"completion.{name}", settings or {},
                                      {"base_url", "model", "api_key_env", "requires_key"}, path)
             config.completion = {k: dict(v or {}) for k, v in block.items()}
+
+        if "identity" in data:
+            ident = data["identity"] or {}
+            if not isinstance(ident, dict):
+                raise ValueError("`identity:` must be a mapping of role to connection name")
+            _warn_unknown_nested("identity", ident, CONSUMED_IDENTITY_KEYS, path)
+            comps = ident.get("completions") or []
+            if not isinstance(comps, list):
+                raise ValueError("`identity.completions:` must be a list of connection names")
+            config.identity = IdentityConfig(
+                name=str(ident.get("name") or ""),
+                claude=ident.get("claude") or None,
+                github=ident.get("github") or None,
+                completions=[str(c) for c in comps],
+                agy=ident.get("agy") or None,
+            )
 
         if "egress" in data:
             egress = data["egress"] or {}

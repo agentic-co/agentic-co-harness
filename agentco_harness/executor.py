@@ -251,9 +251,101 @@ def _unattended_api_key(env_file: Path | None = None) -> str | None:
     return None
 
 
+# ---- per-instance identity (docs/connections.md) ----------------------------
+# When the node declares `identity:`, child credentials come ONLY from the
+# named connections: the `_clean_env()` allowlist (never os.environ), minus the
+# connection's strip keys, plus its child_env. `_unattended_api_key` and
+# ~/.claude/.env are never consulted, and a connection that cannot be used
+# raises `IdentityUnavailable` rather than falling back to anything ambient.
+IDENTITY_UNAVAILABLE = "identity_unavailable"
+_ACTIVE_IDENTITY = None  # config.IdentityConfig | None, set by the Orchestrator
+
+
+class IdentityUnavailable(Exception):
+    """A connection the instance's identity names cannot be used. No secrets in the text."""
+
+    code = IDENTITY_UNAVAILABLE
+
+
+def configure_identity(identity) -> None:
+    """Install (or, with None, clear) the instance identity for every spawn."""
+    global _ACTIVE_IDENTITY
+    _ACTIVE_IDENTITY = identity
+
+
+def _identity_conn(name: str | None, kind: str, role: str):
+    from . import connections
+
+    if not name:
+        raise IdentityUnavailable(f"identity.{role} is not set")
+    try:
+        conn = connections.load(name)
+    except connections.ConnectionError_ as e:
+        raise IdentityUnavailable(f"identity.{role}: {e}") from None
+    if conn.kind != kind:
+        raise IdentityUnavailable(
+            f"identity.{role}: connection {name!r} is {conn.kind}, expected {kind}")
+    return conn
+
+
+def _identity_apply(env: dict, conn) -> None:
+    from . import connections
+
+    try:
+        add = connections.child_env(conn)
+    except connections.ConnectionError_ as e:
+        raise IdentityUnavailable(f"connection {conn.name!r}: {e}") from None
+    for k in connections.strip_keys(conn):
+        env.pop(k, None)
+    env.update(add)
+
+
+def _identity_env(identity, *, claude: bool) -> dict[str, str]:
+    env = _clean_env()
+    if claude:
+        _identity_apply(env, _identity_conn(identity.claude, "claude_code", "claude"))
+    else:
+        env.pop("CLAUDE_CONFIG_DIR", None)  # agy gets the github env and nothing else
+        if identity.agy:
+            _identity_conn(identity.agy, "agy", "agy")
+    if identity.github:
+        _identity_apply(env, _identity_conn(identity.github, "github", "github"))
+    return env
+
+
+def check_identity(identity) -> None:
+    """Prove every named connection is usable; raise IdentityUnavailable if not.
+
+    Called by the orchestrator BEFORE any dispatch, so a broken identity is a
+    recorded refusal rather than a failed attempt."""
+    from . import connections
+
+    _identity_env(identity, claude=True)
+    if identity.agy:
+        _identity_env(identity, claude=False)
+    for name in identity.completions:
+        conn = _identity_conn(name, "openai_compat", "completions")
+        try:
+            connections.provider_env(conn)
+        except connections.ConnectionError_ as e:
+            raise IdentityUnavailable(f"identity.completions: {e}") from None
+
+
+def _identity_failure(e: Exception, started: float, label: str = "claude") -> "ExecResult":
+    return ExecResult(
+        success=False, output="", exit_code=None, duration_seconds=time.monotonic() - started,
+        error=f"{IDENTITY_UNAVAILABLE}: {e} — refusing to start the {label} subprocess",
+    )
+
+
 def _claude_env() -> dict[str, str]:
     """Env for a headless claude subprocess: cleaned, plus the unattended
-    billing key when the principal has provisioned one (see above)."""
+    billing key when the principal has provisioned one (see above).
+
+    With an instance identity configured, the connections are the ONLY source
+    of credentials: no `_unattended_api_key`, no ~/.claude/.env."""
+    if _ACTIVE_IDENTITY is not None:
+        return _identity_env(_ACTIVE_IDENTITY, claude=True)
     env = _clean_env()
     key = _unattended_api_key()
     if key:
@@ -760,7 +852,10 @@ def _run_proc_inner(
     watchdog can find the child's transcript.
     """
     if env is None:
-        env = _claude_env()
+        try:
+            env = _claude_env()
+        except IdentityUnavailable as e:
+            return _identity_failure(e, time.monotonic(), label)
 
     # Pin the child's session id so the watchdog can find its transcript, the
     # only liveness signal this path has. Fresh per ATTEMPT, never reused: the
@@ -966,9 +1061,14 @@ def run_agy_task(
 
     start = time.time()
     try:
+        agy_env = (_identity_env(_ACTIVE_IDENTITY, claude=False)
+                   if _ACTIVE_IDENTITY is not None else _clean_env())
+    except IdentityUnavailable as e:
+        return _identity_failure(e, time.monotonic(), "agy")
+    try:
         proc = subprocess.run(
             cmd, capture_output=True, text=True, timeout=timeout,
-            env=_clean_env(), cwd=cwd,
+            env=agy_env, cwd=cwd,
         )
     except FileNotFoundError:
         return ExecResult(
@@ -1043,6 +1143,12 @@ def _run_forge_task_inner(
     codex_bin: str,
     cwd: str | None,
 ) -> ExecResult:
+    if _ACTIVE_IDENTITY is not None:
+        # Not identity-wired yet: codex would run with the machine's default
+        # git/ssh identity and its own login. Refuse rather than run ambient.
+        return _identity_failure(
+            IdentityUnavailable("the forge/codex route is not identity-wired"),
+            time.monotonic(), "codex")
     cmd = [_resolve_codex_bin(codex_bin), "exec", "--skip-git-repo-check"]
     if model:
         cmd += ["--model", model]
@@ -1403,6 +1509,12 @@ def run_zai_store_backed_task(
     # retry and the idle watchdog apply identically to the z.ai path. _zai_env
     # handles key resolution (raising loudly on a missing key); label='z.ai'
     # keeps the distinct prefixes.
+    if _ACTIVE_IDENTITY is not None:
+        # Not identity-wired yet: the z.ai child is a `claude` CLI that would
+        # read the machine's default config dir and git/ssh identity.
+        return _identity_failure(
+            IdentityUnavailable("the z.ai route is not identity-wired"),
+            time.monotonic(), "z.ai")
     env = _zai_env(zai_api_key)
     cmd = _base_cmd(claude_bin, max_turns, _zai_model(model))
     return _run_proc(
