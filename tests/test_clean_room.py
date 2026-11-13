@@ -191,3 +191,75 @@ def test_lists_loaded_from_store_dir(tmp_path, monkeypatch):
     with pytest.raises(CleanRoomRefused):
         assert_clean("about quillfeather", None, store_dir=tmp_path)
     assert_clean("about nothing in particular", None, store_dir=tmp_path)
+
+
+# ---------------------------------------------------------------- review fixes (#24)
+
+
+@pytest.mark.parametrize("disguised", [
+    "Quill​feather",                 # zero-width space inside the name
+    "Quill­feather",                 # soft hyphen (format character)
+    "Quillfеather",                  # Cyrillic small ie for 'e'
+    "Quillfeаther",             # Cyrillic small a for 'a'
+    "Ｑｕｉｌｌｆｅａｔｈｅｒ",  # fullwidth
+    "QUILLFEATHER",
+])
+def test_disguised_names_are_caught(disguised):
+    assert clean_room.CODE_INTERNAL_NAME in codes(check({"t": f"from {disguised} today"}, LISTS))
+
+
+def test_underscore_is_a_boundary_for_identifiers():
+    assert clean_room.CODE_INTERNAL_NAME in codes(check("table quillfeather_prod", LISTS))
+    assert clean_room.CODE_INTERNAL_NAME in codes(check("env PROD_QUILLFEATHER", LISTS))
+
+
+def test_secret_in_a_dict_key_never_reaches_the_refusal():
+    secret = "ghp_" + "KeYsEcReT" * 4
+    with pytest.raises(CleanRoomRefused) as ei:
+        assert_clean({secret: "value"}, LISTS)
+    rendered = str(ei.value) + json.dumps([h.as_dict() for h in ei.value.hits])
+    assert secret not in rendered and "KeYsEcReT" not in rendered
+
+
+def test_internal_name_in_a_key_is_not_rendered_in_child_paths():
+    with pytest.raises(CleanRoomRefused) as ei:
+        assert_clean({"Quillfeather": {"deep": "x@example.com"}}, LISTS)
+    rendered = str(ei.value) + json.dumps([h.as_dict() for h in ei.value.hits])
+    assert "quillfeather" not in rendered.lower()
+
+
+@pytest.mark.parametrize("leaf", [b"bytes", {"a", "b"}, object(), 3 + 4j])
+def test_non_json_leaves_are_refused(leaf):
+    assert clean_room.CODE_UNSUPPORTED in codes(check({"x": leaf}, LISTS))
+
+
+def test_non_string_dict_keys_are_refused():
+    assert clean_room.CODE_UNSUPPORTED in codes(check({1: "a"}, LISTS))
+
+
+def test_deep_input_is_a_typed_refusal_not_recursion_error():
+    deep = "leaf"
+    for _ in range(5000):
+        deep = [deep]
+    with pytest.raises(CleanRoomRefused) as ei:
+        assert_clean(deep, LISTS)
+    assert clean_room.CODE_TOO_DEEP in codes(ei.value.hits)
+
+
+def test_cyclic_input_is_a_typed_refusal():
+    a = []
+    a.append(a)
+    with pytest.raises(CleanRoomRefused) as ei:
+        assert_clean({"a": a}, LISTS)
+    assert clean_room.CODE_TOO_DEEP in codes(ei.value.hits)
+
+
+def test_url_userinfo_credentials_are_a_secret():
+    assert clean_room.CODE_SECRET in codes(check("clone https://bot:s3cretpass@git.example.com/r", LISTS))  # leakguard: allow (planted fixture)
+
+
+@pytest.mark.parametrize("key", ["never_leave", "people", "internal_domains"])
+def test_blank_terms_refuse_at_load(tmp_path, key):
+    p = write_lists(tmp_path, {"schemaVersion": 1, "internal_names": ["A"], key: ["   "]})
+    with pytest.raises(CleanRoomUnavailable):
+        load_lists(p)
