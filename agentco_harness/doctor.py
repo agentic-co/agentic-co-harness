@@ -1116,6 +1116,55 @@ def collect(config_path: str) -> DoctorReport:
     except Exception as e:  # noqa: BLE001 — doctor must never crash the CLI
         _warn(f"egress policy check could not run: {e}")
 
+    # (q2) Instance identity (docs/connections.md). No `identity:` is advisory
+    # (INFO, not DEGRADED): a single-instance machine keeps working, and an
+    # advisory must not turn every healthy node's exit code non-zero. A named
+    # connection that is missing, the wrong kind, or has a loose/absent secret
+    # is BROKEN — every bead would be refused `identity_unavailable`. A stale or
+    # absent validation is DEGRADED. The cross-instance overlap check (two
+    # instances sharing a config_dir or ssh_key) is not implemented here.
+    _sec("identity.connections")
+    if config.identity is None:
+        _info(
+            "no `identity:` section — child processes inherit this machine's ambient "
+            "credentials; declare one (docs/connections.md) before running a second instance"
+        )
+    else:
+        from datetime import datetime, timedelta, timezone
+
+        from . import connections as _conns
+
+        ident = config.identity
+        wanted = [("claude", ident.claude, "claude_code"), ("github", ident.github, "github"),
+                  ("agy", ident.agy, "agy")]
+        wanted += [("completions", c, "openai_compat") for c in ident.completions]
+        if not ident.claude:
+            _fail("identity.claude is not set — every claude bead would be refused identity_unavailable")
+        for role, cname, kind in wanted:
+            if not cname:
+                continue
+            try:
+                conn = _conns.load(cname)  # also enforces the 0600 secret mode
+                if conn.kind != kind:
+                    raise _conns.ConnectionError_(f"is {conn.kind}, expected {kind}")
+                _conns.read_secret(conn)
+            except _conns.ConnectionError_ as e:
+                _fail(f"identity.{role} connection {cname!r}: {e}")
+                continue
+            try:
+                when = datetime.strptime(conn.validated_at, "%Y-%m-%dT%H:%M:%SZ").replace(
+                    tzinfo=timezone.utc) if conn.validated_at else None
+            except ValueError:
+                when = None
+            if when is None:
+                _warn(f"identity.{role} connection {cname!r} has never been validated "
+                      f"(run `agentic-co connect test {cname}`)")
+            elif datetime.now(timezone.utc) - when > timedelta(days=30):
+                _warn(f"identity.{role} connection {cname!r} was last validated {when:%Y-%m-%d} "
+                      f"(over 30 days ago; run `agentic-co connect test {cname}`)")
+            else:
+                _ok(f"identity.{role} connection {cname!r} ok (validated {when:%Y-%m-%d})")
+
     # (r) Every agent name sitting in the live queue can actually be dispatched.
     # A bead is runnable if its agent is built-in, a special executor, or
     # declared in config (an externally-executed agent the cycle leaves alone).

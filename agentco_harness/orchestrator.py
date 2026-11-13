@@ -1,5 +1,6 @@
 """Orchestrator - Main loop that ties everything together."""
 
+import contextlib
 import json
 import os
 import tempfile
@@ -534,11 +535,30 @@ class ClaudeAuthOutage(Exception):
     """
 
 
+@contextlib.contextmanager
+def _env_overlay(extra: dict[str, str]):
+    """Put `extra` in os.environ for the duration of the block, then restore it."""
+    saved = {k: os.environ.get(k) for k in extra}
+    os.environ.update(extra)
+    try:
+        yield
+    finally:
+        for k, v in saved.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+
+
 class Orchestrator:
     """Main orchestrator that runs the agent loop."""
 
     def __init__(self, config: Config):
         self.config = config
+        # Instance identity: child credentials come only from the named
+        # connections (None clears it — no identity means today's behaviour).
+        from .executor import configure_identity
+        configure_identity(config.identity)
         if config.humans.escalate_to:
             from . import rca as _rca
             _rca.DEFAULT_ESCALATION_ASSIGNEE = config.humans.escalate_to
@@ -1108,7 +1128,19 @@ class Orchestrator:
         from .completion import ProviderUnconfigured, complete, providers_from_config
 
         timeout, _ = self._resolve_budget(task)
-        providers = providers_from_config(self.config)
+        identity = self.config.identity
+        overlay: dict[str, str] = {}
+        if identity is not None and identity.completions:
+            # The instance's connections replace the config's own provider table.
+            from . import connections
+
+            providers = {}
+            for cname in identity.completions:
+                conn = connections.load(cname)  # _authorize_identity already proved it loads
+                providers[cname] = connections.to_provider(conn)
+                overlay.update(connections.provider_env(conn))
+        else:
+            providers = providers_from_config(self.config)
         provider = providers.get(provider_name)
         if provider is None:
             self.beads.refuse_dispatch(
@@ -1128,7 +1160,7 @@ class Orchestrator:
 
         prompt = task.metadata.get("prompt") or f"{task.title}\n\n{task.description}"
         try:
-            with self._attribution(task, "cycle", model):
+            with self._attribution(task, "cycle", model), _env_overlay(overlay):
                 exec_result = complete(prompt, provider, model=model, timeout=timeout)
         except ProviderUnconfigured as e:
             # Not a failure of the work — a failure of the routing, so a
@@ -1612,6 +1644,8 @@ class Orchestrator:
                 remediation="Send it back through approve(), which clears the flag on promotion.",
             )
             return False
+        if not self._authorize_identity(task):
+            return False
         if task.metadata.get("type") == "verify_child":
             return self._execute_verify_child(task, now=now)
         handler = CYCLE_HANDLERS.get(task.metadata.get("type") or "")
@@ -1705,6 +1739,30 @@ class Orchestrator:
             remediation="Route it to a backend that provides them, or correct the requirement.",
         )
         return False
+
+    def _authorize_identity(self, task: Task) -> bool:
+        """Fail-closed gate: an instance that declares `identity:` dispatches
+        nothing unless every connection it names is usable. Recorded as a
+        refusal (the routing is broken, not the work), before any subprocess."""
+        identity = self.config.identity
+        if identity is None:
+            return True
+        from .executor import IDENTITY_UNAVAILABLE, IdentityUnavailable, check_identity
+
+        try:
+            check_identity(identity)
+        except IdentityUnavailable as e:
+            reason = f"identity unavailable: {e}"
+            print(f"[cycle] REFUSED: {task.id} {reason}")
+            self.beads.refuse_dispatch(
+                task.id,
+                code=IDENTITY_UNAVAILABLE,
+                message=reason,
+                remediation="Fix or re-add the named connection (`agentic-co connect`), "
+                            "then clear the refusal.",
+            )
+            return False
+        return True
 
     def _authorize_egress(self, task: Task, agent: str) -> bool:
         """Gate a cross-vendor dispatch on the bead's data classification.
