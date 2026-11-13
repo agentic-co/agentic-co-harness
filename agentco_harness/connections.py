@@ -395,7 +395,7 @@ def _probe_openai(conn, secret, opener, check) -> ValidationResult:
 
 def _probe_github(conn, runner) -> ValidationResult:
     argv = ["ssh", "-i", _expand(conn.ssh_key), "-o", "IdentitiesOnly=yes", "-o", "IdentityAgent=none",
-            "-o", "BatchMode=yes", "-T", "git@github.com"]
+            "-o", "BatchMode=yes", "-T", "git@github.com"]  # leakguard: allow (public ssh login, not a person)
     env = {k: v for k, v in os.environ.items() if k not in strip_keys(conn)}
     try:
         rc, out, err = runner(argv, env, 30)

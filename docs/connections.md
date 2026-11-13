@@ -40,7 +40,7 @@ it. Each instance's config then names which connections it uses.
     - `agy`: `agy --print "Reply with exactly: OK" --dangerously-skip-permissions --print-timeout 60s`.
     - `openai_compat`: one chat completion with max_tokens 5, using stdlib urllib as `completion.py`
       does. Fall back to GET `/models` only if the owner asks for a no-cost check.
-    - `github`: `ssh -T git@github.com` with the pinned key (exit code 1 plus "Hi <user>!" means ok).
+    - `github`: `ssh -T git@github.com` with the pinned key (exit code 1 plus "Hi <user>!" means ok). <!-- leakguard: allow (public ssh login) -->
       Compare with `expect_github_user` when it is set.
   - `child_env(conn) -> dict[str, str]`: the env ADDITIONS for a subprocess using this connection.
     - `claude_code` + `subscription`: `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_OAUTH_TOKEN`. The caller
