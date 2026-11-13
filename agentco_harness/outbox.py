@@ -90,6 +90,9 @@ MAX_LINE_BYTES = 64 * 1024
 CLASS_WORK = "work"
 CLASS_KNOWLEDGE = "knowledge"
 CLASSES = (CLASS_WORK, CLASS_KNOWLEDGE)
+#: Verbs the harness never sends, whatever is enabled. Not in CLASSES, so no
+#: configuration can turn it on. Hub ADR 0015 s1: activation is the owner's act.
+CLASS_NEVER = "never"
 
 #: Statements about work the harness is already doing are ``work``; anything
 #: that proposes a change to shared procedure or memory is ``knowledge``. A
@@ -103,11 +106,12 @@ VERB_CLASS: dict[str, str] = {
     "attest": CLASS_WORK,
     "adjudicate": CLASS_WORK,
     "sop_revise": CLASS_KNOWLEDGE,
-    "sop_activate": CLASS_KNOWLEDGE,
+    "sop_activate": CLASS_NEVER,
 }
 
 CODE_INVALID = "outbox_line_invalid"
 CODE_CLASS_DISABLED = "outbox_class_disabled"
+CODE_VERB_NEVER = "outbox_verb_never"
 
 DEFAULT_PATH = ".agentco/outbox.jsonl"
 CONSUMED_KEYS = {"enabled_classes", "path", "clean_room_path"}
@@ -212,6 +216,12 @@ class Outbox:
         label = agent_label.strip() if isinstance(agent_label, str) and agent_label.strip() else None
 
         klass = VERB_CLASS.get(verb)
+        if klass == CLASS_NEVER:
+            raise OutboxRefused(
+                CODE_VERB_NEVER,
+                f"{verb!r} is never sent by the harness: activation is the owner's act "
+                f"(hub ADR 0015 s1). Activate on the hub instead.",
+            )
         if klass is None or klass not in self.config.enabled_classes:
             raise OutboxRefused(
                 CODE_CLASS_DISABLED,
