@@ -28,9 +28,25 @@ From the partition's private list file:
   * ``never_leave``: terms that no approval overrides (0006 §3),
   * ``people``: names of people,
   * ``internal_domains``: host suffixes; any host under one is refused.
-List terms match case-insensitively on whole words, with any run of
-whitespace standing for a space. Substring matching would refuse innocent
-English and teach people to switch the check off.
+List terms match on whole words, with any run of whitespace standing for a
+space. Before matching, text is NFKC-normalised, stripped of format
+characters (zero-width spaces, soft hyphens), case-folded and has common
+Cyrillic and Greek look-alike letters mapped to Latin. ``_`` counts as a word
+boundary, so ``name_prod`` and ``PROD_NAME`` are caught. Substring matching
+would refuse innocent English and teach people to switch the check off.
+
+Only JSON-shaped data is judged. A non-JSON leaf (bytes, a set, an object),
+a non-string key, or nesting past ``MAX_DEPTH`` (which a cycle reaches) is a
+hit, not an exception. A key that is itself a hit is never rendered into a
+path; its position stands in for it.
+
+KNOWN LIMITS (the hub's blind validator exists for these)
+--------------------------------------------------------
+* Matches never cross fields: a name split over two values passes.
+* Word order is literal: "Last, First" does not match "First Last".
+* Plurals and glued forms (``NamesApp``) pass; there is no substring mode yet.
+* The look-alike map covers common Cyrillic and Greek letters, not the full
+  Unicode confusables table.
 
 WHERE THE LISTS LIVE
 --------------------
@@ -53,9 +69,10 @@ import ipaddress
 import json
 import os
 import re
+import unicodedata
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Iterator, Optional
+from typing import Any, Optional
 
 LISTS_NAME = "clean-room.json"
 LISTS_ENV = "AGENTCO_CLEAN_ROOM"
@@ -69,6 +86,13 @@ CODE_HOST = "clean_room_host"
 CODE_INTERNAL_NAME = "clean_room_internal_name"
 CODE_NEVER_LEAVE = "clean_room_never_leave"
 CODE_PERSON = "clean_room_person"
+CODE_UNSUPPORTED = "clean_room_unsupported"
+CODE_TOO_DEEP = "clean_room_too_deep"
+
+#: Nesting deeper than this is refused. A real residual is a few levels deep;
+#: anything past this is either an accident or an attempt to make the walk
+#: raise instead of refuse, and a cycle reaches it too.
+MAX_DEPTH = 64
 
 
 class CleanRoomUnavailable(Exception):
@@ -119,18 +143,51 @@ class Lists:
                 for term in terms:
                     out.append((code, rule, _term_pattern(term)))
             for dom in self.internal_domains:
-                d = re.escape(dom.strip().lstrip(".").lower())
+                d = re.escape(_fold(dom.strip().lstrip(".")))
                 out.append((CODE_HOST, "internal_domains",
                             re.compile(rf"(?<![\w.-])(?:[\w-]+\.)*{d}(?![\w-])", re.I)))
             self._compiled["p"] = out
         return self._compiled["p"]
 
 
+# Look-alike letters from other scripts that render as Latin ones. NFKC does
+# not fold these (they are distinct letters, not compatibility forms), so a
+# Cyrillic "е" inside a listed name would otherwise walk straight past it.
+# Applied after casefold, so only lower-case forms are needed.
+_CONFUSABLES = str.maketrans({
+    "а": "a", "в": "b", "е": "e", "ё": "e", "к": "k", "м": "m", "н": "h", "о": "o",
+    "р": "p", "с": "c", "т": "t", "у": "y", "х": "x", "ѕ": "s", "і": "i", "ї": "i",
+    "ј": "j", "ԁ": "d", "ԛ": "q", "ԝ": "w", "ɡ": "g", "ⅼ": "l", "ı": "i",
+    "α": "a", "β": "b", "ε": "e", "η": "n", "ι": "i", "κ": "k", "μ": "u", "ν": "v",
+    "ο": "o", "ρ": "p", "τ": "t", "υ": "u", "χ": "x", "ω": "w",
+})
+
+
+def _strip_format(text: str) -> str:
+    """NFKC, then drop format characters (zero-width spaces, soft hyphens,
+    direction marks). Case is kept: secret shapes are case-sensitive."""
+    t = unicodedata.normalize("NFKC", text)
+    return "".join(ch for ch in t if unicodedata.category(ch) != "Cf")
+
+
+def _fold(text: str) -> str:
+    """What list terms are matched against: format-stripped, case-folded and
+    with cross-script look-alikes mapped to Latin."""
+    return _strip_format(text).casefold().translate(_CONFUSABLES)
+
+
+# A term boundary is anything that is not a letter or digit. `_` counts as a
+# boundary on purpose: identifiers (`name_prod`, `PROD_NAME`) are the likeliest
+# shape a name leaks in.
+_B_BEFORE = r"(?<![^\W_])"
+_B_AFTER = r"(?![^\W_])"
+
+
 def _term_pattern(term: str) -> re.Pattern:
-    words = [re.escape(w) for w in term.split()]
+    words = [re.escape(w) for w in _fold(term).split()]
     if not words:
         raise CleanRoomUnavailable("clean-room list contains an empty term")
-    return re.compile(r"(?<!\w)" + r"\s+".join(words) + r"(?!\w)", re.I)
+    return re.compile(_B_BEFORE + r"\s+".join(words) + _B_AFTER)
 
 
 # Built-in secret shapes. Each is deliberately specific: a broad entropy rule
@@ -144,6 +201,7 @@ _SECRET_RULES: tuple[tuple[str, re.Pattern], ...] = (
     ("private_key", re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")),
     ("jwt", re.compile(r"\beyJ[A-Za-z0-9_-]{8,}\.eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}")),
     ("bearer", re.compile(r"\bBearer\s+[A-Za-z0-9._~+/=-]{20,}", re.I)),
+    ("url_userinfo", re.compile(r"\b[a-z][a-z0-9+.-]*://[^\s/:@]+:[^\s/@]+@", re.I)),
     ("assignment", re.compile(
         r"\b(?:password|passwd|pwd|secret|api[_-]?key|access[_-]?token|client[_-]?secret)"
         r"\s*[:=]\s*['\"]?[^\s'\"]{6,}", re.I)),
@@ -159,39 +217,66 @@ def _mask(s: str) -> str:
     return f"{s[:2]}…{len(s)}ch"
 
 
-def _strings(obj: Any, path: str = "$") -> Iterator[tuple[str, str]]:
+def _scan_text(text: str, path: str, lists: Lists, hits: list[Hit]) -> None:
+    plain = _strip_format(text)
+    for rule, rx in _SECRET_RULES:
+        for m in rx.finditer(plain):
+            hits.append(Hit(CODE_SECRET, rule, path, _mask(m.group(0))))
+    for m in _EMAIL.finditer(plain):
+        hits.append(Hit(CODE_EMAIL, "email", path, _mask(m.group(0))))
+    for m in _IPV4.finditer(plain):
+        try:
+            ip = ipaddress.IPv4Address(m.group(0))
+        except ValueError:
+            continue
+        if ip.is_private or ip.is_loopback or ip.is_link_local:
+            hits.append(Hit(CODE_HOST, "private_ip", path, _mask(m.group(0))))
+    folded = _fold(text)
+    for code, rule, rx in lists.patterns():
+        for m in rx.finditer(folded):
+            hits.append(Hit(code, rule, path, _mask(m.group(0))))
+
+
+def _walk(obj: Any, path: str, depth: int, lists: Lists, hits: list[Hit]) -> None:
+    if depth > MAX_DEPTH:
+        hits.append(Hit(CODE_TOO_DEEP, "max_depth", path, f"depth>{MAX_DEPTH}"))
+        return
     if isinstance(obj, str):
-        yield path, obj
+        _scan_text(obj, path, lists, hits)
+    elif obj is None or isinstance(obj, (bool, int, float)):
+        return
     elif isinstance(obj, dict):
-        for k, v in obj.items():
-            kp = f"{path}.{k}" if isinstance(k, str) and re.fullmatch(r"\w+", k) else f"{path}[{k!r}]"
-            if isinstance(k, str):
-                yield f"{kp}<key>", k
-            yield from _strings(v, kp)
+        for i, (k, v) in enumerate(obj.items()):
+            if not isinstance(k, str):
+                hits.append(Hit(CODE_UNSUPPORTED, "non_string_key", f"{path}{{#{i}}}", type(k).__name__))
+                continue
+            before = len(hits)
+            _scan_text(k, f"{path}{{#{i}}}<key>", lists, hits)
+            # A key is rendered into child paths only when it is itself clean
+            # and a plain identifier; otherwise its position stands in for it,
+            # so a refusal never repeats what it caught.
+            if len(hits) == before and re.fullmatch(r"\w{1,64}", k):
+                kp = f"{path}.{k}"
+            else:
+                kp = f"{path}{{#{i}}}"
+            _walk(v, kp, depth + 1, lists, hits)
     elif isinstance(obj, (list, tuple)):
         for i, v in enumerate(obj):
-            yield from _strings(v, f"{path}[{i}]")
+            _walk(v, f"{path}[{i}]", depth + 1, lists, hits)
+    else:
+        # bytes, sets and arbitrary objects cannot be judged, so they cannot leave.
+        hits.append(Hit(CODE_UNSUPPORTED, "non_json_leaf", path, type(obj).__name__))
 
 
 def check(payload: Any, lists: Lists) -> list[Hit]:
-    """Every hit in ``payload``, in document order. Empty means it may leave."""
+    """Every hit in ``payload``, in document order. Empty means it may leave.
+
+    Only JSON-shaped data is judged: str, int, float, bool, None, lists and
+    dicts with string keys. Anything else is a hit, as is nesting past
+    MAX_DEPTH (which a cycle always reaches).
+    """
     hits: list[Hit] = []
-    for path, text in _strings(payload):
-        for rule, rx in _SECRET_RULES:
-            for m in rx.finditer(text):
-                hits.append(Hit(CODE_SECRET, rule, path, _mask(m.group(0))))
-        for m in _EMAIL.finditer(text):
-            hits.append(Hit(CODE_EMAIL, "email", path, _mask(m.group(0))))
-        for m in _IPV4.finditer(text):
-            try:
-                ip = ipaddress.IPv4Address(m.group(0))
-            except ValueError:
-                continue
-            if ip.is_private or ip.is_loopback or ip.is_link_local:
-                hits.append(Hit(CODE_HOST, "private_ip", path, _mask(m.group(0))))
-        for code, rule, rx in lists.patterns():
-            for m in rx.finditer(text):
-                hits.append(Hit(code, rule, path, _mask(m.group(0))))
+    _walk(payload, "$", 0, lists, hits)
     return hits
 
 
@@ -208,7 +293,12 @@ def _terms(raw: dict, key: str) -> tuple[str, ...]:
     v = raw.get(key) or []
     if not isinstance(v, list) or not all(isinstance(t, str) for t in v):
         raise CleanRoomUnavailable(f"{LISTS_NAME}: `{key}` must be a list of strings")
-    return tuple(t for t in (s.strip() for s in v) if t)
+    terms = tuple(t.strip() for t in v)
+    if any(not _fold(t).strip() for t in terms):
+        # A blank term is a typo, not a decision; refusing it at load is
+        # cheaper than discovering later that a line was meant to say something.
+        raise CleanRoomUnavailable(f"{LISTS_NAME}: `{key}` contains a blank term")
+    return terms
 
 
 def load_lists(path: str | Path) -> Lists:
