@@ -1143,6 +1143,12 @@ def _run_forge_task_inner(
     codex_bin: str,
     cwd: str | None,
 ) -> ExecResult:
+    if _ACTIVE_IDENTITY is not None:
+        # Not identity-wired yet: codex would run with the machine's default
+        # git/ssh identity and its own login. Refuse rather than run ambient.
+        return _identity_failure(
+            IdentityUnavailable("the forge/codex route is not identity-wired"),
+            time.monotonic(), "codex")
     cmd = [_resolve_codex_bin(codex_bin), "exec", "--skip-git-repo-check"]
     if model:
         cmd += ["--model", model]
@@ -1503,6 +1509,12 @@ def run_zai_store_backed_task(
     # retry and the idle watchdog apply identically to the z.ai path. _zai_env
     # handles key resolution (raising loudly on a missing key); label='z.ai'
     # keeps the distinct prefixes.
+    if _ACTIVE_IDENTITY is not None:
+        # Not identity-wired yet: the z.ai child is a `claude` CLI that would
+        # read the machine's default config dir and git/ssh identity.
+        return _identity_failure(
+            IdentityUnavailable("the z.ai route is not identity-wired"),
+            time.monotonic(), "z.ai")
     env = _zai_env(zai_api_key)
     cmd = _base_cmd(claude_bin, max_turns, _zai_model(model))
     return _run_proc(

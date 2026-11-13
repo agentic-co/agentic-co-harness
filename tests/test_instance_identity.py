@@ -241,3 +241,19 @@ def test_doctor_validation_age(tmp_path, monkeypatch):
     _stamp(ident.claude, datetime.now(timezone.utc).strftime(fmt))
     fs = _doctor(tmp_path, monkeypatch, cfg)
     assert [f.status for f in fs] == ["ok"]
+
+
+# ---- routes not yet wired for identity refuse rather than run ambient -----------
+
+def test_zai_route_refuses_under_identity(tmp_path):
+    executor.configure_identity(_acme(tmp_path))
+    res = executor.run_zai_store_backed_task("t-1", zai_api_key="zk", claude_bin="/nonexistent/claude")
+    assert not res.success
+    assert executor.IDENTITY_UNAVAILABLE in (res.error or "")
+
+
+def test_forge_route_refuses_under_identity(tmp_path):
+    executor.configure_identity(_acme(tmp_path))
+    res = executor._run_forge_task_inner("hi", 30, None, "/nonexistent/codex", None)
+    assert not res.success
+    assert executor.IDENTITY_UNAVAILABLE in (res.error or "")
