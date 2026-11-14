@@ -1,6 +1,7 @@
 """Machine-level connections registry. No test touches a real claude/agy/network/ssh."""
 
 import json
+from dataclasses import replace
 import os
 import stat
 import urllib.error
@@ -335,3 +336,132 @@ def test_to_provider_wrong_kind():
 def test_live_validate_all_registered():
     for conn in c.list_all():
         assert c.validate(conn).ok, conn.name
+
+
+# ---- peer review #28 ---------------------------------------------------------
+
+POISON = {
+    "ANTHROPIC_BASE_URL": "https://evil.invalid", "GH_TOKEN": "ghp-ambient",
+    "OPENAI_API_KEY": "sk-ambient", "AWS_ACCESS_KEY_ID": "AKIAAMBIENT",  # leakguard: allow (planted fixture)
+    "SSH_AUTH_SOCK": "/tmp/agent.sock", "CLAUDE_CODE_USE_BEDROCK": "1",
+}
+
+
+def _poison(monkeypatch):
+    for k, v in POISON.items():
+        monkeypatch.setenv(k, v)
+
+
+def test_probe_env_is_allowlisted_not_ambient(reg, monkeypatch):
+    _poison(monkeypatch)
+    env = c.probe_env(c.save(claude(), SECRET))
+    assert not set(POISON) & set(env)
+    assert env["CLAUDE_CODE_OAUTH_TOKEN"] == SECRET
+
+
+def test_agy_probe_env_is_clean(monkeypatch):
+    _poison(monkeypatch)
+    r = FakeRunner()
+    c.validate(c.Connection(name="agy", kind="agy"), runner=r)
+    assert not set(POISON) & set(r.calls[0][1])
+
+
+def test_github_probe_env_is_clean(monkeypatch):
+    _poison(monkeypatch)
+    r = FakeRunner(rc=1, err="Hi acme-bot!")
+    c.validate(gh(), runner=r)
+    assert not set(POISON) & set(r.calls[0][1])
+
+
+def _serve(handler_cls):
+    import threading
+    from http.server import HTTPServer
+    srv = HTTPServer(("127.0.0.1", 0), handler_cls)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    return srv
+
+
+def test_bearer_not_sent_across_host_redirect(reg):
+    from http.server import BaseHTTPRequestHandler
+    got = []
+
+    class Sink(BaseHTTPRequestHandler):
+        def do_POST(self):
+            got.append(self.headers.get("Authorization"))
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b'{"choices":[{}]}')
+        do_GET = do_POST
+
+        def log_message(self, *a):
+            pass
+
+    sink = _serve(Sink)
+
+    class Redir(BaseHTTPRequestHandler):
+        def do_POST(self):
+            self.send_response(307)
+            self.send_header("Location", f"http://127.0.0.1:{sink.server_port}/x")
+            self.end_headers()
+        do_GET = do_POST
+
+        def log_message(self, *a):
+            pass
+
+    front = _serve(Redir)
+    conn = c.Connection(name="acme-local", kind="openai_compat", model="m",
+                        base_url=f"http://127.0.0.1:{front.server_port}/v1")
+    res = c.validate(conn, secret=SECRET, check="models")
+    front.shutdown()
+    sink.shutdown()
+    assert not res.ok
+    assert got == []
+
+
+@pytest.mark.parametrize("url", ["http://llm.example.com/v1", "ftp://x/v1", "llm.example.com", "https://"])
+def test_non_tls_base_url_refused(reg, url):
+    with pytest.raises(c.ConnectionError_):
+        c.save(replace(oai(), base_url=url), SECRET)
+
+
+@pytest.mark.parametrize("url", ["http://localhost:4000/v1", "http://127.0.0.1:4000/v1", "http://[::1]:4000/v1",
+                                 "https://llm.example.com/v1"])
+def test_loopback_http_and_https_allowed(reg, url):
+    c.save(replace(oai(), base_url=url), SECRET)
+
+
+def test_probe_refuses_hand_edited_http_url(reg):
+    called = []
+    conn = c.Connection(name="acme-x", kind="openai_compat", model="m", base_url="http://llm.example.com/v1")
+    res = c.validate(conn, opener=lambda *a, **k: called.append(1), secret=SECRET)
+    assert not res.ok and not called
+
+
+def test_write_private_ignores_leftover_tmp_and_is_0600(reg, tmp_path):
+    reg.mkdir(parents=True, exist_ok=True)
+    stale = reg / "acme-claude.secret.tmp"
+    stale.write_text("old")
+    os.chmod(stale, 0o666)
+    c.save(claude(), SECRET)
+    assert mode(reg / "acme-claude.secret") == 0o600
+    assert stale.read_text() == "old"  # untouched, never reopened
+    assert not [p for p in reg.iterdir() if p.name.endswith(".tmp") and p != stale]
+
+
+def test_custom_secret_parent_dir_is_0700(reg, tmp_path):
+    sf = tmp_path / "newdir" / "tok"
+    c.save(claude(secret_file=str(sf)), SECRET)
+    assert mode(sf.parent) == 0o700
+
+
+def test_remove_never_deletes_outside_registry(reg, tmp_path):
+    victim = tmp_path / "precious.txt"
+    victim.write_text("keep")
+    os.chmod(victim, 0o600)
+    c.save(claude(), SECRET)
+    p = reg / "acme-claude.json"
+    d = json.loads(p.read_text())
+    d["secret_file"] = str(victim)
+    p.write_text(json.dumps(d))
+    c.remove("acme-claude")
+    assert victim.read_text() == "keep"

@@ -26,7 +26,10 @@ import shlex
 import stat
 import subprocess
 import sys
+import secrets
+import ipaddress
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import asdict, dataclass, fields, replace
 from datetime import datetime, timezone
@@ -103,12 +106,21 @@ def _check_name(name: str) -> None:
 
 def _write_private(path: Path, text: str) -> None:
     """Atomic write that is 0600 from the first byte, so there is no window."""
-    tmp = path.with_name(path.name + ".tmp")
-    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(fd, "w") as f:
-        f.write(text)
-    os.chmod(tmp, 0o600)
-    os.replace(tmp, path)
+    # Unique name + O_EXCL: never reopen a leftover file that may carry looser
+    # permissions or belong to someone else; fchmod before the first byte.
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.{secrets.token_hex(6)}.tmp")
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        os.fchmod(fd, 0o600)
+        with os.fdopen(fd, "w") as f:
+            f.write(text)
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
 
 
 def _expand(p: str) -> str:
@@ -138,8 +150,32 @@ def _validate_shape(conn: Connection) -> None:
             raise ConnectionError_("claude_code needs its own config_dir")
     if conn.kind == "openai_compat" and not (conn.base_url and conn.model):
         raise ConnectionError_("openai_compat needs base_url and model")
+    if conn.kind == "openai_compat":
+        check_base_url(conn.base_url)
     if conn.kind == "github" and not conn.ssh_key:
         raise ConnectionError_("github needs ssh_key")
+
+
+def _is_loopback(host: str) -> bool:
+    host = (host or "").strip("[]").lower()
+    if host == "localhost":
+        return True
+    try:
+        return ipaddress.ip_address(host).is_loopback
+    except ValueError:
+        return False
+
+
+def check_base_url(url: str) -> None:
+    """TLS is required for an openai_compat endpoint unless it is loopback:
+    over plain http the API key travels in clear."""
+    u = urllib.parse.urlsplit(url or "")
+    if u.scheme == "https" and u.hostname:
+        return
+    if u.scheme == "http" and u.hostname and _is_loopback(u.hostname):
+        return
+    raise ConnectionError_(
+        "openai_compat base_url must be https:// (http:// is allowed only for a loopback host)")
 
 
 def _check_unique_agy(conn: Connection) -> None:
@@ -180,7 +216,7 @@ def save(conn: Connection, secret: Optional[str] = None) -> Connection:
         sf = conn.secret_file or str(_secret_path(conn.name))
         conn = replace(conn, secret_file=sf)
         path = Path(_expand(sf))
-        path.parent.mkdir(parents=True, exist_ok=True)
+        path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
         _write_private(path, secret.strip() + "\n")
     elif not conn.secret_file and _secret_path(conn.name).exists():
         conn = replace(conn, secret_file=str(_secret_path(conn.name)))
@@ -218,7 +254,15 @@ def remove(name: str) -> None:
     conn = load_unchecked(name)
     _json_path(name).unlink()
     if conn.secret_file:
-        Path(_expand(conn.secret_file)).unlink(missing_ok=True)
+        # Confined to the registry directory: the JSON is data, and a tampered
+        # `secret_file` must not turn `remove` into an arbitrary-file delete.
+        sp = Path(_expand(conn.secret_file))
+        try:
+            inside = sp.resolve().parent == connections_dir().resolve()
+        except OSError:
+            inside = False
+        if inside:
+            sp.unlink(missing_ok=True)
 
 
 def load_unchecked(name: str) -> Connection:
@@ -278,8 +322,19 @@ def strip_keys(conn: Connection) -> set:
     return set()
 
 
+def _base_env(conn: Connection) -> dict:
+    """The executor's allowlisted clean env minus this kind's strip keys.
+    Never `os.environ`: an ambient ANTHROPIC_BASE_URL would receive the token
+    under test, and ambient GH_TOKEN / AWS_* / SSH_AUTH_SOCK could make a probe
+    pass for the wrong account."""
+    from .executor import _clean_env  # lazy: executor must not import us at load
+
+    sk = strip_keys(conn)
+    return {k: v for k, v in _clean_env().items() if k not in sk}
+
+
 def probe_env(conn: Connection, secret: Optional[str] = None) -> dict:
-    env = {k: v for k, v in os.environ.items() if k not in strip_keys(conn)}
+    env = _base_env(conn)
     env.update(child_env(conn, secret))
     return env
 
@@ -317,6 +372,22 @@ def provider_env(conn: Connection) -> dict:
 
 # ---- validation (live probes) ------------------------------------------------
 
+class _NoCrossHostRedirect(urllib.request.HTTPRedirectHandler):
+    """A redirect would carry the Authorization header to wherever it points.
+    Refuse any redirect that changes host, port or scheme."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        a, b = urllib.parse.urlsplit(req.full_url), urllib.parse.urlsplit(newurl)
+        if (a.scheme, a.hostname, a.port) != (b.scheme, b.hostname, b.port):
+            raise urllib.error.HTTPError(
+                req.full_url, code, "cross-host redirect refused", headers, fp)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def _safe_open(req, timeout=60):
+    return urllib.request.build_opener(_NoCrossHostRedirect).open(req, timeout=timeout)
+
+
 def _default_runner(argv, env, timeout):
     p = subprocess.run(argv, env=env, capture_output=True, text=True, timeout=timeout)
     return p.returncode, p.stdout, p.stderr
@@ -333,7 +404,7 @@ def validate(conn: Connection, *, runner: Optional[Runner] = None, opener: Optio
              secret: Optional[str] = None, check: str = "chat") -> ValidationResult:
     """Run a LIVE probe. Never raises on a probe failure, and never echoes a secret."""
     runner = runner or _default_runner
-    opener = opener or urllib.request.urlopen
+    opener = opener or _safe_open
     try:
         sec = _secret(conn, secret) if conn.secret_file or secret else None
         if conn.kind == "claude_code":
@@ -341,7 +412,7 @@ def validate(conn: Connection, *, runner: Optional[Runner] = None, opener: Optio
                               probe_env(conn, sec), runner, sec, 120)
         if conn.kind == "agy":
             return _probe_cli(["agy", "--print", PROBE_PROMPT, "--dangerously-skip-permissions",
-                               "--print-timeout", "60s"], dict(os.environ), runner, None, 90)
+                               "--print-timeout", "60s"], _base_env(conn), runner, None, 90)
         if conn.kind == "openai_compat":
             return _probe_openai(conn, sec, opener, check)
         if conn.kind == "github":
@@ -366,6 +437,7 @@ def _probe_cli(argv, env, runner, secret, timeout) -> ValidationResult:
 
 
 def _probe_openai(conn, secret, opener, check) -> ValidationResult:
+    check_base_url(conn.base_url)  # a registry file can be edited by hand
     base = conn.base_url.rstrip("/")
     headers = {"content-type": "application/json"}
     if secret:
@@ -396,7 +468,7 @@ def _probe_openai(conn, secret, opener, check) -> ValidationResult:
 def _probe_github(conn, runner) -> ValidationResult:
     argv = ["ssh", "-i", _expand(conn.ssh_key), "-o", "IdentitiesOnly=yes", "-o", "IdentityAgent=none",
             "-o", "BatchMode=yes", "-T", "git@github.com"]  # leakguard: allow (public ssh login, not a person)
-    env = {k: v for k, v in os.environ.items() if k not in strip_keys(conn)}
+    env = _base_env(conn)
     try:
         rc, out, err = runner(argv, env, 30)
     except FileNotFoundError:
