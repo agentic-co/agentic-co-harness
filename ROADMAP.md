@@ -95,6 +95,8 @@ deprioritised; work that would tell us whether it can work is not.
 
 ## Next — the current goals
 
+**Runtime 1.0**, cut to match hub 1.1, is scoped in [docs/v1-scope.md](docs/v1-scope.md).
+
 Small, independently shippable, each with one acceptance test that fails before the work.
 
 | # | goal | done means |
