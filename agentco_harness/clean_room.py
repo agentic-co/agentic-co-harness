@@ -29,9 +29,10 @@ From the partition's private list file:
   * ``people``: names of people,
   * ``internal_domains``: host suffixes; any host under one is refused.
 List terms match on whole words, with any run of whitespace standing for a
-space. Before matching, text is NFKC-normalised, stripped of format
-characters (zero-width spaces, soft hyphens), case-folded and has common
-Cyrillic and Greek look-alike letters mapped to Latin. ``_`` counts as a word
+space. Before matching, text is NFKD-normalised, stripped of combining
+marks, variation selectors and format characters (zero-width spaces, soft
+hyphens), case-folded and has common Cyrillic and Greek look-alike letters
+mapped to Latin. A string longer than MAX_STRING_CHARS is refused unscanned. ``_`` counts as a word
 boundary, so ``name_prod`` and ``PROD_NAME`` are caught. Substring matching
 would refuse innocent English and teach people to switch the check off.
 
@@ -88,6 +89,12 @@ CODE_NEVER_LEAVE = "clean_room_never_leave"
 CODE_PERSON = "clean_room_person"
 CODE_UNSUPPORTED = "clean_room_unsupported"
 CODE_TOO_DEEP = "clean_room_too_deep"
+CODE_TOO_LARGE = "clean_room_too_large"
+
+#: A single string longer than this is refused before any rule runs. An
+#: outbox line is capped far below it anyway; the bound keeps one oversized
+#: value from stalling every push behind a slow scan.
+MAX_STRING_CHARS = 64 * 1024
 
 #: Nesting deeper than this is refused. A real residual is a few levels deep;
 #: anything past this is either an accident or an attempt to make the walk
@@ -171,9 +178,13 @@ def _strip_format(text: str) -> str:
 
 
 def _fold(text: str) -> str:
-    """What list terms are matched against: format-stripped, case-folded and
-    with cross-script look-alikes mapped to Latin."""
-    return _strip_format(text).casefold().translate(_CONFUSABLES)
+    """What list terms are matched against: NFKD with combining marks,
+    variation selectors and format characters removed, case-folded, and with
+    cross-script look-alikes mapped to Latin. ("café" folds to "cafe", so
+    accented text is compared on its base letters.)"""
+    t = unicodedata.normalize("NFKD", text)
+    t = "".join(ch for ch in t if unicodedata.category(ch) not in ("Mn", "Me", "Cf"))
+    return t.casefold().translate(_CONFUSABLES)
 
 
 # A term boundary is anything that is not a letter or digit. `_` counts as a
@@ -201,7 +212,8 @@ _SECRET_RULES: tuple[tuple[str, re.Pattern], ...] = (
     ("private_key", re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")),
     ("jwt", re.compile(r"\beyJ[A-Za-z0-9_-]{8,}\.eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}")),
     ("bearer", re.compile(r"\bBearer\s+[A-Za-z0-9._~+/=-]{20,}", re.I)),
-    ("url_userinfo", re.compile(r"\b[a-z][a-z0-9+.-]*://[^\s/:@]+:[^\s/@]+@", re.I)),
+    # Bounded on purpose: the unbounded form was quadratic ("a@" + "a-" * n).
+    ("url_userinfo", re.compile(r"\b[a-z][a-z0-9+.-]{0,31}://[^\s/:@]{1,256}:[^\s/@]{1,256}@", re.I)),
     ("assignment", re.compile(
         r"\b(?:password|passwd|pwd|secret|api[_-]?key|access[_-]?token|client[_-]?secret)"
         r"\s*[:=]\s*['\"]?[^\s'\"]{6,}", re.I)),
@@ -242,6 +254,9 @@ def _walk(obj: Any, path: str, depth: int, lists: Lists, hits: list[Hit]) -> Non
         hits.append(Hit(CODE_TOO_DEEP, "max_depth", path, f"depth>{MAX_DEPTH}"))
         return
     if isinstance(obj, str):
+        if len(obj) > MAX_STRING_CHARS:
+            hits.append(Hit(CODE_TOO_LARGE, "max_string", path, f"{len(obj)}ch"))
+            return
         _scan_text(obj, path, lists, hits)
     elif obj is None or isinstance(obj, (bool, int, float)):
         return

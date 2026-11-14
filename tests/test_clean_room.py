@@ -263,3 +263,30 @@ def test_blank_terms_refuse_at_load(tmp_path, key):
     p = write_lists(tmp_path, {"schemaVersion": 1, "internal_names": ["A"], key: ["   "]})
     with pytest.raises(CleanRoomUnavailable):
         load_lists(p)
+
+
+# ---------------------------------------------------------------- second review (#24)
+
+
+def test_adversarial_input_does_not_go_quadratic():
+    import time
+    t0 = time.monotonic()
+    check({"x": "a@" + "a-" * 20000}, LISTS)
+    assert time.monotonic() - t0 < 2.0
+
+
+def test_oversized_string_is_refused_before_scanning():
+    hits = check({"x": "a" * (clean_room.MAX_STRING_CHARS + 1)}, LISTS)
+    assert codes(hits) == [clean_room.CODE_TOO_LARGE]
+
+
+@pytest.mark.parametrize("disguised", [
+    "Quilĺfeather",        # combining acute accent inside the name
+    "Quillfe️ather",        # variation selector inside the name
+])
+def test_combining_marks_and_variation_selectors_are_stripped(disguised):
+    assert clean_room.CODE_INTERNAL_NAME in codes(check(f"from {disguised}", LISTS))
+
+
+def test_accented_text_is_not_refused():
+    assert check({"t": "café, naïve, São Paulo, 東京, emoji 🎉"}, LISTS) == []
