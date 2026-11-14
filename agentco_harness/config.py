@@ -10,6 +10,8 @@ from typing import Any
 
 import yaml
 
+from agentco_harness.outbox import CONSUMED_KEYS as CONSUMED_OUTBOX_KEYS, OutboxConfig
+
 # --- Environment file -------------------------------------------------------
 #
 # LifeOS keeps secrets in `~/.claude/.env`, which Claude Code sources at session
@@ -154,7 +156,7 @@ class EgressConfig:
 CONSUMED_AGENT_KEYS = {"model", "use_claude_code", "context", "description"}
 
 # Top-level config keys the loader understands.
-KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress", "hub", "completion", "extensions", "extension_settings", "asop_router", "intake"}
+KNOWN_TOP_LEVEL_KEYS = {"tasks_path", "agents", "llm", "triage", "notify", "instance", "humans", "tiers", "backoff", "executor", "capabilities", "egress", "hub", "completion", "extensions", "extension_settings", "asop_router", "intake", "outbox"}
 
 #: Blocks the v1 hub consumed that this runtime deliberately does not. They
 #: configured pipelines that belonged to one operator — a feeds ingester
@@ -534,6 +536,7 @@ class Config:
     executor: ExecutorConfig = field(default_factory=ExecutorConfig)
     asop_router: AsopRouterConfig = field(default_factory=AsopRouterConfig)
     intake: IntakeConfig = field(default_factory=IntakeConfig)
+    outbox: OutboxConfig = field(default_factory=OutboxConfig)
     # --- capability manifest (ac-39d4dbc8) ----------------------------------
     # What THIS node can do — the lane declaration matched against a bead's
     # `requires` at claim time. Empty (the default) means the node declares
@@ -792,6 +795,10 @@ class Config:
             intake = data["intake"] or {}
             _warn_unknown_nested("intake", intake, {"require_approval"}, path)
             config.intake = IntakeConfig(require_approval=bool(intake.get("require_approval", False)))
+
+        outbox = data.get("outbox") or {}
+        _warn_unknown_nested("outbox", outbox, CONSUMED_OUTBOX_KEYS, path)
+        config.outbox = OutboxConfig.from_mapping(outbox, base=path.resolve().parent)
 
         if "executor" in data:
             executor = data["executor"] or {}
