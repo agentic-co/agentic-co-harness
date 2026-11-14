@@ -230,6 +230,15 @@ class Outbox:
                 f"with `outbox.enabled_classes`.",
             )
 
+        # Size first: cheap, and it keeps an oversized payload from reaching
+        # the clean room's scan at all (peer review of #24).
+        approx = len(json.dumps(payload, sort_keys=True, default=str).encode("utf-8"))
+        if approx + 1 > MAX_LINE_BYTES:
+            raise _invalid(
+                f"payload is {approx + 1} bytes, over the {MAX_LINE_BYTES} line limit. "
+                f"Push a pointer, not a body."
+            )
+
         # Fail-closed, and before the file or its lock exist.
         clean_room.assert_clean(
             {"payload": payload, "agent_label": label},
