@@ -35,6 +35,8 @@ from pathlib import Path
 from typing import Optional, Sequence
 
 from asop import ASOP, Step, SopStatus, validate_asop
+from asop.chain import ChainContractError
+from asop.manifest import STORE_FIELDS, body_digest, digest_of
 from asop.errors import Refusal
 from asop.revision import (
     RevisionPolicyError,
@@ -47,6 +49,28 @@ from asop.sop import SopContractError
 from .beads import Beads, DepthLimitError, Task
 
 HUMAN = "human"
+
+#: Keys the STORE adds to a version's line beside the record (hub ADR 0016).
+#: `ASOP.from_json` ignores unknown keys, so a build without this layer reads
+#: the same file and simply never sees them — the digest is additive.
+_EXTRA_KEYS = ("digest", "compatible_with")
+
+
+def _document_digest(record: ASOP) -> str:
+    """`sha256:` + the hex of the spec's canonical JSON of the procedure
+    document (ASOP.md §3.10): store-assigned fields off, key order irrelevant."""
+    doc = {k: v for k, v in json.loads(record.to_json()).items()
+           if k not in STORE_FIELDS and v not in (None, [], {})}
+    # The stored form spells every optional field out; the validator wants
+    # absent ones absent, and `step` is the position, not content.
+    doc["steps"] = [{k: v for k, v in s.items() if k != "step" and v not in (None, [], {})}
+                    for s in doc.get("steps", [])]
+    try:
+        return body_digest(doc, asop_id=record.asop_id)
+    except (SopContractError, ChainContractError):
+        # A stored version the current validator no longer accepts still has
+        # a document; digest it as it stands rather than refuse to read it.
+        return digest_of(doc)
 
 #: What a caller may be, for the verbs the contract reserves to people.
 AUTHOR_KINDS = ("human", "agent")
@@ -105,6 +129,10 @@ class AsopStore:
         self.path = Path(path)
         self._lock_path = self.path.with_suffix(self.path.suffix + ".lock")
         self.quarantined: list[str] = []
+        # (asop_id, version) -> {"digest", "compatible_with"} as STORED, taken
+        # from the last read. Carried through rewrites verbatim — a rewrite
+        # that recomputed them would launder a tampered document.
+        self._extras: dict[tuple[str, int], dict] = {}
         # The defaults (`money`, `irreversible`) plus whatever this
         # installation adds through `ASOP_PROTECTED_TAGS` — the same
         # variable, with the same name and the same add-only semantics, the
@@ -132,16 +160,23 @@ class AsopStore:
     def _read_all(self) -> list[ASOP]:
         out: list[ASOP] = []
         quarantined: list[str] = []
+        extras: dict[tuple[str, int], dict] = {}
         with open(self.path) as f:
             for line in f:
                 line = line.strip()
                 if not line:
                     continue
                 try:
-                    out.append(ASOP.from_json(line))
+                    rec = ASOP.from_json(line)
+                    out.append(rec)
+                    raw = json.loads(line)
+                    extra = {k: raw[k] for k in _EXTRA_KEYS if k in raw}
+                    if extra:
+                        extras[(rec.asop_id, rec.version)] = extra
                 except (ValueError, TypeError, KeyError):
                     quarantined.append(line)
         self.quarantined = quarantined
+        self._extras = extras
         return out
 
     def _write_all(self, records: list[ASOP]) -> None:
@@ -149,7 +184,7 @@ class AsopStore:
         try:
             with os.fdopen(fd, "w") as f:
                 for r in records:
-                    f.write(r.to_json() + "\n")
+                    f.write(self._line(r) + "\n")
                 for line in self.quarantined:      # carried, never dropped
                     f.write(line + "\n")
                 f.flush()
@@ -161,6 +196,36 @@ class AsopStore:
             except OSError:
                 pass
             raise
+
+    def _line(self, record: ASOP, **extra) -> str:
+        """One version's JSONL line: the record plus its stored extras."""
+        extras = {**self._extras.get((record.asop_id, record.version), {}), **extra}
+        if not extras:
+            return record.to_json()
+        return json.dumps({**json.loads(record.to_json()), **extras}, sort_keys=True)
+
+    # ------------------------------------------------------------ digest (ADR 0016)
+
+    def digest(self, record: ASOP) -> str:
+        """The version's stored digest, or one computed now when it has none."""
+        return self._extras.get((record.asop_id, record.version), {}).get("digest") or _document_digest(record)
+
+    def compatible_with(self, record: ASOP) -> list[int]:
+        return list(self._extras.get((record.asop_id, record.version), {}).get("compatible_with") or [])
+
+    def _verified(self, record: ASOP) -> ASOP:
+        """Refuse a version whose document no longer matches its stored digest.
+
+        A version stored without a digest (an older store) has nothing to
+        contradict and passes. Never returns a record it would not execute.
+        """
+        stored = self._extras.get((record.asop_id, record.version), {}).get("digest")
+        if stored and stored != _document_digest(record):
+            _refuse("asop_digest_mismatch",
+                    f"ASOP {record.asop_id!r} v{record.version}: the stored document does not match its digest {stored}",
+                    "Do not execute it. Re-fetch the version from the authoritative store, "
+                    "or revise to get a new version with its own digest.")
+        return record
 
     # ------------------------------------------------------------ reads
 
@@ -235,11 +300,12 @@ class AsopStore:
                 steps=[Step(**s) for s in clean.pop("steps")], **clean,
             )
             with open(self.path, "a") as f:
-                f.write(record.to_json() + "\n")
+                f.write(self._line(record, digest=_document_digest(record)) + "\n")
         return record
 
     def revise(self, asop_id: str, changes: dict, *, author: str, author_kind: str,
-               from_version: Optional[int] = None) -> ASOP:
+               from_version: Optional[int] = None,
+               compatible_with: Optional[Sequence[int]] = None) -> ASOP:
         """A new DRAFT version from an existing one plus a change set.
 
         Never edits a version. `steps`, if given, replace the sequence
@@ -248,6 +314,10 @@ class AsopStore:
         **The revision policy runs here, before anything is written** (§6.4).
         An agent is bound by all four rules and a refusal leaves the file
         byte-identical; a human passes unconditionally.
+
+        `compatible_with` declares which earlier versions an open run may move
+        from onto this one (ADR 0016) — a store-level declaration, not part of
+        the digested document. Moving still needs the run's own opt-in.
         """
         _declared_kind("sop_revise", author_kind)
         with self._locked():
@@ -268,6 +338,10 @@ class AsopStore:
                 clean = validate_asop(body)
             except SopContractError as e:
                 _refuse("sop_refused", str(e), "Fix the revision and try again.")
+            declared = sorted({int(v) for v in compatible_with or ()})
+            if any(v < 1 or v > versions[-1].version for v in declared):
+                _refuse("sop_refused", f"compatible_with {declared} names a version that does not exist",
+                        "Name only earlier versions from `history`.")
             record = ASOP(
                 asop_id=asop_id, version=versions[-1].version + 1, status=SopStatus.DRAFT,
                 author=author, author_kind=author_kind,
@@ -285,8 +359,11 @@ class AsopStore:
                 )
             except RevisionPolicyError as e:
                 _policed(e)
+            extra = {"digest": _document_digest(record)}
+            if declared:
+                extra["compatible_with"] = declared
             with open(self.path, "a") as f:
-                f.write(record.to_json() + "\n")
+                f.write(self._line(record, **extra) + "\n")
         return record
 
     def activate(self, asop_id: str, version: int, *, by_kind: str) -> ASOP:
@@ -389,13 +466,14 @@ class AsopStore:
         if record.status is not SopStatus.ACTIVE:
             _refuse("sop_refused", f"ASOP {asop_id!r} v{record.version} is {record.status.value}, not active",
                     "Only an active version files runs.")
+        self._verified(record)
         self._check_inputs(record, inputs)
         self._check_bindings(record, bindings)
 
         parent = beads.create(
             title=title or f"{record.title} — run",
             description=record.purpose or record.title,
-            metadata={"sop_ref": record.ref, "run": {"inputs": dict(inputs), "bindings": dict(bindings)}},
+            metadata={"sop_ref": {**record.ref, "digest": self.digest(record)}, "run": {"inputs": dict(inputs), "bindings": dict(bindings)}},
         )
         self._file_steps(record, parent, bindings, beads)
         return beads.get(parent.id)
@@ -451,6 +529,7 @@ class AsopStore:
                     _refuse("sop_refused",
                             f"step {s.step} uses {s.uses['asop_id']!r} v{s.uses['version']}, which does not exist",
                             "Create that version, or point the step at one that exists.")
+                self._verified(inner)
                 self._check_bindings(inner, bindings)
                 try:
                     container = beads.create(
@@ -489,3 +568,44 @@ class AsopStore:
             return False
         active = self.get(ref["asop_id"])
         return active is None or active.version != ref["version"]
+
+    def resolve_pinned(self, task: Task, beads: Optional[Beads] = None) -> Optional[ASOP]:
+        """The procedure document a run's bead is pinned to (ADR 0016).
+
+        A run finishes on the version it started: this returns THAT version
+        even after a newer one is activated. It refuses — never executes —
+        when the stored document's digest differs from the one stored with it
+        or from the one the bead recorded (`asop_digest_mismatch`).
+
+        The one way off the pinned version: the active version declares the
+        pinned one in `compatible_with` AND the bead carries
+        `metadata.asop_migrate_ok: true`. Then the active version is
+        returned, and re-pinned on the bead when `beads` is given.
+        Returns None for a bead that pins nothing.
+        """
+        meta = task.metadata or {}
+        ref = meta.get("sop_ref") or {}
+        if not ref or "asop_id" not in ref:
+            return None
+        self._read_all()
+        record = self.get(ref["asop_id"], ref["version"])
+        if record is None:
+            _refuse("version_required", f"no ASOP {ref['asop_id']!r} version {ref['version']}",
+                    "Re-fetch it from the authoritative store.")
+        self._verified(record)
+        pinned = ref.get("digest")
+        if pinned and pinned != self.digest(record):
+            _refuse("asop_digest_mismatch",
+                    f"bead {task.id} pinned ASOP {record.asop_id!r} v{record.version} at {pinned}, "
+                    f"but the stored document digests to {self.digest(record)}",
+                    "Do not execute it. Re-fetch the version from the authoritative store.")
+        active = self.get(record.asop_id)
+        if (active is not None and active.version != record.version
+                and meta.get("asop_migrate_ok") is True
+                and record.version in self.compatible_with(active)):
+            self._verified(active)
+            if beads is not None:
+                new_ref = {**ref, **active.ref, "digest": self.digest(active), "migrated_from": record.version}
+                beads.annotate(task.id, {"sop_ref": new_ref})
+            return active
+        return record

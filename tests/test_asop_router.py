@@ -93,7 +93,7 @@ def test_match_files_a_run_and_skips_the_plain_bead(store, beads, cfg):
         "run_id": result.run_id,
     }
     run_parent = beads.get(result.run_id)
-    assert run_parent.metadata["sop_ref"] == {"asop_id": "widget-flow", "version": 1}
+    assert {k: v for k, v in run_parent.metadata["sop_ref"].items() if k != "digest"} == {"asop_id": "widget-flow", "version": 1}
     children = [t for t in beads.list() if t.parent_id == result.run_id]
     assert len(children) == 1
     assert children[0].assigned_agent == "claude"

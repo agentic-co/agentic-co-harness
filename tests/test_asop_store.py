@@ -121,7 +121,8 @@ def test_an_unreadable_line_is_quarantined_not_dropped_and_blocks_revise(store, 
 def test_run_files_a_tree_pinned_per_step_with_after_as_blocked_by(store, beads):
     active(store)
     parent = store.run("feature-dev", inputs=INPUTS, bindings=BIND, beads=beads)
-    assert parent.metadata["sop_ref"] == {"asop_id": "feature-dev", "version": 1}
+    assert {k: v for k, v in parent.metadata["sop_ref"].items() if k != "digest"} == {"asop_id": "feature-dev", "version": 1}
+    assert parent.metadata["sop_ref"]["digest"].startswith("sha256:")  # ADR 0016
     assert parent.metadata["run"] == {"inputs": INPUTS, "bindings": BIND}
     kids = sorted((t for t in beads.list() if t.parent_id == parent.id), key=lambda t: t.metadata["sop_ref"]["step"])
     assert [k.metadata["sop_ref"]["step"] for k in kids] == [1, 2, 3, 4, 5]
