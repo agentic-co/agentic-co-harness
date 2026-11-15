@@ -465,3 +465,69 @@ def test_remove_never_deletes_outside_registry(reg, tmp_path):
     p.write_text(json.dumps(d))
     c.remove("acme-claude")
     assert victim.read_text() == "keep"
+
+
+# ---- second review (#28): the dispatch path and loaded connections ----------
+
+def _redirecting_pair():
+    from http.server import BaseHTTPRequestHandler
+    got = []
+
+    class Sink(BaseHTTPRequestHandler):
+        def do_POST(self):
+            got.append(self.headers.get("Authorization"))
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b'{"choices":[{"message":{"content":"OK"}}]}')
+        do_GET = do_POST  # a 302 turns the POST into a GET that keeps the header
+
+        def log_message(self, *a):
+            pass
+
+    sink = _serve(Sink)
+
+    class Redir(BaseHTTPRequestHandler):
+        def do_POST(self):
+            self.send_response(302)
+            self.send_header("Location", f"http://127.0.0.1:{sink.server_port}/v1/chat/completions")
+            self.end_headers()
+
+        def log_message(self, *a):
+            pass
+
+    front = _serve(Redir)
+    return front, sink, got
+
+
+def test_dispatch_does_not_forward_key_across_host_redirect(reg, monkeypatch):
+    from agentco_harness import completion
+    front, sink, got = _redirecting_pair()
+    conn = c.save(c.Connection(name="acme-local", kind="openai_compat", model="m",
+                               base_url=f"http://127.0.0.1:{front.server_port}/v1"), SECRET)
+    for k, v in c.provider_env(conn).items():
+        monkeypatch.setenv(k, v)
+    res = completion.complete("hi", c.to_provider(conn), timeout=5)
+    front.shutdown()
+    sink.shutdown()
+    assert not res.success
+    assert got == []
+
+
+def _hand_edit(reg, name, **fields_):
+    p = reg / f"{name}.json"
+    data = json.loads(p.read_text())
+    data.update(fields_)
+    p.write_text(json.dumps(data))
+
+
+def test_hand_edited_http_base_url_refused_at_load(reg):
+    c.save(oai(), SECRET)
+    _hand_edit(reg, oai().name, base_url="http://llm.example.com/v1")
+    with pytest.raises(c.ConnectionError_):
+        c.load(oai().name)
+
+
+def test_hand_edited_http_base_url_refused_at_to_provider(reg):
+    conn = replace(oai(), base_url="http://llm.example.com/v1")
+    with pytest.raises(c.ConnectionError_):
+        c.to_provider(conn)

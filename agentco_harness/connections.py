@@ -240,6 +240,9 @@ def load(name: str) -> Connection:
     conn = Connection(**{k: v for k, v in data.items() if k in known})
     if conn.secret_file:
         _check_secret_mode(conn.secret_file)
+    if conn.kind == "openai_compat":
+        # The JSON is data a person can hand-edit; re-check what save checked.
+        check_base_url(conn.base_url)
     return conn
 
 
@@ -355,6 +358,7 @@ def to_provider(conn: Connection):
 
     if conn.kind != "openai_compat":
         raise ConnectionError_(f"{conn.name!r} is {conn.kind}, not openai_compat")
+    check_base_url(conn.base_url)
     keyed = bool(conn.secret_file)
     return Provider(
         name=conn.name, base_url=conn.base_url, model=conn.model,
@@ -372,20 +376,10 @@ def provider_env(conn: Connection) -> dict:
 
 # ---- validation (live probes) ------------------------------------------------
 
-class _NoCrossHostRedirect(urllib.request.HTTPRedirectHandler):
-    """A redirect would carry the Authorization header to wherever it points.
-    Refuse any redirect that changes host, port or scheme."""
-
-    def redirect_request(self, req, fp, code, msg, headers, newurl):
-        a, b = urllib.parse.urlsplit(req.full_url), urllib.parse.urlsplit(newurl)
-        if (a.scheme, a.hostname, a.port) != (b.scheme, b.hostname, b.port):
-            raise urllib.error.HTTPError(
-                req.full_url, code, "cross-host redirect refused", headers, fp)
-        return super().redirect_request(req, fp, code, msg, headers, newurl)
-
-
 def _safe_open(req, timeout=60):
-    return urllib.request.build_opener(_NoCrossHostRedirect).open(req, timeout=timeout)
+    # One redirect policy for the probe and the real dispatch (completion.py).
+    from .completion import safe_open
+    return safe_open(req, timeout=timeout)
 
 
 def _default_runner(argv, env, timeout):
