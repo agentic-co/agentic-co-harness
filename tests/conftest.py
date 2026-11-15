@@ -84,3 +84,14 @@ def pm_answer(
 def make_pm_lm(n: int = 4, **kwargs) -> DummyLM:
     """Build a DummyLM that returns the same PM answer for up to n calls."""
     return DummyLM([pm_answer(**kwargs) for _ in range(n)], reasoning=True)
+
+
+@pytest.fixture(autouse=True)
+def _reset_identity_state():
+    """The 'identity declared' latch is sticky per process by design; tests
+    start and end with it cleared so they stay independent."""
+    from agentco_harness import executor
+
+    executor._reset_identity_for_tests()
+    yield
+    executor._reset_identity_for_tests()

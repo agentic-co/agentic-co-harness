@@ -669,9 +669,13 @@ def _gate_env() -> dict[str, str]:
     reads it, and two copies of this list is exactly the divergence that would
     leave one path leaking again.
     """
-    from .executor import _clean_env
+    from .executor import _clean_env, spawn_env
 
-    return _clean_env()
+    # Under an instance identity the gate runs with that instance's git/gh
+    # connection (and nothing machine-wide); IdentityUnavailable propagates so
+    # the caller records an unrunnable gate rather than running ambient.
+    scoped = spawn_env(claude=False)
+    return scoped if scoped is not None else _clean_env()
 
 
 def _validated_metadata(
@@ -1545,12 +1549,27 @@ class Beads:
         that upstream ever fails, nothing here will save it, and the honest
         thing is to say so rather than imply that a directory argument does.
         """
+        from .executor import IdentityUnavailable, declare_if_node_has_identity
+
+        try:
+            # A gate may run from a tasks path alone, with no config ever
+            # loaded in this process. The node's own config.yaml (beside its
+            # store) is the authority on whether it has an identity.
+            declare_if_node_has_identity(self.path.parent)
+            gate_env = _gate_env()
+        except IdentityUnavailable as e:
+            return {
+                "passed": False,
+                "exit_code": None,
+                "timed_out": False,
+                "output_tail": f"identity_unavailable: {e} — gate not run",
+            }
         try:
             proc = subprocess.run(
                 command,
                 shell=True,
                 cwd=cwd,
-                env=_gate_env(),
+                env=gate_env,
                 capture_output=True,
                 text=True,
                 timeout=timeout,

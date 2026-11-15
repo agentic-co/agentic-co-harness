@@ -317,8 +317,14 @@ def check_report(d: Path, registry: Path) -> None:
 
 
 def _run(cmd: str, cwd: Path, timeout: int) -> int:
+    from .executor import IdentityUnavailable, spawn_env
+
     try:
-        return subprocess.run(cmd, shell=True, cwd=cwd, timeout=timeout,
+        env = spawn_env(claude=False)  # None = no identity = inherit, as before
+    except IdentityUnavailable:
+        return 125  # identity declared but unusable: the check does not run
+    try:
+        return subprocess.run(cmd, shell=True, cwd=cwd, timeout=timeout, env=env,
                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode
     except subprocess.TimeoutExpired:
         return 124

@@ -189,8 +189,9 @@ def test_child_env_api_key(reg):
 def test_child_env_github():
     env = c.child_env(gh())
     assert env == {
-        "GIT_SSH_COMMAND": "ssh -i /keys/acme -o IdentitiesOnly=yes -o IdentityAgent=none",
+        "GIT_SSH_COMMAND": "ssh -F /dev/null -i /keys/acme -o IdentitiesOnly=yes -o IdentityAgent=none",
         "GIT_CONFIG_GLOBAL": "/cfg/acme.gitconfig",
+        "GIT_CONFIG_SYSTEM": "/dev/null",
         "GH_CONFIG_DIR": "/cfg/gh-acme",
     }
     assert "SSH_AUTH_SOCK" not in env

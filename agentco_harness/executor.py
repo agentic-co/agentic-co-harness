@@ -251,9 +251,171 @@ def _unattended_api_key(env_file: Path | None = None) -> str | None:
     return None
 
 
-def _claude_env() -> dict[str, str]:
+# ---- per-instance identity (docs/connections.md) ----------------------------
+# When the node declares `identity:`, child credentials come ONLY from the
+# named connections: the `_clean_env()` allowlist (never os.environ), minus the
+# connection's strip keys, plus its child_env. `_unattended_api_key` and
+# ~/.claude/.env are never consulted, and a connection that cannot be used
+# raises `IdentityUnavailable` rather than falling back to anything ambient.
+IDENTITY_UNAVAILABLE = "identity_unavailable"
+_ACTIVE_IDENTITY = None  # config.IdentityConfig | None, set by the Orchestrator
+
+
+class IdentityUnavailable(Exception):
+    """A connection the instance's identity names cannot be used. No secrets in the text."""
+
+    code = IDENTITY_UNAVAILABLE
+
+
+def configure_identity(identity) -> None:
+    """Install the instance identity for every spawn (None = this orchestrator
+    has none).
+
+    The DECLARED latch is sticky: once any identity has been seen in this
+    process it is never unset here, so an identity-less Orchestrator or config
+    load cannot turn a later spawn ambient. Only `_reset_identity_for_tests`
+    clears it."""
+    global _ACTIVE_IDENTITY
+    from . import config as _cfg
+
+    _ACTIVE_IDENTITY = identity
+    if identity is not None:
+        _cfg._IDENTITY_DECLARED = True
+
+
+def _reset_identity_for_tests() -> None:
+    """TEST-ONLY: clear the identity and the sticky declared latch."""
+    global _ACTIVE_IDENTITY
+    from . import config as _cfg
+
+    _ACTIVE_IDENTITY = None
+    _cfg._IDENTITY_DECLARED = False
+
+
+def declare_if_node_has_identity(node_dir) -> None:
+    """Latch the declared flag when the node at `node_dir` has a config.yaml
+    that declares `identity:`. For spawn sites that run for a node without ever
+    having loaded its config (e.g. a gate run from a tasks path alone)."""
+    from . import config as _cfg
+
+    if _cfg._declares_identity(Path(node_dir) / "config.yaml"):
+        _cfg._IDENTITY_DECLARED = True
+
+
+def current_identity():
+    """The resolved identity, or None when none is declared.
+
+    Fails CLOSED: a loaded config declared `identity:` but nothing resolved it,
+    so there is no way to know which connections to use. That is a refusal,
+    never a silent ambient run."""
+    if _ACTIVE_IDENTITY is not None:
+        return _ACTIVE_IDENTITY
+    from . import config as _cfg
+
+    if _cfg._IDENTITY_DECLARED:
+        raise IdentityUnavailable(
+            "an identity is declared in config but not resolved for this process")
+    return None
+
+
+def _identity_conn(name: str | None, kind: str, role: str):
+    from . import connections
+
+    if not name:
+        raise IdentityUnavailable(f"identity.{role} is not set")
+    try:
+        conn = connections.load(name)
+    except connections.ConnectionError_ as e:
+        raise IdentityUnavailable(f"identity.{role}: {e}") from None
+    if conn.kind != kind:
+        raise IdentityUnavailable(
+            f"identity.{role}: connection {name!r} is {conn.kind}, expected {kind}")
+    return conn
+
+
+def _identity_apply(env: dict, conn) -> None:
+    from . import connections
+
+    try:
+        add = connections.child_env(conn)
+    except connections.ConnectionError_ as e:
+        raise IdentityUnavailable(f"connection {conn.name!r}: {e}") from None
+    for k in connections.strip_keys(conn):
+        env.pop(k, None)
+    env.update(add)
+
+
+def _identity_env(identity, *, claude: bool) -> dict[str, str]:
+    env = _clean_env()
+    if claude:
+        _identity_apply(env, _identity_conn(identity.claude, "claude_code", "claude"))
+    else:
+        env.pop("CLAUDE_CONFIG_DIR", None)  # agy gets the github env and nothing else
+        if identity.agy:
+            _identity_conn(identity.agy, "agy", "agy")
+    # github is mandatory: without it git/gh would fall back to the machine's
+    # ssh keys, git config and gh login.
+    _identity_apply(env, _identity_conn(identity.github, "github", "github"))
+    return env
+
+
+def _identity_in_force() -> bool:
+    """True when an identity applies OR is declared-but-unresolved (both bar
+    routes that are not identity-wired)."""
+    try:
+        return current_identity() is not None
+    except IdentityUnavailable:
+        return True
+
+
+def spawn_env(identity=None, *, claude: bool = True) -> dict[str, str] | None:
+    """THE env builder for any child process.
+
+    `identity` passed explicitly wins; otherwise the process identity
+    (`current_identity()`, which refuses when declared-but-unresolved).
+    Returns None when no identity applies, meaning the caller keeps its
+    pre-identity behaviour. Raises IdentityUnavailable under an identity that
+    cannot be fully honoured."""
+    ident = identity if identity is not None else current_identity()
+    if ident is None:
+        return None
+    return _identity_env(ident, claude=claude)
+
+
+def check_identity(identity) -> None:
+    """Prove every named connection is usable; raise IdentityUnavailable if not.
+
+    Called by the orchestrator BEFORE any dispatch, so a broken identity is a
+    recorded refusal rather than a failed attempt."""
+    from . import connections
+
+    _identity_env(identity, claude=True)
+    if identity.agy:
+        _identity_env(identity, claude=False)
+    for name in identity.completions:
+        conn = _identity_conn(name, "openai_compat", "completions")
+        try:
+            connections.provider_env(conn)
+        except connections.ConnectionError_ as e:
+            raise IdentityUnavailable(f"identity.completions: {e}") from None
+
+
+def _identity_failure(e: Exception, started: float, label: str = "claude") -> "ExecResult":
+    return ExecResult(
+        success=False, output="", exit_code=None, duration_seconds=time.monotonic() - started,
+        error=f"{IDENTITY_UNAVAILABLE}: {e} — refusing to start the {label} subprocess",
+    )
+
+
+def _claude_env(identity=None) -> dict[str, str]:
     """Env for a headless claude subprocess: cleaned, plus the unattended
-    billing key when the principal has provisioned one (see above)."""
+    billing key when the principal has provisioned one (see above).
+
+    With an instance identity configured, the connections are the ONLY source
+    of credentials: no `_unattended_api_key`, no ~/.claude/.env."""
+    scoped = spawn_env(identity, claude=True)
+    if scoped is not None:
+        return scoped
     env = _clean_env()
     key = _unattended_api_key()
     if key:
@@ -760,7 +922,10 @@ def _run_proc_inner(
     watchdog can find the child's transcript.
     """
     if env is None:
-        env = _claude_env()
+        try:
+            env = _claude_env()
+        except IdentityUnavailable as e:
+            return _identity_failure(e, time.monotonic(), label)
 
     # Pin the child's session id so the watchdog can find its transcript, the
     # only liveness signal this path has. Fresh per ATTEMPT, never reused: the
@@ -966,9 +1131,13 @@ def run_agy_task(
 
     start = time.time()
     try:
+        agy_env = spawn_env(claude=False) or _clean_env()
+    except IdentityUnavailable as e:
+        return _identity_failure(e, time.monotonic(), "agy")
+    try:
         proc = subprocess.run(
             cmd, capture_output=True, text=True, timeout=timeout,
-            env=_clean_env(), cwd=cwd,
+            env=agy_env, cwd=cwd,
         )
     except FileNotFoundError:
         return ExecResult(
@@ -1043,6 +1212,12 @@ def _run_forge_task_inner(
     codex_bin: str,
     cwd: str | None,
 ) -> ExecResult:
+    if _identity_in_force():
+        # Not identity-wired yet: codex would run with the machine's default
+        # git/ssh identity and its own login. Refuse rather than run ambient.
+        return _identity_failure(
+            IdentityUnavailable("the forge/codex route is not identity-wired"),
+            time.monotonic(), "codex")
     cmd = [_resolve_codex_bin(codex_bin), "exec", "--skip-git-repo-check"]
     if model:
         cmd += ["--model", model]
@@ -1403,6 +1578,12 @@ def run_zai_store_backed_task(
     # retry and the idle watchdog apply identically to the z.ai path. _zai_env
     # handles key resolution (raising loudly on a missing key); label='z.ai'
     # keeps the distinct prefixes.
+    if _identity_in_force():
+        # Not identity-wired yet: the z.ai child is a `claude` CLI that would
+        # read the machine's default config dir and git/ssh identity.
+        return _identity_failure(
+            IdentityUnavailable("the z.ai route is not identity-wired"),
+            time.monotonic(), "z.ai")
     env = _zai_env(zai_api_key)
     cmd = _base_cmd(claude_bin, max_turns, _zai_model(model))
     return _run_proc(

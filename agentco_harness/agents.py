@@ -366,12 +366,22 @@ class DevAgent:
 
         prompt = impl.claude_code_prompt
 
+        from .executor import IdentityUnavailable, spawn_env
+
+        try:
+            # None (no identity) keeps the inherited environment; under an
+            # identity the child gets only the instance's connections.
+            env = spawn_env(claude=True)
+        except IdentityUnavailable as e:
+            print(f"[dev] identity_unavailable: {e} — refusing to start claude")
+            return f"Error: identity_unavailable: {e}"
         try:
             result = subprocess.run(
                 ["claude", "-p", prompt, "--print"],
                 capture_output=True,
                 text=True,
                 timeout=300,
+                env=env,
             )
             if result.returncode == 0:
                 return result.stdout
