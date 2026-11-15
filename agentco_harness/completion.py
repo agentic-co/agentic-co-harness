@@ -28,11 +28,29 @@ import json
 import os
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from typing import Optional
 
 from .executor import ExecResult
+
+
+class NoCrossHostRedirect(urllib.request.HTTPRedirectHandler):
+    """A followed redirect carries the Authorization header to wherever it
+    points. Refuse any redirect that changes scheme, host or port."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        a, b = urllib.parse.urlsplit(req.full_url), urllib.parse.urlsplit(newurl)
+        if (a.scheme, a.hostname, a.port) != (b.scheme, b.hostname, b.port):
+            raise urllib.error.HTTPError(
+                req.full_url, code, "cross-host redirect refused", headers, fp)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def safe_open(req, timeout=60):
+    """`urlopen` that never forwards a request (and its key) to another host."""
+    return urllib.request.build_opener(NoCrossHostRedirect).open(req, timeout=timeout)
 
 #: What a backend can do. A bead's `requires` is matched against these.
 TEXT = "text"      # takes a prompt, returns prose
@@ -127,7 +145,7 @@ def complete(
     started = time.monotonic()
     req = urllib.request.Request(url, data=body, method="POST", headers=headers)
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
+        with safe_open(req, timeout=timeout) as resp:
             payload = json.loads(resp.read() or b"{}")
     except urllib.error.HTTPError as e:
         detail = (e.read() or b"").decode(errors="replace")[:400]
