@@ -294,6 +294,13 @@ def _secret(conn: Connection, secret: Optional[str]) -> Optional[str]:
     return secret if secret is not None else read_secret(conn)
 
 
+def _empty_gh_dir(conn: Connection) -> str:
+    """A private, empty gh config dir owned by this connection (no login in it)."""
+    d = connections_dir() / "gh" / conn.name
+    d.mkdir(parents=True, exist_ok=True, mode=0o700)
+    return str(d)
+
+
 def child_env(conn: Connection, secret: Optional[str] = None) -> dict:
     """Env ADDITIONS for a subprocess using `conn`. Pair with `strip_keys`."""
     if conn.kind == "claude_code":
@@ -303,13 +310,17 @@ def child_env(conn: Connection, secret: Optional[str] = None) -> dict:
         var = "CLAUDE_CODE_OAUTH_TOKEN" if conn.auth == "subscription" else "ANTHROPIC_API_KEY"
         return {"CLAUDE_CONFIG_DIR": _expand(conn.config_dir), var: tok}
     if conn.kind == "github":
-        env = {"GIT_SSH_COMMAND": "ssh -i %s -o IdentitiesOnly=yes -o IdentityAgent=none"
-                                  % shlex.quote(_expand(conn.ssh_key))}
-        if conn.gitconfig:
-            env["GIT_CONFIG_GLOBAL"] = _expand(conn.gitconfig)
-        if conn.gh_config_dir:
-            env["GH_CONFIG_DIR"] = _expand(conn.gh_config_dir)
-        return env
+        # Never ambient: `-F /dev/null` ignores the machine's ssh config, and the
+        # git/gh config locations are ALWAYS pinned (to an empty per-connection
+        # location when the connection names none), so an unset field cannot
+        # fall back to the machine's git identity or gh login.
+        return {
+            "GIT_SSH_COMMAND": "ssh -F /dev/null -i %s -o IdentitiesOnly=yes -o IdentityAgent=none"
+                               % shlex.quote(_expand(conn.ssh_key)),
+            "GIT_CONFIG_GLOBAL": _expand(conn.gitconfig) or "/dev/null",
+            "GIT_CONFIG_SYSTEM": "/dev/null",
+            "GH_CONFIG_DIR": _expand(conn.gh_config_dir) or _empty_gh_dir(conn),
+        }
     return {}
 
 
@@ -321,7 +332,7 @@ def strip_keys(conn: Connection) -> set:
             return {"ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN"}
         return {"CLAUDE_CODE_OAUTH_TOKEN"}
     if conn.kind == "github":
-        return {"SSH_AUTH_SOCK"}
+        return {"SSH_AUTH_SOCK", "GH_TOKEN", "GITHUB_TOKEN", "GH_ENTERPRISE_TOKEN"}
     return set()
 
 
@@ -460,7 +471,7 @@ def _probe_openai(conn, secret, opener, check) -> ValidationResult:
 
 
 def _probe_github(conn, runner) -> ValidationResult:
-    argv = ["ssh", "-i", _expand(conn.ssh_key), "-o", "IdentitiesOnly=yes", "-o", "IdentityAgent=none",
+    argv = ["ssh", "-F", "/dev/null", "-i", _expand(conn.ssh_key), "-o", "IdentitiesOnly=yes", "-o", "IdentityAgent=none",
             "-o", "BatchMode=yes", "-T", "git@github.com"]  # leakguard: allow (public ssh login, not a person)
     env = _base_env(conn)
     try:

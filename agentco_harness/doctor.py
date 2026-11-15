@@ -1140,6 +1140,9 @@ def collect(config_path: str) -> DoctorReport:
         wanted += [("completions", c, "openai_compat") for c in ident.completions]
         if not ident.claude:
             _fail("identity.claude is not set — every claude bead would be refused identity_unavailable")
+        if not ident.github:
+            _fail("identity.github is not set — every bead would be refused identity_unavailable "
+                  "(git/gh would otherwise fall back to this machine's ssh keys and login)")
         for role, cname, kind in wanted:
             if not cname:
                 continue

@@ -270,7 +270,26 @@ class IdentityUnavailable(Exception):
 def configure_identity(identity) -> None:
     """Install (or, with None, clear) the instance identity for every spawn."""
     global _ACTIVE_IDENTITY
+    from . import config as _cfg
+
     _ACTIVE_IDENTITY = identity
+    _cfg._IDENTITY_DECLARED = identity is not None
+
+
+def current_identity():
+    """The resolved identity, or None when none is declared.
+
+    Fails CLOSED: a loaded config declared `identity:` but nothing resolved it,
+    so there is no way to know which connections to use. That is a refusal,
+    never a silent ambient run."""
+    if _ACTIVE_IDENTITY is not None:
+        return _ACTIVE_IDENTITY
+    from . import config as _cfg
+
+    if _cfg._IDENTITY_DECLARED:
+        raise IdentityUnavailable(
+            "an identity is declared in config but not resolved for this process")
+    return None
 
 
 def _identity_conn(name: str | None, kind: str, role: str):
@@ -308,9 +327,33 @@ def _identity_env(identity, *, claude: bool) -> dict[str, str]:
         env.pop("CLAUDE_CONFIG_DIR", None)  # agy gets the github env and nothing else
         if identity.agy:
             _identity_conn(identity.agy, "agy", "agy")
-    if identity.github:
-        _identity_apply(env, _identity_conn(identity.github, "github", "github"))
+    # github is mandatory: without it git/gh would fall back to the machine's
+    # ssh keys, git config and gh login.
+    _identity_apply(env, _identity_conn(identity.github, "github", "github"))
     return env
+
+
+def _identity_in_force() -> bool:
+    """True when an identity applies OR is declared-but-unresolved (both bar
+    routes that are not identity-wired)."""
+    try:
+        return current_identity() is not None
+    except IdentityUnavailable:
+        return True
+
+
+def spawn_env(identity=None, *, claude: bool = True) -> dict[str, str] | None:
+    """THE env builder for any child process.
+
+    `identity` passed explicitly wins; otherwise the process identity
+    (`current_identity()`, which refuses when declared-but-unresolved).
+    Returns None when no identity applies, meaning the caller keeps its
+    pre-identity behaviour. Raises IdentityUnavailable under an identity that
+    cannot be fully honoured."""
+    ident = identity if identity is not None else current_identity()
+    if ident is None:
+        return None
+    return _identity_env(ident, claude=claude)
 
 
 def check_identity(identity) -> None:
@@ -338,14 +381,15 @@ def _identity_failure(e: Exception, started: float, label: str = "claude") -> "E
     )
 
 
-def _claude_env() -> dict[str, str]:
+def _claude_env(identity=None) -> dict[str, str]:
     """Env for a headless claude subprocess: cleaned, plus the unattended
     billing key when the principal has provisioned one (see above).
 
     With an instance identity configured, the connections are the ONLY source
     of credentials: no `_unattended_api_key`, no ~/.claude/.env."""
-    if _ACTIVE_IDENTITY is not None:
-        return _identity_env(_ACTIVE_IDENTITY, claude=True)
+    scoped = spawn_env(identity, claude=True)
+    if scoped is not None:
+        return scoped
     env = _clean_env()
     key = _unattended_api_key()
     if key:
@@ -1061,8 +1105,7 @@ def run_agy_task(
 
     start = time.time()
     try:
-        agy_env = (_identity_env(_ACTIVE_IDENTITY, claude=False)
-                   if _ACTIVE_IDENTITY is not None else _clean_env())
+        agy_env = spawn_env(claude=False) or _clean_env()
     except IdentityUnavailable as e:
         return _identity_failure(e, time.monotonic(), "agy")
     try:
@@ -1143,7 +1186,7 @@ def _run_forge_task_inner(
     codex_bin: str,
     cwd: str | None,
 ) -> ExecResult:
-    if _ACTIVE_IDENTITY is not None:
+    if _identity_in_force():
         # Not identity-wired yet: codex would run with the machine's default
         # git/ssh identity and its own login. Refuse rather than run ambient.
         return _identity_failure(
@@ -1509,7 +1552,7 @@ def run_zai_store_backed_task(
     # retry and the idle watchdog apply identically to the z.ai path. _zai_env
     # handles key resolution (raising loudly on a missing key); label='z.ai'
     # keeps the distinct prefixes.
-    if _ACTIVE_IDENTITY is not None:
+    if _identity_in_force():
         # Not identity-wired yet: the z.ai child is a `claude` CLI that would
         # read the machine's default config dir and git/ssh identity.
         return _identity_failure(

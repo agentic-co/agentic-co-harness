@@ -33,6 +33,14 @@ DEFAULT_ENV_FILE = "~/.claude/.env"
 ENV_FILE_OVERRIDE_VAR = "AGENTCO_ENV_FILE"
 
 
+def _declares_identity(path: Path) -> bool:
+    try:
+        data = yaml.safe_load(path.read_text()) if path.exists() else None
+    except (OSError, yaml.YAMLError):
+        return False  # the real load below reports the malformed file
+    return isinstance(data, dict) and "identity" in data
+
+
 def load_env_file(path: Path | str | None = None) -> list[str]:
     """Merge `KEY=VALUE` pairs from an env file into `os.environ`.
 
@@ -149,6 +157,12 @@ class EgressConfig:
     """
 
     routes_path: str | None = None
+
+
+#: True from the moment a loaded config declares `identity:` until an
+#: Orchestrator resolves it (`executor.configure_identity`). While True and
+#: unresolved, any spawn that needs an env REFUSES instead of running ambient.
+_IDENTITY_DECLARED = False
 
 
 @dataclass
@@ -624,9 +638,16 @@ class Config:
         already goes through here, so the daemon and an interactive shell see
         the same secrets without each command remembering to bootstrap them.
         """
-        load_env_file()
-
+        global _IDENTITY_DECLARED
         path = Path(path)
+        # The identity decision comes from the YAML BEFORE the global env file
+        # is touched: an instance that declares `identity:` takes credentials
+        # from its connections only, so the machine-wide file is never read.
+        declared = _declares_identity(path)
+        _IDENTITY_DECLARED = declared
+        if not declared:
+            load_env_file()
+
         if not path.exists():
             return cls()
 

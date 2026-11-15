@@ -231,7 +231,7 @@ def test_doctor_wrong_kind_and_loose_secret_are_broken(tmp_path, monkeypatch):
 def test_doctor_validation_age(tmp_path, monkeypatch):
     from datetime import datetime, timedelta, timezone
     ident = _acme(tmp_path)
-    cfg = {"claude": ident.claude}
+    cfg = {"claude": ident.claude, "github": ident.github}
     fs = _doctor(tmp_path, monkeypatch, cfg)
     assert any(f.status == "degraded" and "never been validated" in f.message for f in fs)
     fmt = "%Y-%m-%dT%H:%M:%SZ"
@@ -239,8 +239,9 @@ def test_doctor_validation_age(tmp_path, monkeypatch):
     fs = _doctor(tmp_path, monkeypatch, cfg)
     assert any(f.status == "degraded" and "30 days" in f.message for f in fs)
     _stamp(ident.claude, datetime.now(timezone.utc).strftime(fmt))
+    _stamp(ident.github, datetime.now(timezone.utc).strftime(fmt))
     fs = _doctor(tmp_path, monkeypatch, cfg)
-    assert [f.status for f in fs] == ["ok"]
+    assert [f.status for f in fs] == ["ok", "ok"]
 
 
 # ---- routes not yet wired for identity refuse rather than run ambient -----------
