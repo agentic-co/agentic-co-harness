@@ -229,3 +229,49 @@ def test_doctor_flags_missing_github_role(tmp_path, monkeypatch):
     ident = _identity(tmp_path)
     fs = _doctor(tmp_path, monkeypatch, {"name": "acme", "claude": ident.claude})
     assert any(f.status == "broken" and "identity.github" in f.message for f in fs)
+
+
+# ---- fail-open reachability (B, D, E) ---------------------------------------
+
+def _identity_yaml(tmp_path, name="node"):
+    d = tmp_path / name
+    d.mkdir(exist_ok=True)
+    (d / "config.yaml").write_text(yaml.safe_dump(
+        {"tasks_path": "tasks.jsonl", "identity": {"name": "acme", "claude": "c", "github": "g"}}))
+    return d
+
+
+def test_B_a_later_non_identity_config_load_does_not_unset_the_declaration(tmp_path):
+    Config.load(_identity_yaml(tmp_path) / "config.yaml")
+    other = tmp_path / "other.yaml"
+    other.write_text("tasks_path: t.jsonl\n")
+    Config.load(other)  # e.g. a per-spawn idle-timeout load, or another node's config
+    with pytest.raises(executor.IdentityUnavailable):
+        executor.spawn_env(claude=False)
+
+
+def test_D_an_identity_less_orchestrator_does_not_unset_the_identity(tmp_path):
+    from agentco_harness.orchestrator import Orchestrator
+
+    Orchestrator(Config(tasks_path=str(tmp_path / "a.jsonl"), identity=_identity(tmp_path)))
+    Orchestrator(Config(tasks_path=str(tmp_path / "b.jsonl"), identity=None))
+    with pytest.raises(executor.IdentityUnavailable):
+        executor.spawn_env(claude=False)
+
+
+def test_E_a_gate_for_an_identity_node_refuses_without_ever_loading_config(tmp_path, monkeypatch):
+    from agentco_harness import beads as beads_mod
+
+    node = _identity_yaml(tmp_path)
+    ran = []
+    monkeypatch.setattr(beads_mod.subprocess, "run", lambda *a, **k: ran.append(a))
+    out = Beads(str(node / "tasks.jsonl"))._run_one_stage("true", str(node), 5)
+    assert out["passed"] is False and "identity_unavailable" in out["output_tail"]
+    assert ran == []
+
+
+def test_E_control_a_node_without_identity_still_runs_its_gate(tmp_path):
+    node = tmp_path / "plain"
+    node.mkdir()
+    (node / "config.yaml").write_text("tasks_path: tasks.jsonl\n")
+    assert Beads(str(node / "tasks.jsonl"))._run_one_stage("true", str(node), 5)["passed"]

@@ -644,7 +644,8 @@ class Config:
         # is touched: an instance that declares `identity:` takes credentials
         # from its connections only, so the machine-wide file is never read.
         declared = _declares_identity(path)
-        _IDENTITY_DECLARED = declared
+        if declared:
+            _IDENTITY_DECLARED = True  # sticky: only a test reset ever clears it
         if not declared:
             load_env_file()
 

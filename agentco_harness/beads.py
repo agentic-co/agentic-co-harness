@@ -1549,9 +1549,13 @@ class Beads:
         that upstream ever fails, nothing here will save it, and the honest
         thing is to say so rather than imply that a directory argument does.
         """
-        from .executor import IdentityUnavailable
+        from .executor import IdentityUnavailable, declare_if_node_has_identity
 
         try:
+            # A gate may run from a tasks path alone, with no config ever
+            # loaded in this process. The node's own config.yaml (beside its
+            # store) is the authority on whether it has an identity.
+            declare_if_node_has_identity(self.path.parent)
             gate_env = _gate_env()
         except IdentityUnavailable as e:
             return {

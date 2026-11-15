@@ -268,12 +268,38 @@ class IdentityUnavailable(Exception):
 
 
 def configure_identity(identity) -> None:
-    """Install (or, with None, clear) the instance identity for every spawn."""
+    """Install the instance identity for every spawn (None = this orchestrator
+    has none).
+
+    The DECLARED latch is sticky: once any identity has been seen in this
+    process it is never unset here, so an identity-less Orchestrator or config
+    load cannot turn a later spawn ambient. Only `_reset_identity_for_tests`
+    clears it."""
     global _ACTIVE_IDENTITY
     from . import config as _cfg
 
     _ACTIVE_IDENTITY = identity
-    _cfg._IDENTITY_DECLARED = identity is not None
+    if identity is not None:
+        _cfg._IDENTITY_DECLARED = True
+
+
+def _reset_identity_for_tests() -> None:
+    """TEST-ONLY: clear the identity and the sticky declared latch."""
+    global _ACTIVE_IDENTITY
+    from . import config as _cfg
+
+    _ACTIVE_IDENTITY = None
+    _cfg._IDENTITY_DECLARED = False
+
+
+def declare_if_node_has_identity(node_dir) -> None:
+    """Latch the declared flag when the node at `node_dir` has a config.yaml
+    that declares `identity:`. For spawn sites that run for a node without ever
+    having loaded its config (e.g. a gate run from a tasks path alone)."""
+    from . import config as _cfg
+
+    if _cfg._declares_identity(Path(node_dir) / "config.yaml"):
+        _cfg._IDENTITY_DECLARED = True
 
 
 def current_identity():
