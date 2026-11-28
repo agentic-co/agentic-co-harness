@@ -41,6 +41,27 @@ def _declares_identity(path: Path) -> bool:
     return isinstance(data, dict) and "identity" in data
 
 
+CONFIG_ENV_VAR = "AGENTIC_CO_CONFIG"
+
+
+def discover_config(start: Path | str | None = None) -> str:
+    """Find the node config when `--config` was not given.
+
+    Searches `start` (default: the cwd) and each parent for `config.yaml`, then
+    `.agentco/config.yaml` in the same directory. Returns the relative name
+    `config.yaml` when nothing is found, so a missing config behaves exactly as
+    it did before discovery existed. `$AGENTIC_CO_CONFIG` is handled by the CLI
+    option itself and outranks this search.
+    """
+    here = Path(start).resolve() if start else Path.cwd().resolve()
+    for d in (here, *here.parents):
+        for rel in ("config.yaml", ".agentco/config.yaml"):
+            candidate = d / rel
+            if candidate.is_file():
+                return str(candidate) if d != here or rel != "config.yaml" else "config.yaml"
+    return "config.yaml"
+
+
 def load_env_file(path: Path | str | None = None) -> list[str]:
     """Merge `KEY=VALUE` pairs from an env file into `os.environ`.
 

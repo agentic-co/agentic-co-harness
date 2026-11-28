@@ -21,7 +21,7 @@ from .beads import (
     TaskPriority,
     TaskStatus,
 )
-from .config import Config
+from .config import CONFIG_ENV_VAR, Config, discover_config
 from .doctor import DEFAULT_RECONCILE_AFTER_H, unresolved_for_worker
 from .cost import format_table, read_ledger, summarize
 from .orchestrator import Orchestrator
@@ -38,9 +38,13 @@ from . import usage as usage_mod
 
 
 @click.group()
-@click.option("--config", "-c", default="config.yaml", help="Config file path")
+@click.option(
+    "--config", "-c", default=None, envvar=CONFIG_ENV_VAR,
+    help="Config file path. Default: $AGENTIC_CO_CONFIG, else the nearest "
+         "config.yaml found searching upward from the current directory.",
+)
 @click.pass_context
-def main(ctx, config: str):
+def main(ctx, config: str | None):
     """agentic-co — the AgentCo execution runtime.
 
     Every unit of work is a bead. `cycle` runs one heartbeat; `doctor` says what
@@ -49,6 +53,10 @@ def main(ctx, config: str):
     coordination plane when `hub.url` is set.
     """
     ctx.ensure_object(dict)
+    if config is None:
+        # `init` creates a node HERE; an upward hit would make it "preserve"
+        # some parent directory's config instead of creating one.
+        config = "config.yaml" if ctx.invoked_subcommand == "init" else discover_config()
     ctx.obj["config_path"] = config
 
     # Extensions load HERE, before any command body, because a registration is
