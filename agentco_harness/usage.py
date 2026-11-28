@@ -482,7 +482,7 @@ def within(rows: Iterable[dict], days: Optional[int], now: Optional[datetime] = 
 
 
 def format_table(rows: list[dict], group_by: str) -> str:
-    """Human-readable summary for `agentco usage`."""
+    """Human-readable summary for `agentic-co usage`."""
     if not rows:
         return (
             "No usage telemetry recorded yet.\n"

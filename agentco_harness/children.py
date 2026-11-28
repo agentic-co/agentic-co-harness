@@ -25,7 +25,7 @@ from .beads import normalize_capabilities
 from .recurring import parse_duration
 
 HEARTBEAT_FILENAME = "heartbeat.json"
-# Where the hub records each remote worker's last `agentco pull` (ac-48d8aba3).
+# Where the hub records each remote worker's last `agentic-co pull` (ac-48d8aba3).
 # Beside the children registry, because it describes the same population.
 PULLS_FILENAME = "pulls.json"
 DEFAULT_GRACE = 2.0
@@ -105,13 +105,13 @@ def _downgrade_for_host_outage(
 # An interval of "manual" means the child has NO automatic cadence — nobody
 # schedules it, so staleness is not a failure signal and an alarm would be
 # permanent noise. It is a first-class registry value, not a malformed
-# duration: `agentco add-company` writes it for vault-only and personal nodes.
+# duration: `agentic-co add-company` writes it for vault-only and personal nodes.
 MANUAL_INTERVAL = "manual"
 
 # Child kinds whose liveness this parent cannot observe from a heartbeat file.
 # `ado-backed` children live in Azure DevOps and have no local instance dir at
 # all; `vault-only` children are Obsidian folders with no cycle to run. Both
-# belong in the registry (for `agentco me` routing and portfolio display) but
+# belong in the registry (for `agentic-co me` routing and portfolio display) but
 # have nothing to verify.
 UNVERIFIABLE_TYPES = {"ado-backed", "vault-only"}
 
@@ -133,7 +133,7 @@ class ChildRef:
     path: str | None = None
     expected_interval: str | None = "1h"
     notify: bool = True
-    priority: int = 2  # company weight for `agentco me`: 0=critical … 3=low (mirrors TaskPriority)
+    priority: int = 2  # company weight for `agentic-co me`: 0=critical … 3=low (mirrors TaskPriority)
     type: str = "beads"
     vault_path: str | None = None
     # --- node tags (ac-39d4dbc8) --------------------------------------------
@@ -296,7 +296,7 @@ class PullLedger:
     like a MacBook with nothing to do, forever.
 
     The missing fact is not on the remote machine at all — it is here. The hub
-    is the only party that observes every `agentco pull`, so the pull IS the
+    is the only party that observes every `agentic-co pull`, so the pull IS the
     remote node's heartbeat, and this is where it gets written down. That keeps
     invariant 1 of Plans/TwoMachineLifeos.md intact: the remote party still
     interacts only through commands, never file writes into a synced tree.
@@ -330,7 +330,7 @@ class PullLedger:
         try:
             data = json.loads(self.path.read_text())
         except (json.JSONDecodeError, OSError) as e:
-            # stderr, not stdout: `agentco pull` promises JSON and nothing else
+            # stderr, not stdout: `agentic-co pull` promises JSON and nothing else
             # on stdout, and a warning printed there would corrupt the machine
             # interface the remote worker parses.
             print(
@@ -454,7 +454,7 @@ def verify_remote_child(
             "level": "fail",
             "detail": (
                 f"remote node on {child.host} has NEVER pulled — no worker on "
-                f"that host has ever run `agentco pull --node {child.name}`. "
+                f"that host has ever run `agentic-co pull --node {child.name}`. "
                 f"Its lane is registered but unstaffed: beads routed to it will "
                 f"sit PENDING forever. Check the launchd job and SSH key on "
                 f"{child.host}."

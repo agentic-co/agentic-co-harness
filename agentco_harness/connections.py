@@ -37,7 +37,7 @@ from pathlib import Path
 from typing import Callable, Optional
 
 SCHEMA = "agentco.connection/1"
-KINDS = ("claude_code", "agy", "openai_compat", "github")
+KINDS = ("claude_code", "agy", "openai_compat", "github", "hub")
 AUTHS = ("subscription", "api_key")
 NAME_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,62}$")
 PROBE_PROMPT = "Reply with exactly: OK"
@@ -65,6 +65,7 @@ class Connection:
     gitconfig: str = ""             # github
     gh_config_dir: str = ""         # github
     expect_github_user: str = ""    # github, optional
+    actor: str = ""                 # hub: the actor name the secret signs as
     validated_at: str = ""
     validated: str = ""
 
@@ -154,6 +155,12 @@ def _validate_shape(conn: Connection) -> None:
         check_base_url(conn.base_url)
     if conn.kind == "github" and not conn.ssh_key:
         raise ConnectionError_("github needs ssh_key")
+    if conn.kind == "hub":
+        # The credential is bound to ONE plane and ONE actor, so an instance
+        # cannot report to a different hub or as a different actor with it.
+        if not (conn.base_url and conn.actor):
+            raise ConnectionError_("hub needs base_url and actor")
+        check_base_url(conn.base_url)
 
 
 def _is_loopback(host: str) -> bool:
@@ -193,10 +200,10 @@ def precheck(conn: Connection, secret: Optional[str]) -> None:
     """Every rule `save` enforces, without writing anything."""
     _validate_shape(conn)
     _check_unique_agy(conn)
-    if conn.kind == "claude_code" and not secret:
+    if conn.kind in ("claude_code", "hub") and not secret:
         existing = Path(_expand(conn.secret_file)) if conn.secret_file else _secret_path(conn.name)
         if not existing.exists():
-            raise ConnectionError_("claude_code needs a secret (token or API key)")
+            raise ConnectionError_(f"{conn.kind} needs a secret ({'token or API key' if conn.kind == 'claude_code' else 'the actor shared secret'})")
 
 
 def _secret_path(name: str) -> Path:
@@ -240,7 +247,7 @@ def load(name: str) -> Connection:
     conn = Connection(**{k: v for k, v in data.items() if k in known})
     if conn.secret_file:
         _check_secret_mode(conn.secret_file)
-    if conn.kind == "openai_compat":
+    if conn.kind in ("openai_compat", "hub"):
         # The JSON is data a person can hand-edit; re-check what save checked.
         check_base_url(conn.base_url)
     return conn
@@ -422,6 +429,8 @@ def validate(conn: Connection, *, runner: Optional[Runner] = None, opener: Optio
             return _probe_openai(conn, sec, opener, check)
         if conn.kind == "github":
             return _probe_github(conn, runner)
+        if conn.kind == "hub":
+            return _probe_hub(conn, sec)
     except ConnectionError_ as e:
         return ValidationResult(False, f"failed: {e}")
     return ValidationResult(False, f"failed: unknown kind {conn.kind!r}")
@@ -439,6 +448,21 @@ def _probe_cli(argv, env, runner, secret, timeout) -> ValidationResult:
     if rc == 0 and "OK" in (out or ""):
         return ValidationResult(True, f"ok: {argv[0]} replied in {time.monotonic() - t0:.1f}s")
     return ValidationResult(False, f"failed: {argv[0]} exit {rc}: {_redact(err or out, secret)}")
+
+
+def _probe_hub(conn, secret) -> ValidationResult:
+    """An authenticated read the plane answers only for this actor and secret."""
+    from .hub_client import HubClient, HubRefusal, HubUnreachable
+
+    if not secret:
+        return ValidationResult(False, "failed: hub connection has no secret")
+    try:
+        HubClient(url=conn.base_url, actor=conn.actor, secret=secret, timeout_s=30).probe()
+    except HubRefusal as e:
+        return ValidationResult(False, f"failed: {e.code}")
+    except HubUnreachable as e:
+        return ValidationResult(False, f"failed: unreachable ({str(e)[:120]})")
+    return ValidationResult(True, f"ok: {conn.base_url} accepted {conn.actor}")
 
 
 def _probe_openai(conn, secret, opener, check) -> ValidationResult:
@@ -561,6 +585,10 @@ def build_connect_group():
             kw["model"] = click.prompt("Model")
             secret = click.prompt("API key (empty for none)", hide_input=True, default="",
                                   show_default=False) or None
+        elif kind == "hub":
+            kw["base_url"] = click.prompt("Hub URL")
+            kw["actor"] = click.prompt("Actor name on the hub")
+            secret = click.prompt("Actor shared secret", hide_input=True)
         elif kind == "github":
             kw["ssh_key"] = click.prompt("SSH key path")
             kw["gitconfig"] = click.prompt("Gitconfig path", default="", show_default=False)
@@ -583,6 +611,7 @@ def build_connect_group():
     @click.option("--config-dir", default="")
     @click.option("--base-url", default="")
     @click.option("--model", default="")
+    @click.option("--actor", default="", help="hub: the actor name the secret signs as.")
     @click.option("--ssh-key", default="")
     @click.option("--gitconfig", default="")
     @click.option("--gh-config-dir", default="")
@@ -591,12 +620,12 @@ def build_connect_group():
     @click.option("--secret-from", default="", help="Read the secret from this file.")
     @click.option("--no-validate", is_flag=True, help="Save without a live probe; marked unvalidated.")
     @click.option("--force", is_flag=True, help="Replace an existing connection of the same name.")
-    def add(kind, name, auth, config_dir, base_url, model, ssh_key, gitconfig, gh_config_dir,
+    def add(kind, name, auth, config_dir, base_url, model, actor, ssh_key, gitconfig, gh_config_dir,
             expect_github_user, secret_stdin, secret_from, no_validate, force):
         """Add a connection non-interactively."""
         secret = _read_secret_opt(secret_stdin, secret_from)
         conn = Connection(name=name, kind=kind, auth=auth or ("subscription" if kind == "claude_code" else ""),
-                          config_dir=config_dir, base_url=base_url, model=model, ssh_key=ssh_key,
+                          config_dir=config_dir, base_url=base_url, model=model, actor=actor, ssh_key=ssh_key,
                           gitconfig=gitconfig, gh_config_dir=gh_config_dir,
                           expect_github_user=expect_github_user)
         _finish(conn, secret, no_validate, force)

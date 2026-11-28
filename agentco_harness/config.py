@@ -161,6 +161,14 @@ class HubConfig:
     #: exactly that. Set it to a registered backend (`claude`, `zai`, `forge`)
     #: and the mirror stamps that instead; `doctor` refuses an unknown one.
     executor: str | None = None
+    #: Directories a pulled item may name as its `workdir`. Empty = unrestricted
+    #: (a node opts in); anything outside is refused `workdir_outside_roots`
+    #: before the executor starts (docs/v1-scope.md A8).
+    workdir_roots: list[str] = field(default_factory=list)
+    #: Pull on each cycle without a manual `hub pull`. Off by default per node.
+    intake: bool = False
+    #: Most hub items this node holds unfinished; intake pulls up to the gap.
+    intake_max_open: int = 3
 
     @property
     def enabled(self) -> bool:
@@ -200,9 +208,10 @@ class IdentityConfig:
     github: str | None = None       # a github connection
     completions: list[str] = field(default_factory=list)  # openai_compat connections
     agy: str | None = None          # the machine's single agy connection
+    hub: str | None = None          # a `hub` connection: the credential this instance signs hub requests with
 
 
-CONSUMED_IDENTITY_KEYS = {"name", "claude", "github", "completions", "agy"}
+CONSUMED_IDENTITY_KEYS = {"name", "claude", "github", "completions", "agy", "hub"}
 
 # Agent settings keys that are actually consumed by the codebase.
 # Anything else in an agent's config block triggers a loud warning at load.
@@ -445,7 +454,7 @@ class BackoffConfig:
     effort onto the companies that are actually moving.
 
     Advisory posture (mirrors triage/notify): a malformed block never fails a
-    cycle. It is warned loudly, `agentco doctor` FAILs on it, and backoff falls
+    cycle. It is warned loudly, `agentic-co doctor` FAILs on it, and backoff falls
     back to disabled (every wake runs at baseline) — never a silent skip.
 
     `base`/`max` are `parse_duration` strings ('1h', '2h', '1d', '7d'); `factor`
@@ -461,7 +470,7 @@ class BackoffConfig:
         """Return a list of human-readable problems; empty means valid.
 
         Used by both the cycle gate (to decide advisory fall-back) and by
-        `agentco doctor` (to FAIL loudly) — one source of truth for what
+        `agentic-co doctor` (to FAIL loudly) — one source of truth for what
         'malformed' means, so the two can never disagree.
         """
         from .recurring import parse_duration  # local import avoids a cycle
@@ -756,13 +765,19 @@ class Config:
 
         if "hub" in data:
             hub = data["hub"] or {}
-            _warn_unknown_nested("hub", hub, {"url", "actor", "secret_env", "timeout_s", "lease_ttl_s", "executor"}, path)
+            _warn_unknown_nested("hub", hub, {"url", "actor", "secret_env", "timeout_s", "lease_ttl_s", "executor", "workdir_roots", "intake", "intake_max_open"}, path)
+            roots = hub.get("workdir_roots") or []
+            if not isinstance(roots, list):
+                raise ValueError("`hub.workdir_roots:` must be a list of directories")
             _require_authenticated_plane(hub.get("url"), path)
             config.hub = HubConfig(
                 url=hub.get("url"), actor=hub.get("actor", "harness"),
                 secret_env=hub.get("secret_env", "AGENTCO_HUB_SECRET"),
                 timeout_s=int(hub.get("timeout_s", 30)), lease_ttl_s=int(hub.get("lease_ttl_s", 3600)),
                 executor=hub.get("executor"),
+                workdir_roots=[str(r) for r in roots],
+                intake=bool(hub.get("intake", False)),
+                intake_max_open=int(hub.get("intake_max_open", 3)),
             )
 
         if "extensions" in data:
@@ -800,6 +815,7 @@ class Config:
                 github=ident.get("github") or None,
                 completions=[str(c) for c in comps],
                 agy=ident.get("agy") or None,
+                hub=ident.get("hub") or None,
             )
 
         if "egress" in data:
@@ -838,13 +854,13 @@ class Config:
             )
             # Parse-but-consume honesty: a malformed block is warned here at the
             # load boundary too, so the lie is loud even for callers that never
-            # reach `agentco doctor`. The cycle gate degrades to disabled.
+            # reach `agentic-co doctor`. The cycle gate degrades to disabled.
             errs = config.backoff.validation_errors()
             if errs:
                 print(
                     f"[config] WARNING: backoff block in {path} is malformed: "
                     f"{'; '.join(errs)} — backoff will be treated as DISABLED "
-                    f"(every wake runs at baseline). Fix it or run `agentco doctor`."
+                    f"(every wake runs at baseline). Fix it or run `agentic-co doctor`."
                 ,
                     file=sys.stderr,
                 )
@@ -975,7 +991,7 @@ class Config:
         # Same non-default-only posture as humans/backoff: a node that declares
         # no capabilities stays byte-identical to today's output, while a node
         # that does must round-trip it — a manifest lost in a save is a lane
-        # that silently stops working after the next `agentco init`.
+        # that silently stops working after the next `agentic-co init`.
         if self.capabilities:
             data["capabilities"] = list(self.capabilities)
         if self.instance:

@@ -1,4 +1,4 @@
-"""agentco tempo — the temporal layer over the bead graph.
+"""agentic-co tempo — the temporal layer over the bead graph.
 
 Beads already carries the graph (``blocked_by``), the topological frontier
 (``ready()``), and the executor fork (``assigned_agent`` / ``assigned_to``).

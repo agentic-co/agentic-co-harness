@@ -29,7 +29,7 @@ duplicate spend is not recoverable at all.
 Every actual firing writes an observation, INCLUDING firings that produced
 nothing, because `produced: 0` and "never fired" are different facts and
 conflating them is what made F5 (a valid schedule with zero runs for ten
-days) invisible. `agentco schedules audit` is the query that reads them.
+days) invisible. `agentic-co schedules audit` is the query that reads them.
 """
 
 from __future__ import annotations
@@ -325,7 +325,7 @@ def reconcile(
             #
             # `last_spawned` is a cursor and cursors are not a mutual-exclusion
             # mechanism: two cycles racing (the hourly heartbeat plus a manual
-            # `agentco cycle`, or a launchd job on each of two machines against a
+            # `agentic-co cycle`, or a launchd job on each of two machines against a
             # synced store) can both read the same `last_spawned`, both compute
             # the same slot as due, and both fire it. The bead-level natural key
             # catches the duplicate BEAD, but only a bead — a schedule whose

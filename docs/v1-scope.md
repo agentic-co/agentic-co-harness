@@ -1,6 +1,6 @@
 # Runtime 1.0: scope, cut to match hub 1.1
 
-**Status:** proposed, 2026-11-14. Nothing here is built unless a row says so. Every "today"
+**Status:** proposed, 2026-11-14; first build pass 2026-11-28 (see "Build status" below). Nothing here is built unless a row or that section says so. Every "today"
 claim below was read from code at `main` `fd6c0ec`, not remembered; file and function names are
 given so it can be checked again.
 
@@ -77,6 +77,24 @@ Each row ships on its own, with one acceptance test that fails before the work (
 |---|---|---|
 | F1 | Command name | Prompts and messages say `agentic-co`, not the old `agentco` (executor, doctor, schedules). |
 | F2 | Orphan-bead doctor check | `doctor` warns on a bead with no parent goal. |
+
+## Build status (2026-11-28, branch `feat/v1-config-and-connected`)
+
+| item | state |
+|---|---|
+| A1 | **Partly.** Nothing local can block on or be parented under a hub-pulled bead (`Beads._refuse_hub_owned`), so a local close releases nothing. Not done: the separate journal type of hub ADR 0012 §2. A pulled item is still a bead the executor runs, and completion hooks still fire for it (the hub report is one). Moving to a journal entry changes what the executor runs; that is a design call. |
+| A2 | Done. Key is `hub:<hub generated id from GET /hub>:<item id>` (falls back to the url on a plane that has no `/hub`); a report from any other hub is refused `hub_of_origin_mismatch`, an unconfigured one is not sent. |
+| A3 | Done. A re-lease takes the new attempt; a bead that finished under the old one is refused `stale_attempt` at report time. |
+| A4 | Done. `HubClient.keep_lease` renews every third of the TTL while a mirrored bead runs (both dispatch paths). |
+| A5 | Done. A staged gate sends one attestation per rung, each with `stage` (the old single record with a list as `check` was invalid under the pinned spec); the first rides with the report, the rest go by `attest`. A judged or human gate reports `done` with no attestation. |
+| A6 | **Skipped, needs a decision.** The hub work item has no scope field (hub roadmap open item 7): either the hub adds one or the runtime derives scope from repository and workdir. |
+| A7 | Done. `hub.intake: true` pulls up to `hub.intake_max_open` (default 3) minus items still held, at the start of each cycle. Off by default. |
+| A8 | **Partly.** `workdir` must sit under `hub.workdir_roots` (refused `workdir_outside_roots` before the executor starts; unset roots mean unrestricted until a node opts in). Not done: restricting gate checks to named checks. ADR 0014's check library is PROPOSED and does not exist, so there is nothing to name checks against; the raw-command opt-in would be a flag with no library behind it. |
+| C3 | Done. New `hub` connection kind (url, actor, secret; validated live against the plane) and `identity.hub`. Under a declared identity the hub secret comes from that connection only, never `AGENTCO_HUB_SECRET`; a connection made for another url or actor is refused `identity_hub_mismatch`. |
+| F1 | Done for the runtime's own prompts and messages (executor, doctor, schedules, rca, orchestrator and the rest). |
+| Config discovery | Done (not in the original scope): `AGENTIC_CO_CONFIG`, then an upward search for `config.yaml`. |
+| E1-E3, D3 | **Deferred to 1.1.** |
+| B3-B6 | Untouched; they wait on hub 1.1. |
 
 ## Not in 1.0
 

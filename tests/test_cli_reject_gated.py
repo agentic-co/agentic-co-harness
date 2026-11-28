@@ -47,7 +47,7 @@ def test_reject_refuses_a_gated_bead_and_names_the_way_out(tmp_path, monkeypatch
 
     assert result.exit_code == 1, result.output
     assert "Cannot reject" in result.output
-    assert f"agentco tasks cancel {task_id}" in result.output
+    assert f"agentic-co tasks cancel {task_id}" in result.output
     assert beads.get(task_id).status is TaskStatus.PENDING_APPROVAL
 
 
@@ -103,7 +103,7 @@ def test_reject_all_rejects_the_ungated_and_reports_the_gated(tmp_path, monkeypa
     assert result.exit_code == 1, result.output
     assert "Rejected 2 task(s)." in result.output
     assert "1 NOT rejected" in result.output
-    assert f"agentco tasks cancel {gated}" in result.output
+    assert f"agentic-co tasks cancel {gated}" in result.output
 
     assert beads.get(plain_a).status is TaskStatus.SKIPPED
     assert beads.get(plain_b).status is TaskStatus.SKIPPED
@@ -148,6 +148,6 @@ def test_terminal_decline_refuses_and_offers_both_alternatives(tmp_path, monkeyp
 
     assert result.exit_code == 1, result.output
     assert "Cannot decline (terminal)" in result.output
-    assert f"agentco tasks cancel {task.id}" in result.output
-    assert f"agentco tasks decline {task.id}" in result.output
+    assert f"agentic-co tasks cancel {task.id}" in result.output
+    assert f"agentic-co tasks decline {task.id}" in result.output
     assert beads.get(task.id).status is TaskStatus.PENDING

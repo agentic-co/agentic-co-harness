@@ -1,4 +1,4 @@
-"""agentco me — the human work queue.
+"""agentic-co me — the human work queue.
 
 Companies run in parallel, each with its own local priorities; the one
 single-threaded resource in the portfolio is the human. This module builds
@@ -175,7 +175,7 @@ def _is_snoozed(task: Task, now: datetime) -> bool:
 
 def _resolve_cmd(config_path: str, verb: str, task_id: str | None = None) -> str:
     tail = f" {task_id}" if task_id else ""
-    return f"agentco --config {config_path} {verb}{tail}"
+    return f"agentic-co --config {config_path} {verb}{tail}"
 
 
 def _collect_instance(

@@ -31,17 +31,19 @@ import json
 import os
 import platform
 import socket
+import threading
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from dataclasses import dataclass
+from contextlib import contextmanager
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Optional
 
 from asop import gates as _asop_gates
 
-from .beads import Beads, Task, TaskStatus
+from .beads import Beads, Task, TaskStatus, gate_kind
 
 ACTOR_HEADER = "x-agentco-actor"
 TIMESTAMP_HEADER = "x-agentco-timestamp"
@@ -137,6 +139,7 @@ class HubClient:
     #: node is ON THE PLANE; `executor` is what runs the work HERE. They are
     #: different names for a reason — see `HubConfig.executor`.
     executor: str | None = None
+    _origin: Optional[str] = field(default=None, init=False, repr=False, compare=False)
 
     # ------------------------------------------------------------ transport
 
@@ -192,6 +195,39 @@ class HubClient:
             payload["attestation"] = attestation
         return self._request("POST", f"/work/{item_id}/report", payload)
 
+    def renew(self, item_id: str, attempt: int, ttl_seconds: Optional[int] = None) -> dict:
+        """Extend the lease this node holds, fenced on `attempt`. The heartbeat of
+        a long step; never moves the fence (hub `POST /work/{id}/renew`)."""
+        payload: dict = {"attempt": int(attempt)}
+        if ttl_seconds is not None:
+            payload["ttlSeconds"] = int(ttl_seconds)
+        return self._request("POST", f"/work/{item_id}/renew", payload)
+
+    def origin_id(self) -> str:
+        """The id this hub generated for itself (`GET /hub`), cached.
+
+        Item ids are only unique within one hub, so the id of the HUB is what
+        makes `(origin, item)` a key. A plane too old to answer `/hub` falls
+        back to its url, which is stable for as long as the config is.
+        """
+        if self._origin is None:
+            try:
+                uid = str(self._request("GET", "/hub").get("hubId") or "")
+            except HubRefusal as e:
+                if e.http_status not in (404, 405):
+                    raise
+                uid = ""
+            self._origin = uid or f"url:{self.url.rstrip('/')}"
+        return self._origin
+
+    def owns(self, hub_meta: dict) -> bool:
+        """Is this the hub the bead was pulled from? Beads pulled before origin
+        ids were recorded are matched by url."""
+        recorded = (hub_meta or {}).get("hub_id")
+        if recorded:
+            return recorded == self.origin_id()
+        return str((hub_meta or {}).get("url", "")).rstrip("/") == self.url.rstrip("/")
+
     def attest(self, item_id: str, attestation: dict) -> dict:
         return self._request("POST", f"/work/{item_id}/attest", {"attestation": attestation})
 
@@ -201,9 +237,9 @@ class HubClient:
 
     # ------------------------------------------------------------ mirroring
 
-    @staticmethod
-    def natural_key(item_id: str) -> str:
-        return f"hub:{item_id}"
+    def natural_key(self, item_id: str) -> str:
+        """`hub:<the hub's generated id>:<item id>` — two hubs can both have a w-1."""
+        return f"hub:{self.origin_id()}:{item_id}"
 
     def mirror(self, beads: Beads, leased: dict) -> Task:
         """A pulled item as a local bead the cycle can execute.
@@ -217,7 +253,7 @@ class HubClient:
         item = leased["item"]
         existing = beads.find_by_natural_key(self.natural_key(item["id"]))
         if existing is not None:
-            return existing
+            return self._refresh_fence(beads, existing, leased)
         metadata = dict(item.get("metadata") or {})
         # Where the work happens. The gate declares the directory it is proved
         # in, so that is the directory the work is done in — an executor left
@@ -234,7 +270,8 @@ class HubClient:
         if item.get("verify") and "verify" not in metadata:
             metadata["verify"] = dict(item["verify"])
         metadata[HUB_KEY] = {
-            "url": self.url, "item_id": item["id"], "attempt": leased.get("attempt"),
+            "url": self.url, "hub_id": self.origin_id(), "item_id": item["id"],
+            "attempt": leased.get("attempt"),
             "actor": self.actor, "pulled_at": datetime.now(timezone.utc).isoformat(),
         }
         return beads.create(
@@ -247,6 +284,29 @@ class HubClient:
             metadata=metadata,
             natural_key=self.natural_key(item["id"]),
         )
+
+    def _refresh_fence(self, beads: Beads, existing: Task, leased: dict) -> Task:
+        """A re-lease of an item already mirrored: take the NEW attempt.
+
+        The plane re-issues a lease after expiry under a higher attempt, and
+        only a report under that attempt is accepted. Keeping the old one sent
+        every later report under a fence the plane had already moved past. A
+        bead that already finished under the old attempt did its work for a
+        lease the plane no longer honours, so it is marked `stale_attempt` and
+        its outcome is refused at report time rather than sent under a fence it
+        did not run under.
+        """
+        hub = dict((existing.metadata or {}).get(HUB_KEY) or {})
+        fresh = leased.get("attempt")
+        if fresh is None or hub.get("attempt") == fresh:
+            return existing
+        update = {**hub, "attempt": fresh, "previous_attempt": hub.get("attempt"),
+                  "leased_at": datetime.now(timezone.utc).isoformat()}
+        if existing.status in (TaskStatus.DONE, TaskStatus.FAILED, TaskStatus.AWAITING_VERIFY) \
+                and not hub.get("reported_at"):
+            update["stale_attempt"] = True
+        beads.annotate(existing.id, {HUB_KEY: update})
+        return beads.get(existing.id) or existing
 
     @staticmethod
     def brief(metadata: dict) -> str:
@@ -300,50 +360,102 @@ class HubClient:
 
     # ------------------------------------------------------------ reporting back
 
-    def attestation_for(self, task: Task) -> Optional[dict]:
-        """The contract's attestation record from the runtime's own gate run.
+    def attestations_for(self, task: Task) -> list[dict]:
+        """The contract's attestation records from the runtime's own gate run.
 
-        Only a deterministic gate this process ran produces one: its
+        Only a deterministic gate this process ran produces any: its
         `verify_result` is the check identity and exit status the plane
-        verifies as a claim (§5.3). Judged and human gates are answered on
-        the plane by the party the gate names, never by the executor.
+        verifies as a claim (§5.3). Judged and human gates are answered on the
+        plane by the party the gate names, never by the executor, and a plane
+        refuses an attestation offered with their report — so they yield none.
+
+        A staged gate (`checks`) takes ONE record per rung, each carrying its
+        own command and `stage` index (`asop.gates.validate_attestation`); the
+        old single record with the whole list as `check` was invalid. A run
+        that stopped at a failing rung attests the rungs it ran, no more.
         """
         spec = (task.metadata or {}).get("verify") or {}
         record = (task.metadata or {}).get("verify_result") or {}
-        if not spec or not record:
-            return None
-        check = spec.get("checks") or spec.get("check")
-        exit_status = 0 if record.get("passed") else record.get("exit_code")
-        if exit_status is None:
-            exit_status = 1
-        return {
-            "check": check,
-            "exit_status": int(exit_status),
-            # A fingerprint of where the check ran, as one string: the contract
-            # asks for enough to identify the machine or runtime, so an
-            # attestation nobody can reproduce on can at least be disputed.
-            "environment": (
-                f"host={socket.gethostname()} platform={platform.platform()} "
-                f"python={platform.python_version()} cwd={record.get('cwd')} actor={self.actor}"
-            ),
-            "at": record.get("checked_at") or datetime.now(timezone.utc).isoformat(),
-            "submitted_by": self.actor,
-        }
+        if not spec or not record or (gate_kind(spec) or "deterministic") != "deterministic":
+            return []
+        environment = (
+            f"host={socket.gethostname()} platform={platform.platform()} "
+            f"python={platform.python_version()} cwd={record.get('cwd')} actor={self.actor}"
+        )
+        at = record.get("checked_at") or datetime.now(timezone.utc).isoformat()
+
+        def one(check: str, exit_status, stage: Optional[int]) -> dict:
+            att = {
+                "check": check,
+                "exit_status": int(1 if exit_status is None else exit_status),
+                # A fingerprint of where the check ran, as one string: the
+                # contract asks for enough to identify the machine or runtime.
+                "environment": environment,
+                "at": at,
+                "submitted_by": self.actor,
+            }
+            if stage is not None:
+                att["stage"] = stage
+            return att
+
+        staged = spec.get("checks")
+        if not staged:
+            return [one(spec.get("check"), 0 if record.get("passed") else record.get("exit_code"), None)]
+        ran = int(record.get("stages_run") or len(staged))
+        failed = (record.get("failed_stage") or {}).get("index")
+        out = []
+        for i in range(min(ran, len(staged))):
+            code = (record.get("failed_stage") or {}).get("exit_code") if i == failed else 0
+            out.append(one(staged[i], code, i))
+        return out
+
+    def attestation_for(self, task: Task) -> Optional[dict]:
+        """The first attestation record (the whole record for a single check)."""
+        found = self.attestations_for(task)
+        return found[0] if found else None
 
     def report_back(self, beads: Beads, task: Task) -> Optional[dict]:
-        """Report a mirrored bead's terminal outcome once. Returns the receipt."""
+        """Report a mirrored bead's terminal outcome once. Returns the receipt.
+
+        Refused, with a code and never sent anywhere else, when this client is
+        not the hub the item came from, or when the bead ran under a lease the
+        plane has since re-issued.
+        """
         hub = (task.metadata or {}).get(HUB_KEY)
         if not hub or hub.get("reported_at"):
             return None
-        if task.status is TaskStatus.DONE:
+        spec = (task.metadata or {}).get("verify") or {}
+        parked = (task.status is TaskStatus.AWAITING_VERIFY
+                  and gate_kind(spec) in ("judged", "human"))
+        if task.status is TaskStatus.DONE or parked:
+            # A judged or human gate parks here, and "done" is what it reports:
+            # the plane derives AWAITING_VERIFY itself (hub ADR 0012 §3) and
+            # refuses an attestation from the executor on those gates.
             status = "done"
         elif task.status is TaskStatus.FAILED:
             status = "failed"
         else:
             return None
-        attestation = self.attestation_for(task) if status == "done" else None
+        if not self.owns(hub):
+            raise HubRefusal(
+                "hub_of_origin_mismatch",
+                f"{task.id} was pulled from {hub.get('url')!r}, which is not the hub this "
+                f"node is configured for ({self.url!r}); the outcome is not sent",
+                "Restore the original hub in config to report it, or leave the item to its lease expiry.",
+            )
+        if hub.get("stale_attempt"):
+            raise HubRefusal(
+                "stale_attempt",
+                f"{task.id} finished under attempt {hub.get('previous_attempt')}, but the hub "
+                f"has since re-leased the item as attempt {hub.get('attempt')}; the outcome is not sent",
+                "The new lease needs its own run.",
+            )
+        attestations = self.attestations_for(task) if status == "done" else []
         receipt = self.report(hub["item_id"], int(hub.get("attempt") or 0), status,
-                              result=task.result, attestation=attestation)
+                              result=task.result,
+                              attestation=attestations[0] if attestations else None)
+        for extra in attestations[1:]:
+            self.attest(hub["item_id"], extra)      # the remaining rungs of a staged gate
         # `annotate`, not `update(verify_gate=False)`. This only ever wrote
         # metadata, and the gate only fires on a DONE transition — so the
         # bypass flag here never suppressed anything. It read like authority
@@ -357,15 +469,166 @@ class HubClient:
         return receipt
 
     def sync(self, beads: Beads) -> list[dict]:
-        """Report every mirrored bead with an unreported terminal outcome."""
+        """Report every mirrored bead with an unreported terminal outcome.
+
+        A refusal on one bead (wrong origin, stale attempt) is recorded as that
+        bead's receipt and the sweep goes on; it must not hide the others.
+        """
         receipts = []
         for t in beads.list():
             hub = (t.metadata or {}).get(HUB_KEY)
-            if hub and not hub.get("reported_at") and t.status in (TaskStatus.DONE, TaskStatus.FAILED):
+            if not hub or hub.get("reported_at") or t.status not in _REPORTABLE:
+                continue
+            try:
                 r = self.report_back(beads, t)
-                if r is not None:
-                    receipts.append({"bead": t.id, "item": hub["item_id"], "status": t.status.value, "receipt": r})
+            except HubRefusal as e:
+                r = {"state": "refused", "code": e.code, "message": e.message}
+            if r is not None:
+                receipts.append({"bead": t.id, "item": hub["item_id"], "status": t.status.value, "receipt": r})
         return receipts
+
+    # ------------------------------------------------------------ lease
+
+    @contextmanager
+    def keep_lease(self, task: Task, ttl_seconds: int, *, interval_s: Optional[float] = None):
+        """Renew the lease on a mirrored bead for as long as the block runs.
+
+        A run longer than the lease TTL otherwise loses the item to another
+        worker mid-run. Renews every third of the TTL; a failed renewal is
+        recorded and does not interrupt the run (the plane's fence decides what
+        the final report is worth).
+        """
+        hub = (task.metadata or {}).get(HUB_KEY) or {}
+        if not hub or not hub.get("item_id") or hub.get("attempt") is None or not self.owns(hub):
+            yield
+            return
+        stop = threading.Event()
+        every = interval_s if interval_s is not None else max(1.0, ttl_seconds / 3)
+
+        def beat():
+            while not stop.wait(every):
+                try:
+                    self.renew(hub["item_id"], int(hub["attempt"]), ttl_seconds)
+                except (HubRefusal, HubUnreachable) as e:
+                    print(f"[hub] lease renewal for {task.id} failed: {e}")
+
+        thread = threading.Thread(target=beat, name=f"hub-lease-{task.id}", daemon=True)
+        thread.start()
+        try:
+            yield
+        finally:
+            stop.set()
+            thread.join(timeout=5)
+
+
+_REPORTABLE = (TaskStatus.DONE, TaskStatus.FAILED, TaskStatus.AWAITING_VERIFY)
+
+
+# ---------------------------------------------------------------- trust (A8)
+
+def hub_item_refusal(config, task: Task) -> Optional[tuple[str, str, str]]:
+    """What the plane sent, checked against what this node allows.
+
+    Returns `(code, message, remediation)` or None. Run before the executor
+    starts: the plane's metadata sets the working directory, and a node that
+    never said which directories the plane may name should not discover that
+    from a stray `workdir: /`.
+
+    `hub.workdir_roots` lists the directories a pulled item may run under.
+    Unset means unrestricted, so a node keeps working until it opts in (doctor
+    says so). Checks are not restricted here: ADR 0014's check library does not
+    exist yet, so there is nothing to name them against (docs/v1-scope.md, A8).
+    """
+    if not (task.metadata or {}).get(HUB_KEY):
+        return None
+    roots = list(getattr(getattr(config, "hub", None), "workdir_roots", None) or [])
+    raw = (task.metadata or {}).get("workdir")
+    if not roots or not raw:
+        return None
+    from pathlib import Path
+    try:
+        workdir = Path(str(raw)).expanduser().resolve()
+        resolved = [Path(r).expanduser().resolve() for r in roots]
+    except OSError as e:
+        return ("workdir_unresolvable", f"workdir {raw!r} could not be resolved: {e}",
+                "Point workdir at a real directory.")
+    if not any(workdir == r or r in workdir.parents for r in resolved):
+        return ("workdir_outside_roots",
+                f"the plane asked for workdir {workdir}, which is not under any of hub.workdir_roots",
+                "Add the directory to hub.workdir_roots if this node should run work there.")
+    return None
+
+
+# ---------------------------------------------------------------- intake (A7)
+
+def intake(orch) -> list[Task]:
+    """Pull up to the node's free capacity at the start of a cycle.
+
+    Off unless `hub.intake` is true. Capacity is `hub.intake_max_open` minus the
+    hub items this node already holds unfinished, so a slow node does not
+    accumulate leases it cannot renew. A plane that is down or refuses is
+    logged and the cycle goes on: a plane is advisory (§9).
+    """
+    cfg = getattr(orch.config, "hub", None)
+    if cfg is None or not cfg.url or not getattr(cfg, "intake", False):
+        return []
+    try:
+        client = client_from_config(orch.config)
+    except HubRefusal as e:
+        print(f"[hub] intake skipped: {e}")
+        return []
+    if client is None:
+        return []
+    held = sum(1 for t in orch.beads.list()
+               if (t.metadata or {}).get(HUB_KEY) and not (t.metadata or {}).get(HUB_KEY, {}).get("reported_at")
+               and t.status in (TaskStatus.PENDING, TaskStatus.IN_PROGRESS))
+    free = int(getattr(cfg, "intake_max_open", 3)) - held
+    if free <= 0:
+        return []
+    try:
+        return client.pull_and_mirror(orch.beads, capabilities=orch.node_capabilities or None,
+                                      ttl_seconds=cfg.lease_ttl_s, limit=free)
+    except (HubRefusal, HubUnreachable) as e:
+        print(f"[hub] intake failed: {e}")
+        return []
+
+
+def _identity_secret(config, hub) -> str:
+    """The hub credential from the instance's identity, never from the environment.
+
+    A node that declares `identity:` takes every credential from the connections
+    it names; the machine-wide env var is exactly the thing two instances on one
+    box would share. The connection is bound to one plane and one actor, so it
+    cannot be pointed at another.
+    """
+    from . import connections
+
+    name = config.identity.hub
+    if not name:
+        raise HubRefusal(
+            "identity_unavailable",
+            "hub.url is set and `identity:` is declared, but identity.hub is not — the hub "
+            "credential would fall back to a machine-wide environment variable",
+            "Create a hub connection (`agentic-co connect add hub --name ... --base-url ... "
+            "--actor ... --secret-stdin`) and set identity.hub to its name.",
+        )
+    try:
+        conn = connections.load(name)
+        if conn.kind != "hub":
+            raise connections.ConnectionError_(f"{name!r} is {conn.kind}, expected hub")
+        secret = connections.read_secret(conn)
+    except connections.ConnectionError_ as e:
+        raise HubRefusal("identity_unavailable", f"identity.hub: {e}", "") from None
+    if conn.base_url.rstrip("/") != str(hub.url).rstrip("/") or conn.actor != hub.actor:
+        raise HubRefusal(
+            "identity_hub_mismatch",
+            f"hub connection {name!r} is for {conn.base_url} as {conn.actor!r}, but this "
+            f"instance's hub is {hub.url} as {hub.actor!r}",
+            "Point identity.hub at the connection made for this hub and actor.",
+        )
+    if not secret:
+        raise HubRefusal("identity_unavailable", f"hub connection {name!r} has no secret", "")
+    return secret
 
 
 def client_from_config(config) -> Optional[HubClient]:
@@ -373,7 +636,10 @@ def client_from_config(config) -> Optional[HubClient]:
     hub = getattr(config, "hub", None)
     if hub is None or not hub.url:
         return None
-    secret = os.environ.get(hub.secret_env, "")
+    if getattr(config, "identity", None) is not None:
+        secret = _identity_secret(config, hub)
+    else:
+        secret = os.environ.get(hub.secret_env, "")
     if not secret:
         raise HubRefusal(
             "secret_required",
@@ -390,6 +656,8 @@ def completion_hook(orch, task: Task) -> None:
         return
     client = client_from_config(orch.config)
     if client is None:
+        print(f"[hub] {task.id} was pulled from a hub but none is configured now; "
+              f"hub_of_origin_unconfigured — the outcome is not sent")
         return
     try:
         client.report_back(orch.beads, task)

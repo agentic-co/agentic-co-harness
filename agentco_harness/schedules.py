@@ -99,7 +99,7 @@ DEFAULT_WINDOW_DAYS = 14
 # and wrong, nothing is corrupt, nothing is unsafe, nothing is deployed.
 # Backport 4 landed the canonical class -> exit-code table in `doctor`, so
 # these two constants now live there and are imported here unchanged. This
-# module keeps its OWN single-class exit code: `agentco schedules audit` reports
+# module keeps its OWN single-class exit code: `agentic-co schedules audit` reports
 # exactly one class, so a caller gating on it can never be handed a code that
 # means something else. `doctor` maps the same finding into its aggregate as
 # BROKEN.

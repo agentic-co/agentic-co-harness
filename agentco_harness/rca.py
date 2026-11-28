@@ -81,7 +81,7 @@ RCA_BUDGET = {"timeout": 1800, "max_turns": 120}
 # The same budget, spelled as CLI flags, for the fix bead the analysis files.
 # The 1800s fix stopped one hop short: RCA PHASE beads got a real budget while
 # the fix beads they file — the ones that actually edit code and run the suite —
-# were still created through `agentco tasks create`, which had no budget flag at
+# were still created through `agentic-co tasks create`, which had no budget flag at
 # all, so they were born metadata={} and died at DEFAULT_TIMEOUT. Both fix beads
 # from the @aidotengineer RCA (ac-83b2f89b, ac-7ea4b8a1) failed that way at
 # exactly 600s. Budget the fix like the analysis; it is not less work.
@@ -124,16 +124,16 @@ failure, two full-price analyses, zero files changed). Before completing, do ONE
 of:
 
   1. Apply the minimal fix yourself, then record it and close the record:
-       agentco tasks create "<what you changed>" -d "<the change + the evidence it works>" --parent {bead_id} -p 1
-       agentco tasks complete <new bead id> --result '{{"status": "complete", "output": "<evidence>"}}'
+       agentic-co tasks create "<what you changed>" -d "<the change + the evidence it works>" --parent {bead_id} -p 1
+       agentic-co tasks complete <new bead id> --result '{{"status": "complete", "output": "<evidence>"}}'
   2. File the fix bead for a later run to apply, and put its id in your result:
-       agentco tasks create "<the fix>" -d "<root cause + the concrete minimal change>" --parent {bead_id} -p 1 {fix_budget}
+       agentic-co tasks create "<the fix>" -d "<root cause + the concrete minimal change>" --parent {bead_id} -p 1 {fix_budget}
 
      Keep the budget flags. A fix bead filed without them runs on the 600s
      default and dies mid-edit, which is how this very failure was produced.
 
 Never end by asking an absent human for permission — filing the bead IS the ask, \
-and it keeps the failure visibly open in `agentco me` instead of showing as done. \
+and it keeps the failure visibly open in `agentic-co me` instead of showing as done. \
 A deterministic gate re-checks this at completion: with no linked follow-up bead, \
 this bead lands in `verify_failed`, never `done`.
 """
@@ -160,10 +160,10 @@ def _describe(
 def terminal_action_verify(store_path: Path | str, bead_id: str) -> dict:
     """The PPEV verify payload that makes the terminal action non-optional.
 
-    The prompt block above is advice; this is enforcement. `agentco rca-check`
+    The prompt block above is advice; this is enforcement. `agentic-co rca-check`
     exits non-zero while the bead has no follow-up bead, so completing on
     analysis alone routes through `_apply_verify_gate` to VERIFY_FAILED instead
-    of DONE — visible in `agentco me`, and NOT re-queued (verify_failed is not
+    of DONE — visible in `agentic-co me`, and NOT re-queued (verify_failed is not
     a ready state), so a stuck RCA costs nothing further.
 
     ``--store`` is passed explicitly rather than relying on the check's cwd
@@ -172,7 +172,7 @@ def terminal_action_verify(store_path: Path | str, bead_id: str) -> dict:
     """
     return {
         "class": "deterministic",
-        "check": f"agentco rca-check {bead_id} --store {shlex.quote(str(store_path))}",
+        "check": f"agentic-co rca-check {bead_id} --store {shlex.quote(str(store_path))}",
         "timeout_s": 60,
     }
 
@@ -184,7 +184,7 @@ def has_terminal_action(beads: Beads, bead: Task) -> str | None:
     being prevented is an RCA that leaves NOTHING behind:
 
       * an explicit fix bead — ``metadata.rca_fix_for``, or simply parented
-        under this bead / its RCA root (what `agentco tasks create --parent`
+        under this bead / its RCA root (what `agentic-co tasks create --parent`
         produces, since the CLI has no --metadata flag);
       * a later phase of the same cycle (verify_plan/execute/validate), or any
         later cycle — i.e. ``advance_rca`` was called;
@@ -331,7 +331,7 @@ def find_existing_rca_root(
     on 2026-08-04:
 
     1. ``source_id`` — this exact failed bead already has a root.
-       ``agentco tasks retry --all-failed`` (the standard queue repair) resets
+       ``agentic-co tasks retry --all-failed`` (the standard queue repair) resets
        failed beads to pending, so the same bead re-fails and spawned a SECOND
        root for it; 31 of those 41 titles carry two beads by exactly this path.
        Keying on the bead ID survives the retry.

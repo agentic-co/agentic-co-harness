@@ -5,7 +5,7 @@ that hub and nothing else of theirs; it pins the hub's generated id; it keeps
 every envelope it ever signed; and it talks to the hub only through a
 transport credential that can reach the answer routes and the person's own
 gates, never the queue at large. The hub cannot write the person's verdict:
-it holds only the public half (`agentco human-key enrol`, on the hub's side).
+it holds only the public half (`agentic-co human-key enrol`, on the hub's side).
 
 Files, under the partition's directory (mode 0700, the key 0600):
 
