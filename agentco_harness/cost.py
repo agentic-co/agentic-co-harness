@@ -151,7 +151,7 @@ def summarize(entries: Iterable[dict], group_by: str = "agent") -> list[dict]:
 
 
 def format_table(rows: list[dict], group_by: str) -> str:
-    """Human-readable summary for `agentco cost`."""
+    """Human-readable summary for `agentic-co cost`."""
     if not rows:
         return "No cost telemetry recorded yet.\n(Runs are recorded as beads execute; check back after a cycle.)"
     head = f"{group_by:<22} {'runs':>5} {'ok':>4} {'ok%':>5} {'$ total':>9} {'$/done':>8} {'avg s':>7} {'priced':>7}"

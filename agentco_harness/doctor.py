@@ -61,7 +61,7 @@ CLASSES: tuple[str, ...] = (BROKEN, DEGRADED, INFO, OK)
 EXIT_OK = 0
 EXIT_BROKEN = 1
 EXIT_DEGRADED = 2
-#: Class-specific subscription code for `agentco schedules audit`, which
+#: Class-specific subscription code for `agentic-co schedules audit`, which
 #: reports exactly one class and therefore cannot use the aggregate table.
 #: Re-homed here from `schedules.py` so the whole class→code mapping lives in
 #: one file; `schedules` imports it.
@@ -208,7 +208,7 @@ AGENT_ENV = {
 # its lid twice" stops being the likely story.
 LEASE_ATTEMPT_THRESHOLD = 3
 
-# Hours of silence from a worker after which `agentco pull` arms the
+# Hours of silence from a worker after which `agentic-co pull` arms the
 # reconcile-before-replay guard (ac-48d8aba3). Six hours is longer than any
 # normal poll gap and shorter than a closed-laptop overnight, which is the
 # shortest absence that can hide a landed-but-unreported external write.
@@ -281,7 +281,7 @@ def scheduling_jobs_for(
     """Loaded job labels that reference this AgentCo instance directory.
 
     Matches the instance dir and, when it is a `.agentco` subdir, its parent —
-    the fleet legitimately schedules both shapes (`agentco cycle` with
+    the fleet legitimately schedules both shapes (`agentic-co cycle` with
     WorkingDirectory at the instance, or a wrapper script run from the repo
     root).
     """
@@ -341,7 +341,7 @@ def lease_pathologies(tasks, now, attempt_threshold: int = LEASE_ATTEMPT_THRESHO
     not one count:
 
     * **expired_unreaped** — IN_PROGRESS past its expiry. `reap_expired_leases`
-      returns it to PENDING, and runs from `agentco pull` (cli.py) AND from
+      returns it to PENDING, and runs from `agentic-co pull` (cli.py) AND from
       `Orchestrator.cycle` (ac-fb137d8d), so a hub nobody pulls from still
       recovers on its own heartbeat. That narrows the window; it does not close
       it. Between heartbeats the bead is stopped dead and holds its blockers,
@@ -535,7 +535,7 @@ def collect(config_path: str) -> DoctorReport:
                 _fail(
                     f"{len(cyclic)} task(s) are in a dependency cycle and can "
                     f"NEVER become ready: {', '.join(cyclic)} — break one edge "
-                    f"with `agentco tasks update <id> --clear-blocked-by`"
+                    f"with `agentic-co tasks update <id> --clear-blocked-by`"
                 )
             else:
                 _ok("no dependency cycles in the bead graph")
@@ -556,7 +556,7 @@ def collect(config_path: str) -> DoctorReport:
     else:
         _broken(
             "company/ directory is missing — agent documents will be DISCARDED. "
-            "Run 'agentco init --company' to create it."
+            "Run 'agentic-co init --company' to create it."
         )
 
     # (g) recurring.jsonl validates: schema and parseable durations.
@@ -593,7 +593,7 @@ def collect(config_path: str) -> DoctorReport:
     # CLASS: BROKEN, and this is the whole point of wiring it in. A schedule
     # that expected N firings and produced ZERO is silent non-execution of
     # declared work — nothing raised, nothing failed, nothing is stale enough to
-    # notice. `agentco schedules audit` keeps its own single-class exit
+    # notice. `agentic-co schedules audit` keeps its own single-class exit
     # (EXIT_LIVENESS) for consumers that subscribe to liveness alone; here it
     # joins the aggregate as BROKEN, because a human running doctor is asking
     # "is anything not working" and the answer is yes.
@@ -612,7 +612,7 @@ def collect(config_path: str) -> DoctorReport:
                 + "; ".join(f"{a.schedule.id} ({a.reason})" for a in silent[:5])
                 + (f" (+{len(silent) - 5} more)" if len(silent) > 5 else "")
                 + " — the definition is enabled and parses, so nothing else "
-                "reports this. See `agentco schedules audit`."
+                "reports this. See `agentic-co schedules audit`."
             )
         else:
             _ok(
@@ -667,7 +667,7 @@ def collect(config_path: str) -> DoctorReport:
             _fail(
                 f"registered child(ren) with NO verify_child recurring def: "
                 f"{', '.join(sorted(unmonitored))} — they are silently unmonitored. "
-                f"Re-link with 'agentco link-child'."
+                f"Re-link with 'agentic-co link-child'."
             )
         if orphaned:
             _fail(
@@ -714,7 +714,7 @@ def collect(config_path: str) -> DoctorReport:
         # (i2) Each pollable child has a SCHEDULER of its own.
         #
         # BROKEN. Check (h) proves the parent is watching the child; nothing
-        # proved anything makes the child *cycle*. `agentco add-company` links
+        # proved anything makes the child *cycle*. `agentic-co add-company` links
         # a child into this registry — which starts the staleness clock — but
         # installs no launchd job, so a freshly onboarded node is monitored and
         # unscheduled: it heartbeats once (the onboarding cycle), then goes
@@ -752,7 +752,7 @@ def collect(config_path: str) -> DoctorReport:
                             f"launchd job referencing it — it is registered as "
                             f"monitored every {child.expected_interval} but nothing "
                             f"makes it cycle, so its heartbeat WILL go stale. "
-                            f"Install a LaunchAgent running 'agentco cycle' with "
+                            f"Install a LaunchAgent running 'agentic-co cycle' with "
                             f"WorkingDirectory={instance_dir}, then "
                             f"'launchctl bootstrap gui/$(id -u) <plist>'."
                         )
@@ -1136,10 +1136,14 @@ def collect(config_path: str) -> DoctorReport:
 
         ident = config.identity
         wanted = [("claude", ident.claude, "claude_code"), ("github", ident.github, "github"),
-                  ("agy", ident.agy, "agy")]
+                  ("agy", ident.agy, "agy"), ("hub", ident.hub, "hub")]
         wanted += [("completions", c, "openai_compat") for c in ident.completions]
         if not ident.claude:
             _fail("identity.claude is not set — every claude bead would be refused identity_unavailable")
+        if getattr(config.hub, "url", None) and not ident.hub:
+            _fail("identity.hub is not set but hub.url is — the hub credential cannot be "
+                  "read from the environment under an identity, so every pull and report "
+                  "is refused identity_unavailable")
         if not ident.github:
             _fail("identity.github is not set — every bead would be refused identity_unavailable "
                   "(git/gh would otherwise fall back to this machine's ssh keys and login)")
@@ -1174,7 +1178,7 @@ def collect(config_path: str) -> DoctorReport:
     # Anything else fails with "Unknown agent: X" the moment a cycle claims it —
     # and each failure spawns an RCA bead, so one un-declared name costs two
     # beads apiece. That is the globexapp box-scout incident (2026-07-22,
-    # 07-29, 08-04): `agentco init --company` rewrote .agentco/config.yaml with
+    # 07-29, 08-04): `agentic-co init --company` rewrote .agentco/config.yaml with
     # the scaffold placeholder, `box-scout` vanished from agents:, and the next
     # cycle burned 50 beads. Nothing detected the un-declaration until the queue
     # was already on fire. This check is that detector: it reads config, not the
@@ -1265,7 +1269,7 @@ def collect(config_path: str) -> DoctorReport:
     # modes are all quiet ones: a stuck lease looks like work in progress, a
     # corrupt expiry looks like a claimed bead, and a churning bead looks like
     # throughput. None of them raises, none of them fails a cycle, and the ONLY
-    # thing that reaps an expired lease is `agentco pull` — so on the hub, where
+    # thing that reaps an expired lease is `agentic-co pull` — so on the hub, where
     # nobody pulls, they simply accumulate. Doctor is where they become visible.
     _sec("leases.health")
     try:
@@ -1286,9 +1290,9 @@ def collect(config_path: str) -> DoctorReport:
                 f"{len(path['expired_unreaped'])} bead(s) are IN_PROGRESS under an "
                 f"EXPIRED lease that was never reaped: {_ids(path['expired_unreaped'])} "
                 f"— each is stopped dead and still blocking whatever waits on it. "
-                f"Nothing reaps outside `agentco pull`, so on a hub nobody pulls "
+                f"Nothing reaps outside `agentic-co pull`, so on a hub nobody pulls "
                 f"from these never clear themselves. Fix: "
-                f"`agentco pull --agent <worker>`, which reaps before it claims."
+                f"`agentic-co pull --agent <worker>`, which reaps before it claims."
             )
 
         if path["corrupt_expiry"]:
@@ -1297,10 +1301,10 @@ def collect(config_path: str) -> DoctorReport:
                 f"lease_expires_at: {_ids(path['corrupt_expiry'])} — reaping skips "
                 f"these deliberately rather than reclaiming on a guess, and "
                 f"ready() excludes them, so NO automatic path will ever touch "
-                f"them again — `agentco pull` will not rescue these. A human "
-                f"must clear the lease: `agentco report <id> --attempt "
+                f"them again — `agentic-co pull` will not rescue these. A human "
+                f"must clear the lease: `agentic-co report <id> --attempt "
                 f"<lease_attempt> --failed --result 'stuck lease cleared'`, then "
-                f"`agentco tasks retry <id>` to return it to pending."
+                f"`agentic-co tasks retry <id>` to return it to pending."
             )
 
         if path["churning"]:
@@ -1339,7 +1343,7 @@ def collect(config_path: str) -> DoctorReport:
     # cannot be verified from a local heartbeat — verify_child says exactly that
     # and stops. That honesty leaves a hole: a MacBook whose launchd job died is
     # indistinguishable from a MacBook with nothing to do. The hub DOES see every
-    # `agentco pull`, so the pull ledger is that node's heartbeat, and this check
+    # `agentic-co pull`, so the pull ledger is that node's heartbeat, and this check
     # is the same staleness judgement applied to it.
     _sec("children.remote_liveness")
     try:
@@ -1408,7 +1412,7 @@ def collect(config_path: str) -> DoctorReport:
                     f"routing evidence: {health.total_runs} run(s) across "
                     f"{health.distinct_models} models but EVERY run shares the same outcome — "
                     "quality cannot be compared, so any recommendation rests on cost alone. "
-                    "Run `agentco eval routing` for the table."
+                    "Run `agentic-co eval routing` for the table."
                 )
             else:
                 _ok(
@@ -1431,7 +1435,7 @@ def collect(config_path: str) -> DoctorReport:
                 if current and current != model:
                     _info(
                         f"routing evidence: '{key}' is configured to {current} but the "
-                        f"ledger favours {model} — advisory only, see `agentco eval routing`"
+                        f"ledger favours {model} — advisory only, see `agentic-co eval routing`"
                     )
                     disagreements += 1
             if recs and "(unset)" in recs and len(recs) == 1:
@@ -1486,7 +1490,7 @@ def collect(config_path: str) -> DoctorReport:
                 _degraded(
                     msg + "yet this node HAS agent-executed beads, so every one of "
                     "them ran unmetered. This node's burn rate is unknown. "
-                    "See `agentco usage`."
+                    "See `agentic-co usage`."
                 )
             else:
                 _info(
@@ -1503,7 +1507,7 @@ def collect(config_path: str) -> DoctorReport:
             )
             _ok(
                 f"usage telemetry: {t['runs']} metered run(s) over {t['beads']} bead(s), "
-                f"{tokens}, {cost} — {t['first_at']} .. {t['last_at']} (`agentco usage`)"
+                f"{tokens}, {cost} — {t['first_at']} .. {t['last_at']} (`agentic-co usage`)"
             )
             if t["unreported_cost_runs"]:
                 _ok(
@@ -1563,7 +1567,7 @@ def collect(config_path: str) -> DoctorReport:
         if not prime_file.is_file():
             _ok(
                 f"no {prime_mod.PRIME_FILENAME} cached (optional — "
-                f"`agentco prime` creates one)"
+                f"`agentic-co prime` creates one)"
             )
         else:
             fresh, reasons = prime_mod.check(prime_dir)
@@ -1573,7 +1577,7 @@ def collect(config_path: str) -> DoctorReport:
                 _warn(
                     f"{prime_file} is stale ({'; '.join(reasons)}) — agents are "
                     f"being primed with context that no longer matches the repo. "
-                    f"Run `agentco prime`."
+                    f"Run `agentic-co prime`."
                 )
     except Exception as e:  # noqa: BLE001 — advisory check never breaks doctor
         _warn(f"PRIME freshness check could not run: {e}")

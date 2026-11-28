@@ -401,7 +401,7 @@ def scaffold_agentco_runtime(base_path: Path) -> Path:
 
     Scaffolding is additive: re-running it on a live node must never destroy
     operator-written state. ``config.yaml`` is only written when absent — on
-    2026-08-04 an ``agentco init --company`` on the already-live globexapp node
+    2026-08-04 an ``agentic-co init --company`` on the already-live globexapp node
     overwrote its config with the placeholder below, dropping ``instance:`` and
     the ``agents:`` block. That silently un-declared the externally-executed
     ``box-scout`` agent, so the next cycle claimed 50 of its beads and failed

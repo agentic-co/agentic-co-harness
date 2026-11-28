@@ -628,7 +628,7 @@ def test_special_executors_cover_run_task_branches():
     from agentco_harness import backends
     from agentco_harness.orchestrator import SPECIAL_EXECUTORS, Orchestrator
 
-    source = inspect.getsource(Orchestrator._execute_cycle_task)
+    source = inspect.getsource(Orchestrator._execute_cycle_task_body)
     literal_branches = re.findall(r'task\.assigned_agent == "([\w-]+)"', source)
     assert not literal_branches, (
         f"_execute_cycle_task dispatches {literal_branches} by literal name again — "

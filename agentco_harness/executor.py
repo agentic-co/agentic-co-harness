@@ -5,7 +5,7 @@ Two execution modes:
   run_claude_task(prompt)         — full prompt via stdin, result from stdout
   run_store_backed_task(task_id)  — tiny prompt (task ID only); agent reads
                                     context from AgentCo store and writes
-                                    TaskResult back via `agentco tasks complete`
+                                    TaskResult back via `agentic-co tasks complete`
 
 Store-backed mode is the standard path for group-chat and Obsidian flows:
 context lives in the task, the reply/note lives in task.result — no size
@@ -1492,7 +1492,7 @@ def run_store_backed_task(
     """Store-backed execution: pass only the task ID.
 
     The agent reads full context from the AgentCo store and writes a
-    structured TaskResult back via `agentco tasks complete --result`.
+    structured TaskResult back via `agentic-co tasks complete --result`.
     stdout is only a completion signal — the real result is in task.result.
 
     Use this for group-chat flows (reply field) and Obsidian flows
@@ -1514,10 +1514,10 @@ def run_store_backed_task(
             f"{_context_refs_block(task_id, config_path)}"
             f"You are executing AgentCo task {task_id}.\n\n"
             f"Step 1 — read the task context:\n"
-            f"  agentco {config_flag}tasks show {task_id}\n\n"
+            f"  agentic-co {config_flag}tasks show {task_id}\n\n"
             f"Step 2 — complete the work described in the task.\n\n"
             f"Step 3 — write your result back BEFORE finishing:\n"
-            f"  agentco {config_flag}tasks complete {task_id} --result '<TaskResult JSON>'\n\n"
+            f"  agentic-co {config_flag}tasks complete {task_id} --result '<TaskResult JSON>'\n\n"
             f"TaskResult JSON schema (all fields except status and output are optional):\n"
             f"{_TASK_RESULT_SCHEMA}\n\n"
             f"Rules:\n"
@@ -1560,10 +1560,10 @@ def run_zai_store_backed_task(
         f"{_context_refs_block(task_id, config_path)}"
         f"You are executing AgentCo task {task_id}.\n\n"
         f"Step 1 — read the task context:\n"
-        f"  agentco {config_flag}tasks show {task_id}\n\n"
+        f"  agentic-co {config_flag}tasks show {task_id}\n\n"
         f"Step 2 — complete the work described in the task.\n\n"
         f"Step 3 — write your result back BEFORE finishing:\n"
-        f"  agentco {config_flag}tasks complete {task_id} --result '<TaskResult JSON>'\n\n"
+        f"  agentic-co {config_flag}tasks complete {task_id} --result '<TaskResult JSON>'\n\n"
         f"TaskResult JSON schema (all fields except status and output are optional):\n"
         f"{_TASK_RESULT_SCHEMA}\n\n"
         f"Rules:\n"

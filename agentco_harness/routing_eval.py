@@ -382,7 +382,7 @@ def format_report(
         for k, m in recs.items():
             L.append(f"  {k}: {m}")
         L.append("")
-        L.append("ADVISORY ONLY. Nothing here changes config; `agentco doctor` will")
+        L.append("ADVISORY ONLY. Nothing here changes config; `agentic-co doctor` will")
         L.append("warn where a configured model disagrees with the evidence.")
     else:
         L.append("No group carries enough evidence to recommend a model.")

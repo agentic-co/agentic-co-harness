@@ -83,7 +83,7 @@ class TaskReferenceError(ValueError):
     The same silent-deadlock class as ``DependencyCycleError``, through a
     different door. Live incident 2026-08-07 (bead ac-694377f3):
 
-        agentco tasks create --blocked-by 'ac-3f4dd6f2\\nac-b7063b2b'
+        agentic-co tasks create --blocked-by 'ac-3f4dd6f2\\nac-b7063b2b'
 
     A shell mangled two ids into ONE argument carrying an embedded newline.
     That string was stored verbatim as a blocker, and since no task will ever
@@ -833,7 +833,7 @@ def normalize_capabilities(
 class TaskResult:
     """Structured output written by agents to task.result.
 
-    Agents write this as JSON to task.result via `agentco tasks complete --result`.
+    Agents write this as JSON to task.result via `agentic-co tasks complete --result`.
     Callers (Telegram handler, group-chat flow) parse it to get the deliverable
     and the pre-formed reply without touching raw stdout.
     """
@@ -1488,7 +1488,10 @@ class Beads:
                     f"refusing to create an orphan whose depth cap and goal "
                     f"lineage cannot be computed."
                 )
+            self._refuse_hub_owned(by_id[parent_id], "parent_id")
         for blocker in blocked_by or []:
+            if blocker in by_id:
+                self._refuse_hub_owned(by_id[blocker], "blocked_by")
             if blocker not in by_id:
                 raise TaskReferenceError(
                     f"blocked_by references {blocker!r}, which does not exist "
@@ -1496,6 +1499,20 @@ class Beads:
                     f"that id, so the bead would stay blocked forever. Check "
                     f"the id, or drop the blocker."
                 )
+
+    @staticmethod
+    def _refuse_hub_owned(task: "Task", field_name: str) -> None:
+        """A bead pulled from a hub is the hub's work (hub ADR 0012): this
+        store keeps a journal entry of it and nothing local may hang off it.
+        Blocking on one would let a local close release local work the hub has
+        not accepted; parenting under one would re-parent hub work into local
+        lineage. Refused at the reference, so no such edge ever exists."""
+        if (task.metadata or {}).get("hub"):
+            raise TaskReferenceError(
+                f"{field_name} references {task.id}, which was pulled from a hub: "
+                f"hub-owned work is journalled here, never a local dependency. "
+                f"File a local bead that does not depend on it."
+            )
 
     def _depth_of(self, task_id: str) -> int:
         """Generation of a task counting from its root (root = 0).
@@ -1810,7 +1827,7 @@ class Beads:
         BEFORE the file lock is taken: a deterministic check can be a full test
         suite, and holding the store's exclusive lock across it would stall
         every other reader/writer of the node — and deadlock any check that
-        itself shells out to `agentco`.
+        itself shells out to `agentic-co`.
         """
         cls = gate_kind(spec)
         metadata = dict(kwargs.get("metadata", task.metadata) or {})
@@ -2806,7 +2823,7 @@ class Beads:
         # metadata wholesale, and any caller can hand `update()` a dict. So an
         # approval carried there is answerable by anyone who can write a payload
         # and name a declared verifier — and verifier names are not secrets,
-        # they are in config and in `agentco verifiers` output. Measured: an
+        # they are in config and in `agentic-co verifiers` output. Measured: an
         # executor forged an approval naming the declared verifier and closed
         # its own judged gate.
         #

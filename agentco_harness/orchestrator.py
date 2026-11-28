@@ -385,7 +385,7 @@ _CHAT_AUTHORITY_LADDER = (
     "report what you did. Silence must never look like inaction: if you did "
     "something, say so plainly.\n\n"
     "HARD INVARIANT: never change THIS bead's own status, assignment, or any "
-    "of its fields yourself (no `agentco tasks update/approve/complete` on "
+    "of its fields yourself (no `agentic-co tasks update/approve/complete` on "
     "this bead's id) — it stays the human's no matter what else you do. Your "
     "reply text is appended to the thread automatically; you never write to "
     "the thread directly."
@@ -1025,7 +1025,7 @@ class Orchestrator:
           False (default) — full prompt via stdin, result from stdout.
           True            — tiny prompt (task ID only); agent reads context
                             from AgentCo store and writes TaskResult back via
-                            `agentco tasks complete`. Use for group-chat and
+                            `agentic-co tasks complete`. Use for group-chat and
                             Obsidian flows where context grows large.
         """
         timeout, max_turns = self._resolve_budget(task)
@@ -1057,7 +1057,7 @@ class Orchestrator:
                 print(f"[cycle] FAIL: claude subagent for {task.id}: {exec_result.error}")
                 self._fail_claude(task, exec_result.error, attempt)
                 return False
-            # Result lives in the store — agent wrote it via `agentco tasks complete`
+            # Result lives in the store — agent wrote it via `agentic-co tasks complete`
             refreshed = self.beads.get(task.id)
             if refreshed is None or refreshed.status != TaskStatus.DONE:
                 msg = "agent did not complete the task — result missing from store"
@@ -1236,7 +1236,7 @@ class Orchestrator:
             f"You are the AgentCo PLANNER for task {task.id}. You ANALYZE, DECOMPOSE, and "
             f"ROUTE work — you NEVER execute the work itself.\n\n"
             f"Step 1 — read the task:\n"
-            f"  agentco {config_flag}tasks show {task.id}\n\n"
+            f"  agentic-co {config_flag}tasks show {task.id}\n\n"
             f"Step 2 — decide EXACTLY ONE of:\n"
             f"  - execute_directly: the task is a single atomic unit; recommend running it as-is.\n"
             f"  - decompose: split into at most {MAX_SUBTASKS_PER_TASK} distinct subtasks, each a real work item.\n"
@@ -1245,7 +1245,7 @@ class Orchestrator:
             f"atomic yes/no, extraction, single-file edits → the executor tier.\n\n"
             f"Step 3 — write your decision back BEFORE finishing, as a TaskResult whose `output` "
             f"field is a JSON STRING carrying the decision:\n"
-            f"  agentco {config_flag}tasks complete {task.id} --result '<TaskResult JSON>'\n\n"
+            f"  agentic-co {config_flag}tasks complete {task.id} --result '<TaskResult JSON>'\n\n"
             f'TaskResult envelope: {{"status": "complete", "output": "<DECISION JSON as a string>"}}\n\n'
             f"DECISION JSON schema (this is the string you put in `output`):\n"
             f"{_PLANNER_DECISION_SCHEMA}\n\n"
@@ -1337,7 +1337,7 @@ class Orchestrator:
                 f"decomposition): {rationale}"
             ).strip()
             # Surface to `me`: write a needs_input TaskResult so the DONE planner
-            # bead shows up in `agentco me` (which lists DONE + needs_input).
+            # bead shows up in `agentic-co me` (which lists DONE + needs_input).
             # Otherwise the recommendation lands on a DONE+complete bead that no
             # human ever sees — the decision silently vanishes.
             result = TaskResult(
@@ -1360,7 +1360,7 @@ class Orchestrator:
                 task,
                 f"🧭 AgentCo [{self.config.instance_name}]: planner recommends "
                 f"running '{task.title}' directly as-is — awaiting your call "
-                f"(surfaced in `agentco me`).",
+                f"(surfaced in `agentic-co me`).",
             )
             return True
 
@@ -1519,7 +1519,7 @@ class Orchestrator:
             task,
             f"⏳ AgentCo [{self.config.instance_name}]: planner decomposed "
             f"'{task.title}' into {created} subtask(s) awaiting approval. "
-            f"Run: agentco approve --list",
+            f"Run: agentic-co approve --list",
         )
         print(f"[cycle] planner: {task.id} → decompose ({created} subtask(s) pending_approval)")
         return True
@@ -1541,7 +1541,7 @@ class Orchestrator:
             f"NOT applied — a human must apply it): {proposal['rationale']}"
         ).strip()
         # Surface to `me`: needs_input TaskResult on the DONE bead so the route
-        # proposal is visible in `agentco me`, not stranded on a DONE+complete bead.
+        # proposal is visible in `agentic-co me`, not stranded on a DONE+complete bead.
         result = TaskResult(
             status="needs_input", output=hint, continuation_hint=hint
         ).to_json()
@@ -1588,6 +1588,10 @@ class Orchestrator:
         )
 
     def _execute_cycle_task(self, task: Task, now: datetime | None = None) -> bool:
+        with self._hub_lease(task):
+            return self._execute_cycle_task_body(task, now)
+
+    def _execute_cycle_task_body(self, task: Task, now: datetime | None = None) -> bool:
         """Route one cycle task: verify_child and registered handlers → pure in-process code;
         claude → subprocess; anything else → the normal DSPy agent path.
 
@@ -1601,6 +1605,8 @@ class Orchestrator:
         # Before anything is claimed or run: an agent must not be pointed at a
         # directory containing the queue that governs it.
         if not self._workdir_is_safe(task):
+            return False
+        if not self._authorize_hub_item(task):
             return False
         if task.assigned_to is not None:
             assignee = task.assigned_to
@@ -1664,7 +1670,7 @@ class Orchestrator:
         """Execute a bead via OpenAI's codex CLI (the Forge persona).
 
         Prompt-mode only. codex has no equivalent of the store-backed contract
-        (it cannot call `agentco tasks complete`), so the result comes back on
+        (it cannot call `agentic-co tasks complete`), so the result comes back on
         stdout and is written here — the same shape as the plain claude path.
         """
         timeout, _ = self._resolve_budget(task)
@@ -1895,7 +1901,7 @@ class Orchestrator:
 
         Returns (active, base_s, factor, max_s). `active` is False when the
         block is disabled OR malformed — a malformed block never skips a cycle
-        (loud WARNING here, hard FAIL in `agentco doctor`), it just falls back
+        (loud WARNING here, hard FAIL in `agentic-co doctor`), it just falls back
         to running every wake at baseline. base_s is always a usable number so
         callers can compute a next_due_at even in the disabled case.
         """
@@ -1905,7 +1911,7 @@ class Orchestrator:
             print(
                 f"[cycle] WARNING: backoff config is malformed ({'; '.join(errs)}) "
                 f"— disabling backoff for this cycle (running at baseline). "
-                f"Run `agentco doctor` to see the FAIL."
+                f"Run `agentic-co doctor` to see the FAIL."
             )
             return (False, 3600.0, 2.0, 7 * 86400.0)
         base_s = parse_duration(b.base).total_seconds()
@@ -2039,6 +2045,10 @@ class Orchestrator:
             print(f"[cycle] GHOST_BLOCKER: {msg}")
             if self.config.notify.enabled:
                 notify_event(self.config.notify, msg, urgent=True)
+
+        # Automatic intake from a plane (off unless hub.intake): pull up to the
+        # node's free capacity so mirrored items are ready for THIS cycle.
+        _hub_client.intake(self)
 
         # verify_child beads are never crowded out of a limited cycle —
         # a busy queue must not starve liveness verification.
@@ -2315,7 +2325,37 @@ class Orchestrator:
         )
         return completed_tasks
 
+    def _authorize_hub_item(self, task: Task) -> bool:
+        """What a plane sent is checked against what this node allows, before an
+        executor starts (docs/v1-scope.md A8). A coded refusal, not a run."""
+        refusal = _hub_client.hub_item_refusal(self.config, task)
+        if refusal is None:
+            return True
+        code, message, remediation = refusal
+        print(f"[work] REFUSED: {task.id} {message}")
+        self.beads.refuse_dispatch(task.id, code=code, message=message, remediation=remediation)
+        return False
+
+    def _hub_lease(self, task: Task):
+        """A context that keeps a mirrored bead's hub lease alive while it runs;
+        a no-op for any other bead."""
+        import contextlib
+
+        if not (task.metadata or {}).get("hub"):
+            return contextlib.nullcontext()
+        try:
+            client = _hub_client.client_from_config(self.config)
+        except _hub_client.HubRefusal:
+            client = None
+        if client is None:
+            return contextlib.nullcontext()
+        return client.keep_lease(task, self.config.hub.lease_ttl_s)
+
     def _execute_task(self, task: Task) -> bool:
+        with self._hub_lease(task):
+            return self._execute_task_body(task)
+
+    def _execute_task_body(self, task: Task) -> bool:
         """Execute a single task.
 
         A False return is the *failure* signal to cycle() (it increments
@@ -2332,6 +2372,8 @@ class Orchestrator:
         # Same guard as the cycle path: both are dispatch entry points, and a
         # containment check on only one of them is a containment check.
         if not self._workdir_is_safe(task):
+            return False
+        if not self._authorize_hub_item(task):
             return False
         if not task.assigned_agent:
             reason = (
@@ -2373,7 +2415,7 @@ class Orchestrator:
         # burn a dispatch slot forever and record nothing, which is the same
         # silent-repetition failure the unassigned branch above was fixed for.
         # A recorded refusal is both: `ready()` stops offering the bead, and it
-        # surfaces in `agentco me` with the missing capability named, so the fix
+        # surfaces in `agentic-co me` with the missing capability named, so the fix
         # (move the bead to the right lane, or correct its requires) is one read
         # away. It stays PENDING — the plane has no stored status for "could not
         # be dispatched", so the record carries that fact instead.
@@ -2453,7 +2495,7 @@ class Orchestrator:
                     self.config.notify,
                     f"⏳ AgentCo [{self.config.instance_name}]: task '{task.title}' "
                     f"proposed {created} subtask(s) awaiting your approval. "
-                    f"Run: agentco approve --list",
+                    f"Run: agentic-co approve --list",
                     urgent=False,
                 )
 

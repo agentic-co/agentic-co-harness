@@ -15,6 +15,7 @@ it. Each instance's config then names which connections it uses.
 | `claude_code` | many | A Claude Code login. `auth: subscription` (a `claude setup-token` token) or `auth: api_key`. Each has its OWN `config_dir`. |
 | `agy` | at most ONE | The Antigravity CLI, using its single saved login under $HOME. The registry refuses a second one. |
 | `openai_compat` | many | Any OpenAI-compatible chat-completions endpoint: LiteLLM, z.ai, a local server. Fields: `base_url`, `model`, optional key. |
+| `hub` | many | The credential this instance signs hub requests with: `base_url`, `actor`, and the actor's shared secret (secret file, 0600). Bound to one hub and one actor. Named by `identity.hub`; under a declared identity the hub secret is read from here and never from `AGENTCO_HUB_SECRET`. |
 | `github` | many | A git/GitHub identity: `ssh_key`, `gitconfig` (user.name and email), `gh_config_dir`, optional `expect_github_user`. |
 
 ## Registry (machine-level, never in a repo)
@@ -61,6 +62,7 @@ identity:
   github: acme-github            # a github connection
   completions: [acme-litellm]    # openai_compat connections this instance may use
   agy: agy                         # optional; only one exists per machine
+  hub: acme-hub                    # a hub connection; required when hub.url is set
 ```
 - **Fail-closed.** If `identity:` is declared and a named connection is missing, of the wrong kind,
   or has an unreadable secret, the bead is REFUSED with a coded refusal. There is never a fallback

@@ -21,7 +21,7 @@ from .beads import (
     TaskPriority,
     TaskStatus,
 )
-from .config import Config
+from .config import CONFIG_ENV_VAR, Config, discover_config
 from .doctor import DEFAULT_RECONCILE_AFTER_H, unresolved_for_worker
 from .cost import format_table, read_ledger, summarize
 from .orchestrator import Orchestrator
@@ -38,9 +38,13 @@ from . import usage as usage_mod
 
 
 @click.group()
-@click.option("--config", "-c", default="config.yaml", help="Config file path")
+@click.option(
+    "--config", "-c", default=None, envvar=CONFIG_ENV_VAR,
+    help="Config file path. Default: $AGENTIC_CO_CONFIG, else the nearest "
+         "config.yaml found searching upward from the current directory.",
+)
 @click.pass_context
-def main(ctx, config: str):
+def main(ctx, config: str | None):
     """agentic-co — the AgentCo execution runtime.
 
     Every unit of work is a bead. `cycle` runs one heartbeat; `doctor` says what
@@ -49,6 +53,10 @@ def main(ctx, config: str):
     coordination plane when `hub.url` is set.
     """
     ctx.ensure_object(dict)
+    if config is None:
+        # `init` creates a node HERE; an upward hit would make it "preserve"
+        # some parent directory's config instead of creating one.
+        config = "config.yaml" if ctx.invoked_subcommand == "init" else discover_config()
     ctx.obj["config_path"] = config
 
     # Extensions load HERE, before any command body, because a registration is
@@ -81,7 +89,7 @@ def init(ctx, company: bool, portfolio: bool, force: bool):
     # Init is additive: an existing config.yaml is operator state, never ours to
     # rewrite. `--config` defaults to "config.yaml" in the CWD, and a node's own
     # runtime dir (.agentco/, the launchd WorkingDirectory) is exactly where an
-    # operator lands — so a bare `agentco init` there used to hand a live node a
+    # operator lands — so a bare `agentic-co init` there used to hand a live node a
     # fresh default Config(), dropping `instance:` and every operator-declared
     # agent. Dropping an externally-executed agent (globexapp's `box-scout`)
     # is not cosmetic: config.agents is the entire test in
@@ -110,7 +118,7 @@ def init(ctx, company: bool, portfolio: bool, force: bool):
         registry.path.touch()
         click.echo(f"Created {config.recurring_path}")
         click.echo(f"Created {registry.path}")
-        click.echo("Register children with: agentco link-child NAME PATH --interval 1h")
+        click.echo("Register children with: agentic-co link-child NAME PATH --interval 1h")
 
     if company:
         from .registry import Registry, scan_company
@@ -279,7 +287,7 @@ def pull(
 
     The hub half of the two-machine dispatch protocol: the MacBook worker's
     launchd job runs this over SSH, executes what comes back, and returns each
-    outcome with `agentco report`. Pull, never push — the hub hands out work
+    outcome with `agentic-co report`. Pull, never push — the hub hands out work
     only when a worker asks, so a laptop that is asleep, offline or mid-reboot
     is simply a worker that has not asked yet, not a queue of lost dispatches.
 
@@ -348,8 +356,8 @@ def pull(
     work item named by the bead's `external_id`/`external_url` metadata — and
     decide from THAT, never from local memory:
 
-      * the write landed  → `agentco report <id> --attempt N --done   --result ...`
-      * it did not land   → `agentco report <id> --attempt N --failed --result ...`
+      * the write landed  → `agentic-co report <id> --attempt N --done   --result ...`
+      * it did not land   → `agentic-co report <id> --attempt N --failed --result ...`
         (the bead returns through the normal ready path and is re-executed)
       * genuinely ambiguous → leave it and escalate to a human; the guard stays
         armed, which is the correct outcome for an unknown.
@@ -379,7 +387,7 @@ def pull(
     Every pull — claiming, reconciling, or empty — is stamped into the pull
     ledger beside the children registry. That stamp is a remote node's only
     heartbeat: the hub is the sole observer of whether the MacBook is still
-    talking, and `agentco doctor` reads it to alert on a lane that has gone
+    talking, and `agentic-co doctor` reads it to alert on a lane that has gone
     quiet.
 
     Output is JSON on stdout and nothing else — this is a machine interface.
@@ -399,7 +407,7 @@ def pull(
             # a typo'd node name would silently claim work for the wrong lane.
             click.echo(
                 f"unknown node {node!r} — not in {config.children_registry_path}. "
-                f"Register it with `agentco link-child` first.",
+                f"Register it with `agentic-co link-child` first.",
                 err=True,
             )
             sys.exit(1)
@@ -476,7 +484,7 @@ def pull(
                     "contract": (
                         "Check the external system of record for each bead above "
                         "before claiming anything new. Then close each one with "
-                        "`agentco report <id> --attempt <lease_attempt> "
+                        "`agentic-co report <id> --attempt <lease_attempt> "
                         "--done|--failed`. This mode repeats until the list is "
                         "empty; `--force` overrides it (break-glass only)."
                     ),
@@ -565,7 +573,7 @@ def report(
 ):
     """Return a leased bead's outcome to the hub, fenced on --attempt.
 
-    The other half of `agentco pull`. `--attempt` must be the lease_attempt the
+    The other half of `agentic-co pull`. `--attempt` must be the lease_attempt the
     worker was handed; if the bead has since moved on (its lease expired, was
     reaped, and it was re-issued to someone else) this exits non-zero and
     writes NOTHING. That is the point: a worker coming back from a long sleep
@@ -686,7 +694,7 @@ def rca_check(ctx, bead_id: str, store: str | None):
         f"{bead_id} has no terminal action: no fix bead, no applied change "
         f"recorded, no next RCA phase. An analysis nobody acts on lets the "
         f"failure recur on schedule — file the fix bead first:\n"
-        f'  agentco tasks create "<the fix>" -d "<root cause + the concrete '
+        f'  agentic-co tasks create "<the fix>" -d "<root cause + the concrete '
         f'minimal change>" --parent {bead_id} -p 1\n'
         f"then complete this bead again (the gate re-runs).",
         err=True,
@@ -767,7 +775,7 @@ def _link_child(
     "--priority",
     default=2,
     type=click.IntRange(0, 3),
-    help="Company weight for `agentco me` (0=critical … 3=low, default 2)",
+    help="Company weight for `agentic-co me` (0=critical … 3=low, default 2)",
 )
 @click.option(
     "--force",
@@ -917,7 +925,7 @@ def children_set_tags(
     if child is None:
         click.echo(
             f"Error: unknown child {name!r} — not in {config.children_registry_path}. "
-            f"Register it with `agentco link-child {name} <path>` first (that writes "
+            f"Register it with `agentic-co link-child {name} <path>` first (that writes "
             f"its verify_child def too).",
             err=True,
         )
@@ -1076,7 +1084,7 @@ def _configure_instance(
     "--priority",
     default=2,
     type=click.IntRange(0, 3),
-    help="Company weight for `agentco me` (0=critical … 3=low, default 2)",
+    help="Company weight for `agentic-co me` (0=critical … 3=low, default 2)",
 )
 @click.pass_context
 def add_company(
@@ -1145,17 +1153,17 @@ def add_company(
     # (the cycle below), reads healthy for one interval, then fires a
     # verify_child alarm with nothing wrong inside it. That is the semijoias
     # incident (ac-67fbc23f): 6.9 hours of correct alarms on a node whose only
-    # defect was that no launchd job existed. `agentco doctor` now names this as
+    # defect was that no launchd job existed. `agentic-co doctor` now names this as
     # BROKEN, but the cheapest place to close it is here, at onboarding.
     plist = f"com.{name}.agentco.plist"
     click.echo(
         f"\nREQUIRED — give '{name}' a scheduler, or it will go stale and alarm:\n"
-        f"  1. Run one cycle now:  agentco -c {root / 'config.yaml'} cycle\n"
+        f"  1. Run one cycle now:  agentic-co -c {root / 'config.yaml'} cycle\n"
         f"  2. Install a LaunchAgent at ~/Library/LaunchAgents/{plist} running\n"
-        f"     'agentco cycle' with WorkingDirectory={root}\n"
+        f"     'agentic-co cycle' with WorkingDirectory={root}\n"
         f"     and StartInterval matching the {interval} cadence you just registered\n"
         f"  3. launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/{plist}\n"
-        f"  4. Confirm:  agentco doctor --class broken"
+        f"  4. Confirm:  agentic-co doctor --class broken"
     )
 
 
@@ -1447,7 +1455,7 @@ def runs(ctx, count: int, as_json: bool):
     config = Config.load(ctx.obj["config_path"])
     runs_path = Path(config.runs_path)
     if not runs_path.exists():
-        click.echo("No runs recorded yet — run 'agentco cycle' first.")
+        click.echo("No runs recorded yet — run 'agentic-co cycle' first.")
         return
 
     records = []
@@ -1532,7 +1540,7 @@ def attention(ctx, as_json: bool):
         return
 
     if failed:
-        click.echo(f"❌ {len(failed)} failed task(s) — retry with 'agentco tasks retry <id>':")
+        click.echo(f"❌ {len(failed)} failed task(s) — retry with 'agentic-co tasks retry <id>':")
         for t in failed:
             err = (t.result or "")[:100]
             click.echo(f"  [{t.id}] {t.title} ({t.assigned_agent or '-'}) — {err}")
@@ -1541,7 +1549,7 @@ def attention(ctx, as_json: bool):
         for t in blocked + waiting:
             click.echo(f"  [{t.id}] {t.title} — blocked_by: {', '.join(t.blocked_by) or '?'}")
     if beads._quarantined:
-        click.echo(f"🗃️ {len(beads._quarantined)} quarantined queue line(s) — see 'agentco doctor'")
+        click.echo(f"🗃️ {len(beads._quarantined)} quarantined queue line(s) — see 'agentic-co doctor'")
     for r in unhealthy:
         # A remote node is informational, not an alarm — it is reported here
         # only because this list shows every non-ok level, and its status
@@ -1726,7 +1734,7 @@ def recurring_list(ctx, as_json: bool):
         if store._quarantined:
             click.echo(
                 f"WARNING: {len(store._quarantined)} unparseable definition line(s) "
-                f"quarantined — run 'agentco doctor' for details.",
+                f"quarantined — run 'agentic-co doctor' for details.",
                 err=True,
             )
 
@@ -1807,7 +1815,7 @@ def status(ctx):
     if status.get("quarantined"):
         click.echo(
             f"WARNING: {status['quarantined']} unparseable task line(s) quarantined "
-            f"— run 'agentco doctor' for details.",
+            f"— run 'agentic-co doctor' for details.",
             err=True,
         )
 
@@ -2062,7 +2070,7 @@ def tasks_ready(ctx, agent: str | None):
     "--assign",
     default=None,
     help="Assign to a human executor, e.g. 'human:alice' (excluded from the "
-    "agent queue, surfaced in `agentco me`)",
+    "agent queue, surfaced in `agentic-co me`)",
 )
 @click.option(
     "--task-class",
@@ -2239,7 +2247,7 @@ def tasks_create(
     """Create a task manually.
 
     Use --assign human:<name> to hand a task to a person: it never enters the
-    agent dispatch loop and shows up in `agentco me`. A human-assigned task
+    agent dispatch loop and shows up in `agentic-co me`. A human-assigned task
     fires a best-effort assignment push (Telegram if configured).
 
     --parent, --blocked-by and --verify are the plan-to-beads intake: a planned
@@ -2562,7 +2570,7 @@ def tasks_update(
         click.echo(
             f"   Nothing was written. If {task_id} already carries a bad "
             f"blocker from before this guard, clear it with: "
-            f"agentco tasks update {task_id} --clear-blocked-by",
+            f"agentic-co tasks update {task_id} --clear-blocked-by",
             err=True,
         )
         sys.exit(1)
@@ -2676,11 +2684,11 @@ def tasks_show(ctx, task_id: str, as_json: bool):
     if task.status == TaskStatus.AWAITING_VERIFY:
         click.echo("status: 🔍 AWAITING APPROVAL — this bead is NOT done, and")
         click.echo("        nothing blocked by it is released.")
-        click.echo(f"        agentco tasks approve-verify {task.id}")
-        click.echo(f"        agentco tasks reject-verify {task.id} -m '<why>'")
+        click.echo(f"        agentic-co tasks approve-verify {task.id}")
+        click.echo(f"        agentic-co tasks reject-verify {task.id} -m '<why>'")
     elif task.status == TaskStatus.VERIFY_FAILED:
         click.echo("status: 🚨 VERIFY FAILED — NOT done. Fix, then re-complete")
-        click.echo(f"        (the check re-runs): agentco tasks complete {task.id}")
+        click.echo(f"        (the check re-runs): agentic-co tasks complete {task.id}")
     elif task.status == TaskStatus.DONE:
         click.echo("status: ✅ gate passed")
     else:
@@ -2876,7 +2884,7 @@ def tasks_complete(ctx, task_id: str, result: str | None, actual: float | None):
         check = ((task.metadata or {}).get("verify") or {}).get("check", "")
         click.echo(f"🔍 Awaiting verification: {task_id}")
         click.echo(f"   Approver must confirm: {check}")
-        click.echo(f"   Then: agentco tasks approve-verify {task_id}")
+        click.echo(f"   Then: agentic-co tasks approve-verify {task_id}")
     elif task.status == TaskStatus.VERIFY_FAILED:
         click.echo(f"🚨 VERIFY FAILED: {task_id} — NOT done", err=True)
         click.echo(f"   check: {record.get('check', '')}", err=True)
@@ -2967,7 +2975,7 @@ def tasks_reject_verify(ctx, task_id: str, reason: str | None, approver: str | N
         "than PENDING. Use for a decline nobody is meant to pick back up "
         "(e.g. a kill-dated bead) — the plain decline leaves it PENDING with "
         "no assigned_to and no assigned_agent, which is dispatchable-but-"
-        "unowned by `agentco doctor`'s queue.dispatchability check."
+        "unowned by `agentic-co doctor`'s queue.dispatchability check."
     ),
 )
 @click.pass_context
@@ -2994,10 +3002,10 @@ def tasks_decline(ctx, task_id: str, reason: str | None, terminal: bool):
         # gated bead. The plain decline is unaffected, so say which one failed.
         click.echo(f"Cannot decline (terminal): {e}", err=True)
         click.echo(
-            f"  try: agentco tasks cancel {task_id} -m {reason or 'no longer wanted'!r}",
+            f"  try: agentic-co tasks cancel {task_id} -m {reason or 'no longer wanted'!r}",
             err=True,
         )
-        click.echo(f"  or:  agentco tasks decline {task_id}   # return it to the queue", err=True)
+        click.echo(f"  or:  agentic-co tasks decline {task_id}   # return it to the queue", err=True)
         sys.exit(1)
     if task is None:
         click.echo(f"Task not found: {task_id}", err=True)
@@ -3066,7 +3074,7 @@ def tasks_cancel(ctx, task_id: str, by: str | None, reason: str):
 @click.option("--for", "interval", required=True, help="How long to hide it (e.g. 2d, 4h, 30m)")
 @click.pass_context
 def tasks_snooze(ctx, task_id: str, interval: str):
-    """Snooze a task — hide it from `agentco me` until the interval elapses."""
+    """Snooze a task — hide it from `agentic-co me` until the interval elapses."""
     config = Config.load(ctx.obj["config_path"])
     beads = open_lifecycle(config.tasks_path)
 
@@ -3104,7 +3112,7 @@ def docs_list(area: str | None, agent: str | None, as_json: bool):
 
     registry_path = Path.cwd() / ".agentco" / "registry.json"
     if not registry_path.exists():
-        click.echo("No registry found. Run 'agentco init --company' first.", err=True)
+        click.echo("No registry found. Run 'agentic-co init --company' first.", err=True)
         sys.exit(1)
 
     registry = Registry(registry_path)
@@ -3156,7 +3164,7 @@ def docs_search(query: str, as_json: bool):
 
     registry_path = Path.cwd() / ".agentco" / "registry.json"
     if not registry_path.exists():
-        click.echo("No registry found. Run 'agentco init --company' first.", err=True)
+        click.echo("No registry found. Run 'agentic-co init --company' first.", err=True)
         sys.exit(1)
 
     registry = Registry(registry_path)
@@ -3191,9 +3199,9 @@ def approve(ctx):
             click.echo(f"  [{t.id}] {t.title}{parent_info}")
             click.echo(f"         agent: {t.assigned_agent or '?'} | {t.description[:80]}")
         click.echo(
-            "\nRun 'agentco approve task <id>' to approve, "
-            "'agentco approve all' to approve all, "
-            "or 'agentco approve reject <id>' to skip."
+            "\nRun 'agentic-co approve task <id>' to approve, "
+            "'agentic-co approve all' to approve all, "
+            "or 'agentic-co approve reject <id>' to skip."
         )
 
 
@@ -3289,7 +3297,7 @@ def approve_reject(ctx, task_id: str):
     except ValueError as e:
         click.echo(f"Cannot reject: {e}", err=True)
         click.echo(
-            f"  try: agentco tasks cancel {task_id} -m 'rejected at approval'", err=True
+            f"  try: agentic-co tasks cancel {task_id} -m 'rejected at approval'", err=True
         )
         sys.exit(1)
     click.echo(f"Rejected: {task_id} — {task.title}")
@@ -3328,7 +3336,7 @@ def approve_reject_all(ctx):
         click.echo(f"\n{len(refused)} NOT rejected — gated work needs `cancel`:", err=True)
         for t, e in refused:
             click.echo(f"  {t.id} — {t.title}", err=True)
-            click.echo(f"    agentco tasks cancel {t.id} -m 'rejected at approval'", err=True)
+            click.echo(f"    agentic-co tasks cancel {t.id} -m 'rejected at approval'", err=True)
         sys.exit(1)
 
 

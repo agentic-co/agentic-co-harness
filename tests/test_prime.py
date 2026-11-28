@@ -162,7 +162,7 @@ def test_check_on_a_missing_prime_is_stale_with_a_reason(tmp_path):
     root = _repo(tmp_path)
     fresh, reasons = prime_mod.check(root)
     assert not fresh
-    assert "agentco prime" in reasons[0]
+    assert "agentic-co prime" in reasons[0]
 
 
 def test_hand_edited_prime_without_a_stamp_raises(tmp_path):

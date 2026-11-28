@@ -1,10 +1,10 @@
 """Human-executor task operations shared by the CLI and the Telegram webhook.
 
 Stage 1 of the delegation layer treats a person as a first-class executor:
-a task with ``assigned_to = "human:<name>"`` waits (visible in ``agentco me``),
+a task with ``assigned_to = "human:<name>"`` waits (visible in ``agentic-co me``),
 is never dispatched to a model, and is completed / declined / snoozed by the
 human. This module holds the small pieces of that lifecycle that BOTH the CLI
-(`agentco tasks ...`) and the Telegram webhook (`server.py`) drive, so the two
+(`agentic-co tasks ...`) and the Telegram webhook (`server.py`) drive, so the two
 surfaces can never diverge in behaviour.
 
 Every accepted transition logs loudly — nothing is silently dropped.
@@ -85,7 +85,7 @@ def push_assignment(config: Config, task: Task) -> None:
         if not delivered:
             print(
                 f"[humans] assignment for {task.id} not pushed "
-                f"(no channel accepted it) — visible in `agentco me`"
+                f"(no channel accepted it) — visible in `agentic-co me`"
             )
     except Exception as e:  # noqa: BLE001 — a broken channel never fails assignment
         print(f"[humans] WARNING: assignment push failed for {task.id}: {e}")

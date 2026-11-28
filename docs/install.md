@@ -77,6 +77,13 @@ the minimal form, and `doctor` then reports `company/` missing (section 3).
 Running `agentic-co init --company` afterwards also works and keeps your
 existing `config.yaml`.
 
+Which config a command uses, in order: `--config/-c PATH`, then the
+`AGENTIC_CO_CONFIG` environment variable, then the nearest `config.yaml` (or
+`.agentco/config.yaml`) found by searching upward from the current directory,
+then `config.yaml` in the current directory. So `agentic-co doctor` works from
+any subdirectory of a node. `init` always creates its config in the current
+directory and never adopts a parent's.
+
 Two defaults in the generated `config.yaml` worth knowing:
 
 - `llm.default_provider` is `openai`. That only matters for in-process model

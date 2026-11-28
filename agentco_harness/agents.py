@@ -51,7 +51,7 @@ def create_company_doc(
     if not base.is_dir():
         print(
             f"[docs] WARNING: company directory '{base}' does not exist — "
-            f"document '{title}' is being DISCARDED. Run 'agentco init --company' to fix."
+            f"document '{title}' is being DISCARDED. Run 'agentic-co init --company' to fix."
         )
         return None
 
